@@ -61,7 +61,8 @@ assert.equal(packageJson.devDependencies["@vitejs/plugin-react"], undefined);
 assert.match(content.env, /DATABASE_URL=/);
 assert.match(content.env, /NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=/);
 assert.match(content.env, /CLERK_SECRET_KEY=/);
-assert.match(content.gitignore, /^\\.env\\*\\.local$/m);
+assert.match(content.gitignore, /^\\.env$/m);
+assert.match(content.gitignore, /^\\.env\\.$/m);
 assert.doesNotMatch(content.gitignore, /\\n/);
 
 assert.match(content.schema, /userId\("user_id"\)/);
