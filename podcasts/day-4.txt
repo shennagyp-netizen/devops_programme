@@ -6,7 +6,7 @@ Speaker A: Git becomes a DevOps tool when history, review, artifacts, and rollba
 
 Speaker B: I already use Git. What changes?
 
-Speaker A: The change is operational accountability. A production deployment should be traceable to a reviewed change and a reproducible artifact.
+Speaker A: The key is that production changes must be traceable. A production deployment should be traceable to a reviewed change and a reproducible artifact.
 
 Speaker A: Think of a legal document. You care about versions, approvals, and exactly which version was signed. Production software needs the same discipline.
 
