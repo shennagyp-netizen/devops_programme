@@ -30,7 +30,7 @@ The podcast prompt contains an explicit anti-robotic review contract.
 
 ## Adaptive theory
 
-The workflow is now partially implemented: the learner selects an environment profile, completes authored prerequisite diagnostics for Beginner B-F1/B-F2/B-A1/B-A2/B-A3, Intermediate I-F1/I-F2/I-A1, and Advanced A-F1/A-F2, and receives a persisted recommendation to skip, condense, or remediate theory. Broader course coverage and full automatic remediation routing remain planned.
+The workflow is now implemented across the authored Beginner and Intermediate cores and all six current Advanced sections: the learner selects an environment profile, completes authored prerequisite diagnostics, and receives a persisted recommendation to skip, condense, or remediate theory. Full automatic remediation routing and richer diagnostic item banks remain planned.
 
 When a prerequisite is already demonstrated:
 - introductory theory can be skipped or condensed
