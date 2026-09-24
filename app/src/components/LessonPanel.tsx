@@ -445,7 +445,6 @@ export function LessonPanel({
 
               <button
                 className="primary"
-,
                 disabled={
                   !localAgentAvailable ||
                   !localAgentToken.trim() ||
