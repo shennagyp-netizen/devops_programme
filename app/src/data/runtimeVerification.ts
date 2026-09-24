@@ -84,7 +84,7 @@ export const runtimeTasks: RuntimeTask[] = [
         commands: {
           macos: command("dig", ["example.com"]),
           linux: command("dig", ["example.com"]),
-          windows: command("Resolve-DnsName", ["example.com"])
+          windows: command("powershell.exe", ["-NoProfile", "-Command", "Resolve-DnsName example.com"])
         },
         required: true
       },
@@ -95,7 +95,7 @@ export const runtimeTasks: RuntimeTask[] = [
         commands: {
           macos: command("nc", ["-z", "example.com", "443"]),
           linux: command("nc", ["-z", "example.com", "443"]),
-          windows: command("Test-NetConnection", ["example.com", "-Port", "443"])
+          windows: command("powershell.exe", ["-NoProfile", "-Command", "Test-NetConnection example.com -Port 443"])
         },
         required: true
       }
