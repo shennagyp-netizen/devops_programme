@@ -87,6 +87,22 @@ for (const lessonId of remediationIds) {
   }
 }
 
+const prerequisiteIds = [...diagnostics.matchAll(
+  /prerequisiteLessonIds:\s*\[([\s\S]*?)\]/g
+)].flatMap((match) =>
+  [...match[1].matchAll(/"([^"]+)"/g)].map((item) => item[1])
+);
+
+for (const lessonId of prerequisiteIds) {
+  if (!lessons.includes(`id: "${lessonId}"`)) {
+    failed = true;
+    console.error(
+      `Diagnostic prerequisite lesson ${lessonId} does not exist in courseLessons.ts`
+    );
+  }
+}
+
+
 const sectionsWithLessons = new Set(
   [...lessons.matchAll(/sectionId:\s*"([^"]+)"/g)].map((match) => match[1])
 );
@@ -113,5 +129,5 @@ if (!diagnostics.includes('if (ratio >= 0.7) return "condense-theory"')) {
 if (failed) process.exit(1);
 
 console.log(
-  `Diagnostic contract check passed: ${definitionBlocks.length} sections, ${questionBlocks.length} questions, and ${new Set(remediationIds).size} remediation lessons.`
+  `Diagnostic contract check passed: ${definitionBlocks.length} sections, ${questionBlocks.length} questions, ${new Set(prerequisiteIds).size} prerequisite lessons, and ${new Set(remediationIds).size} remediation lessons.`
 );
