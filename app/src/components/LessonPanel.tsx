@@ -11,6 +11,12 @@ import {
 } from "../data/handsOn";
 import { commandForPlatform } from "../data/platformAdapters";
 import { runtimeTaskForLesson } from "../data/runtimeVerification";
+import {
+  getLocalTerminalToken,
+  localTerminalAgentStatus,
+  runLocalTerminalTask,
+  setLocalTerminalToken
+} from "../data/localTerminalAgent";
 import { MotionIllustration } from "./MotionIllustration";
 import { PodcastCoach } from "./PodcastCoach";
 import { AssessmentPanel } from "./AssessmentPanel";
@@ -47,6 +53,10 @@ export function LessonPanel({
   const [exerciseRecorded, setExerciseRecorded] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
   const [machineVerificationMessage, setMachineVerificationMessage] = useState("");
+  const [localAgentAvailable, setLocalAgentAvailable] = useState(false);
+  const [localAgentInfo, setLocalAgentInfo] = useState("Not connected");
+  const [localAgentToken, setLocalAgentTokenState] = useState(getLocalTerminalToken());
+  const [localAgentRunning, setLocalAgentRunning] = useState(false);
   const [machineResults, setMachineResults] = useState<
     Array<{
       stepId: string;
@@ -98,6 +108,102 @@ export function LessonPanel({
   useEffect(() => {
     setShowTheory(diagnosticRecommendation !== "skip-theory");
   }, [diagnosticRecommendation]);
+
+  useEffect(() => {
+    let active = true;
+
+    async function checkAgent() {
+      const status = await localTerminalAgentStatus();
+      if (!active) return;
+      if (status.available) {
+        setLocalAgentAvailable(true);
+        setLocalAgentInfo(`Connected · ${status.platform} · agent ${status.version}`);
+      } else {
+        setLocalAgentAvailable(false);
+        setLocalAgentInfo(status.reason);
+      }
+    }
+
+    void checkAgent();
+    const interval = window.setInterval(() => {
+      void checkAgent();
+    }, 5000);
+
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+    };
+  }, []);
+
+  async function runOnLaptop() {
+    if (!runtimeTask) return;
+
+    if (!localAgentToken.trim()) {
+      setMachineVerificationMessage(
+        "Start the DevOps terminal agent and enter its pairing token first."
+      );
+      return;
+    }
+
+    setLocalAgentRunning(true);
+    setMachineVerificationMessage("Running the verified exercise on this laptop...");
+
+    try {
+      const envelope = await runLocalTerminalTask({
+        taskId: runtimeTask.taskId,
+        platform,
+        token: localAgentToken
+      });
+
+      const result = recordMachineVerification({
+        course: lesson.course,
+        projectId: lesson.projectId,
+        task: runtimeTask,
+        envelope,
+        summary: `Verified laptop execution for ${lesson.id}`
+      });
+
+      if (!result.recorded) {
+        setExerciseRecorded(false);
+        setMachineResults(envelope.stepResults ?? []);
+        setMachineVerificationMessage(
+          `Laptop execution returned invalid evidence: ${result.failures.join(" ")}`
+        );
+        return;
+      }
+
+      setExerciseRecorded(true);
+      setMachineResults(envelope.stepResults ?? []);
+      try {
+        localStorage.setItem(
+          evidenceKey,
+          JSON.stringify({
+            taskId: runtimeTask.taskId,
+            verified: true,
+            verificationLevel: "machine-verified",
+            machineEnvelope: envelope,
+            savedAt: new Date().toISOString()
+          })
+        );
+      } catch {
+        // Evidence ledger is already updated; local UI persistence is best-effort.
+      }
+
+      setMachineVerificationMessage(
+        "Laptop terminal execution verified and saved."
+      );
+      onEvidenceRecorded?.();
+    } catch (error) {
+      setExerciseRecorded(false);
+      setMachineVerificationMessage(
+        error instanceof Error
+          ? `Laptop terminal execution failed: ${error.message}`
+          : "Laptop terminal execution failed."
+      );
+    } finally {
+      setLocalAgentRunning(false);
+    }
+  }
 
   async function importMachineEvidence(file: File | undefined) {
     if (!file) return;
@@ -292,31 +398,91 @@ export function LessonPanel({
 
           {runtimeTask ? (
             <div className="content-card">
-              <span className="eyebrow">OPTIONAL VERIFIED EXECUTION</span>
-              <h4>Run this exercise on a real machine</h4>
-              {platform === "windows" ? (
-                <p>
-                  Verified SSH execution is currently available for Linux and
-                  macOS targets. Run the command above manually on Windows; the
-                  manual path is always supported.
-                </p>
-              ) : (
+              <span className="eyebrow">VERIFIED LAPTOP TERMINAL</span>
+              <h4>Run this exercise directly from the website</h4>
+              <p>
+                The website can use the DevOps terminal agent installed on this
+                laptop. The browser never receives arbitrary shell access; it
+                sends only this lesson's allowlisted task to the local agent.
+              </p>
+
+              <p className="range">{localAgentInfo}</p>
+
+              {!localAgentAvailable ? (
                 <>
                   <p>
-                    The browser does not open SSH itself. Run the repository
-                    runner from your development machine; it connects to the
-                    selected real VM or physical machine, executes only the
-                    allowlisted task, and returns a verification envelope.
+                    Start the local agent once on this laptop:
+                  </p>
+                  <pre>
+                    <code>npm run terminal-agent</code>
+                  </pre>
+                </>
+              ) : null}
+
+              <label className="evidence-field">
+                <strong>Pair this browser with the local agent</strong>
+                <input
+                  type="password"
+                  value={localAgentToken}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setLocalAgentTokenState(value);
+                    setLocalTerminalToken(value);
+                  }}
+                  placeholder="Paste the pairing token printed by the agent"
+                />
+              </label>
+
+              <button
+                className="primary"
+                disabled={!localAgentAvailable || !localAgentToken.trim() || localAgentRunning}
+                onClick={() => {
+                  void runOnLaptop();
+                }}
+              >
+                {localAgentRunning ? "Running on this laptop..." : "Run verified exercise on this laptop"}
+              </button>
+
+              <p className="range">
+                This uses the laptop's real terminal environment. If the agent
+                is not available, use the manual terminal instructions below.
+              </p>
+
+              {machineVerificationMessage ? (
+                <p className="range">{machineVerificationMessage}</p>
+              ) : null}
+
+              {machineResults.length ? (
+                <div className="content-card">
+                  <span className="eyebrow">LAPTOP TERMINAL RESULTS</span>
+                  {machineResults.map((step) => (
+                    <div key={step.stepId}>
+                      <h4>
+                        {step.stepId} · {step.result} · exit {step.exitCode}
+                      </h4>
+                      {step.stdout ? (
+                        <pre><code>{step.stdout}</code></pre>
+                      ) : null}
+                      {step.stderr ? (
+                        <pre><code>{step.stderr}</code></pre>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              {platform !== "windows" ? (
+                <details>
+                  <summary>Optional remote machine</summary>
+                  <p>
+                    SSH remote execution remains available for a real VM or
+                    physical machine.
                   </p>
                   <pre>
                     <code>{`npm run hands-on:remote -- --execute --lesson ${runtimeTask.lessonId} --platform ${platform} --host <host> --user <user>`}</code>
                   </pre>
-                  <p className="range">
-                    SSH host-key checking is strict. The target must already be
-                    trusted by your SSH known_hosts configuration.
-                  </p>
                   <label className="evidence-field">
-                    <strong>Import the returned verification JSON</strong>
+                    <strong>Import remote verification JSON</strong>
                     <input
                       type="file"
                       accept="application/json,.json"
@@ -325,34 +491,8 @@ export function LessonPanel({
                       }}
                     />
                   </label>
-                  {machineVerificationMessage ? (
-                    <p className="range">{machineVerificationMessage}</p>
-                  ) : null}
-
-                  {machineResults.length ? (
-                    <div className="content-card">
-                      <span className="eyebrow">REMOTE RESULTS</span>
-                      {machineResults.map((step) => (
-                        <div key={step.stepId}>
-                          <h4>
-                            {step.stepId} · {step.result} · exit {step.exitCode}
-                          </h4>
-                          {step.stdout ? (
-                            <pre>
-                              <code>{step.stdout}</code>
-                            </pre>
-                          ) : null}
-                          {step.stderr ? (
-                            <pre>
-                              <code>{step.stderr}</code>
-                            </pre>
-                          ) : null}
-                        </div>
-                      ))}
-                    </div>
-                  ) : null}
-                </>
-              )}
+                </details>
+              ) : null}
             </div>
           ) : null}
 
