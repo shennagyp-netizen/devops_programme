@@ -1,0 +1,817 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "B-A5",
+  "purpose": "Pilot item bank for Queues, Retries and Failure. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "BA5-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-A5.core",
+      "prompt": "Why use a queue?",
+      "options": [
+        "To decouple arrival of work from processing rate",
+        "To remove all failures",
+        "To replace a database",
+        "To encrypt traffic"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA5-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-A5.core",
+      "prompt": "What happens when producers are faster than consumers?",
+      "options": [
+        "Queue depth or age can grow",
+        "The queue must immediately disappear",
+        "CPU must become zero",
+        "DNS changes"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA5-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-A5.core",
+      "prompt": "What is a retry?",
+      "options": [
+        "Another attempt after a failed or timed-out operation",
+        "A backup copy",
+        "A new container image",
+        "A network route"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA5-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A5.core",
+      "prompt": "Why can retries make an incident worse?",
+      "options": [
+        "They can add more load to an already failing dependency",
+        "They always reduce load",
+        "They disable queues",
+        "They guarantee idempotency"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA5-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A5.core",
+      "prompt": "What is idempotency?",
+      "options": [
+        "Repeating an operation leads to an acceptable same outcome rather than duplicating the effect",
+        "A request that always succeeds",
+        "A queue that never grows",
+        "A database backup"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA5-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A5.core",
+      "prompt": "What is backpressure?",
+      "options": [
+        "A mechanism that slows or limits incoming work when downstream capacity is constrained",
+        "A faster retry loop",
+        "A new DNS record",
+        "A health endpoint"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA5-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A5.core",
+      "prompt": "Why use exponential backoff?",
+      "options": [
+        "To space repeated attempts as failure persists",
+        "To increase load faster",
+        "To make every request synchronous",
+        "To remove all timeouts"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA5-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A5.core",
+      "prompt": "What does jitter add to backoff?",
+      "options": [
+        "Variation that reduces many clients retrying at the same moment",
+        "A second queue",
+        "More CPU",
+        "Longer database transactions"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA5-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A5.core",
+      "prompt": "Why monitor queue age as well as depth?",
+      "options": [
+        "Oldest work can show whether customer-visible delay is growing",
+        "Age and depth are always identical",
+        "Age measures CPU",
+        "Depth is never useful"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA5-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A5.core",
+      "prompt": "Why bound retries?",
+      "options": [
+        "To limit retry amplification and protect dependencies",
+        "To ensure every failure succeeds",
+        "To remove logs",
+        "To eliminate queues"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA5-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A5.core",
+      "prompt": "A queue is growing but the API remains healthy. What does that suggest?",
+      "expectedElements": [
+        "The asynchronous path is slower than incoming work",
+        "The synchronous request path can still be healthy while the worker path struggles"
+      ]
+    },
+    {
+      "id": "BA5-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A5.core",
+      "prompt": "Why can a worker be idempotent even when the transport retries?",
+      "expectedElements": [
+        "The same message may be delivered more than once, so the business effect must remain safe to repeat"
+      ]
+    },
+    {
+      "id": "BA5-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A5.core",
+      "prompt": "What should a dead-letter or failed-work path provide?",
+      "expectedElements": [
+        "A controlled place to isolate work that cannot be processed successfully",
+        "A guarantee the message is fixed automatically",
+        "Unlimited retries"
+      ]
+    },
+    {
+      "id": "BA5-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A5.core",
+      "prompt": "Why are timeouts part of retry design?",
+      "expectedElements": [
+        "Without a bounded wait, one attempt can occupy resources too long and multiply pressure"
+      ]
+    },
+    {
+      "id": "BA5-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 3,
+      "competencyId": "B-A5.core",
+      "prompt": "Design a bounded retry policy for a payment-like request.",
+      "expectedElements": [
+        "timeout",
+        "limited attempts",
+        "backoff",
+        "jitter",
+        "idempotency or deduplication",
+        "clear non-retryable cases"
+      ]
+    },
+    {
+      "id": "BA5-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "B-A5.core",
+      "prompt": "Explain how a queue protects a front-end service during a burst.",
+      "expectedElements": [
+        "front path accepts/buffers work",
+        "consumers process at sustainable rate",
+        "queue absorbs temporary burst",
+        "backpressure protects downstream"
+      ]
+    },
+    {
+      "id": "BA5-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A5.core",
+      "prompt": "A worker pool doubles and queue depth falls briefly, then database errors rise. Explain the mechanism.",
+      "expectedElements": [
+        "workers increase downstream concurrency",
+        "database becomes bottleneck",
+        "queue symptom can improve before system health worsens"
+      ]
+    },
+    {
+      "id": "BA5-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "B-A5.core",
+      "prompt": "Design an incident response for retry amplification.",
+      "expectedElements": [
+        "identify retry rate",
+        "cap/reduce retries",
+        "protect dependency",
+        "recover gradually",
+        "verify queue/user impact"
+      ]
+    },
+    {
+      "id": "BA5-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "B-A5.core",
+      "prompt": "Design an idempotency key strategy for repeated job delivery.",
+      "expectedElements": [
+        "stable operation identifier",
+        "durable deduplication record",
+        "safe duplicate handling",
+        "expiry/replay considerations"
+      ]
+    },
+    {
+      "id": "BA5-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "B-A5.core",
+      "prompt": "Build a diagnostic tree for 'orders are delayed' that separates queueing, worker failure, database saturation and retry storm.",
+      "expectedElements": [
+        "queue age/depth",
+        "worker success/failure",
+        "DB pressure",
+        "retry rate",
+        "safe mitigation and recovery"
+      ]
+    },
+    {
+      "id": "BA5-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "arrival rate versus effective service rate"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "Queue depth rises continuously. What basic relationship should you test?"
+    },
+    {
+      "id": "BA5-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "retry amplification"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "Retries increase while the dependency remains slow. What is the main risk?"
+    },
+    {
+      "id": "BA5-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "consumer throughput",
+        "dependency latency",
+        "queue partition or routing issues"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "Workers are healthy but messages remain old. What should you inspect?"
+    },
+    {
+      "id": "BA5-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "whether the operation is idempotent or deduplicated"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "A job runs twice. What question should you ask?"
+    },
+    {
+      "id": "BA5-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "database is downstream bottleneck",
+        "worker concurrency is too high"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "Adding workers makes database latency worse. What does that suggest?"
+    },
+    {
+      "id": "BA5-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "work is turning over too slowly or arrivals/services are changing in a way depth hides",
+        "older messages are not being drained"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "Queue depth is flat but queue age rises. What does that suggest?"
+    },
+    {
+      "id": "BA5-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "jitter or coordinated backoff"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "Retries are concentrated at the same second across many clients. What pattern is missing?"
+    },
+    {
+      "id": "BA5-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "each timeout consumes resources",
+        "many retries can amplify load",
+        "latency tail can multiply work"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "A worker times out, retries, then succeeds. Why might this still be dangerous at scale?"
+    },
+    {
+      "id": "BA5-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "consumer processing rate",
+        "dependency timing/errors",
+        "worker resource state",
+        "queue age"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "Design evidence to distinguish a slow consumer from a slow dependency."
+    },
+    {
+      "id": "BA5-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "limit consumer concurrency",
+        "bound retries",
+        "protect DB",
+        "verify queue/user impact"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "A queue protects the API but database saturation keeps growing. Design the safest next move."
+    },
+    {
+      "id": "BA5-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "stop amplification",
+        "stabilize dependency",
+        "recover gradually",
+        "watch queue age/error/retry metrics"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "Design an incident response for a retry storm with partial dependency recovery."
+    },
+    {
+      "id": "BA5-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "accepted by API",
+        "queued",
+        "consumed",
+        "DB/business effect",
+        "duplicate handling",
+        "user-visible completion"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "Build a decision tree for a missing order in an asynchronous system."
+    },
+    {
+      "id": "BA5-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "B-A5.hands-on",
+      "prompt": "Create a producer/consumer queue and observe normal flow.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "send work",
+        "record queue depth/age",
+        "observe consumer rate",
+        "reset"
+      ],
+      "success": [
+        "normal throughput recorded",
+        "queue path understood"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA5-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "B-A5.hands-on",
+      "prompt": "Slow the consumer and observe queue growth.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "reduce worker rate",
+        "measure queue",
+        "restore worker",
+        "verify drain"
+      ],
+      "success": [
+        "growth evidence",
+        "drain/recovery evidence"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA5-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "B-A5.hands-on",
+      "prompt": "Introduce a bounded retry policy.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "start with failing dependency",
+        "capture retry behavior",
+        "add timeout/backoff/jitter",
+        "compare",
+        "recover"
+      ],
+      "success": [
+        "attempt count/time spacing",
+        "reduced pressure evidence"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA5-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "B-A5.hands-on",
+      "prompt": "Demonstrate idempotent processing.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "send duplicate job",
+        "record first effect",
+        "process duplicate",
+        "verify single business effect"
+      ],
+      "success": [
+        "stable operation ID",
+        "duplicate safely handled"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA5-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "B-A5.hands-on",
+      "prompt": "Create a retry amplification incident.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "make dependency slow",
+        "allow aggressive retries in disposable system",
+        "observe load",
+        "cap retries",
+        "recover"
+      ],
+      "success": [
+        "amplification evidence",
+        "mitigation",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA5-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "B-A5.hands-on",
+      "prompt": "Build a backpressure test.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "increase producer rate",
+        "observe saturation",
+        "apply admission/backpressure",
+        "measure queue/user impact",
+        "reset"
+      ],
+      "success": [
+        "backpressure signal",
+        "protected dependency",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA5-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "B-A5.hands-on",
+      "prompt": "Run a missing-order incident drill.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "trace API acceptance",
+        "inspect queue",
+        "inspect worker",
+        "inspect DB/business effect",
+        "recover and record"
+      ],
+      "success": [
+        "end-to-end evidence chain",
+        "verified outcome"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA5-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "B-A5.hands-on",
+      "prompt": "Lead a B3 failure exercise.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "inject one dependency failure",
+        "state hypothesis",
+        "mitigate safely",
+        "repair",
+        "verify queue and user path",
+        "write timeline"
+      ],
+      "success": [
+        "timeline",
+        "hypothesis",
+        "mitigation",
+        "recovery evidence"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    }
+  ]
+}
