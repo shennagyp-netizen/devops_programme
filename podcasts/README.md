@@ -1,6 +1,6 @@
 # Podcast Library
 
-Five normal-text files contain all 32 episode scripts, grouped by day. Stable episode IDs are preserved.
+The library contains 37 normal-text episode scripts: five original day-grouped files, ten Beginner lessons, and eleven Advanced lessons. Stable episode IDs are preserved.
 
 ## Human speech is a hard requirement
 
