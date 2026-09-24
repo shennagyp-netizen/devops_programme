@@ -1,0 +1,84 @@
+{
+  "runtimeTasks": [
+    {
+      "taskId": "hands-on-B1.2",
+      "lessonId": "B1.2",
+      "verificationLevel": "machine-verified",
+      "resetRequired": false,
+      "steps": [
+        {
+          "id": "resolve-name",
+          "kind": "observe",
+          "purpose": "Resolve the service name before testing the connection path.",
+          "commands": {
+            "macos": {
+              "program": "dig",
+              "args": [
+                "example.com"
+              ],
+              "timeoutMs": 30000,
+              "destructive": false
+            },
+            "linux": {
+              "program": "dig",
+              "args": [
+                "example.com"
+              ],
+              "timeoutMs": 30000,
+              "destructive": false
+            },
+            "windows": {
+              "program": "powershell.exe",
+              "args": [
+                "-NoProfile",
+                "-Command",
+                "Resolve-DnsName example.com"
+              ],
+              "timeoutMs": 30000,
+              "destructive": false
+            }
+          },
+          "required": true
+        },
+        {
+          "id": "test-https-port",
+          "kind": "verify",
+          "purpose": "Test whether the target HTTPS port is reachable.",
+          "commands": {
+            "macos": {
+              "program": "nc",
+              "args": [
+                "-z",
+                "example.com",
+                "443"
+              ],
+              "timeoutMs": 30000,
+              "destructive": false
+            },
+            "linux": {
+              "program": "nc",
+              "args": [
+                "-z",
+                "example.com",
+                "443"
+              ],
+              "timeoutMs": 30000,
+              "destructive": false
+            },
+            "windows": {
+              "program": "powershell.exe",
+              "args": [
+                "-NoProfile",
+                "-Command",
+                "Test-NetConnection example.com -Port 443"
+              ],
+              "timeoutMs": 30000,
+              "destructive": false
+            }
+          },
+          "required": true
+        }
+      ]
+    }
+  ]
+}
