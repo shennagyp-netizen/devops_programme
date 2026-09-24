@@ -97,7 +97,7 @@ The four authoring bands are:
 
 ## Current pilot banks
 
-The repository currently contains nine 40-item pilot banks:
+The repository currently contains twenty-one 40-item pilot banks:
 
 Beginner:
 - `B-F1` — Linux and Process Foundations
