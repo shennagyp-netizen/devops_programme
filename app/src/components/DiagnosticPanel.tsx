@@ -58,6 +58,12 @@ export function DiagnosticPanel({
     definition ? definition.questions.map(() => -1) : []
   );
 
+  useEffect(() => {
+    for (const [storedSectionId, storedResult] of Object.entries(results)) {
+      onRecommendation(storedSectionId, storedResult.recommendation);
+    }
+  }, [onRecommendation, results]);
+
   if (!definition) {
     return (
       <div className="content-card">
@@ -70,12 +76,6 @@ export function DiagnosticPanel({
       </div>
     );
   }
-
-  useEffect(() => {
-    for (const [storedSectionId, storedResult] of Object.entries(results)) {
-      onRecommendation(storedSectionId, storedResult.recommendation);
-    }
-  }, [onRecommendation, results]);
 
   const result = results[definition.sectionId];
   const complete = answers.every((answer) => answer >= 0);
