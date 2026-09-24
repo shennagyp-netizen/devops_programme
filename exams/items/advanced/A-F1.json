@@ -1,0 +1,817 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "A-F1",
+  "purpose": "Pilot item bank for Capacity and Queueing Foundations. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "AF1-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-F1.core",
+      "prompt": "What does throughput measure?",
+      "options": [
+        "Completed work per unit time",
+        "Time until a single request starts",
+        "CPU temperature",
+        "Number of regions"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF1-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-F1.core",
+      "prompt": "What does latency measure?",
+      "options": [
+        "Time taken for a request or operation to complete",
+        "Requests per second",
+        "Storage capacity",
+        "Number of replicas"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF1-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-F1.core",
+      "prompt": "What happens when arrival rate stays above service rate?",
+      "options": [
+        "Queue or backlog grows",
+        "Latency must become zero",
+        "CPU always falls",
+        "Replication stops"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF1-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F1.core",
+      "prompt": "What is saturation?",
+      "options": [
+        "A resource is near or beyond the useful capacity it can sustain",
+        "A system has no traffic",
+        "A service has no logs",
+        "A request returns 200"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF1-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F1.core",
+      "prompt": "Why keep capacity headroom?",
+      "options": [
+        "To absorb normal variation, bursts and some failures before saturation",
+        "To guarantee infinite scale",
+        "To avoid measuring load",
+        "To remove bottlenecks permanently"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF1-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F1.core",
+      "prompt": "What is Little's Law useful for?",
+      "options": [
+        "Relating concurrency, throughput and average latency in a stable system",
+        "Choosing a DNS record",
+        "Encrypting traffic",
+        "Selecting a storage class"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF1-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F1.core",
+      "prompt": "Why can adding workers increase latency?",
+      "options": [
+        "Workers can increase pressure on a shared bottleneck",
+        "Workers always reduce demand",
+        "Workers disable queues",
+        "Workers cannot run concurrently"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF1-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F1.core",
+      "prompt": "What is a queue's service rate?",
+      "options": [
+        "The rate at which work is successfully completed",
+        "The number of producers",
+        "The maximum message size",
+        "The DNS response time"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF1-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F1.core",
+      "prompt": "Why is queue age useful?",
+      "options": [
+        "It shows how long unresolved work has been waiting",
+        "It measures CPU directly",
+        "It replaces queue depth",
+        "It proves root cause"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF1-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F1.core",
+      "prompt": "What does backpressure protect?",
+      "options": [
+        "A slower downstream system from uncontrolled upstream demand",
+        "Only DNS",
+        "Only CPU",
+        "Only storage"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF1-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-F1.core",
+      "prompt": "A system has plenty of CPU but rising latency. What remains plausible?",
+      "expectedElements": [
+        "I/O, network, lock, queue or downstream saturation can still be the bottleneck"
+      ]
+    },
+    {
+      "id": "AF1-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-F1.core",
+      "prompt": "Why can scaling one tier move the bottleneck instead of removing it?",
+      "expectedElements": [
+        "The next dependency becomes the limiting resource"
+      ]
+    },
+    {
+      "id": "AF1-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-F1.core",
+      "prompt": "Why can average latency look stable while users see severe delays?",
+      "expectedElements": [
+        "A small tail of requests can become very slow while the average remains acceptable"
+      ]
+    },
+    {
+      "id": "AF1-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-F1.core",
+      "prompt": "What does admission control do?",
+      "expectedElements": [
+        "It limits or rejects new work when the system cannot safely accept more"
+      ]
+    },
+    {
+      "id": "AF1-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-F1.core",
+      "prompt": "Why can a full queue be a useful safety signal?",
+      "expectedElements": [
+        "It indicates downstream capacity is insufficient for current demand and may require protection"
+      ]
+    },
+    {
+      "id": "AF1-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "A-F1.core",
+      "prompt": "Design a capacity model for a service with 10x traffic growth.",
+      "expectedElements": [
+        "traffic assumptions",
+        "service rate",
+        "bottleneck resources",
+        "headroom",
+        "next bottleneck"
+      ]
+    },
+    {
+      "id": "AF1-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "A-F1.core",
+      "prompt": "Explain why concurrency and throughput are not the same thing.",
+      "expectedElements": [
+        "concurrency is work in flight",
+        "throughput is completed work per unit time",
+        "latency affects their relationship"
+      ]
+    },
+    {
+      "id": "AF1-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "A-F1.core",
+      "prompt": "A queue grows only during bursts. Give two hypotheses and evidence.",
+      "expectedElements": [
+        "burst exceeds temporary capacity",
+        "autoscaling/consumer lag",
+        "queue age/depth and service rate evidence"
+      ]
+    },
+    {
+      "id": "AF1-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "A-F1.core",
+      "prompt": "Design a safe overload policy for a critical API.",
+      "expectedElements": [
+        "timeouts",
+        "admission/backpressure",
+        "priority",
+        "bounded retries",
+        "user-visible degradation"
+      ]
+    },
+    {
+      "id": "AF1-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "A-F1.core",
+      "prompt": "Build a diagnosis tree for 'latency rises under load'.",
+      "expectedElements": [
+        "workload rate",
+        "queueing",
+        "resource saturation",
+        "dependency bottleneck",
+        "tail latency",
+        "next safe test"
+      ]
+    },
+    {
+      "id": "AF1-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "arrival rate versus service rate"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "A-F1.diagnostic",
+      "prompt": "Queue depth grows continuously. What relationship should be checked first?",
+      "expectedElements": 2
+    },
+    {
+      "id": "AF1-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "I/O/locks/network/dependencies",
+        "queueing"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "A-F1.diagnostic",
+      "prompt": "CPU is 40% but p99 latency is high. What should you inspect?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AF1-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "another bottleneck",
+        "shared dependency"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-F1.diagnostic",
+      "prompt": "Adding replicas lowers CPU but not latency. What does that suggest?",
+      "expectedElements": 2
+    },
+    {
+      "id": "AF1-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "tail behavior for affected users"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-F1.diagnostic",
+      "prompt": "Average latency is 100 ms but p99 is 2 seconds. What matters?",
+      "expectedElements": 2
+    },
+    {
+      "id": "AF1-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "older work is not clearing quickly",
+        "turnover/service behavior changed"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-F1.diagnostic",
+      "prompt": "Queue depth is flat while queue age rises. What can that mean?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AF1-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "database became the bottleneck"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-F1.diagnostic",
+      "prompt": "Autoscaling adds workers and database latency rises. What is likely?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AF1-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "burst arrival profile",
+        "consumer recovery rate",
+        "queue age"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-F1.diagnostic",
+      "prompt": "A queue fills only during short bursts. What evidence helps distinguish capacity from slow recovery?",
+      "expectedElements": 4
+    },
+    {
+      "id": "AF1-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "load rate",
+        "resource/dependency saturation",
+        "latency/queue metrics",
+        "change history"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-F1.diagnostic",
+      "prompt": "Design the smallest evidence set for a saturation incident.",
+      "expectedElements": 4
+    },
+    {
+      "id": "AF1-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "update bottleneck chain",
+        "measure new limit",
+        "recalculate headroom"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-F1.diagnostic",
+      "prompt": "A bottleneck moves from API to DB after scaling. How should the model change?",
+      "expectedElements": 4
+    },
+    {
+      "id": "AF1-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "protect critical traffic",
+        "shed/redirect noncritical work",
+        "watch surviving saturation"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-F1.diagnostic",
+      "prompt": "A region loses 30% capacity. Design the first capacity response.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AF1-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "measure arrival/service",
+        "protect downstream",
+        "prioritize work",
+        "recover gradually",
+        "verify queue age"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "A-F1.diagnostic",
+      "prompt": "Build a decision tree for queue overload.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AF1-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "state assumptions",
+        "ranges/sensitivity",
+        "bottleneck evidence",
+        "headroom and failure case"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "A-F1.diagnostic",
+      "prompt": "Design a capacity review that avoids false precision.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AF1-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "A-F1.hands-on",
+      "prompt": "Measure baseline throughput and latency in a disposable workload.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "run baseline",
+        "record rate/latency",
+        "reset"
+      ],
+      "success": [
+        "baseline metrics",
+        "workload definition",
+        "reset"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF1-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-F1.hands-on",
+      "prompt": "Increase producer rate until queue growth appears.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "increase load",
+        "measure queue/depth/age",
+        "reduce load",
+        "verify drain"
+      ],
+      "success": [
+        "growth threshold",
+        "drain evidence"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF1-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-F1.hands-on",
+      "prompt": "Scale consumers and observe the bottleneck move.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "baseline",
+        "increase consumers",
+        "measure dependency pressure",
+        "stop"
+      ],
+      "success": [
+        "before/after bottleneck",
+        "evidence"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF1-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-F1.hands-on",
+      "prompt": "Test backpressure under overload.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "increase demand",
+        "apply admission/backpressure",
+        "measure protected dependency",
+        "recover"
+      ],
+      "success": [
+        "overload signal",
+        "protection",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF1-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-F1.hands-on",
+      "prompt": "Run a tail-latency investigation.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "generate mixed workload",
+        "capture percentiles",
+        "inspect dependency/resource timings",
+        "reset"
+      ],
+      "success": [
+        "p50/p95/p99",
+        "cause evidence"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF1-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-F1.hands-on",
+      "prompt": "Model a regional capacity loss.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "reduce simulated capacity",
+        "observe queue/latency",
+        "apply traffic policy",
+        "verify"
+      ],
+      "success": [
+        "capacity delta",
+        "policy effect",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF1-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-F1.hands-on",
+      "prompt": "Run an A1 capacity incident drill.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "state symptom",
+        "measure bottleneck",
+        "mitigate",
+        "verify",
+        "record"
+      ],
+      "success": [
+        "evidence chain",
+        "safe action",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF1-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "A-F1.hands-on",
+      "prompt": "Lead a capacity design review.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "state workload assumptions",
+        "find bottleneck",
+        "challenge assumptions",
+        "define headroom",
+        "document"
+      ],
+      "success": [
+        "model",
+        "challenge",
+        "decision"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    }
+  ]
+}
