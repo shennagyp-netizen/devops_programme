@@ -1,8 +1,14 @@
 # Current Continuation Handoff — DevOps Programme
 
-**Current architecture note:** sections 30–31 below are historical and are superseded by section 32. The current implementation uses Next.js + Clerk + Drizzle/PostgreSQL + Server Actions.
+**Current architecture note:**
+**Current branch:** feature/nextjs-auth-tdd
 
-Status snapshot: 2026-09-24
+**Merge target:** main
+
+**Current learner-state rule:** one authenticated user + item type + item ID = one append-only completion row.
+
+**CI truth:** the full workflow is configured for this architecture, but GitHub-hosted runner startup has historically failed before visible workflow steps. No hosted-green result is claimed without real runner execution.
+
 
 Repository: shennagyp-netizen/devops_programme
 Branch: clearance/learning-assessment-architecture
@@ -1269,3 +1275,50 @@ Current files:
 The old anonymous progress test was removed because its API/client implementation no longer exists.
 
 Next engineering work should continue from this architecture rather than reintroducing the previous client/API model.
+
+
+============================================================
+33. AUTHENTICATED NEXT.JS ARCHITECTURE MERGED — 2026-09-24
+============================================================
+
+The previous anonymous browser-UUID + Vite + progress-REST design has been removed.
+
+The current application has one supported path:
+
+Browser SPA shell
+-> Next.js 16 App Router
+-> Clerk authentication
+-> Next.js Server Action
+-> Drizzle ORM
+-> PostgreSQL.
+
+Authentication and user management:
+- Clerk sign-in
+- Clerk sign-up
+- Clerk UserButton account controls
+- authenticated user ID is the only learner identity.
+
+Learner completion:
+- `learner_progress_history`
+- one row per authenticated user + item type + item ID
+- append-once
+- idempotent duplicate completion
+- server-generated completion time
+- no delete/uncomplete path
+- no terminal history persistence.
+
+Old architecture removed:
+- Vite bootstrap
+- Vite production build
+- browser-generated learner UUID
+- `/api/progress`
+- anonymous progress client
+- obsolete anonymous progress tests.
+
+TDD:
+- unit tests define the completion input boundary
+- integration tests define the authentication/server-action boundary
+- repository contract test rejects the obsolete architecture
+- PostgreSQL enforces the supported item-type invariant and unique user/item identity.
+
+The branch is intended to be merged to `main` only as this single architecture. A hosted CI failure caused by runner infrastructure must remain visible rather than being bypassed or reclassified as a source-code pass.
