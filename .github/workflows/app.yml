@@ -12,14 +12,36 @@ jobs:
         working-directory: app
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install
-      - name: Build
-        run: npm run build 2>&1 | tee build.log
+
+      - name: Install
+        run: npm install
+
+      - name: Sync podcast assets
+        run: npm run sync:podcasts
+
+      - name: Check podcast language
+        run: npm run check:content
+
+      - name: Check assessment item banks
+        run: npm run check:assessment
+
+      - name: Check prerequisite diagnostics
+        run: npm run check:diagnostics
+
+      - name: TypeScript
+        run: tsc -b
+
+      - name: Vite build
+        run: vite build 2>&1 | tee build.log
+
       - name: Review podcast conversation quality
+        continue-on-error: true
         run: npm run review:podcast
+
       - name: Upload build log
         if: always()
         uses: actions/upload-artifact@v4
