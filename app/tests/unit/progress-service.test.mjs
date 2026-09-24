@@ -108,6 +108,17 @@ describe("progress persistence service", () => {
     expect(result.completedAt).toBe("2026-09-24T10:00:00.000Z");
   });
 
+  it("rejects a fabricated lesson before touching the database", async () => {
+    await expect(
+      completeLearningItemForUser("user_123", {
+        itemType: "lesson",
+        itemId: "not-a-real-lesson"
+      })
+    ).rejects.toThrow("Published learning item not found.");
+
+    expect(getDbMock).not.toHaveBeenCalled();
+  });
+
   it("fails closed for a missing authenticated user", async () => {
     await expect(
       completeLearningItemForUser("", {
