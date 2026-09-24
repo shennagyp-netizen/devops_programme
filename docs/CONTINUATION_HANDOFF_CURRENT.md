@@ -1147,3 +1147,55 @@ Conclusion:
 - Application/test workflow execution on GitHub-hosted runners: still blocked before first step by the same infrastructure/startup condition.
 - No hosted-green result exists yet.
 - Once Actions execution is restored at the account/repository level, the existing workflow can be rerun through workflow_dispatch or a normal pull request; the gate itself is already configured to validate the complete programme.
+
+
+============================================================
+30. PERSISTENT LEARNER COMPLETION STATE — 2026-09-24
+============================================================
+
+The application now separates transient execution evidence from persistent learner progress.
+
+Persistent storage:
+- PostgreSQL database.
+- Drizzle ORM with node-postgres.
+- Single learner_completions table.
+- One row means one learner completed one learning item.
+- Unique key: learner_id + item_type + item_id.
+- Supported item types: lesson, assignment, question, project.
+- Stored metadata is limited to learner/item identity, course/project context, verification level and server completion time.
+
+Not persisted in the database:
+- terminal stdout/stderr
+- command history
+- failed attempts
+- retry history
+- machine-environment dumps
+- evidence transcripts.
+
+Runtime:
+- Browser calls /api/progress.
+- API uses Drizzle ORM and PostgreSQL.
+- Browser retains only an anonymous learner UUID for the current unauthenticated application.
+- The database is authoritative for completion state.
+- Repeated completion uses an idempotent database upsert.
+- Uncompletion deletes the corresponding completion row.
+
+Application integration:
+- Lesson mastery no longer uses the old devops-programme-mastered localStorage array.
+- App loads completed lessons from the progress API.
+- Marking a lesson complete writes one lesson completion row.
+- Assignment/question/project completion is supported by the same generic API contract.
+- Existing terminal output remains transient UI state and is not written to the database.
+
+Database files:
+- app/api/_lib/schema.ts
+- app/api/_lib/db.ts
+- app/api/progress.ts
+- api/progress.ts
+- app/drizzle/migrations/0000_learner_completions.sql
+- app/drizzle.config.ts
+- app/.env.example
+
+Testing:
+- Added unit coverage for learner-id stability, loading completion state, completion writes without terminal output, question uncompletion, and API-write failure handling.
+- Hosted CI remains infrastructure-blocked by the previously recorded zero-step GitHub Actions startup failure, so these tests have not been executed by hosted CI on this branch.
