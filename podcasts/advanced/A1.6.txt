@@ -14,6 +14,8 @@ Speaker B: So put the data in Singapore.
 
 Speaker A: Maybe.
 
+Speaker A: Let’s keep that as a testable claim.
+
 Speaker B: I can feel another "maybe."
 
 Speaker A: You are learning.
@@ -26,25 +28,37 @@ Speaker B: Consistency.
 
 Speaker A: Yes.
 
+Speaker A: That gives us a useful boundary.
+
 Speaker B: Replication.
 
 Speaker A: Yes.
+
+Speaker A: Now connect that to the request path.
 
 Speaker B: Cost.
 
 Speaker A: Yes.
 
+Speaker A: I would measure that before changing anything.
+
 Speaker B: More copies.
 
 Speaker A: Yes.
+
+Speaker A: That is where the failure becomes useful.
 
 Speaker B: More failure cases.
 
 Speaker A: Exactly.
 
+Speaker A: Now we can compare it with the real system.
+
 Speaker B: So data locality is about keeping data close to the work that needs it.
 
 Speaker A: Right.
+
+Speaker A: Keep the user-visible effect in the model.
 
 Speaker B: Why not just put all data everywhere?
 
@@ -62,9 +76,13 @@ Speaker B: Coordination.
 
 Speaker A: Exactly.
 
+Speaker A: That is the part I would verify first.
+
 Speaker B: And some data cannot be safely copied everywhere for business or legal reasons.
 
 Speaker A: Correct.
+
+Speaker A: Now the assumption is explicit.
 
 Speaker B: Let's keep the model simple.
 
@@ -74,13 +92,19 @@ Speaker B: If product data is nearby, latency can be lower.
 
 Speaker A: Yes.
 
+Speaker A: That gives us a cleaner diagnosis.
+
 Speaker B: If the request has to cross a region to get the data, latency rises.
 
 Speaker A: Right.
 
+Speaker A: We can test that without changing the whole system.
+
 Speaker B: If we replicate the product data locally, the read can be faster.
 
 Speaker A: Good.
+
+Speaker A: That is a better reason to make the change.
 
 Speaker B: But now the local copy may be stale.
 
