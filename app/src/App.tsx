@@ -16,6 +16,7 @@ export default function App() {
   const [s, setS] = useState("D1.1");
   const [diagnosticRecommendations, setDiagnosticRecommendations] =
     useState<Record<string, DiagnosticRecommendation>>({});
+  const [evidenceVersion, setEvidenceVersion] = useState(0);
   const [m, setM] = useState<string[]>(() => {
     try {
       return JSON.parse(localStorage.getItem(K) || "[]");
@@ -118,7 +119,10 @@ export default function App() {
           onRecommendation={recordDiagnosticRecommendation}
         />
 
-        <ProjectPanel projects={projectsByCourse[course]} />
+        <ProjectPanel
+          projects={projectsByCourse[course]}
+          refreshToken={evidenceVersion}
+        />
 
         <div className="content-card course-path">
           <div className="course-path-head">
@@ -193,6 +197,7 @@ export default function App() {
           mastered={m.includes(l.id)}
           diagnosticRecommendation={diagnosticRecommendations[l.sectionId]}
           onSelectLesson={setS}
+          onEvidenceRecorded={() => setEvidenceVersion((value) => value + 1)}
           onMaster={() => toggle(l.id)}
         />
       </main>
