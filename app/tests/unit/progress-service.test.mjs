@@ -132,6 +132,17 @@ describe("progress persistence service", () => {
     expect(getDbMock).not.toHaveBeenCalled();
   });
 
+  it("rejects completion without server-required exercise validation", async () => {
+    await expect(
+      completeLearningItemForUser("user_123", {
+        itemType: "lesson",
+        itemId: "B1.2"
+      })
+    ).rejects.toThrow("Completion requires exercise validation.");
+
+    expect(getDbMock).not.toHaveBeenCalled();
+  });
+
   it("rejects a stronger verification claim than the current completion boundary supports", async () => {
     await expect(
       completeLearningItemForUser("user_123", {
