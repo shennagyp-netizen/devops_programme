@@ -123,19 +123,3 @@ export async function completeLearningItem(input: {
   });
 }
 
-export async function uncompleteLearningItem(input: {
-  itemType: LearningItemType;
-  itemId: string;
-}) {
-  const learnerId = getLearnerId();
-  return request<{ completed: false }>(
-    API_URL +
-      "?learnerId=" +
-      encodeURIComponent(learnerId) +
-      "&itemType=" +
-      encodeURIComponent(input.itemType) +
-      "&itemId=" +
-      encodeURIComponent(input.itemId),
-    { method: "DELETE" }
-  );
-}
