@@ -111,21 +111,10 @@ export default function App() {
           Environment: {selectedPlatform.label} · {selectedPlatform.shell}
         </p>
 
-        {course === "beginner" ? (
-          <DiagnosticPanel
-            course="beginner"
-            onRecommendation={recordDiagnosticRecommendation}
-          />
-        ) : (
-          <div className="content-card">
-            <span className="eyebrow">ADAPTATION</span>
-            <h3>Prerequisite diagnostics</h3>
-            <p>
-              Diagnostic checks are being authored course by course. Theory is
-              not automatically skipped until a validated diagnostic exists.
-            </p>
-          </div>
-        )}
+        <DiagnosticPanel
+          course={course}
+          onRecommendation={recordDiagnosticRecommendation}
+        />
 
         <div className="content-card course-path">
           <div className="course-path-head">
