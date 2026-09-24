@@ -3,7 +3,7 @@ on:
   push:
     paths: ["app/**","podcasts/**","scripts/**",".github/workflows/app.yml"]
   pull_request:
-    paths: ["app/**",".github/workflows/app.yml"]
+    paths: ["app/**","podcasts/**","scripts/**",".github/workflows/app.yml"]
 jobs:
   build:
     runs-on: ubuntu-latest
