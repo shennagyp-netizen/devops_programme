@@ -6,3 +6,4 @@ dist/
 *.out
 *.toc
 *.pdf
+.runtime-evidence/
