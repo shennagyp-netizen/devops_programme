@@ -53,6 +53,11 @@ if (!source.includes("stdoutHash") || !source.includes("stderrHash")) {
   console.error("Machine evidence must bind stdout and stderr hashes.");
 }
 
+if (!source.includes('verificationSource: "local-runner" | "managed-runner"')) {
+  failed = true;
+  console.error("Machine evidence must declare whether it came from a local or managed runner.");
+}
+
 if (!source.includes("environmentFingerprint")) {
   failed = true;
   console.error("Machine evidence must include an environment fingerprint.");
