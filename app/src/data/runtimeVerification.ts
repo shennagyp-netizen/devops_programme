@@ -46,6 +46,18 @@ export type RuntimeStepResult = {
   result: "passed" | "failed" | "not-run";
 };
 
+export type MachineExecutionTarget =
+  | {
+      kind: "local";
+    }
+  | {
+      kind: "ssh";
+      host: string;
+      port: number;
+      user: string;
+      hostKeyPolicy: "strict-known-hosts";
+    };
+
 export type MachineVerificationEnvelope = {
   schemaVersion: 1;
   taskId: string;
@@ -53,7 +65,9 @@ export type MachineVerificationEnvelope = {
   lessonId: string;
   platform: PlatformId;
   verificationLevel: "machine-verified";
-  verificationSource: "local-runner" | "managed-runner";
+  verificationSource: "local-runner" | "ssh-runner" | "managed-runner";
+  executionMode: "local-machine" | "remote-machine";
+  target: MachineExecutionTarget;
   runnerVersion: string;
   environmentFingerprint: string;
   startedAt: string;
@@ -129,8 +143,34 @@ export function validateMachineVerification(
     }
   }
 
-  if (!["local-runner", "managed-runner"].includes(envelope.verificationSource)) {
+  if (!["local-runner", "ssh-runner", "managed-runner"].includes(envelope.verificationSource)) {
     failures.push("Envelope verificationSource is invalid.");
+  }
+
+  if (!["local-machine", "remote-machine"].includes(envelope.executionMode)) {
+    failures.push("Envelope executionMode is invalid.");
+  }
+
+  if (!envelope.target || typeof envelope.target !== "object") {
+    failures.push("Envelope target is missing.");
+  } else if (envelope.verificationSource === "ssh-runner") {
+    if (envelope.executionMode !== "remote-machine") {
+      failures.push("SSH runner evidence must declare remote-machine executionMode.");
+    }
+    if (envelope.target.kind !== "ssh") {
+      failures.push("SSH runner evidence must identify an SSH target.");
+    } else {
+      if (!envelope.target.host.trim()) failures.push("SSH target host is missing.");
+      if (!envelope.target.user.trim()) failures.push("SSH target user is missing.");
+      if (!Number.isInteger(envelope.target.port) || envelope.target.port < 1 || envelope.target.port > 65535) {
+        failures.push("SSH target port is invalid.");
+      }
+      if (envelope.target.hostKeyPolicy !== "strict-known-hosts") {
+        failures.push("SSH target must use strict-known-hosts policy.");
+      }
+    }
+  } else if (envelope.executionMode === "local-machine" && envelope.target.kind !== "local") {
+    failures.push("Local execution evidence must identify a local target.");
   }
 
   if (!envelope.runnerVersion.trim()) {
