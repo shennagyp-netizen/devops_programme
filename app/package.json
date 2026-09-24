@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "build": "npm run sync:podcasts && tsc -b && vite build",
+    "preview": "vite preview",
+    "sync:podcasts": "node ../scripts/sync-podcast-assets.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",
