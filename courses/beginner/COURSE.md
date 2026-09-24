@@ -30,3 +30,7 @@ Every section uses:
 - Hands-on form
 
 Every form uses multiple difficulty bands.
+
+## Prerequisite diagnostics
+
+The current adaptive pilot includes B-F1, B-F2, B-A1, B-A2 and B-A3. A diagnostic recommendation may compress introductory theory, but the associated exercise remains mandatory.
