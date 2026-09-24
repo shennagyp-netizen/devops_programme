@@ -147,6 +147,11 @@ for (const task of tasks) {
   }
 }
 
+if (!source.includes("stdout: string") || !source.includes("stderr: string")) {
+  failed = true;
+  console.error("Machine evidence must carry captured stdout and stderr.");
+}
+
 if (!source.includes("stdoutHash") || !source.includes("stderrHash")) {
   failed = true;
   console.error("Machine evidence must bind stdout and stderr hashes.");
