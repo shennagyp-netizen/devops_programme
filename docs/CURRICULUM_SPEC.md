@@ -40,6 +40,7 @@ Every section has:
 - prerequisite diagnostic when authored
 - mandatory exercise
 - exercise-evidence record
+- hands-on task contract with explicit verification boundary
 - deliberate failure
 - project connection
 - retrieval
