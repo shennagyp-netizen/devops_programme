@@ -108,7 +108,11 @@
         "zero": [
           "treats the IP and port as the same identifier"
         ]
-      }
+      },
+      "expectedElements": [
+        "an IP address identifies a host or network interface endpoint",
+        "a port identifies the service endpoint on that host"
+      ]
     },
     {
       "id": "BF2-C-007",
@@ -164,7 +168,11 @@
         "zero": [
           "claims one successful test anywhere proves the whole system path works"
         ]
-      }
+      },
+      "expectedElements": [
+        "DNS, routes, policies, and network paths can differ by source location",
+        "testing where the failure occurs prevents false conclusions from another machine"
+      ]
     },
     {
       "id": "BF2-C-010",
@@ -234,7 +242,11 @@
         "zero": [
           "says ping proves all application networking is healthy"
         ]
-      }
+      },
+      "expectedElements": [
+        "ping tests a different protocol/path than HTTPS",
+        "successful ICMP reachability does not prove TCP, TLS, HTTP, or application health"
+      ]
     },
     {
       "id": "BF2-C-014",
@@ -306,7 +318,13 @@
         "zero": [
           "uses the same fixed command order without regard to evidence"
         ]
-      }
+      },
+      "expectedElements": [
+        "use evidence to choose the next layer rather than a fixed command order",
+        "check DNS when the name does not resolve",
+        "check routing when the destination path is missing",
+        "check TCP for connection failures, TLS for handshake failures, and HTTP/application behavior after those layers succeed"
+      ]
     },
     {
       "id": "BF2-C-018",
