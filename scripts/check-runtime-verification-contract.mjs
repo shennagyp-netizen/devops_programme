@@ -12,6 +12,14 @@ const source = await readFile(
 const catalog = JSON.parse(
   await readFile(path.join(root, "app", "src", "data", "runtimeTasks.json"), "utf8")
 );
+const remoteCore = await readFile(
+  path.join(root, "scripts", "remote-runtime-core.mjs"),
+  "utf8"
+);
+const remoteRunner = await readFile(
+  path.join(root, "scripts", "run-remote-runtime-task.mjs"),
+  "utf8"
+);
 
 let failed = false;
 
@@ -162,6 +170,21 @@ if (!source.includes("verificationSource") || !source.includes("local-runner") |
 if (!source.includes("executionMode") || !source.includes("local-machine") || !source.includes("remote-machine")) {
   failed = true;
   console.error("Machine evidence must distinguish local-machine and remote-machine execution.");
+}
+
+if (!remoteCore.includes("StrictHostKeyChecking=yes")) {
+  failed = true;
+  console.error("SSH runner must require strict host-key checking.");
+}
+
+if (!remoteCore.includes("shellQuotePosix") || !remoteCore.includes("shell=false")) {
+  failed = true;
+  console.error("SSH runtime boundary must use safe command construction without a local shell.");
+}
+
+if (!remoteRunner.includes("sshArguments")) {
+  failed = true;
+  console.error("SSH runner must use the shared SSH argument builder.");
 }
 
 if (!source.includes("strict-known-hosts")) {
