@@ -1,29 +1,19 @@
+import { courses, type CourseLevel, type CourseSection } from "./programme";
+
 export type AssessmentFamily = "conceptual" | "diagnostic" | "hands-on";
-
 export type DifficultyBand = "foundation" | "applied" | "difficult" | "challenge";
-
-export type CognitiveLevel =
-  | "mechanism"
-  | "application"
-  | "diagnosis"
-  | "design";
-
-export type AssessmentItem = {
-  id: string;
-  sectionId: string;
-  competencyId: string;
-  family: AssessmentFamily;
-  difficulty: DifficultyBand;
-  cognitiveLevel: CognitiveLevel;
-  expectedMinutes: number;
-};
+export type CognitiveLevel = "mechanism" | "application" | "diagnosis" | "design";
+export type AssessmentStatus = "blueprint-ready" | "items-authoring";
 
 export type AssessmentBlueprint = {
+  courseId: CourseLevel;
   sectionId: string;
   family: AssessmentFamily;
   targetDifficultyMix: Record<DifficultyBand, number>;
   requiredCognitiveLevels: CognitiveLevel[];
   minimumCompetencies: string[];
+  expectedMinutes: number;
+  status: AssessmentStatus;
 };
 
 export const defaultDifficultyMix: Record<DifficultyBand, number> = {
@@ -33,4 +23,52 @@ export const defaultDifficultyMix: Record<DifficultyBand, number> = {
   challenge: 0.15
 };
 
-export const sectionAssessmentBlueprints: AssessmentBlueprint[] = [];
+const familyRules: Record<
+  AssessmentFamily,
+  { levels: CognitiveLevel[]; minutes: number }
+> = {
+  conceptual: {
+    levels: ["mechanism", "application", "design"],
+    minutes: 20
+  },
+  diagnostic: {
+    levels: ["application", "diagnosis"],
+    minutes: 25
+  },
+  "hands-on": {
+    levels: ["application", "diagnosis", "design"],
+    minutes: 35
+  }
+};
+
+function competenciesFor(section: CourseSection, family: AssessmentFamily) {
+  return [`${section.id}.core`, `${section.id}.${family}`];
+}
+
+export const assessmentBlueprints: AssessmentBlueprint[] = courses.flatMap(
+  (course) =>
+    course.sections.flatMap((section) =>
+      (["conceptual", "diagnostic", "hands-on"] as AssessmentFamily[]).map(
+        (family) => ({
+          courseId: course.id,
+          sectionId: section.id,
+          family,
+          targetDifficultyMix: defaultDifficultyMix,
+          requiredCognitiveLevels: familyRules[family].levels,
+          minimumCompetencies: competenciesFor(section, family),
+          expectedMinutes: familyRules[family].minutes,
+          status: "items-authoring" as const
+        })
+      )
+    )
+);
+
+export function getSectionAssessments(courseId: CourseLevel, sectionId: string) {
+  return assessmentBlueprints.filter(
+    (item) => item.courseId === courseId && item.sectionId === sectionId
+  );
+}
+
+export function difficultyLabel(value: number) {
+  return `${Math.round(value * 100)}%`;
+}
