@@ -223,3 +223,21 @@ End naturally with five retrieval questions and one practical challenge, embedde
 
 Source lesson:
 [PASTE LESSON SCRIPT HERE]
+
+
+## VOICE/REACT SYNCHRONIZATION CONTRACT
+
+The spoken script will later be aligned to React using stable turn IDs and timestamp cues.
+
+Do not:
+- insert timing assumptions into the dialogue
+- rely on sentence length for pacing
+- add spoken markers such as "cue one" or "timestamp"
+- change the order of dialogue around prediction/lab/recall moments without updating the exercise semantics
+
+The important spoken moments must remain explicit and naturally audible:
+- prediction invitation
+- lab handoff
+- recall transition
+
+The React application will use an externally generated alignment manifest to pause the audio at those moments.
