@@ -103,7 +103,7 @@ Examples:
 - project incident
 - exam evidence
 
-The current ledger is local and learner-entered. A future hands-on engine will add machine-verified evidence and stronger integrity controls.
+The current ledger is local. Hands-on tasks now use structured evidence contracts and client-side schema validation, but this still does not prove command execution on the learner's environment. A future runtime adapter will add machine-verified evidence and stronger integrity controls.
 
 The eventual competency record should be explainable: what was demonstrated, under what conditions, and by which evidence.
 
