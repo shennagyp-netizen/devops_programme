@@ -193,9 +193,9 @@ This specification defines the target architecture. It does not claim that psych
 The current application implementation uses deterministic blueprint-controlled forms.
 
 Default form sizes are:
-- Conceptual: 20 items, target 25 minutes
-- Diagnostic: 12 items, target 30 minutes
-- Hands-on: 8 tasks, target 45 minutes
+- Conceptual: 20 items, target 60 minutes
+- Diagnostic: 12 items, target 45 minutes
+- Hands-on: 8 tasks, target 90 minutes
 
 The default difficulty mix is:
 
