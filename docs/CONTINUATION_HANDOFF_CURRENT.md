@@ -1,6 +1,14 @@
 # Current Continuation Handoff — DevOps Programme
 
-Status snapshot: 2026-09-24
+**Current architecture note:**
+**Current branch:** feature/nextjs-auth-tdd
+
+**Merge target:** main
+
+**Current learner-state rule:** one authenticated user + item type + item ID = one append-only completion row.
+
+**CI truth:** the full workflow is configured for this architecture, but GitHub-hosted runner startup has historically failed before visible workflow steps. No hosted-green result is claimed without real runner execution.
+
 
 Repository: shennagyp-netizen/devops_programme
 Branch: clearance/learning-assessment-architecture
@@ -1089,8 +1097,10 @@ The canonical main workflow is now a full-programme gate:
 - all content/assessment/diagnostic/project/platform/hands-on/programme/runtime checks
 - full unit + integration test suite
 - TypeScript build
-- Vite production build
+- Vite production build at the time of this historical snapshot
 - workflow_dispatch trigger for manual reruns.
+
+This section is historical. The current branch uses Next.js and replaces the Vite build with `next build`.
 
 Exhaustive source audit after the merge found and fixed nine Intermediate constructed-response items missing expectedElements. Beginner/Intermediate/Advanced bank audits now report zero schema or difficulty-distribution findings.
 
@@ -1139,11 +1149,176 @@ The canonical main workflow remains the complete full-programme gate with:
 - all authored content/assessment/diagnostic/project/platform/hands-on/programme/runtime contracts
 - full unit + integration test suite
 - TypeScript compilation
-- Vite production build
+- Vite production build at the time of this historical snapshot
 - workflow_dispatch support.
+
+This section is historical. The current branch uses Next.js and replaces the Vite build with `next build`.
 
 Conclusion:
 - Repository-side GitHub Actions configuration: complete.
 - Application/test workflow execution on GitHub-hosted runners: still blocked before first step by the same infrastructure/startup condition.
 - No hosted-green result exists yet.
 - Once Actions execution is restored at the account/repository level, the existing workflow can be rerun through workflow_dispatch or a normal pull request; the gate itself is already configured to validate the complete programme.
+
+
+============================================================
+30–31. HISTORICAL LEARNER-PROGRESS DESIGN — SUPERSEDED
+============================================================
+
+The earlier anonymous learner UUID + `/api/progress` design was replaced before the authenticated application architecture was finalized.
+
+Those sections are retained as historical audit evidence only.
+
+The current learner-progress architecture is defined below.
+
+============================================================
+32. CURRENT AUTHENTICATED SPA ARCHITECTURE — 2026-09-24
+============================================================
+
+The application architecture is now intentionally single-path.
+
+Framework:
+- Next.js 16 App Router
+- React 19.2.8
+- Clerk 7.9.4
+- Drizzle ORM
+- PostgreSQL.
+
+The learner experience remains a highly interactive SPA-like client shell, but security-sensitive operations are server-owned.
+
+Authoritative request path:
+
+Browser UI
+-> Next.js Server Action
+-> Clerk authenticated user ID
+-> validated completion contract
+-> Drizzle
+-> PostgreSQL.
+
+There is no custom progress REST API.
+
+There is no client-generated learner ID.
+
+There is no client authority over the learner identity.
+
+Authentication:
+- Clerk sign-up
+- Clerk sign-in
+- Clerk session
+- Clerk `UserButton`
+- Clerk manages the user's profile/security interface.
+
+Next.js 16 uses `src/proxy.ts` for the Clerk request boundary.
+
+The root layout places `ClerkProvider` inside `<body>`.
+
+Protected page flow:
+1. `src/app/page.tsx` calls Clerk `auth()`.
+2. Missing authentication redirects to `/sign-in`.
+3. The server reads completion history using the authenticated Clerk user ID.
+4. The server passes the initial history to the interactive App component.
+5. The client displays progress without an initial browser fetch.
+6. Completing an item calls one Server Action.
+7. The Server Action obtains the authenticated user ID again.
+8. The server validates the item contract.
+9. PostgreSQL enforces the supported item types and unique user/item identity.
+10. Duplicate completion is ignored.
+11. The original `completed_at` remains unchanged.
+
+Persistent history:
+- table: `learner_progress_history`
+- one row per user + item type + item ID
+- server-generated `completed_at`
+- no delete/uncomplete operation
+- no terminal history.
+
+Not persisted:
+- stdout
+- stderr
+- failed attempts
+- retries
+- machine envelopes
+- command history
+- intermediate UI interaction.
+
+TDD:
+- red tests were written before the authenticated implementation
+- completion input tests define the accepted input boundary
+- Server Action integration tests define the authentication boundary
+- repository architecture contract rejects the old Vite/API/anonymous-identity architecture
+- database schema adds a PostgreSQL item-type check in addition to application validation.
+
+Single-choice rule:
+Do not introduce another authentication library, another progress API, another learner-ID mechanism, or another client/server persistence path without first changing the architecture contract and its tests.
+
+Current CI truth:
+- the repository-side workflow is configured for the Next.js build
+- GitHub-hosted runner startup has historically failed before visible steps
+- therefore no hosted-green result is claimed until a real runner executes the gate.
+
+Current files:
+- `app/src/app/layout.tsx`
+- `app/src/app/page.tsx`
+- `app/src/app/actions/progress.ts`
+- `app/src/app/sign-in/[[...sign-in]]/page.tsx`
+- `app/src/app/sign-up/[[...sign-up]]/page.tsx`
+- `app/src/proxy.ts`
+- `app/src/lib/progress-contract.ts`
+- `app/src/lib/server/schema.ts`
+- `app/src/lib/server/db.ts`
+- `app/src/lib/server/progress.ts`
+- `app/drizzle/migrations/0000_learner_completions.sql`
+- `app/tests/unit/progress-contract.test.mjs`
+- `app/tests/integration/progress-action.test.mjs`
+- `scripts/check-learner-progress-contract.mjs`
+
+The old anonymous progress test was removed because its API/client implementation no longer exists.
+
+Next engineering work should continue from this architecture rather than reintroducing the previous client/API model.
+
+
+============================================================
+33. AUTHENTICATED NEXT.JS ARCHITECTURE MERGED — 2026-09-24
+============================================================
+
+The previous anonymous browser-UUID + Vite + progress-REST design has been removed.
+
+The current application has one supported path:
+
+Browser SPA shell
+-> Next.js 16 App Router
+-> Clerk authentication
+-> Next.js Server Action
+-> Drizzle ORM
+-> PostgreSQL.
+
+Authentication and user management:
+- Clerk sign-in
+- Clerk sign-up
+- Clerk UserButton account controls
+- authenticated user ID is the only learner identity.
+
+Learner completion:
+- `learner_progress_history`
+- one row per authenticated user + item type + item ID
+- append-once
+- idempotent duplicate completion
+- server-generated completion time
+- no delete/uncomplete path
+- no terminal history persistence.
+
+Old architecture removed:
+- Vite bootstrap
+- Vite production build
+- browser-generated learner UUID
+- `/api/progress`
+- anonymous progress client
+- obsolete anonymous progress tests.
+
+TDD:
+- unit tests define the completion input boundary
+- integration tests define the authentication/server-action boundary
+- repository contract test rejects the obsolete architecture
+- PostgreSQL enforces the supported item-type invariant and unique user/item identity.
+
+The branch is intended to be merged to `main` only as this single architecture. A hosted CI failure caused by runner infrastructure must remain visible rather than being bypassed or reclassified as a source-code pass.

@@ -85,14 +85,18 @@ jobs:
         working-directory: repo/app
         run: npm run check:runtime
 
+      - name: Authenticated progress architecture contract
+        working-directory: repo/app
+        run: npm run check:progress
+
       - name: Full unit and integration tests
         working-directory: repo/app
         run: npm test
 
-      - name: TypeScript build
+      - name: TypeScript typecheck
         working-directory: repo/app
-        run: npx tsc -b
+        run: npm run typecheck
 
-      - name: Vite production build
+      - name: Next.js production build
         working-directory: repo/app
-        run: npx vite build
+        run: npx next build

@@ -1,3 +1,6 @@
+"use client";
+
+import { UserButton } from "@clerk/nextjs";
 import { useCallback, useMemo, useState } from "react";
 import { courses, platformProfiles, type CourseLevel, type PlatformId } from "./data/programme";
 import { lessonsByCourse } from "./data/courseLessons";
@@ -7,23 +10,27 @@ import { DiagnosticPanel } from "./components/DiagnosticPanel";
 import type { DiagnosticRecommendation } from "./data/diagnostics";
 import { projectsByCourse } from "./data/projects";
 import { ProjectPanel } from "./components/ProjectPanel";
+import { completeLearningItemAction } from "./app/actions/progress";
+import type { CompletionRecord } from "./lib/progress-contract";
 
-const K = "devops-programme-mastered";
-
-export default function App() {
+export default function App({
+  initialCompletionHistory
+}: {
+  initialCompletionHistory: CompletionRecord[];
+}) {
   const [course, setCourse] = useState<CourseLevel>("intermediate");
   const [platform, setPlatform] = useState<PlatformId>("macos");
   const [s, setS] = useState("D1.1");
   const [diagnosticRecommendations, setDiagnosticRecommendations] =
     useState<Record<string, DiagnosticRecommendation>>({});
   const [evidenceVersion, setEvidenceVersion] = useState(0);
-  const [m, setM] = useState<string[]>(() => {
-    try {
-      return JSON.parse(localStorage.getItem(K) || "[]");
-    } catch {
-      return [];
-    }
-  });
+  const [m, setM] = useState<string[]>(() =>
+    initialCompletionHistory
+      .filter((item) => item.itemType === "lesson")
+      .map((item) => item.itemId)
+  );
+  const [progressError, setProgressError] = useState("");
+  const [progressBusyId, setProgressBusyId] = useState<string | null>(null);
 
   const selectedCourse = courses.find((item) => item.id === course) ?? courses[1];
   const selectedPlatform =
@@ -57,13 +64,33 @@ export default function App() {
     if (first) setS(first.id);
   }
 
-  function toggle(id: string) {
-    const next = m.includes(id)
-      ? m.filter((item) => item !== id)
-      : [...m, id];
+  async function completeLesson(id: string) {
+    if (progressBusyId === id || m.includes(id)) return;
 
-    setM(next);
-    localStorage.setItem(K, JSON.stringify(next));
+    setProgressBusyId(id);
+    setProgressError("");
+
+    try {
+      const selected = selectedLessons.find((item) => item.id === id);
+      if (!selected) throw new Error("Selected lesson no longer exists.");
+
+      await completeLearningItemAction({
+        itemType: "lesson",
+        itemId: id,
+        course: selected.course,
+        projectId: selected.projectId,
+        verificationLevel: "exercise-validated"
+      });
+      setM((current) => (current.includes(id) ? current : [...current, id]));
+    } catch (error) {
+      setProgressError(
+        error instanceof Error
+          ? "Progress was not saved: " + error.message
+          : "Progress was not saved."
+      );
+    } finally {
+      setProgressBusyId(null);
+    }
   }
 
   return (
@@ -76,10 +103,16 @@ export default function App() {
             Hard engineering. Easy English. Human speech. Real failure work.
           </p>
         </div>
-        <Progress total={selectedLessons.length} completed={completedInCourse} />
+        <div className="hero-actions">
+          <Progress total={selectedLessons.length} completed={completedInCourse} />
+          <UserButton />
+        </div>
       </header>
 
       <section className="content-card">
+        {progressError ? (
+          <p className="range">{progressError}</p>
+        ) : null}
         <div>
           <span className="eyebrow">{selectedCourse.id.toUpperCase()}</span>
           <h3>{selectedCourse.title}</h3>
@@ -198,7 +231,9 @@ export default function App() {
           diagnosticRecommendation={diagnosticRecommendations[l.sectionId]}
           onSelectLesson={setS}
           onEvidenceRecorded={() => setEvidenceVersion((value) => value + 1)}
-          onMaster={() => toggle(l.id)}
+          progressReady={true}
+          progressSaving={progressBusyId === l.id}
+          onMaster={() => void completeLesson(l.id)}
         />
       </main>
     </div>

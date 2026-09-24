@@ -4,9 +4,8 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "npm run sync:podcasts && vite",
-    "build": "npm run sync:podcasts && npm run check:content && npm run check:assessment && npm run check:diagnostics && npm run check:projects && npm run check:platforms && npm run check:hands-on && npm run check:beginner && npm run check:intermediate && npm run check:advanced && npm run check:programme && npm run check:runtime && npm test && tsc -b && vite build",
-    "preview": "vite preview",
+    "dev": "npm run sync:podcasts && next dev",
+    "build": "npm run sync:podcasts && npm run check:content && npm run check:assessment && npm run check:diagnostics && npm run check:projects && npm run check:platforms && npm run check:hands-on && npm run check:beginner && npm run check:intermediate && npm run check:advanced && npm run check:programme && npm run check:runtime && npm run check:progress && npm test && tsc -b && next build",
     "sync:podcasts": "node ../scripts/sync-podcast-assets.mjs",
     "check:content": "node ../scripts/check-podcast-language.mjs",
     "check:assessment": "node ../scripts/check-assessment-item-banks.mjs",
@@ -27,18 +26,31 @@
     "test": "vitest run",
     "hands-on:remote": "node ../scripts/run-remote-runtime-task.mjs",
     "runtime:remote": "node ../scripts/run-remote-runtime-task.mjs",
-    "terminal-agent": "node ../scripts/devops-terminal-agent.mjs"
+    "terminal-agent": "node ../scripts/devops-terminal-agent.mjs",
+    "db:generate": "drizzle-kit generate --config drizzle.config.ts",
+    "db:migrate": "drizzle-kit migrate --config drizzle.config.ts",
+    "check:progress": "node ../scripts/check-learner-progress-contract.mjs",
+    "start": "next start",
+    "typecheck": "tsc -b"
   },
   "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "drizzle-orm": "^0.45.3",
+    "pg": "^8.23.0",
+    "next": "16.3.6",
+    "@clerk/nextjs": "7.9.4"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@vitejs/plugin-react": "^6.1.1",
     "typescript": "^5.0.0",
-    "vite": "^8.3.0",
-    "vitest": "^5.0.1"
+    "vitest": "^5.0.1",
+    "drizzle-kit": "^0.31.11",
+    "@types/pg": "^8.23.1",
+    "@types/node": "^26.6.2"
+  },
+  "engines": {
+    "node": ">=20.9.0"
   }
 }
