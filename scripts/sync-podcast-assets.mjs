@@ -7,6 +7,8 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
 const sourceDir = path.join(root, "podcasts");
 const targetDir = path.join(root, "app", "public", "podcasts");
+const sourceAudioManifest = path.join(sourceDir, "audio-manifest.json");
+const targetAudioManifest = path.join(targetDir, "audio-manifest.json");
 
 function sha256(text) {
   return createHash("sha256").update(text, "utf8").digest("hex");
@@ -80,6 +82,14 @@ await writeFile(
   JSON.stringify(manifest, null, 2) + "\n",
   "utf8"
 );
+
+try {
+  const audioManifest = await readFile(sourceAudioManifest, "utf8");
+  JSON.parse(audioManifest);
+  await writeFile(targetAudioManifest, audioManifest, "utf8");
+} catch {
+  await writeFile(targetAudioManifest, "{}\n", "utf8");
+}
 
 console.log(
   `Synchronized ${files.length} podcast files and ${Object.keys(episodes).length} episode hashes.`
