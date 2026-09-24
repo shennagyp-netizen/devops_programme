@@ -81,7 +81,7 @@ describe("Beginner course integration gate", () => {
     for (const lesson of lessons) {
       const source = await readFile(path.join(root, "podcasts/beginner", lesson.id + ".txt"), "utf8");
       expect(source.trim().length).toBeGreaterThan(100);
-      expect(source).toContain(lesson.title);
+      expect(source).toMatch(new RegExp("^EPISODE " + lesson.id + " — "));
     }
   });
 });
