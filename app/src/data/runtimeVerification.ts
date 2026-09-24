@@ -216,6 +216,7 @@ export function validateMachineVerification(
 
     if (typeof result.stdout !== "string" || typeof result.stderr !== "string") {
       failures.push(`Captured command output is missing for runtime step ${result.stepId}.`);
+      continue;
     }
 
     if (result.stdout.length > 65536 || result.stderr.length > 65536) {

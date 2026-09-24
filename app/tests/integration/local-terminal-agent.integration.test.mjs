@@ -49,7 +49,7 @@ function waitForServer(child) {
 
 describe("local terminal agent", () => {
   it("starts a loopback execution service", async () => {
-    const token = "test-token-123";
+    const token = "test-token-12345678901234567890";
     const port = 43871;
     const child = startAgent(port, token);
 
@@ -68,7 +68,7 @@ describe("local terminal agent", () => {
   });
 
   it("rejects terminal execution without the pairing token", async () => {
-    const token = "test-token-456";
+    const token = "test-token-45678901234567890";
     const port = 43872;
     const child = startAgent(port, token);
 
@@ -92,7 +92,7 @@ describe("local terminal agent", () => {
   });
 
   it("rejects unknown runtime tasks before execution", async () => {
-    const token = "test-token-789";
+    const token = "test-token-78901234567890";
     const port = 43873;
     const child = startAgent(port, token);
 

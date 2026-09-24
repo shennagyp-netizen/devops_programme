@@ -16,13 +16,13 @@ const familyRules = {
   conceptual: {
     targetItems: 20,
     targetMinutes: 60,
-    cognitiveLevels: ["mechanism", "application", "design"],
+    cognitiveLevels: ["mechanism", "application", "diagnosis", "design"],
     competencySuffix: "core"
   },
   diagnostic: {
     targetItems: 12,
     targetMinutes: 45,
-    cognitiveLevels: ["application", "diagnosis"],
+    cognitiveLevels: ["application", "diagnosis", "design"],
     competencySuffix: "diagnostic"
   },
   "hands-on": {

@@ -89,7 +89,8 @@ describe("progress persistence service", () => {
   it("uses conflict-ignore semantics so completion is append-once", async () => {
     await completeLearningItemForUser("user_123", {
       itemType: "lesson",
-      itemId: "B1.2"
+      itemId: "B1.2",
+      verificationLevel: "exercise-validated"
     });
 
     const writeChain = insertMock.mock.results[0].value;
@@ -102,7 +103,8 @@ describe("progress persistence service", () => {
   it("returns the stored server completion time", async () => {
     const result = await completeLearningItemForUser("user_123", {
       itemType: "lesson",
-      itemId: "B1.2"
+      itemId: "B1.2",
+      verificationLevel: "exercise-validated"
     });
 
     expect(result.completedAt).toBe("2026-09-24T10:00:00.000Z");

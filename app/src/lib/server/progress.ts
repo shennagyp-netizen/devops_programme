@@ -66,6 +66,13 @@ export async function completeLearningItemForUser(
     throw new Error("Completion project does not match the published item.");
   }
 
+  if (
+    input.verificationLevel !== undefined &&
+    input.verificationLevel !== "exercise-validated"
+  ) {
+    throw new Error("Unsupported completion verification level.");
+  }
+
   if (input.verificationLevel !== "exercise-validated") {
     throw new Error("Completion requires exercise validation.");
   }

@@ -8,7 +8,7 @@ describe("red-team repository boundaries", () => {
   it("uses a real environment-file ignore rule", async () => {
     const gitignore = await readFile(path.join(root, ".gitignore"), "utf8");
     expect(gitignore).toMatch(/^\.env$/m);
-    expect(gitignore).toMatch(/^\.env\*$/m);
+    expect(gitignore).toMatch(/^\.env\.\*$/m);
     expect(gitignore).toMatch(/^!\.env\.example$/m);
     expect(gitignore).not.toContain("\\n");
   });
@@ -25,7 +25,7 @@ describe("red-team repository boundaries", () => {
     const packageJson = JSON.parse(
       await readFile(path.join(root, "app", "package.json"), "utf8")
     );
-    expect(packageJson.engines.node).toBe(">=22.0.0");
+    expect(packageJson.engines.node).toBe(">=22.23.3");
   });
 
   it("does not reflect arbitrary browser origins from the local terminal agent", async () => {
@@ -67,7 +67,7 @@ describe("red-team repository boundaries", () => {
       "utf8"
     );
     expect(workflow).not.toContain("git remote add origin \"https://x-access-token:${GH_TOKEN}");
-    expect(workflow).toContain("http.extraheader=AUTHORIZATION: bearer ${GH_TOKEN}");
+    expect(workflow).not.toContain("http.extraheader=AUTHORIZATION: bearer ${GH_TOKEN}");
   });
 
   it("keeps the pairing token out of persistent browser storage", async () => {

@@ -81,8 +81,8 @@ describe("assessment bank integration", () => {
     };
 
     const allowedCognitiveLevels = {
-      conceptual: new Set(["mechanism", "application", "design"]),
-      diagnostic: new Set(["application", "diagnosis"]),
+      conceptual: new Set(["mechanism", "application", "diagnosis", "design"]),
+      diagnostic: new Set(["application", "diagnosis", "design"]),
       "hands-on": new Set(["application", "diagnosis", "design"])
     };
 

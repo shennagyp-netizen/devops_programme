@@ -3,7 +3,7 @@ import {
   remoteCommandForStep,
   shellQuotePosix,
   sshArguments
-} from "../../scripts/remote-runtime-core.mjs";
+} from "../../../scripts/remote-runtime-core.mjs";
 import { runtimeTaskForLesson } from "../../src/data/runtimeVerification.ts";
 
 describe("remote runtime core", () => {
