@@ -86,7 +86,7 @@ Catalog:
 - distributed systems
 - reliability
 
-A learner may skip introductory theory when diagnostic evidence shows knowledge, but required exercises remain mandatory.
+A learner will be able to skip introductory theory when diagnostic evidence shows knowledge, but required exercises remain mandatory. This is the target behavior; automatic diagnostic routing is not yet complete in the current MVP.
 
 ## Continuous projects
 
