@@ -28,6 +28,7 @@ export type RuntimeVerificationScope = "probe" | "exercise";
 
 export type RuntimeTask = {
   taskId: string;
+  contractVersion: number;
   lessonId: string;
   scope: RuntimeVerificationScope;
   verificationLevel: VerificationLevel;
@@ -48,6 +49,7 @@ export type RuntimeStepResult = {
 export type MachineVerificationEnvelope = {
   schemaVersion: 1;
   taskId: string;
+  contractVersion: number;
   lessonId: string;
   platform: PlatformId;
   verificationLevel: "machine-verified";
@@ -92,6 +94,10 @@ export function validateMachineVerification(
 
   if (envelope.taskId !== task.taskId) {
     failures.push("Envelope taskId does not match the runtime task.");
+  }
+
+  if (envelope.contractVersion !== task.contractVersion) {
+    failures.push("Envelope contractVersion does not match the runtime task.");
   }
 
   if (envelope.lessonId !== task.lessonId) {
