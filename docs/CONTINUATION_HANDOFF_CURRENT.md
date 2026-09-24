@@ -1091,8 +1091,10 @@ The canonical main workflow is now a full-programme gate:
 - all content/assessment/diagnostic/project/platform/hands-on/programme/runtime checks
 - full unit + integration test suite
 - TypeScript build
-- Next.js production build
+- Vite production build at the time of this historical snapshot
 - workflow_dispatch trigger for manual reruns.
+
+This section is historical. The current branch uses Next.js and replaces the Vite build with `next build`.
 
 Exhaustive source audit after the merge found and fixed nine Intermediate constructed-response items missing expectedElements. Beginner/Intermediate/Advanced bank audits now report zero schema or difficulty-distribution findings.
 
@@ -1141,8 +1143,10 @@ The canonical main workflow remains the complete full-programme gate with:
 - all authored content/assessment/diagnostic/project/platform/hands-on/programme/runtime contracts
 - full unit + integration test suite
 - TypeScript compilation
-- Vite production build
+- Vite production build at the time of this historical snapshot
 - workflow_dispatch support.
+
+This section is historical. The current branch uses Next.js and replaces the Vite build with `next build`.
 
 Conclusion:
 - Repository-side GitHub Actions configuration: complete.
