@@ -2,39 +2,134 @@
 
 ## Purpose
 
-The programme uses invariant-based unit and integration testing instead of relying on sequential manual debugging.
+The programme uses invariant-based unit and integration testing instead of sequential manual debugging.
+
+The governing rule is:
+
+> Test the architecture as a system, not the latest error as an isolated bug.
+
+## Current authored programme graph
+
+- 3 courses
+- 21 sections
+- 53 lessons
+- 9 projects
+- 21 prerequisite diagnostics
+- 21 pilot assessment banks
+- 840 pilot assessment items
 
 ## Unit coverage
 
-The application tests:
-- hands-on task resolution and evidence validation
-- machine-verification envelope validation
-- evidence-ledger idempotency and verification metadata
-- diagnostic definition shape and adaptive thresholds
+Current unit suites cover:
+
 - assessment blueprint invariants
-- podcast audio-manifest fail-closed behavior
+- diagnostic definitions and thresholds
+- evidence-ledger storage, filtering, idempotency and verification metadata
+- hands-on task selection and evidence validation
+- podcast synchronization fail-closed behavior
+- runtime task lookup and machine-verification envelope validation
 
 ## Integration coverage
 
-The integration suite verifies:
-- all three courses and 21 sections
-- 53 lesson mappings
-- 9 project definitions and course alignment
-- 21 prerequisite diagnostics
-- 63 assessment blueprints
-- 21 pilot banks and 840 globally unique pilot items
+Current integration suites cover:
+
+- the full three-course programme graph
+- all 21 sections
+- all 53 authored lessons
+- all 9 projects
+- all 21 diagnostics
+- all 21 pilot banks
+- global assessment-item uniqueness
 - 15% / 35% / 35% / 15% difficulty distribution
-- hands-on evidence contracts
+- hands-on assessment evidence contracts
 - Windows platform coverage
-- 53 spoken lesson sources and spoken cues
+- spoken lesson coverage and cue parsing
 - runtime task catalog consistency
 - local runtime-runner dry-run behavior
-- every repository contract validator as a real process
+- execution of repository contract validators as real child processes
+- the corrected Docker mapping D2.5/D2.6/D2.7 -> I-A1
+
+## Negative-test doctrine
+
+Tests should reject classes of corruption, not merely reproduce known bugs.
+
+Priority mutation cases include:
+
+- missing section
+- missing lesson
+- wrong section-to-lesson mapping
+- wrong project mapping
+- orphan diagnostic
+- invalid remediation reference
+- missing assessment bank
+- wrong bank section identity
+- duplicate assessment ID
+- invalid difficulty distribution
+- missing spoken asset
+- missing platform adapter
+- malformed podcast manifest
+- runtime task identity mismatch
+- runtime contract-version mismatch
+- missing runtime step
+- failed runtime step
+- missing machine-output hashes
+
+Fixture mutations are preferred over destructive edits to the main source.
+
+## Runtime verification
+
+The canonical runtime task source is:
+
+app/src/data/runtimeTasks.json
+
+Runtime types, lookup and validation are:
+
+app/src/data/runtimeVerification.ts
+
+The local runner is:
+
+scripts/run-runtime-task.mjs
+
+The browser must never execute arbitrary learner shell commands.
 
 ## Build policy
 
-The build runs unit and integration tests before TypeScript compilation and Vite production build.
+The build runs, in order:
+
+1. podcast synchronization
+2. content validation
+3. assessment validation
+4. diagnostic validation
+5. project validation
+6. platform validation
+7. hands-on contract validation
+8. Beginner completeness
+9. Intermediate completeness
+10. Advanced completeness
+11. global programme completeness
+12. runtime contract validation
+13. unit tests
+14. integration tests
+15. TypeScript compilation
+16. Vite production build
 
 A failure in an invariant test blocks the build.
 
-The tests do not claim successful execution of real learner environments. Machine execution remains separated behind the runtime runner protocol.
+## CI interpretation
+
+The current GitHub Actions runner is not considered green because the connector exposes no workflow steps or artifacts for the latest failed build.
+
+Do not infer which application stage failed when the runner does not expose that evidence.
+
+Temporary runner-isolation probes were used previously and removed after they established that the environment could fail before useful application diagnostics became observable.
+
+## Future testing requirement
+
+When adding a feature, add:
+
+1. unit tests for pure logic
+2. integration tests for cross-module contracts
+3. negative tests for the failure modes that could corrupt the architecture
+4. documentation updates for the affected contract
+
+Do not return to one-error-at-a-time debugging.
