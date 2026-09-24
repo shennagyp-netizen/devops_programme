@@ -85,6 +85,10 @@ jobs:
         working-directory: repo/app
         run: npm run check:runtime
 
+      - name: Learner progress contract
+        working-directory: repo/app
+        run: npm run check:progress
+
       - name: Full unit and integration tests
         working-directory: repo/app
         run: npm test
