@@ -36,6 +36,14 @@ for (const projectId of projectIds) {
     failed = true;
     console.error(`Project ${projectId} has no literal lesson metadata coverage.`);
   }
+
+  const projectStart = projects.indexOf(`id: "${projectId}",`);
+  const projectEnd = projects.indexOf(`\n  },`, projectStart);
+  const projectBlock = projectStart >= 0 ? projects.slice(projectStart, projectEnd >= 0 ? projectEnd : projects.length) : "";
+  if (!projectBlock.includes("changeHistory: [") || !projectBlock.includes("incidentHistory: [")) {
+    failed = true;
+    console.error(`Project ${projectId} must define change and incident history.`);
+  }
 }
 
 const intermediateProjectIds = ["I1", "I2", "I3"];
