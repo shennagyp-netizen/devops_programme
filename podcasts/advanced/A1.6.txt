@@ -144,13 +144,13 @@ Speaker A: Right. Now we can state the failure boundary clearly.
 
 Speaker B: Now the business has to decide which matters more.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Let’s keep that tied to the actual system behavior.
 
 Speaker B: Speed or freshness.
 
 Speaker A: Or some balance.
 
-Speaker B: Good.
+Speaker B: Good. Now say what evidence would confirm it.
 
 Speaker A: This is one of the main design questions in global systems.
 
@@ -160,23 +160,23 @@ Speaker A: Product descriptions.
 
 Speaker B: Maybe recommendations.
 
-Speaker A: Maybe.
+Speaker A: Maybe. That distinction matters when the failure starts spreading.
 
 Speaker B: What data needs strong control?
 
 Speaker A: Financial balances. Inventory reservation. Some account state.
 
-Speaker B: Exactly.
+Speaker B: Exactly. I would not change the design until that is measured.
 
 Speaker A: The exact answer depends on the business.
 
 Speaker B: So data design starts from user behavior and business rules.
 
-Speaker A: Yes.
+Speaker A: Yes. Now the user-visible effect is explicit.
 
 Speaker B: Not from "which database should I use?"
 
-Speaker A: Correct.
+Speaker A: Correct. That gives us a safe next experiment.
 
 Speaker B: Let's make the technical path.
 
@@ -184,7 +184,7 @@ Speaker A: User request reaches local region.
 
 Speaker B: Local service reads local cache.
 
-Speaker A: Good.
+Speaker A: Good. Let’s keep that tied to the actual system behavior.
 
 Speaker B: Cache miss.
 
