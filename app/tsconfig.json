@@ -19,10 +19,17 @@
     "jsx": "react-jsx",
     "types": [
       "node"
+    ],
+    "plugins": [
+      {
+        "name": "next"
+      }
     ]
   },
   "include": [
-    "src",
-    "api"
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx"
   ]
 }
