@@ -158,6 +158,56 @@ describe("evidence ledger", () => {
     expect(entry.evidencePayload?.verificationSource).toBe("local-runner");
   });
 
+  it("preserves SSH execution identity in machine evidence", () => {
+    const task = runtimeTaskForLesson("B1.2");
+    const validHash = "b".repeat(64);
+    const result = recordMachineVerification({
+      course: "beginner",
+      projectId: "B1",
+      task: task!,
+      envelope: {
+        schemaVersion: 1,
+        taskId: task!.taskId,
+        contractVersion: task!.contractVersion,
+        lessonId: task!.lessonId,
+        platform: "linux",
+        verificationLevel: "machine-verified",
+        verificationSource: "ssh-runner",
+        executionMode: "remote-machine",
+        target: {
+          kind: "ssh",
+          host: "training.example",
+          port: 22,
+          user: "student",
+          hostKeyPolicy: "strict-known-hosts"
+        },
+        runnerVersion: "0.1.0",
+        environmentFingerprint: "fingerprint",
+        startedAt: "2026-09-24T10:00:00.000Z",
+        completedAt: "2026-09-24T10:01:00.000Z",
+        stepResults: task!.steps.map((step) => ({
+          stepId: step.id,
+          startedAt: "2026-09-24T10:00:01.000Z",
+          completedAt: "2026-09-24T10:00:02.000Z",
+          exitCode: 0,
+          stdout: "ok",
+          stderr: "",
+          stdoutHash: validHash,
+          stderrHash: validHash,
+          result: "passed"
+        })),
+        resetPerformed: true
+      },
+      summary: "ssh verified evidence"
+    });
+
+    expect(result.recorded).toBe(true);
+    const [entry] = listEvidence("B1");
+    expect(entry.verificationLevel).toBe("machine-verified");
+    expect(entry.verificationScope).toBe("probe");
+    expect(entry.evidencePayload?.verificationSource).toBe("ssh-runner");
+  });
+
   it("clears the ledger", () => {
     addEvidence({
       course: "advanced",
