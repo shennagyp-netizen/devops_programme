@@ -11,6 +11,8 @@ export type ProjectDefinition = {
   failureScenarios: string[];
   evidenceRequirements: string[];
   completionCriteria: string[];
+  changeHistory: string[];
+  incidentHistory: string[];
 };
 
 export const projects: ProjectDefinition[] = [
