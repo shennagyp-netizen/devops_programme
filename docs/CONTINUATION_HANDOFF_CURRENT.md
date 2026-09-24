@@ -1054,3 +1054,27 @@ CI evidence:
 Merge status at handoff:
 - Source/contracts are structurally cleared by repository audit.
 - Hosted CI remains infrastructure-blocked and therefore there is no honest hosted-green evidence.
+
+============================================================
+27. POST-MERGE ASSESSMENT CONTRACT CLEARANCE — 2026-09-24
+============================================================
+
+After merge to main, an exhaustive authored-bank audit found nine Intermediate constructed-response items without expectedElements:
+- I-F1: IF1-C-006, IF1-C-009, IF1-C-013, IF1-C-017, IF1-C-020.
+- I-F2: IF2-C-006, IF2-C-009, IF2-C-013, IF2-C-017.
+
+All nine were completed with explicit scoring expectations.
+
+Post-fix bank audits:
+- Beginner: 7/7 banks, 280 items, zero schema findings.
+- Intermediate: 8/8 banks, 320 items, zero schema findings.
+- Advanced: 6/6 banks, 240 items, zero schema findings.
+- Family sizes remain exactly 20 conceptual / 12 diagnostic / 8 hands-on.
+- Difficulty distributions remain exactly 15% / 35% / 35% / 15% per family.
+
+CI configuration:
+- main workflow is restored to ubuntu-24.04.
+- workflow_dispatch was added so the full gate can be manually retriggered after the GitHub Actions startup problem is resolved.
+- Disposable CI validation PR #10 was closed without merge.
+
+Hosted CI remains blocked before workflow steps by GitHub Actions startup failure. This is not being represented as green.
