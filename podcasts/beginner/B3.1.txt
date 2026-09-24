@@ -12,11 +12,15 @@ Speaker A: Maybe. First tell me what problem a queue would solve.
 
 Speaker B: It separates receiving work from processing work.
 
-Speaker A: Good.
+Speaker A: Good. That makes the diagnosis easier to test.
+
+Speaker A: Let's keep that tied to the actual problem.
 
 Speaker B: The API can accept the request, put the work somewhere safe, and a worker handles it later.
 
-Speaker A: Exactly.
+Speaker A: Exactly. We can check that without changing everything.
+
+Speaker A: Now say what evidence would confirm that.
 
 Speaker B: Why is that useful?
 
@@ -36,7 +40,9 @@ Speaker A: That would be a terrible restaurant.
 
 Speaker B: And a terrible API.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now we have a concrete prediction.
+
+Speaker A: That gives us a useful next test.
 
 Speaker B: So the waiter is the producer.
 
@@ -44,13 +50,19 @@ Speaker A: Roughly.
 
 Speaker B: The order queue holds the work.
 
-Speaker A: Right.
+Speaker A: Right. Keep the recovery condition in the plan.
+
+Speaker A: I would not change the system before checking that.
 
 Speaker B: The kitchen worker is the consumer.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That is a safer way to reason about it.
 
-Speaker B: Good.
+Speaker A: Keep the user-visible effect in view.
+
+Speaker B: Good. Now compare that with the known-good state.
+
+Speaker B: That is the part I would verify first.
 
 Speaker A: Now let's map it to software.
 
@@ -72,11 +84,15 @@ Speaker A: Right, when the business flow allows asynchronous work.
 
 Speaker B: That's the key. Not every operation can be delayed.
 
-Speaker A: Correct.
+Speaker A: Correct. That tells us which layer to inspect next.
+
+Speaker A: Now the assumption is explicit.
 
 Speaker B: A user clicking "pay now" is different from "generate this report."
 
-Speaker A: Exactly.
+Speaker A: Exactly. I want the observation before the fix.
+
+Speaker A: That makes the diagnosis easier to test.
 
 Speaker B: Report generation can wait.
 
@@ -84,11 +100,15 @@ Speaker A: Often yes.
 
 Speaker B: Payment may need a different design.
 
-Speaker A: Correct.
+Speaker A: Correct. That is where the real mechanism shows up.
+
+Speaker A: We can check that without changing everything.
 
 Speaker B: So we first ask whether the work can be asynchronous.
 
-Speaker A: Good.
+Speaker A: Good. Now the failure has a clear boundary.
+
+Speaker A: Now we have a concrete prediction.
 
 Speaker B: What problem appears if the worker is slow?
 
@@ -96,23 +116,27 @@ Speaker A: Queue depth grows.
 
 Speaker B: Meaning work is arriving faster than it is being processed.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Let's see whether the evidence supports that.
+
+Speaker A: Keep the recovery condition in the plan.
 
 Speaker B: So queue depth becomes a useful signal.
 
-Speaker A: Yes.
+Speaker A: Yes. That would change my next move.
+
+Speaker A: That is a safer way to reason about it.
 
 Speaker B: If the queue keeps growing, we have a capacity problem.
 
-Speaker A: Good.
+Speaker A: Good. Keep the incident scoped to one hypothesis.
 
 Speaker B: We may add workers.
 
-Speaker A: Right.
+Speaker A: Right. Let's keep that tied to the actual problem.
 
 Speaker B: But then the database can become the bottleneck.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now say what evidence would confirm that.
 
 Speaker B: So queues can move the bottleneck.
 
@@ -120,7 +144,7 @@ Speaker A: Very important.
 
 Speaker B: Just like adding checkout lanes.
 
-Speaker A: Yes.
+Speaker A: Yes. That gives us a useful next test.
 
 Speaker B: More workers do not mean infinite capacity.
 
