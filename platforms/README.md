@@ -7,7 +7,7 @@ Platform profiles:
 - Linux
 - Windows
 
-macOS and Linux currently have direct command examples. Windows has a platform profile and conceptual path; the native command adapter is still planned.
+macOS and Linux retain their direct shell examples. Windows now has explicit PowerShell equivalents for the current lesson set, with native adapters remaining to be expanded for future lessons.
 
 A platform profile records:
 - operating system
