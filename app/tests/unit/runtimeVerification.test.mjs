@@ -9,7 +9,7 @@ describe("machine verification contract", () => {
     const task = runtimeTaskForLesson("B1.2");
 
     expect(task).toBeDefined();
-    expect(task.taskId).toBe("hands-on-B1.2");
+    expect(task.taskId).toBe("runtime-probe-B1.2");
     expect(task.verificationLevel).toBe("machine-verified");
     expect(task.steps.map((step) => step.id)).toEqual([
       "resolve-name",
