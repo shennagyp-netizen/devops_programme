@@ -1,27 +1,28 @@
 # Current Continuation Handoff — DevOps Programme
 
-**Current architecture note:**
-**Current branch:** feature/nextjs-auth-tdd
+**Status snapshot:** 2026-09-24
 
-**Merge target:** main
+**Repository:** `shennagyp-netizen/devops_programme`
+
+**Current branch:** `main`
+
+**Latest architecture merge:** PR #16, merge commit `655d66925bd9ccb081efc808ffd9c83c51a0e5e8`
+
+**Current architecture:** Next.js 16.3.6 + React 19.2.8 + Clerk 7.9.4 + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative.
 
 **Current learner-state rule:** one authenticated user + item type + item ID = one append-only completion row.
 
-**CI truth:** the full workflow is configured for this architecture, but GitHub-hosted runner startup has historically failed before visible workflow steps. No hosted-green result is claimed without real runner execution.
+**Authentication:** Clerk is the only identity authority. The browser never creates or submits a trusted learner ID.
 
+**Persistence:** PostgreSQL + Drizzle. Completion history is order-independent and keyed by authenticated user + item type + item ID. Duplicate completion is idempotent. There is no uncomplete operation.
 
-Repository: shennagyp-netizen/devops_programme
-Branch: clearance/learning-assessment-architecture
-Pull request: #9
-Current branch comparison when this document was written: 398 commits ahead of main, 6 commits behind main.
-Refresh branch ancestry at the beginning of the next session. Do not treat a historical SHA or ahead/behind count as permanent.
+**API rule:** no custom progress REST API. Browser completion writes use one Server Action.
 
-Latest observable GitHub Actions run at this snapshot: #490.
-Conclusion: failure.
-Job: build.
-Connector-visible workflow steps: none.
-Connector-visible artifacts: none.
-CI is therefore not green and the exact failing stage is not currently observable through the connector.
+**TDD rule:** unit tests define the completion input contract; integration tests define the authentication/Server Action boundary; repository contract tests reject the obsolete Vite/API/anonymous-progress architecture.
+
+**CI truth:** the full workflow is configured for the current architecture, but the repository's previously observed GitHub-hosted runner startup failure occurred before visible workflow steps. No hosted-green result is claimed without an executed runner.
+
+**Historical sections:** earlier sections record previous milestones and superseded designs. Sections 30–31 are retained for audit history only; section 32 and the final authenticated architecture are current.
 
 AUTHORITATIVE READING ORDER
 1. docs/curriculum/COURSE_DESIGN_STANDARDS.md
