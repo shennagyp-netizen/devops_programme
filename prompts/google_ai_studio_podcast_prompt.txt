@@ -241,3 +241,24 @@ The important spoken moments must remain explicit and naturally audible:
 - recall transition
 
 The React application will use an externally generated alignment manifest to pause the audio at those moments.
+
+## PLAIN ENGLISH CONTRACT
+
+Use simple general English.
+
+The target is roughly B1–B2 general English for spoken teaching. The technical level can be advanced, but the English around it must stay easy to follow.
+
+Rules:
+- use short, direct sentences
+- use common words
+- use contractions
+- use "so", "but", "because", "then", and "if" more often than formal connectors
+- keep one main idea per sentence when possible
+- explain a technical term in plain words the first time it appears
+- do not use difficult English to make the lesson sound professional
+
+Avoid words such as "facilitate", "utilize", "commence", "subsequently", "therefore", "nevertheless", "consequently", "approximately", "sufficient", "obtain", "regarding", "comprehensive", and "mitigate" when a simpler word works.
+
+Do not simplify real technical terms just because they sound advanced. Keep exact technical terms such as TCP, DNS, CIDR, reconciliation, idempotency, replication, backpressure, and observability.
+
+The exam must be hard because the engineering problem is hard, not because the English is hard.
