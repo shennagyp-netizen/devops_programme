@@ -206,7 +206,7 @@ export function LessonPanel({
           <p>{lesson.lab.challenge}</p>
 
           <div className="content-card">
-            <span className="eyebrow">EXERCISE EVIDENCE · ${handsOnTask.verificationLevel}</span>
+            <span className="eyebrow">EXERCISE EVIDENCE · {handsOnTask.verificationLevel}</span>
             <h4>{handsOnTask.title}</h4>
             <p>{handsOnTask.objective}</p>
             <ol>
