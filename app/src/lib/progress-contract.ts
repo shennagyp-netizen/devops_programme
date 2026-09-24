@@ -56,7 +56,14 @@ export function parseCompletionInput(value: unknown): CompletionInput {
   const source = value as Record<string, unknown>;
   const rawType = source.itemType;
 
-  if (typeof rawType !== "string" || !LEARNING_ITEM_TYPES.includes(rawType as LearningItemType)) {
+  if (rawType === undefined) {
+    throw new Error("itemType is required.");
+  }
+
+  if (
+    typeof rawType !== "string" ||
+    !LEARNING_ITEM_TYPES.includes(rawType as LearningItemType)
+  ) {
     throw new Error(
       "itemType must be lesson, assignment, question, or project."
     );
