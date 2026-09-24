@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npm run sync:podcasts && vite",
-    "build": "npm run sync:podcasts && npm run check:content && npm run check:assessment && npm run check:diagnostics && npm run check:projects && npm run check:platforms && npm run check:hands-on && tsc -b && vite build",
+    "build": "npm run sync:podcasts && npm run check:content && npm run check:assessment && npm run check:diagnostics && npm run check:projects && npm run check:platforms && npm run check:hands-on && npm run check:beginner && tsc -b && vite build",
     "preview": "vite preview",
     "sync:podcasts": "node ../scripts/sync-podcast-assets.mjs",
     "check:content": "node ../scripts/check-podcast-language.mjs",
@@ -14,7 +14,8 @@
     "check:diagnostics": "node ../scripts/check-diagnostics.mjs",
     "check:projects": "node ../scripts/check-project-contract.mjs",
     "check:platforms": "node ../scripts/check-platform-adapters.mjs",
-    "check:hands-on": "node ../scripts/check-hands-on-contract.mjs"
+    "check:hands-on": "node ../scripts/check-hands-on-contract.mjs",
+    "check:beginner": "node ../scripts/check-beginner-completeness.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",
