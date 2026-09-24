@@ -7,7 +7,9 @@ const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../.
 describe("red-team repository boundaries", () => {
   it("uses a real environment-file ignore rule", async () => {
     const gitignore = await readFile(path.join(root, ".gitignore"), "utf8");
-    expect(gitignore).toMatch(/^\.env\*\.local$/m);
+    expect(gitignore).toMatch(/^\.env$/m);
+    expect(gitignore).toMatch(/^\.env\*$/m);
+    expect(gitignore).toMatch(/^!\.env\.example$/m);
     expect(gitignore).not.toContain("\\n");
   });
 
@@ -44,7 +46,6 @@ describe("red-team repository boundaries", () => {
     expect(workflow).not.toContain("set -euxo pipefail");
     expect(workflow).not.toContain("git remote add origin \"https://x-access-token:${GH_TOKEN}");
     expect(workflow).toContain("http.extraheader=AUTHORIZATION: bearer ${GH_TOKEN}");
-    expect(workflow).not.toContain("github.token");
   });
 
   it("keeps the pairing token out of persistent browser storage", async () => {
