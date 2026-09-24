@@ -1,0 +1,587 @@
+EPISODE B1.5 — Make the App Repeatable
+
+Speaker A: We have one more problem before we call B1 a usable little system.
+
+Speaker B: Please tell me it's not another mystery network bug.
+
+Speaker A: Not this time.
+
+Speaker B: Good.
+
+Speaker A: We have an app that works. We have containers. We can start the API.
+
+Speaker B: So we're done?
+
+Speaker A: No.
+
+Speaker B: I knew it.
+
+Speaker A: Ask someone else to run it.
+
+Speaker B: Ah.
+
+Speaker A: Imagine the next engineer gets the project. They clone the repo and ask, "What do I run first?"
+
+Speaker B: That's already a problem.
+
+Speaker A: Exactly. If the answer lives only in your head, the app is not repeatable.
+
+Speaker B: So this lesson is about making the setup clear.
+
+Speaker A: More than clear. Repeatable.
+
+Speaker B: What's the difference?
+
+Speaker A: Clear can mean, "Ask me and I'll tell you."
+
+Speaker B: Repeatable means, "The system tells you."
+
+Speaker A: Yes.
+
+Speaker B: Good. I like that.
+
+Speaker A: A repeatable app should have a known way to start, known configuration, known dependencies, and a way to check whether it is healthy.
+
+Speaker B: So we want fewer hidden steps.
+
+Speaker A: Exactly.
+
+Speaker B: This sounds simple until a project has thirty setup commands.
+
+Speaker A: That's how little projects become archaeology.
+
+Speaker B: Archaeology?
+
+Speaker A: You open the README and find commands from three years ago.
+
+Speaker B: One says "if this fails, install the old version."
+
+Speaker A: Then someone in a comment says, "Works for me."
+
+Speaker B: That's not documentation. That's folklore.
+
+Speaker A: Exactly.
+
+Speaker B: So what should B1 give us?
+
+Speaker A: A small application where another engineer can understand the setup, start it, check it, and know what to do when it fails.
+
+Speaker B: Let's split it.
+
+Speaker A: Good. First: application code.
+
+Speaker B: Second: image.
+
+Speaker A: Good.
+
+Speaker B: Third: configuration.
+
+Speaker A: Good.
+
+Speaker B: Fourth: network.
+
+Speaker A: Good.
+
+Speaker B: Fifth: data.
+
+Speaker A: Good.
+
+Speaker B: Sixth: health.
+
+Speaker A: Exactly.
+
+Speaker B: Let's start with configuration.
+
+Speaker A: An application often needs values that change between environments.
+
+Speaker B: Database URL. Port. API settings. Feature flags.
+
+Speaker A: Right.
+
+Speaker B: We don't want to bake every value into the image.
+
+Speaker A: Correct.
+
+Speaker B: Because then the same image cannot move cleanly between environments.
+
+Speaker A: Exactly.
+
+Speaker B: So the image should hold the application. The environment should provide the changing values.
+
+Speaker A: Good.
+
+Speaker B: Human example?
+
+Speaker A: A restaurant has the same kitchen equipment, but lunch and dinner may use different stock.
+
+Speaker B: Same kitchen, different input.
+
+Speaker A: Right.
+
+Speaker B: So the kitchen is the image, and the day's stock is configuration.
+
+Speaker A: Roughly. Again, don't take the analogy too far.
+
+Speaker B: No tiny Docker cooks.
+
+Speaker A: Please.
+
+Speaker B: Fine.
+
+Speaker A: Now suppose the API needs DATABASE_URL.
+
+Speaker B: We pass it as configuration.
+
+Speaker A: Right.
+
+Speaker B: But the value should not be in Git if it is a secret.
+
+Speaker A: Correct.
+
+Speaker B: So we need to separate normal configuration from secrets.
+
+Speaker A: Exactly.
+
+Speaker B: Another important distinction.
+
+Speaker A: Yes.
+
+Speaker B: What about startup order?
+
+Speaker A: Also important. Your API may depend on the database.
+
+Speaker B: So if the API starts before the database is ready, it may fail.
+
+Speaker A: Yes.
+
+Speaker B: Which means "container is running" is not the same as "application is ready."
+
+Speaker A: Very important.
+
+Speaker B: The process can be alive and still not be useful.
+
+Speaker A: Exactly.
+
+Speaker B: That's why health checks matter.
+
+Speaker A: Right.
+
+Speaker B: A liveness check can ask whether the process is alive.
+
+Speaker A: Yes.
+
+Speaker B: A readiness check can ask whether the service is ready to receive traffic.
+
+Speaker A: Good. The exact implementation can vary, but the idea matters.
+
+Speaker B: This is where people get in trouble with health checks.
+
+Speaker A: How?
+
+Speaker B: They make a check that always says "I'm alive."
+
+Speaker A: And then the application has no useful readiness signal.
+
+Speaker B: Or the check is too deep and fails because one optional dependency is down.
+
+Speaker A: Exactly. A health check should answer a clear question.
+
+Speaker B: So before writing one, ask what decision depends on it.
+
+Speaker A: Very good.
+
+Speaker B: If a load balancer uses it to decide whether to send traffic, readiness matters.
+
+Speaker A: Correct.
+
+Speaker B: If an operator wants to know whether the process exists, liveness may be enough.
+
+Speaker A: Right.
+
+Speaker B: Same word, different question.
+
+Speaker A: Exactly.
+
+Speaker B: Let's make B1 repeatable.
+
+Speaker A: I'd want a simple path.
+
+Speaker B: Clone repo.
+
+Speaker A: Yes.
+
+Speaker B: Install or pull what is needed.
+
+Speaker A: Yes.
+
+Speaker B: Set normal configuration.
+
+Speaker A: Yes.
+
+Speaker B: Add secrets safely.
+
+Speaker A: Yes.
+
+Speaker B: Start the services.
+
+Speaker A: Yes.
+
+Speaker B: Run health checks.
+
+Speaker A: Yes.
+
+Speaker B: Then run one known user action.
+
+Speaker A: Good.
+
+Speaker B: Why the last step?
+
+Speaker A: Because a service saying "I'm healthy" does not prove the user path works.
+
+Speaker B: Right. A web server can be alive while the API route is broken.
+
+Speaker A: Exactly.
+
+Speaker B: A database can be reachable while the query fails.
+
+Speaker A: Exactly.
+
+Speaker B: So we want more than one layer of proof.
+
+Speaker A: Yes.
+
+Speaker B: This is starting to sound like testing.
+
+Speaker A: It is. Operations and testing meet here.
+
+Speaker B: What is a practical example?
+
+Speaker A: Imagine a new engineer joins on Monday.
+
+Speaker B: Poor person.
+
+Speaker A: They have coffee.
+
+Speaker B: Important dependency.
+
+Speaker A: They clone B1.
+
+Speaker B: Good.
+
+Speaker A: They follow the documented steps.
+
+Speaker B: Better.
+
+Speaker A: The services start.
+
+Speaker B: Good.
+
+Speaker A: Health checks pass.
+
+Speaker B: Good.
+
+Speaker A: They create a test order through the API.
+
+Speaker B: Good.
+
+Speaker A: They see the order in the database.
+
+Speaker B: Now we have a real path.
+
+Speaker A: Exactly.
+
+Speaker B: If any one of those steps needs a secret command from the original developer, repeatability is gone.
+
+Speaker A: Correct.
+
+Speaker B: That's a very real problem.
+
+Speaker A: And it gets worse as the team grows.
+
+Speaker B: Because one person's memory becomes an undocumented system dependency.
+
+Speaker A: Exactly.
+
+Speaker B: Pause.
+
+Speaker A: Go ahead.
+
+Speaker B: Make a prediction. We restart the API container. The process starts. The container says it is running. Should we send user traffic immediately?
+
+Speaker A: What do you think?
+
+Speaker B: Not automatically. I want a readiness check.
+
+Speaker A: Good.
+
+Speaker B: Because the app may still be waiting for the database.
+
+Speaker A: Exactly.
+
+Speaker B: Or loading configuration.
+
+Speaker A: Right.
+
+Speaker B: Or warming a cache.
+
+Speaker A: Right.
+
+Speaker B: So "running" and "ready" are different states.
+
+Speaker A: That's the key idea.
+
+Speaker B: This is going to matter a lot in Kubernetes.
+
+Speaker A: Yes. We are building the mental model now.
+
+Speaker B: Let's make one bad setup.
+
+Speaker A: Fine.
+
+Speaker B: API has DATABASE_URL hardcoded.
+
+Speaker A: Bad.
+
+Speaker B: Secret password is in Git.
+
+Speaker A: Very bad.
+
+Speaker B: Health endpoint always returns 200.
+
+Speaker A: Misleading.
+
+Speaker B: Startup depends on the database but has no clear readiness signal.
+
+Speaker A: Bad.
+
+Speaker B: So it works on the developer laptop and fails somewhere else.
+
+Speaker A: Exactly.
+
+Speaker B: And then someone says, "It worked yesterday."
+
+Speaker A: The most powerful sentence in software.
+
+Speaker B: Right after "I only changed one small thing."
+
+Speaker A: Those two sentences have caused a lot of work.
+
+Speaker B: How do we fix the system?
+
+Speaker A: First, define what is environment-specific.
+
+Speaker B: Then define what is secret.
+
+Speaker A: Good.
+
+Speaker B: Then define how the app starts.
+
+Speaker A: Good.
+
+Speaker B: Then define how we know it is ready.
+
+Speaker A: Good.
+
+Speaker B: Then test the real user path.
+
+Speaker A: Exactly.
+
+Speaker B: So repeatability is really a contract.
+
+Speaker A: That's a useful way to think about it.
+
+Speaker B: A new machine should be able to follow the same contract.
+
+Speaker A: Yes.
+
+Speaker B: Could we make a simple startup script?
+
+Speaker A: Yes, as long as the script is clear and does not hide important behavior.
+
+Speaker B: So automation is not automatically good.
+
+Speaker A: Correct.
+
+Speaker B: A giant script can be harder to debug than five clear commands.
+
+Speaker A: Exactly.
+
+Speaker B: So the rule is not "automate everything."
+
+Speaker A: The rule is "make the path clear and repeatable."
+
+Speaker B: Nice.
+
+Speaker A: Now let's talk about data.
+
+Speaker B: The database data should not vanish when we remove a container.
+
+Speaker A: Right.
+
+Speaker B: So we use persistent storage.
+
+Speaker A: Yes.
+
+Speaker B: But the app also needs migration steps when the database schema changes.
+
+Speaker A: Correct.
+
+Speaker B: So repeatability includes data setup, not just containers.
+
+Speaker A: Very important.
+
+Speaker B: If a new engineer starts the database with an empty schema, the API may still fail.
+
+Speaker A: Exactly.
+
+Speaker B: So B1 should have a known initial data state.
+
+Speaker A: Yes. A small seed dataset is useful.
+
+Speaker B: Then the test can expect a known result.
+
+Speaker A: Right.
+
+Speaker B: That's a nice connection between operations and testing.
+
+Speaker A: It is.
+
+Speaker B: What if the health check passes but the real order request fails?
+
+Speaker A: Then your health check was answering the wrong question.
+
+Speaker B: So improve it?
+
+Speaker A: Maybe. Or add a separate check for the real user path.
+
+Speaker B: That makes sense.
+
+Speaker A: Don't turn one health endpoint into a giant test suite, though.
+
+Speaker B: Right. Keep checks focused.
+
+Speaker A: Exactly.
+
+Speaker B: Mac lab?
+
+Speaker A: Take your B1 app.
+
+Speaker A: First, write down its required configuration.
+
+Speaker B: Normal values and secrets separately.
+
+Speaker A: Good.
+
+Speaker A: Next, start the services from a clean environment.
+
+Speaker B: Without using anything hidden from the old setup.
+
+Speaker A: Exactly.
+
+Speaker B: Then inspect the running containers.
+
+Speaker A: Yes.
+
+Speaker B: Then verify health.
+
+Speaker A: Yes.
+
+Speaker B: Then create one test order.
+
+Speaker A: Yes.
+
+Speaker B: Then stop the API.
+
+Speaker A: Good.
+
+Speaker B: Bring it back.
+
+Speaker A: Good.
+
+Speaker B: Make sure the database data is still there.
+
+Speaker A: Exactly.
+
+Speaker B: That sounds like the first proper mini production test.
+
+Speaker A: It is.
+
+Speaker B: What should I write down?
+
+Speaker A: The startup contract.
+
+Speaker B: Meaning?
+
+Speaker A: Required tools. Required configuration. Required secrets. Start command. Health check. Test request. Data recovery step.
+
+Speaker B: So the next engineer can run the same path.
+
+Speaker A: Yes.
+
+Speaker B: Recall.
+
+Speaker A: Question one. Why should the same image use different environment values?
+
+Speaker B: Because environment-specific values should come from the environment instead of being rebuilt into the image.
+
+Speaker A: Good.
+
+Speaker B: Question two.
+
+Speaker A: Why are secrets different from normal configuration?
+
+Speaker B: Because secrets need tighter handling and should not be copied into source code or normal configuration files.
+
+Speaker A: Good.
+
+Speaker B: Question three.
+
+Speaker A: Running versus ready?
+
+Speaker B: A process can be running while the service is not ready to receive real traffic.
+
+Speaker A: Good.
+
+Speaker B: Question four.
+
+Speaker A: Why keep persistent data outside the normal container lifecycle?
+
+Speaker B: So data can survive container replacement or restart.
+
+Speaker A: Good.
+
+Speaker B: Question five.
+
+Speaker A: What makes B1 repeatable?
+
+Speaker B: A clear startup path, known configuration, safe secret handling, predictable data setup, health checks, and a real user-path test.
+
+Speaker A: Good.
+
+Speaker B: Final challenge.
+
+Speaker A: Give B1 to another engineer.
+
+Speaker B: Without sitting next to them.
+
+Speaker A: Exactly.
+
+Speaker B: If they need to message me for a secret command, I failed.
+
+Speaker A: Right.
+
+Speaker B: If they start the system and can explain what is running, why it is healthy, and how to test one user action, I passed.
+
+Speaker A: Good.
+
+Speaker B: That's a much better definition of "works."
+
+Speaker A: And now B1 is ready to move into delivery.
+
+Speaker B: Which means B2.
+
+Speaker A: Which means more ways to break things.
+
+Speaker B: Great.
+
+Speaker A: Exactly.
