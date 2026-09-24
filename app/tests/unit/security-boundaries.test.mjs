@@ -48,6 +48,19 @@ describe("red-team repository boundaries", () => {
     expect(workflow).not.toContain("actions/setup-node@v4");
   });
 
+  it("uses a pinned checkout action instead of custom token-bearing git commands", async () => {
+    const workflow = await readFile(
+      path.join(root, ".github", "workflows", "app.yml"),
+      "utf8"
+    );
+    expect(workflow).toContain(
+      "actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3"
+    );
+    expect(workflow).toContain("path: repo");
+    expect(workflow).not.toContain("git remote add origin");
+    expect(workflow).not.toContain("x-access-token:");
+  });
+
   it("does not expose GitHub credentials through traced CI checkout commands", async () => {
     const workflow = await readFile(
       path.join(root, ".github", "workflows", "app.yml"),
