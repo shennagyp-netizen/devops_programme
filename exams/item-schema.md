@@ -118,6 +118,14 @@ Intermediate:
 - `I-A5` — Observability and SRE
 - `I-A6` — Distributed Systems and Recovery
 
+Advanced:
+- `A-F1` — Capacity and Queueing Foundations
+- `A-F2` — Distributed State Foundations
+- `A-F3` — Failure Domains
+- `A-A1` — Global Traffic and Multi-Region Systems
+- `A-A2` — Failure Engineering
+- `A-A3` — Massive-Scale Service Design
+
 Each bank contains:
 - 20 conceptual items
 - 12 diagnostic items
