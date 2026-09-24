@@ -5,16 +5,14 @@ on:
   pull_request:
     paths: ["app/**","podcasts/**","scripts/**",".github/workflows/app.yml"]
   workflow_dispatch:
+
 permissions:
   contents: read
-  pull-requests: write
+  pull-requests: read
 
 jobs:
-  beginner_gate:
-    name: beginner-gate
-    permissions:
-      contents: read
-      pull-requests: read
+  full_programme_gate:
+    name: full-programme-gate
     runs-on: ubuntu-24.04
     steps:
       - name: Runner diagnostics
@@ -22,14 +20,11 @@ jobs:
         run: |
           set -euxo pipefail
           uname -a
-          command -v git
-          git --version
-          command -v node
           node --version
-          command -v npm
           npm --version
+          git --version
 
-      - name: Checkout repository without marketplace actions
+      - name: Checkout repository
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -42,26 +37,62 @@ jobs:
           git fetch --depth=1 origin "${GITHUB_SHA}"
           git checkout --detach "${GITHUB_SHA}"
 
-      - name: Beginner structural contract
+      - name: Install dependencies
         working-directory: repo/app
-        run: node ../scripts/check-beginner-gate.mjs
+        run: npm install
 
-      - name: Beginner unit tests
+      - name: Content contract
         working-directory: repo/app
-        run: |
-          npm install
-          npm exec vitest run tests/unit/beginner-course.test.mjs
+        run: npm run check:content
 
-      - name: Beginner integration tests
+      - name: Assessment contract
         working-directory: repo/app
-        run: npm exec vitest run tests/integration/beginner-course.integration.test.mjs
+        run: npm run check:assessment
 
-      - name: Beginner completeness validator
+      - name: Diagnostics contract
+        working-directory: repo/app
+        run: npm run check:diagnostics
+
+      - name: Project contract
+        working-directory: repo/app
+        run: npm run check:projects
+
+      - name: Platform adapter contract
+        working-directory: repo/app
+        run: npm run check:platforms
+
+      - name: Hands-on contract
+        working-directory: repo/app
+        run: npm run check:hands-on
+
+      - name: Beginner completeness
         working-directory: repo/app
         run: npm run check:beginner
 
-      - name: Runtime contract tests
+      - name: Intermediate completeness
         working-directory: repo/app
-        run: |
-          npm exec vitest run tests/unit/runtimeVerification.test.mjs tests/unit/remote-runtime-core.test.mjs tests/integration/runtime-runner.integration.test.mjs tests/integration/local-terminal-agent.integration.test.mjs
-          node ../scripts/check-runtime-verification-contract.mjs
+        run: npm run check:intermediate
+
+      - name: Advanced completeness
+        working-directory: repo/app
+        run: npm run check:advanced
+
+      - name: Programme completeness
+        working-directory: repo/app
+        run: npm run check:programme
+
+      - name: Runtime verification contract
+        working-directory: repo/app
+        run: npm run check:runtime
+
+      - name: Full unit and integration tests
+        working-directory: repo/app
+        run: npm test
+
+      - name: TypeScript build
+        working-directory: repo/app
+        run: npx tsc -b
+
+      - name: Vite production build
+        working-directory: repo/app
+        run: npx vite build
