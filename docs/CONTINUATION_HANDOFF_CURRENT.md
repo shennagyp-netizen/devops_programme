@@ -965,3 +965,41 @@ Runtime result output clarification:
 - The manual path remains independent and does not require remote execution.
 - The remote runner currently supports Linux/macOS SSH targets; Windows continues through the manual path.
 - No cryptographic remote attestation is claimed; SSH verification relies on strict known-host checking and the fail-closed application envelope validator.
+
+
+============================================================
+25. LOCAL WEBSITE-TO-LAPTOP TERMINAL BRIDGE — 2026-09-24
+============================================================
+
+The normal learner path now has a direct website-to-laptop execution option.
+
+New local agent:
+- scripts/devops-terminal-agent.mjs
+- listens only on 127.0.0.1:4317 by default
+- started with: npm run terminal-agent
+- generates or accepts a pairing token
+- accepts only catalogued runtime task IDs
+- uses shell=false
+- rejects destructive steps
+- rejects task/platform mismatch with the actual laptop OS
+- returns machine-verification envelopes directly over localhost.
+
+Browser client:
+- app/src/data/localTerminalAgent.ts
+- detects local agent availability
+- stores the pairing token locally
+- invokes the exact runtime task
+- imports the returned envelope into the existing fail-closed verifier.
+
+Lesson UI:
+- a verified laptop-terminal button is now available for runtime-task lessons
+- actual laptop command results are displayed in the lesson
+- manual terminal execution remains visible and usable when the agent is absent.
+
+Important:
+- no arbitrary browser shell exists.
+- the website requests only allowlisted runtime tasks.
+- the local agent is optional; manual execution remains the fallback.
+- the local agent currently covers the same B1.2 non-destructive runtime task already present in the catalogue.
+- Windows is supported by the local agent when the browser's selected environment matches the Windows host; SSH remote execution remains limited to Linux/macOS.
+- local-network/loopback browser permission behavior varies by browser, so agent unavailability must never block the manual path.
