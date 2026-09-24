@@ -777,3 +777,48 @@ Teach the engineering decision, not the tool.
 Test the architecture as a system, not the latest error as an isolated bug.
 
 A feature is closed only when implementation, contract, tests, documentation and evidence agree.
+
+============================================================
+22. SESSION UPDATE — 2026-09-24
+============================================================
+
+Active branch:
+- clearance/learning-assessment-architecture
+- current head at this update is maintained by the latest repository commit.
+
+Documentation audit:
+- all files under docs/ and prompts/ were reviewed against the active source tree.
+- the Beginner course document was stale about prerequisite-diagnostic coverage; it now states all seven Beginner sections.
+- the assessment item schema now states twenty-one pilot banks, matching the authoritative programme baseline.
+- the book/curriculum.tex remains the retained five-day intensive legacy/core curriculum and was not treated as the authoritative 21-section application catalogue.
+
+Runtime/evidence contract reconciliation:
+- RuntimeTask.scope is again typed as RuntimeVerificationScope ("probe" | "exercise").
+- MachineVerificationEnvelope again carries verificationSource ("local-runner" | "managed-runner").
+- evidence.ts now has exactly one machine-verification recording path.
+- machine evidence is validated before it enters the evidence ledger.
+- machine evidence preserves runtime scope and verification source.
+- the local runner identifies its evidence as local-runner.
+- the default runner is dry-run; actual execution requires explicit --execute.
+- destructive catalog commands remain rejected by the default runner.
+- resetRequired tasks fail closed because the default runner has no reset adapter yet.
+- machine verification rejects duplicate/unknown step results, invalid identity, invalid platform mappings, invalid timing order, empty output hashes, non-passing steps, and missing required steps.
+
+Test expansion:
+- runtime verification tests now cover contract-version mismatch, duplicate/unknown step results, invalid verification source, reset boundaries, nonzero-exit inconsistencies, timestamp ordering and valid machine evidence.
+- evidence tests now cover validation-gated machine evidence persistence and runtime scope/source retention.
+- programme integration tests now lock the complete 32-lesson intermediate section map and cross-course lesson/section/project/platform invariants.
+- diagnostics tests no longer maintain a duplicated hard-coded lesson-ID catalogue; they derive lesson identity from courseLessons.
+- the project-contract validator's malformed intermediate-lesson regex was corrected.
+
+CI status:
+- recent push and pull-request workflow runs still report failure.
+- the GitHub connector exposes the failed build job but its log endpoint currently returns BlobNotFound and job step details are null.
+- therefore no CI stage is being declared failed or passed from these runs.
+- the latest application-level source fixes should be revalidated by the next observable CI run before any runtime-task expansion is considered green.
+
+Next gate:
+1. obtain observable test-stage evidence from CI or a working local checkout/dependency environment.
+2. resolve any actual test/build failures.
+3. only after the test/build gate is green, continue runtime expansion from observation-only tasks toward reversible changes, controlled failures, recovery and finally reset verification.
+
