@@ -329,6 +329,85 @@ describe("machine verification contract", () => {
     );
   });
 
+  it("accepts a verified SSH envelope only with a strict remote target", () => {
+    const task = runtimeTaskForLesson("B1.2");
+    const validHash = "9".repeat(64);
+    const result = validateMachineVerification(task, {
+      schemaVersion: 1,
+      taskId: task.taskId,
+      contractVersion: task.contractVersion,
+      lessonId: task.lessonId,
+      platform: "linux",
+      verificationLevel: "machine-verified",
+      verificationSource: "ssh-runner",
+      executionMode: "remote-machine",
+      target: {
+        kind: "ssh",
+        host: "training.example",
+        port: 22,
+        user: "student",
+        hostKeyPolicy: "strict-known-hosts"
+      },
+      runnerVersion: "0.1.0",
+      environmentFingerprint: "fingerprint",
+      startedAt: "2026-09-24T10:00:00.000Z",
+      completedAt: "2026-09-24T10:02:00.000Z",
+      stepResults: task.steps.map((step, index) => ({
+        stepId: step.id,
+        startedAt: `2026-09-24T10:00:0${index}.000Z`,
+        completedAt: `2026-09-24T10:00:1${index}.000Z`,
+        exitCode: 0,
+        stdoutHash: validHash,
+        stderrHash: validHash,
+        result: "passed"
+      })),
+      resetPerformed: true
+    });
+
+    expect(result.valid).toBe(true);
+  });
+
+  it("fails closed when SSH evidence does not use strict host-key verification", () => {
+    const task = runtimeTaskForLesson("B1.2");
+    const validHash = "8".repeat(64);
+    const result = validateMachineVerification(task, {
+      schemaVersion: 1,
+      taskId: task.taskId,
+      contractVersion: task.contractVersion,
+      lessonId: task.lessonId,
+      platform: "linux",
+      verificationLevel: "machine-verified",
+      verificationSource: "ssh-runner",
+      executionMode: "remote-machine",
+      target: {
+        kind: "ssh",
+        host: "training.example",
+        port: 22,
+        user: "student",
+        hostKeyPolicy: "accept-any"
+      },
+      runnerVersion: "0.1.0",
+      environmentFingerprint: "fingerprint",
+      startedAt: "2026-09-24T10:00:00.000Z",
+      completedAt: "2026-09-24T10:02:00.000Z",
+      stepResults: task.steps.map((step) => ({
+        stepId: step.id,
+        startedAt: "2026-09-24T10:00:01.000Z",
+        completedAt: "2026-09-24T10:00:02.000Z",
+        exitCode: 0,
+        stdoutHash: validHash,
+        stderrHash: validHash,
+        result: "passed"
+      })),
+      resetPerformed: true
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.failures).toContain(
+      "SSH target must use strict-known-hosts policy."
+    );
+  });
+
   it("accepts a complete machine-verified envelope", () => {
     const task = runtimeTaskForLesson("B1.2");
     const results = task.steps.map((step, index) => ({
