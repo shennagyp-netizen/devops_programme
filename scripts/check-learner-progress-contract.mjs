@@ -49,7 +49,7 @@ assert.ok(packageJson.dependencies.next);
 assert.ok(packageJson.dependencies["@clerk/nextjs"]);
 assert.equal(packageJson.dependencies.react, "19.2.8");
 assert.equal(packageJson.dependencies["react-dom"], "19.2.8");
-assert.equal(packageJson.dependencies.next, "16.3.5");
+assert.equal(packageJson.dependencies.next, "16.3.6");
 assert.equal(packageJson.dependencies["@clerk/nextjs"], "7.9.4");
 assert.equal(packageJson.devDependencies.vite, undefined);
 assert.equal(packageJson.devDependencies["@vitejs/plugin-react"], undefined);
