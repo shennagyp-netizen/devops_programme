@@ -48,7 +48,7 @@ Speaker B: We kill the cache.
 
 Speaker A: First prediction?
 
-Speaker B: The API should stay alive.
+Speaker B: I would still expect the API itself to stay alive unless the cache is secretly required.
 
 Speaker A: Good.
 
@@ -108,7 +108,7 @@ Speaker B: Time source in some systems.
 
 Speaker A: Right.
 
-Speaker B: Some dependencies are required for every request.
+Speaker B: And that is different from a dependency that only affects one feature.
 
 Speaker A: Some are needed only for one feature.
 
@@ -167,6 +167,8 @@ Speaker B: Next prediction.
 Speaker A: A database becomes unreachable.
 
 Speaker B: The API returns errors.
+
+Speaker B: Unless a cache or fallback can still satisfy the request.
 
 Speaker A: Usually.
 
@@ -263,6 +265,8 @@ Speaker B: Disable the dependency.
 Speaker A: Send the same request.
 
 Speaker B: Compare status, latency and logs.
+
+Speaker B: Then restore it and run the same request again.
 
 Speaker A: Restore it.
 
