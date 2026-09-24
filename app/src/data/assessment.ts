@@ -3,7 +3,41 @@ import { courses, type CourseLevel, type CourseSection } from "./programme";
 export type AssessmentFamily = "conceptual" | "diagnostic" | "hands-on";
 export type DifficultyBand = "foundation" | "applied" | "difficult" | "challenge";
 export type CognitiveLevel = "mechanism" | "application" | "diagnosis" | "design";
-export type AssessmentStatus = "blueprint-ready" | "items-authoring";
+export type AssessmentStatus =
+  | "blueprint-ready"
+  | "items-authoring"
+  | "pilot"
+  | "calibrated"
+  | "operational";
+
+export type AssessmentItem = {
+  id: string;
+  sectionId: string;
+  family: AssessmentFamily;
+  difficulty: DifficultyBand;
+  cognitiveLevel: CognitiveLevel;
+  itemType: string;
+  expectedMinutes: number;
+  competencyId: string;
+  prompt: string;
+  options?: string[];
+  correctOption?: number;
+  expectedElements?: string[];
+  scoring?: {
+    full?: string[];
+    partial?: string[];
+    zero?: string[];
+  };
+  scoringNote?: string;
+  environment?: string[];
+  initialState?: string;
+  allowedOperations?: string[];
+  success?: string[];
+  evidence?: string[];
+  failureConditions?: string[];
+  recoveryRequirements?: string[];
+  resetStrategy?: string;
+};
 
 export type AssessmentBlueprint = {
   courseId: CourseLevel;
@@ -30,21 +64,24 @@ const familyRules: Record<
 > = {
   conceptual: {
     levels: ["mechanism", "application", "design"],
-    minutes: 25
+    minutes: 60
   },
   diagnostic: {
     levels: ["application", "diagnosis"],
-    minutes: 25
+    minutes: 45
   },
   "hands-on": {
     levels: ["application", "diagnosis", "design"],
-    minutes: 45
+    minutes: 90
   }
 };
 
 function competenciesFor(section: CourseSection, family: AssessmentFamily) {
-  return [`${section.id}.core`, `${section.id}.${family}`];
+  if (family === "conceptual") return [`${section.id}.core`];
+  return [`${section.id}.${family}`];
 }
+
+const pilotSections = new Set(["B-F1", "B-F2"]);
 
 export const assessmentBlueprints: AssessmentBlueprint[] = courses.flatMap(
   (course) =>
@@ -58,8 +95,9 @@ export const assessmentBlueprints: AssessmentBlueprint[] = courses.flatMap(
           requiredCognitiveLevels: familyRules[family].levels,
           minimumCompetencies: competenciesFor(section, family),
           expectedMinutes: familyRules[family].minutes,
-          status: "items-authoring" as const,
-          targetItemCount: family === "conceptual" ? 20 : family === "diagnostic" ? 12 : 8
+          status: pilotSections.has(section.id) ? "pilot" as const : "items-authoring" as const,
+          targetItemCount:
+            family === "conceptual" ? 20 : family === "diagnostic" ? 12 : 8
         })
       )
     )
