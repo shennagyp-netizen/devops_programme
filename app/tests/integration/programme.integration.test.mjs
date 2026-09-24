@@ -44,6 +44,18 @@ describe("programme architecture integration", () => {
     }
   });
 
+  it("keeps every project competency gate tied to a real section of its course", () => {
+    for (const course of courses) {
+      const sectionIds = new Set(course.sections.map((section) => section.id));
+      for (const project of projectsByCourse[course.id]) {
+        for (const gate of project.competencyGates) {
+          expect(gate).toMatch(/^[A-Z]-[A-Z0-9-]+\.core$/);
+          expect(sectionIds.has(gate.replace(".core", ""))).toBe(true);
+        }
+      }
+    }
+  });
+
   it("provides diagnostics and three assessment families for every section", () => {
     for (const course of courses) {
       for (const section of course.sections) {
