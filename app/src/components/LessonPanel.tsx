@@ -1,6 +1,8 @@
 import { useState } from "react";
 import type { CourseLesson } from "../data/courseLessons";
 import type { PlatformId } from "../data/programme";
+import type { DiagnosticRecommendation } from "../data/diagnostics";
+import { diagnosticBySection } from "../data/diagnostics";
 import { MotionIllustration } from "./MotionIllustration";
 import { PodcastCoach } from "./PodcastCoach";
 import { AssessmentPanel } from "./AssessmentPanel";
@@ -17,12 +19,16 @@ export function LessonPanel({
   lesson,
   mastered,
   platform,
-  onMaster
+  onMaster,
+  diagnosticRecommendation,
+  onSelectLesson
 }: {
   lesson: CourseLesson;
   mastered: boolean;
   platform: PlatformId;
   onMaster: () => void;
+  diagnosticRecommendation?: DiagnosticRecommendation;
+  onSelectLesson?: (lessonId: string) => void;
 }) {
   const [mode, setMode] = useState<Mode>("learn");
   const command = lesson.platformCommands[platform] ?? lesson.lab.command;
@@ -71,14 +77,49 @@ export function LessonPanel({
       </nav>
 
       {mode === "learn" && (
-        <div className="content-card">
-          <h3>Mental model</h3>
-          <p>{lesson.objective}</p>
-          <p>
-            Start with the smallest question that can separate two possible
-            causes. Then test that question.
-          </p>
-        </div>
+        <>
+          <div className="content-card">
+            <span className="eyebrow">THEORY ADAPTATION</span>
+            <h3>
+              {diagnosticRecommendation === "skip-theory"
+                ? "Theory can be skipped"
+                : diagnosticRecommendation === "condense-theory"
+                  ? "Theory can be condensed"
+                  : diagnosticRecommendation === "remediate"
+                    ? "Remediation first"
+                    : "Mental model"}
+            </h3>
+            <p>{lesson.objective}</p>
+            <p>
+              {diagnosticRecommendation === "skip-theory"
+                ? "Your prerequisite diagnostic shows strong prior knowledge. Go straight to the exercise, and return to this model only when you need it."
+                : diagnosticRecommendation === "condense-theory"
+                  ? "You already have the main idea. Read this once, then prove it in the exercise."
+                  : diagnosticRecommendation === "remediate"
+                    ? "Your prerequisite diagnostic found a knowledge gap. Complete the remediation target before relying on this theory."
+                    : "Start with the smallest question that can separate two possible causes. Then test that question."}
+            </p>
+          </div>
+          {diagnosticRecommendation === "remediate" ? (
+            <div className="content-card">
+              <h4>Targeted remediation</h4>
+              <p>
+                {diagnosticBySection[lesson.sectionId]?.remediationLessonIds.join(" · ") ??
+                  "A targeted remediation lesson is not yet mapped for this section."}
+              </p>
+              {onSelectLesson && diagnosticBySection[lesson.sectionId]?.remediationLessonIds[0] ? (
+                <button
+                  className="primary"
+                  onClick={() =>
+                    onSelectLesson(diagnosticBySection[lesson.sectionId].remediationLessonIds[0])
+                  }
+                >
+                  Open remediation
+                </button>
+              ) : null}
+            </div>
+          ) : null}
+        </>
       )}
 
       {mode === "listen" &&
