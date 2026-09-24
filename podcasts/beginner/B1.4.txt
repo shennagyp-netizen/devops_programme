@@ -4,23 +4,31 @@ Speaker A: We have a small application. It works on one laptop.
 
 Speaker B: And now we want it to work on another laptop without spending two days asking what was installed.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That makes the diagnosis easier to test.
+
+Speaker A: Let's keep that tied to the actual problem.
 
 Speaker B: This is where containers come in.
 
 Speaker A: Yes, but I don't want to start with the word Docker.
 
-Speaker B: Good.
+Speaker B: Good. We can check that without changing everything.
+
+Speaker B: Now say what evidence would confirm that.
 
 Speaker A: Start with the problem.
 
 Speaker B: A program depends on its environment.
 
-Speaker A: Right.
+Speaker A: Right. Now we have a concrete prediction.
+
+Speaker A: That gives us a useful next test.
 
 Speaker B: Runtime version. Libraries. Files. Environment variables. Network settings. Maybe system tools.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Keep the recovery condition in the plan.
+
+Speaker A: I would not change the system before checking that.
 
 Speaker B: So "it works on my machine" is really saying "my machine has a set of conditions that your machine may not have."
 
@@ -32,11 +40,11 @@ Speaker A: Two cooks follow the same recipe.
 
 Speaker B: One kitchen has the right oven and tools. The other does not.
 
-Speaker A: Right.
+Speaker A: Right. That is a safer way to reason about it.
 
 Speaker B: Same recipe. Different result.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now compare that with the known-good state.
 
 Speaker B: So we want a repeatable kitchen.
 
@@ -60,11 +68,11 @@ Speaker A: An image is a packaged application environment.
 
 Speaker B: Code, dependencies, filesystem layers, configuration defaults.
 
-Speaker A: Right.
+Speaker A: Right. That tells us which layer to inspect next.
 
 Speaker B: A container is a running instance of that image.
 
-Speaker A: Exactly.
+Speaker A: Exactly. I want the observation before the fix.
 
 Speaker B: So image is the package, container is the running thing.
 
