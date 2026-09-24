@@ -18,6 +18,18 @@ describe("Beginner course unit gate", () => {
     expect(diagnosticDefinitions.filter((d) => d.course === "beginner")).toHaveLength(7);
   });
 
+  it("requires each Beginner project to define an operational contract", () => {
+    for (const project of projectsByCourse.beginner) {
+      expect(project.objective.trim()).not.toBe("");
+      expect(project.environment.trim()).not.toBe("");
+      expect(project.milestones.length).toBeGreaterThanOrEqual(3);
+      expect(project.competencyGates.length).toBeGreaterThan(0);
+      expect(project.failureScenarios.length).toBeGreaterThan(0);
+      expect(project.evidenceRequirements.length).toBeGreaterThan(0);
+      expect(project.completionCriteria.length).toBeGreaterThan(0);
+    }
+  });
+
   it("requires complete learning and platform contracts", () => {
     for (const lesson of lessons) {
       expect(lesson.objective.trim()).not.toBe("");
