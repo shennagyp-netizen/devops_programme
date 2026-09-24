@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { courses, platformProfiles, type CourseLevel, type PlatformId } from "./data/programme";
 import { lessonsByCourse } from "./data/courseLessons";
 import { LessonPanel } from "./components/LessonPanel";
@@ -7,8 +7,12 @@ import { DiagnosticPanel } from "./components/DiagnosticPanel";
 import type { DiagnosticRecommendation } from "./data/diagnostics";
 import { projectsByCourse } from "./data/projects";
 import { ProjectPanel } from "./components/ProjectPanel";
+import {
+  completeLearningItem,
+  listCompletedItems,
+  uncompleteLearningItem
+} from "./data/learnerProgress";
 
-const K = "devops-programme-mastered";
 
 export default function App() {
   const [course, setCourse] = useState<CourseLevel>("intermediate");
@@ -17,13 +21,36 @@ export default function App() {
   const [diagnosticRecommendations, setDiagnosticRecommendations] =
     useState<Record<string, DiagnosticRecommendation>>({});
   const [evidenceVersion, setEvidenceVersion] = useState(0);
-  const [m, setM] = useState<string[]>(() => {
-    try {
-      return JSON.parse(localStorage.getItem(K) || "[]");
-    } catch {
-      return [];
-    }
-  });
+  const [m, setM] = useState<string[]>([]);
+  const [progressLoading, setProgressLoading] = useState(true);
+  const [progressError, setProgressError] = useState("");
+  const [progressBusyId, setProgressBusyId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    void listCompletedItems()
+      .then((items) => {
+        if (!active) return;
+        setM(items.filter((item) => item.itemType === "lesson").map((item) => item.itemId));
+        setProgressError("");
+      })
+      .catch((error) => {
+        if (!active) return;
+        setProgressError(
+          error instanceof Error
+            ? "Saved progress could not be loaded: " + error.message
+            : "Saved progress could not be loaded."
+        );
+      })
+      .finally(() => {
+        if (active) setProgressLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const selectedCourse = courses.find((item) => item.id === course) ?? courses[1];
   const selectedPlatform =
@@ -57,13 +84,41 @@ export default function App() {
     if (first) setS(first.id);
   }
 
-  function toggle(id: string) {
-    const next = m.includes(id)
-      ? m.filter((item) => item !== id)
-      : [...m, id];
+  async function toggle(id: string) {
+    if (progressBusyId === id) return;
 
-    setM(next);
-    localStorage.setItem(K, JSON.stringify(next));
+    setProgressBusyId(id);
+    setProgressError("");
+
+    try {
+      if (m.includes(id)) {
+        await uncompleteLearningItem({
+          itemType: "lesson",
+          itemId: id
+        });
+        setM((current) => current.filter((item) => item !== id));
+      } else {
+        const selected = selectedLessons.find((item) => item.id === id);
+        if (!selected) throw new Error("Selected lesson no longer exists.");
+
+        await completeLearningItem({
+          itemType: "lesson",
+          itemId: id,
+          course: selected.course,
+          projectId: selected.projectId,
+          verificationLevel: "exercise-validated"
+        });
+        setM((current) => [...current, id]);
+      }
+    } catch (error) {
+      setProgressError(
+        error instanceof Error
+          ? "Progress was not saved: " + error.message
+          : "Progress was not saved."
+      );
+    } finally {
+      setProgressBusyId(null);
+    }
   }
 
   return (
@@ -80,6 +135,12 @@ export default function App() {
       </header>
 
       <section className="content-card">
+        {progressLoading ? (
+          <p className="range">Loading saved progress...</p>
+        ) : null}
+        {progressError ? (
+          <p className="range">{progressError}</p>
+        ) : null}
         <div>
           <span className="eyebrow">{selectedCourse.id.toUpperCase()}</span>
           <h3>{selectedCourse.title}</h3>
@@ -198,8 +259,8 @@ export default function App() {
           diagnosticRecommendation={diagnosticRecommendations[l.sectionId]}
           onSelectLesson={setS}
           onEvidenceRecorded={() => setEvidenceVersion((value) => value + 1)}
-          onMaster={() => toggle(l.id)}
-        />
+          onMaster={() => void toggle(l.id)}
+                  />
       </main>
     </div>
   );
