@@ -5,6 +5,34 @@ on:
   pull_request:
     paths: ["app/**","podcasts/**","scripts/**",".github/workflows/app.yml"]
 jobs:
+  beginner_gate:
+    name: beginner-gate
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install
+        run: npm install
+
+      - name: Beginner structural contract
+        run: node ../scripts/check-beginner-gate.mjs
+
+      - name: Beginner unit tests
+        run: npm exec vitest run tests/unit/beginner-course.test.mjs
+
+      - name: Beginner integration tests
+        run: npm exec vitest run tests/integration/beginner-course.integration.test.mjs
+
+      - name: Beginner completeness validator
+        run: npm run check:beginner
+
   build:
     runs-on: ubuntu-latest
     defaults:
