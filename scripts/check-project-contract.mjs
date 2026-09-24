@@ -5,9 +5,11 @@ import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
 const lessonsPath = path.join(root, "app", "src", "data", "courseLessons.ts");
+const intermediateLessonsPath = path.join(root, "app", "src", "data", "curriculum.ts");
 const projectsPath = path.join(root, "app", "src", "data", "projects.ts");
 
 const lessons = await readFile(lessonsPath, "utf8");
+const intermediateLessons = await readFile(intermediateLessonsPath, "utf8");
 const projects = await readFile(projectsPath, "utf8");
 
 let failed = false;
@@ -32,7 +34,27 @@ for (const lessonProjectId of lessonProjectIds) {
 for (const projectId of projectIds) {
   if (!lessonProjectIds.has(projectId)) {
     failed = true;
-    console.error(`Project ${projectId} has no lesson coverage.`);
+    console.error(`Project ${projectId} has no literal lesson metadata coverage.`);
+  }
+}
+
+const intermediateProjectIds = ["I1", "I2", "I3"];
+const allIntermediateLessonIds = [
+  ...intermediateLessons.matchAll(/"id":s*"(Dd+.d+)"/g)
+].map((match) => match[1]);
+
+if (allIntermediateLessonIds.length !== 32) {
+  failed = true;
+  console.error(
+    `Intermediate project mapping source contains ${allIntermediateLessonIds.length} lessons; expected 32.`
+  );
+}
+
+const intermediateMapping = await readFile(lessonsPath, "utf8");
+for (const projectId of intermediateProjectIds) {
+  if (!intermediateMapping.includes(`return "${projectId}"`)) {
+    failed = true;
+    console.error(`Intermediate project mapping has no ${projectId} return branch.`);
   }
 }
 
