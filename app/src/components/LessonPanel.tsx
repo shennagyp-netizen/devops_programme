@@ -32,6 +32,8 @@ export function LessonPanel({
 }) {
   const [mode, setMode] = useState<Mode>("learn");
   const command = lesson.platformCommands[platform] ?? lesson.lab.command;
+  const remediationTarget =
+    diagnosticBySection[lesson.sectionId]?.remediationLessonIds[0];
 
   return (
     <section className="lesson">
@@ -107,12 +109,10 @@ export function LessonPanel({
                 {diagnosticBySection[lesson.sectionId]?.remediationLessonIds.join(" · ") ??
                   "A targeted remediation lesson is not yet mapped for this section."}
               </p>
-              {onSelectLesson && diagnosticBySection[lesson.sectionId]?.remediationLessonIds[0] ? (
+              {onSelectLesson && remediationTarget ? (
                 <button
                   className="primary"
-                  onClick={() =>
-                    onSelectLesson(diagnosticBySection[lesson.sectionId].remediationLessonIds[0])
-                  }
+                  onClick={() => onSelectLesson(remediationTarget)}
                 >
                   Open remediation
                 </button>
