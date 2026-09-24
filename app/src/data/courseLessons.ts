@@ -266,7 +266,7 @@ const advanced: CourseLesson[] = [
     title: "Failure Domains",
     domain: "advanced-foundation",
     sectionId: "A-F3",
-    projectId: "A2",
+    projectId: "A1",
     kind: "foundation",
     objective: "Separate process, host, zone and region failures and size the blast radius of each.",
     example: "One room closing is a small problem. The whole building closing is a different failure.",
