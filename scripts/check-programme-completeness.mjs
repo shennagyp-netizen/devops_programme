@@ -37,14 +37,14 @@ let diagnosticCount = 0;
 
 for (const [course, spec] of Object.entries(expected)) {
   for (const sectionId of spec.sections) {
-    if (!programme.includes(\`id: "\${sectionId}"\`)) {
+    if (!programme.includes(`id: "${sectionId}"`)) {
       failed = true;
-      console.error(\`Missing programme section: \${sectionId}\`);
+      console.error(`Missing programme section: ${sectionId}`);
     }
 
-    if (!diagnostics.includes(\`sectionId: "\${sectionId}"\`)) {
+    if (!diagnostics.includes(`sectionId: "${sectionId}"`)) {
       failed = true;
-      console.error(\`Missing diagnostic: \${sectionId}\`);
+      console.error(`Missing diagnostic: ${sectionId}`);
     } else {
       diagnosticCount += 1;
     }
@@ -54,7 +54,7 @@ for (const [course, spec] of Object.entries(expected)) {
       "exams",
       "items",
       course,
-      \`\${sectionId}.json\`
+      `${sectionId}.json`
     );
 
     try {
@@ -63,24 +63,24 @@ for (const [course, spec] of Object.entries(expected)) {
       bankItemCount += Array.isArray(bank.items) ? bank.items.length : 0;
       if (bank.sectionId !== sectionId || !Array.isArray(bank.items) || bank.items.length !== 40) {
         failed = true;
-        console.error(\`Invalid pilot bank contract for \${course}/\${sectionId}.\`);
+        console.error(`Invalid pilot bank contract for ${course}/${sectionId}.`);
       }
     } catch (error) {
       failed = true;
-      console.error(\`Missing/invalid pilot bank for \${course}/\${sectionId}: \${error.message}\`);
+      console.error(`Missing/invalid pilot bank for ${course}/${sectionId}: ${error.message}`);
     }
   }
 
   for (const projectId of spec.projects) {
-    if (!projects.includes(\`id: "\${projectId}"\`)) {
+    if (!projects.includes(`id: "${projectId}"`)) {
       failed = true;
-      console.error(\`Missing project: \${projectId}\`);
+      console.error(`Missing project: ${projectId}`);
     }
   }
 }
 
 const beginnerLessons = [...courseLessons.matchAll(/id: "(B\d+\.\d+)",/g)].map((match) => match[1]);
-const intermediateLessons = [...intermediateLessonsSource.matchAll(/"id": "(D\d+\.\d+)"/g)].map((match) => match[1]);
+const intermediateLessons = [...intermediateLessonsSource.matchAll(/id:\s*"(D\d+\.\d+)"/g)].map((match) => match[1]);
 const advancedLessons = [...courseLessons.matchAll(/id: "(A\d+\.\d+)",/g)].map((match) => match[1]);
 
 const counts = {
@@ -92,7 +92,7 @@ const counts = {
 for (const [course, spec] of Object.entries(expected)) {
   if (counts[course] !== spec.lessons) {
     failed = true;
-    console.error(\`\${course} lesson count is \${counts[course]}; expected \${spec.lessons}.\`);
+    console.error(`${course} lesson count is ${counts[course]}; expected ${spec.lessons}.`);
   }
 }
 
@@ -104,12 +104,12 @@ if (!assessment.includes('"A-A3"')) {
 if (bankCount !== 21 || bankItemCount !== 840 || diagnosticCount !== 21) {
   failed = true;
   console.error(
-    \`Global authored-course totals are banks=\${bankCount}, items=\${bankItemCount}, diagnostics=\${diagnosticCount}; expected 21, 840, 21.\`
+    `Global authored-course totals are banks=${bankCount}, items=${bankItemCount}, diagnostics=${diagnosticCount}; expected 21, 840, 21.`
   );
 }
 
 if (failed) process.exit(1);
 
 console.log(
-  \`Programme completeness check passed: 53 lessons, 21 sections, 9 projects, 21 pilot banks, 840 pilot items and 21 prerequisite diagnostics.\`
+  `Programme completeness check passed: 53 lessons, 21 sections, 9 projects, 21 pilot banks, 840 pilot items and 21 prerequisite diagnostics.`
 );
