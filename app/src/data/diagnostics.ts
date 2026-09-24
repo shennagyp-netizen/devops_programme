@@ -818,6 +818,218 @@ export const diagnosticDefinitions: DiagnosticDefinition[] = [
     ]
   },
   {
+    sectionId: "A-F3",
+    course: "advanced",
+    title: "Failure Domains",
+    prerequisiteLessonIds: ["A1.4"],
+    remediationLessonIds: ["A1.4"],
+    questions: [
+      {
+        id: "AF3-P-1",
+        prompt: "Why spread replicas across failure domains?",
+        options: [
+          "To reduce the chance that one correlated failure removes all replicas",
+          "To remove all network latency",
+          "To avoid monitoring",
+          "To guarantee consistency"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "AF3-P-2",
+        prompt: "What is blast radius?",
+        options: [
+          "The scope of components or users affected by a failure or change",
+          "The number of CPU cores",
+          "A DNS TTL",
+          "A database row count"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "AF3-P-3",
+        prompt: "A region fails and the surviving region becomes overloaded. What assumption should you question?",
+        options: [
+          "Failover capacity was sufficient for the larger load",
+          "DNS must be broken",
+          "Replication cannot work",
+          "The clients all failed"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "AF3-P-4",
+        prompt: "Why model shared infrastructure dependencies as failure domains?",
+        options: [
+          "A common dependency can correlate failures across otherwise separate workloads",
+          "Shared dependencies are always faster",
+          "They remove the need for recovery",
+          "They affect only logs"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+  {
+    sectionId: "A-A1",
+    course: "advanced",
+    title: "Global Traffic and Multi-Region Systems",
+    prerequisiteLessonIds: ["A1.5", "A1.6"],
+    remediationLessonIds: ["A1.5", "A1.6"],
+    questions: [
+      {
+        id: "AA1-P-1",
+        prompt: "What does global traffic management decide?",
+        options: [
+          "Where requests should be directed under normal and failure conditions",
+          "How a database stores rows",
+          "How images are built",
+          "How Git branches merge"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "AA1-P-2",
+        prompt: "Why is failover capacity important?",
+        options: [
+          "The surviving region may need to carry substantially more traffic",
+          "Traffic disappears during failure",
+          "Regions share one CPU",
+          "Routing removes all load"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "AA1-P-3",
+        prompt: "Why can local caching create a correctness problem?",
+        options: [
+          "Cached state can be older than the source of truth",
+          "Caching always corrupts data",
+          "Caching prevents scaling",
+          "Caching removes regions"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "AA1-P-4",
+        prompt: "A region is healthy but saturated. What should a traffic policy consider?",
+        options: [
+          "Capacity or load signals in addition to basic health",
+          "Only DNS TTL",
+          "Only process count",
+          "Only Git history"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+  {
+    sectionId: "A-A2",
+    course: "advanced",
+    title: "Failure Engineering",
+    prerequisiteLessonIds: ["A2.1", "A2.2"],
+    remediationLessonIds: ["A2.1", "A2.2", "A2.3"],
+    questions: [
+      {
+        id: "AA2-P-1",
+        prompt: "Why use controlled fault injection?",
+        options: [
+          "To learn how the system behaves and recovers under a defined failure",
+          "To make production randomly unstable",
+          "To replace monitoring",
+          "To avoid reset procedures"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "AA2-P-2",
+        prompt: "Why define an abort condition before an experiment?",
+        options: [
+          "To stop the experiment if impact crosses the safe boundary",
+          "To make the failure harder to diagnose",
+          "To hide telemetry",
+          "To guarantee recovery"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "AA2-P-3",
+        prompt: "What can a partial network failure reveal?",
+        options: [
+          "Which system paths can fail while other paths continue",
+          "Only host CPU usage",
+          "Only database storage",
+          "Nothing useful"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "AA2-P-4",
+        prompt: "Why is recovery verification required after fault injection?",
+        options: [
+          "The system can look alive while user behavior, data or queues remain unhealthy",
+          "Restart always proves recovery",
+          "Failures automatically disappear",
+          "Telemetry is not needed"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+  {
+    sectionId: "A-A3",
+    course: "advanced",
+    title: "Massive-Scale Service Design",
+    prerequisiteLessonIds: ["A3.1"],
+    remediationLessonIds: ["A3.1", "A3.2"],
+    questions: [
+      {
+        id: "AA3-P-1",
+        prompt: "Why build an explicit capacity model before scaling a very large service?",
+        options: [
+          "It exposes workload assumptions and likely bottlenecks",
+          "It guarantees linear scaling",
+          "It removes all trade-offs",
+          "It replaces measurement"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "AA3-P-2",
+        prompt: "Why can a small per-request inefficiency become important at massive scale?",
+        options: [
+          "It is multiplied across a very large request volume",
+          "Large systems ignore per-request cost",
+          "Caching makes cost zero",
+          "Scale removes latency"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "AA3-P-3",
+        prompt: "Why is consistency part of architecture trade-off analysis?",
+        options: [
+          "Stronger coordination can affect latency, availability and cost",
+          "Consistency only matters to databases",
+          "Consistency always improves latency",
+          "Consistency removes failure"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "AA3-P-4",
+        prompt: "What makes a scalability claim credible?",
+        options: [
+          "Explicit workload assumptions plus measured or modelled capacity and bottlenecks",
+          "A large number on a slide",
+          "One successful local test",
+          "A vendor name"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+  {
     sectionId: "A-F2",
     course: "advanced",
     title: "Distributed State Foundations",
