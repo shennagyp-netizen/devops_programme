@@ -177,9 +177,8 @@ Progress contract and server services:
 Database migrations:
 
 - `app/drizzle/migrations/0000_learner_completions.sql`
-- `app/drizzle/migrations/0001_authenticated_user_identity.sql`
 
-The migration path preserves the existing table while moving the identity column from the old anonymous model to authenticated `user_id`.
+The initial migration creates the final authenticated schema directly. The never-merged anonymous migration is not retained.
 
 ## Environment
 
