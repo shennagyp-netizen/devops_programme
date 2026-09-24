@@ -87,6 +87,10 @@ for (let i = 0; i < lessons.length; i += 1) {
   }
 }
 
+for (const id of ["B1.1","B1.2","B1.3","B1.4","B1.5","B2.1","B2.2","B2.3","B3.1","B3.2"]) {
+  if (!handsOn.includes(`"${id}": {`)) fail("Missing authored Beginner hands-on override " + id);
+}
+
 if (!handsOn.includes("export function getHandsOnTask")) fail("Hands-on resolver missing.");
 if (!handsOn.includes("export function validateHandsOnEvidence")) fail("Hands-on validator missing.");
 for (const field of ["observation","change","failure","recovery"]) if (!handsOn.includes('id: "' + field + '"')) fail("Missing default evidence field " + field);
