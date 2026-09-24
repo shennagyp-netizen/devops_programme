@@ -133,27 +133,33 @@ export function generateAssessmentForm(
     return true;
   };
 
-  // Cover required competencies and cognitive levels first. The selected
-  // items still have to fit the exact difficulty distribution.
-  for (const competency of blueprint.minimumCompetencies) {
-    const candidate = ordered.find(
-      (item) => item.competencyId === competency && !selectedIds.has(item.id)
-    );
-    if (!candidate || !addCandidate(candidate)) {
-      throw new Error(
-        `Cannot cover competency ${competency} while preserving the difficulty blueprint.`
-      );
-    }
-  }
+  // Cover scarce requirements first. This avoids a valid pool becoming
+  // seed-dependent just because an early requirement consumed the only
+  // remaining item in a needed difficulty band.
+  const competencyRequirements = blueprint.minimumCompetencies.map((competency) => ({
+    kind: "competency" as const,
+    value: competency,
+    candidates: ordered.filter((item) => item.competencyId === competency)
+  }));
+  const cognitiveRequirements = blueprint.requiredCognitiveLevels.map((level) => ({
+    kind: "cognitive" as const,
+    value: level,
+    candidates: ordered.filter((item) => item.cognitiveLevel === level)
+  }));
 
-  for (const cognitiveLevel of blueprint.requiredCognitiveLevels) {
-    const candidate = ordered.find(
+  const requirements = [...competencyRequirements, ...cognitiveRequirements]
+    .sort((a, b) => a.candidates.length - b.candidates.length);
+
+  for (const requirement of requirements) {
+    const candidate = requirement.candidates.find(
       (item) =>
-        item.cognitiveLevel === cognitiveLevel && !selectedIds.has(item.id)
+        !selectedIds.has(item.id) &&
+        remainingTargets[item.difficulty] > 0
     );
+
     if (!candidate || !addCandidate(candidate)) {
       throw new Error(
-        `Cannot cover cognitive level ${cognitiveLevel} while preserving the difficulty blueprint.`
+        `Cannot cover ${requirement.kind} ${requirement.value} while preserving the difficulty blueprint.`
       );
     }
   }
