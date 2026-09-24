@@ -259,6 +259,8 @@ async function main() {
     platform,
     verificationLevel: "machine-verified",
     verificationSource: "local-runner",
+    executionMode: "local-machine",
+    target: { kind: "local" },
     runnerVersion: RUNNER_VERSION,
     environmentFingerprint: environmentFingerprint(platform),
     startedAt,
