@@ -44,6 +44,17 @@ export function listEvidence(projectId?: string) {
 }
 
 export function addEvidence(entry: Omit<EvidenceEntry, "id" | "createdAt">) {
+  const existing = readLedger().find(
+    (candidate) =>
+      candidate.course === entry.course &&
+      candidate.projectId === entry.projectId &&
+      candidate.lessonId === entry.lessonId &&
+      candidate.kind === entry.kind &&
+      candidate.summary === entry.summary
+  );
+
+  if (existing) return existing;
+
   const next: EvidenceEntry = {
     ...entry,
     id: `evidence-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
