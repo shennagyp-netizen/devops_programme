@@ -10,6 +10,7 @@ export type CompletionRecord = {
 };
 
 const LEARNER_ID_KEY = "devops-programme-learner-id";
+const LEGACY_MASTERED_KEY = "devops-programme-mastered";
 const API_URL = "/api/progress";
 
 function createLearnerId() {
@@ -50,13 +51,60 @@ async function request<T>(input: RequestInfo | URL, init?: RequestInit): Promise
   return body;
 }
 
+function getLegacyMasteredLessonIds() {
+  try {
+    const raw = localStorage.getItem(LEGACY_MASTERED_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((value): value is string => typeof value === "string");
+  } catch {
+    return [];
+  }
+}
+
+async function migrateLegacyMasteredLessons(items: CompletionRecord[]) {
+  const existing = new Set(
+    items
+      .filter((item) => item.itemType === "lesson")
+      .map((item) => item.itemId)
+  );
+  const legacyIds = getLegacyMasteredLessonIds().filter((id) => !existing.has(id));
+
+  for (const itemId of legacyIds) {
+    await completeLearningItem({
+      itemType: "lesson",
+      itemId,
+      verificationLevel: "exercise-validated"
+    });
+  }
+
+  if (legacyIds.length > 0) {
+    try {
+      localStorage.removeItem(LEGACY_MASTERED_KEY);
+    } catch {
+      // Database is authoritative; legacy cleanup is best-effort.
+    }
+  }
+}
+
 export async function listCompletedItems(): Promise<CompletionRecord[]> {
   const learnerId = getLearnerId();
   const result = await request<{ items: CompletionRecord[] }>(
     API_URL + "?learnerId=" + encodeURIComponent(learnerId),
     { method: "GET" }
   );
-  return result.items;
+
+  await migrateLegacyMasteredLessons(result.items);
+  if (result.items.length === 0 && getLegacyMasteredLessonIds().length === 0) {
+    return result.items;
+  }
+
+  const refreshed = await request<{ items: CompletionRecord[] }>(
+    API_URL + "?learnerId=" + encodeURIComponent(learnerId),
+    { method: "GET" }
+  );
+  return refreshed.items;
 }
 
 export async function completeLearningItem(input: {
