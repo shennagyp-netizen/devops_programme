@@ -20,9 +20,7 @@ Speaker A: It can be.
 
 Speaker B: The strange thing is that retries start as a safety feature.
 
-Speaker A: Right.
-
-Speaker B: A request fails for a temporary reason.
+Speaker A: Right. The point is not the command; it is the evidence.\n\nSpeaker B: A request fails for a temporary reason.
 
 Speaker A: A retry can succeed.
 
@@ -44,9 +42,7 @@ Speaker A: Now it can become two, three or ten.
 
 Speaker B: So load increases while capacity is already reduced.
 
-Speaker A: Exactly.
-
-Speaker B: Human example?
+Speaker A: Exactly. That is the key step.\n\nSpeaker B: Human example?
 
 Speaker A: A phone line is busy.
 
@@ -60,9 +56,7 @@ Speaker A: The line does not become less busy.
 
 Speaker B: It becomes even more busy.
 
-Speaker A: Good.
-
-Speaker B: Let's define the basic retry model.
+Speaker A: Good. That gives us a baseline.\n\nSpeaker B: Let's define the basic retry model.
 
 Speaker A: Request starts.
 
@@ -80,25 +74,19 @@ Speaker A: Very much.
 
 Speaker B: If every client retries immediately, the load comes back as a burst.
 
-Speaker A: Exactly.
-
-Speaker B: If every client waits exactly one second, what happens?
+Speaker A: Exactly. That changes the diagnosis.\n\nSpeaker B: If every client waits exactly one second, what happens?
 
 Speaker A: They can line up their retries.
 
 Speaker B: So one failure can create a second synchronized wave.
 
-Speaker A: Yes.
-
-Speaker B: This is why jitter matters.
+Speaker A: Yes. The important part is what happens next.\n\nSpeaker B: This is why jitter matters.
 
 Speaker A: Jitter adds variation to the retry delay.
 
 Speaker B: So clients do not all retry at the same instant.
 
-Speaker A: Right.
-
-Speaker B: What about exponential backoff?
+Speaker A: Right. That is the assumption we need to test.\n\nSpeaker B: What about exponential backoff?
 
 Speaker A: The wait grows after repeated failures.
 
@@ -112,21 +100,15 @@ Speaker A: Maybe capped at a maximum.
 
 Speaker B: The exact numbers depend on the system.
 
-Speaker A: Yes.
+Speaker A: Yes. Keep following the request path.\n\nSpeaker B: The principle is to reduce pressure while the dependency recovers.
 
-Speaker B: The principle is to reduce pressure while the dependency recovers.
-
-Speaker A: Correct.
-
-Speaker B: Prediction.
+Speaker A: Correct. And there is another part to watch.\n\nSpeaker B: Prediction.
 
 Speaker A: Go.
 
 Speaker B: A service can process 100 requests per second.
 
-Speaker A: Good.
-
-Speaker B: A dependency slows down so requests start timing out.
+Speaker A: Good. Now we can test that instead of guessing.\n\nSpeaker B: A dependency slows down so requests start timing out.
 
 Speaker A: Continue.
 
@@ -136,9 +118,7 @@ Speaker A: What can happen?
 
 Speaker B: The workload can approach three times the original request volume.
 
-Speaker A: Exactly.
-
-Speaker B: So the dependency gets more work exactly when it is already struggling.
+Speaker A: Exactly. That is why the failure is useful.\n\nSpeaker B: So the dependency gets more work exactly when it is already struggling.
 
 Speaker A: Positive feedback.
 
@@ -148,9 +128,7 @@ Speaker A: Very bad loop.
 
 Speaker B: And the retrying clients may also consume their own connection pools and threads.
 
-Speaker A: Good.
-
-Speaker B: So one failed dependency can spread pressure back into healthy services.
+Speaker A: Exactly. Now we have a real boundary.\n\nThat is the failure loop I want you to see.\n\nSpeaker B: So one failed dependency can spread pressure back into healthy services.
 
 Speaker A: This is the key failure path.
 
@@ -168,9 +146,7 @@ Speaker A: Many application errors.
 
 Speaker B: And some writes where repeating the operation could create duplicate effects.
 
-Speaker A: Exactly.
-
-Speaker B: That brings us to idempotency.
+Speaker A: Exactly. That is the key step.\n\nSpeaker B: That brings us to idempotency.
 
 Speaker A: An idempotent operation can be repeated without changing the final intended effect after the first successful application.
 
@@ -188,17 +164,11 @@ Speaker A: And a blind retry could create a second payment.
 
 Speaker B: So the timeout creates uncertainty.
 
-Speaker A: Yes.
+Speaker A: Yes. That can change the load pattern.\n\nSpeaker B: An idempotency key can let the server recognize the same logical operation.
 
-Speaker B: An idempotency key can let the server recognize the same logical operation.
+Speaker A: Correct. That is an important distinction.\n\nSpeaker B: Then the retry can return the existing result instead of doing the work again.
 
-Speaker A: Correct.
-
-Speaker B: Then the retry can return the existing result instead of doing the work again.
-
-Speaker A: Good.
-
-Speaker B: Another prediction.
+Speaker A: Exactly. That changes the diagnosis.\n\nThe dependency is already under pressure.\n\nSpeaker B: Another prediction.
 
 Speaker A: Go.
 
@@ -216,9 +186,7 @@ Speaker A: And?
 
 Speaker B: Upstream callers may also wait and retry.
 
-Speaker A: Exactly.
-
-Speaker B: So more retries do not always mean more reliability.
+Speaker A: Exactly. That is why the failure is useful.\n\nSpeaker B: So more retries do not always mean more reliability.
 
 Speaker A: Reliability depends on the whole path.
 
@@ -228,13 +196,9 @@ Speaker A: Every dependency call needs a bounded wait in most production systems
 
 Speaker B: Otherwise one stuck dependency can consume resources for too long.
 
-Speaker A: Right.
+Speaker A: Right. Now the failure becomes observable.\n\nSpeaker B: We can think of a request budget.
 
-Speaker B: We can think of a request budget.
-
-Speaker A: Good.
-
-Speaker B: User has 2 seconds.
+Speaker A: Correct. But we still need evidence.\n\nBut we still need to know whether the operation is safe to repeat.\n\nSpeaker B: User has 2 seconds.
 
 Speaker A: Then the service cannot spend 5 seconds retrying one downstream call.
 
@@ -244,25 +208,19 @@ Speaker A: The parent request budget limits the child work.
 
 Speaker B: So timeouts need to compose.
 
-Speaker A: Yes.
-
-Speaker B: What about a queue?
+Speaker A: Yes. The important part is what happens next.\n\nSpeaker B: What about a queue?
 
 Speaker A: A queue can absorb temporary bursts.
 
 Speaker B: But retrying queue messages forever can still overload the consumer.
 
-Speaker A: Correct.
-
-Speaker B: We need attempt limits, backoff and dead-letter handling when appropriate.
+Speaker A: Correct. And there is another part to watch.\n\nSpeaker B: We need attempt limits, backoff and dead-letter handling when appropriate.
 
 Speaker A: And idempotent processing.
 
 Speaker B: So the retry problem appears in both synchronous and asynchronous systems.
 
-Speaker A: Exactly.
-
-Speaker B: Mac lab.
+Speaker A: Exactly. Now we have a real boundary.\n\nSpeaker B: Mac lab.
 
 Speaker A: Build a tiny service that fails for a few seconds.
 
@@ -280,9 +238,7 @@ Speaker A: Then add jitter.
 
 Speaker B: Compare total requests, latency and recovery load.
 
-Speaker A: Good.
-
-Speaker B: The point is not to memorize one formula.
+Speaker A: Yes. Keep following the request path.\n\nKeep the user request budget in view.\n\nSpeaker B: The point is not to memorize one formula.
 
 Speaker A: The point is to see the feedback loop.
 
@@ -296,9 +252,7 @@ Speaker A: More failure.
 
 Speaker B: More retry.
 
-Speaker A: Exactly.
-
-Speaker B: Recall.
+Speaker A: Exactly. That is the key step.\n\nSpeaker B: Recall.
 
 Speaker A: One. Why can retries make an outage worse?
 
@@ -338,4 +292,4 @@ Speaker A: And state how the system behaves when the dependency never recovers.
 
 Speaker B: That's the real test.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That changes the diagnosis.\n\n
