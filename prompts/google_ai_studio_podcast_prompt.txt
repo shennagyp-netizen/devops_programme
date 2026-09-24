@@ -1,46 +1,85 @@
-Convert the supplied DevOps lesson transcript into a highly engaging educational podcast for a broad technical audience.
+Create a long-form educational podcast from the supplied DevOps lesson. The final audio should feel like two smart people talking while solving a real problem, not like an AI reading a lesson plan.
 
 SPEAKERS
-Speaker A: senior systems/DevOps engineer. Calm, precise, witty, practical.
-Speaker B: intelligent software engineer. Curious, skeptical, socially natural, occasionally funny.
+Speaker A: senior systems/DevOps engineer. Calm, experienced, precise. Speaks like a real engineer thinking aloud.
+Speaker B: strong software engineer rebuilding networking/operations intuition. Curious, skeptical, interrupts naturally, asks the question a competent engineer would actually ask.
+
+THE FEEL
+- This is a conversation, not a lecture with two labels.
+- Use contractions: "it's", "we're", "you've", "doesn't".
+- Prefer ordinary spoken words over formal textbook phrasing.
+- Vary sentence length. Some sentences should be short. Occasionally let a thought trail, get corrected, or restart naturally.
+- Speaker B can disagree, misunderstand something briefly, or challenge an assumption. Speaker A should respond to the exact misunderstanding instead of giving a canned definition.
+- Use occasional "right", "okay", "wait", "hang on", "so..." and similar natural transitions, but never as filler every sentence.
+- Avoid corporate phrases and AI-sounding transitions such as "today we will explore", "let's dive deep", "in conclusion", "it is important to note", "as an AI", "precisely" repeated over and over.
+- Do not make every answer perfectly shaped. Real speech has small detours, corrections, and reactions.
+- Keep jokes quick and observational. A joke should feel like something an engineer would actually say in conversation.
+- Do not use jokes about protected groups, politics, religion, nationality, disability, illness, or humiliation.
+- Never sacrifice technical accuracy for personality.
 
 LEARNING / ENTERTAINMENT BALANCE
-- About 75% of the spoken content must remain technical teaching, reasoning, troubleshooting, architecture, or retrieval.
-- About 25% should be real-life examples, familiar situations, workplace stories, daily-life analogies, memorable scenarios, or short social observations.
-- Add short, tasteful jokes regularly. Humor must reinforce the concept.
-- Never use humor that targets protected groups, politics, religion, nationality, race, disability, or personal humiliation.
-- Avoid repetitive laughter, forced jokes, or comedy that obscures the lesson.
+- Roughly 75% of the spoken time is technical reasoning, troubleshooting, architecture, or retrieval.
+- Roughly 25% is real-life situations, workplace moments, familiar experiences, and memorable analogies.
+- After every analogy, come back explicitly to the literal technical model.
+- The listener should repeatedly move through: understand -> predict -> operate -> break -> diagnose -> repair -> recall -> design.
 
-STORYTELLING
-1. Explain the technical model.
-2. Give a real-life analogy or scenario.
-3. Return explicitly to the technical model.
-4. Show a failure or surprising edge case.
-5. Give the operational lesson.
+EPISODE SHAPE
+Use this flow, but do not announce it like a training course:
+1. Cold open: a believable operational problem.
+2. Conversation: what each person initially thinks is happening.
+3. Mental model: build the mechanism from first principles.
+4. Human example: a workplace/daily-life situation that makes the mechanism memorable.
+5. Back to reality: map the analogy directly to the actual system.
+6. Prediction pause: ask the listener to predict what will happen before revealing it.
+7. Failure: create a realistic misconfiguration or partial failure.
+8. Diagnosis: reason from evidence, not guesswork.
+9. Mac lab: explain exactly what the learner should do and what they should expect to observe.
+10. Recall: five questions, spaced naturally through the conversation.
+11. Production transfer: connect the same mechanism to a large system.
+12. Finish with one challenge that requires the listener to act or explain, not just remember.
 
-Possible analogies include a crowded highway for congestion, a hotel front desk for service discovery, a restaurant kitchen for queues and backpressure, a postal address for IP/DNS, a security guard for authentication/authorization, a warehouse for storage/caching, hospital triage for incident response, a delivery company for retries/idempotency, a power grid for redundancy, and a traffic control room for observability.
+SPOKEN EXERCISE CUES
+Use natural spoken invitations such as:
+- "Pause me for a second."
+- "Before I tell you, what do you think happens?"
+- "Okay, make a prediction."
+- "Don't look this up yet. Tell me what evidence you'd expect."
+- "Run the command now, then come back."
+- "If your prediction was wrong, that's useful. Let's see why."
 
-Do not force analogies when they create technical confusion. Clearly label analogy versus literal system behavior.
+When these cues appear, leave enough textual space around them for a human speaker or TTS system to make the pause audible. Do not use machine-like countdowns unless the exercise itself genuinely needs one.
+
+REAL-LIFE EXAMPLES
+Use examples from ordinary life, software teams, clinics, shops, restaurants, deliveries, offices, travel, queues, customer support, maintenance, or other familiar situations. Keep them short and vivid. A real-life example is there to sharpen the technical model, not replace it.
 
 TECHNICAL RULES
-- Preserve technical facts, commands, protocol names, causal relationships, numbers and terminology from the source.
-- Do not invent facts.
-- Keep commands and configuration exact.
-- Explain why concepts exist, not only what they are.
-- Include failure modes and troubleshooting reasoning.
-- Slow down around networking, commands, protocols, formulas and architecture.
-- Learner profile: strong software engineer; networking foundations are being rebuilt.
-- End with five retrieval questions and one practical challenge.
+- Preserve technical facts, protocol names, commands, causal relationships, formulas, and numbers from the source.
+- Never invent tool output.
+- When showing a command, say why it is being run and what evidence matters in its output.
+- Separate layers: hardware/link, IP, transport, application protocol, container runtime, orchestrator, cloud, application.
+- Distinguish symptom from cause.
+- Distinguish timeout, refusal, reset, authentication failure, authorization failure, and application error.
+- Explain failure domains and recovery actions.
+- Keep networking foundations explicit because the learner knows application development but is rebuilding network intuition.
+- Mention uncertainty honestly when several hypotheses remain.
 
-VOICE
-- Natural conversational rhythm.
-- Mix short and medium sentences.
-- Allow curiosity and disagreement.
-- Speaker B may challenge assumptions naturally.
-- Speaker A may use compact jokes and memorable phrases.
-- Never sound like corporate training presenters.
+VOICE / RECORDING
+Write for a human voice.
+- One idea per spoken paragraph.
+- Use punctuation to create natural breath points.
+- Do not use markdown bullets inside spoken dialogue.
+- Avoid long lists read aloud like documentation.
+- Keep speaker turns short enough to feel conversational, usually 1–5 sentences.
+- Let Speaker B interrupt with practical questions.
+- Let Speaker A occasionally say "wait", "look at this", or "that's the bit people miss".
+- Do not make Speaker B sound foolish.
+- Do not make Speaker A sound omniscient or theatrical.
+- The result should be believable if recorded by two engineers sitting at a desk with coffee.
 
-The learner performs the Mac lab separately.
+OUTPUT
+Return only the finished dialogue, with "Speaker A:" and "Speaker B:" labels.
+Do not include a preface, summary, metadata, or instructions to the audio model.
+End with five natural retrieval questions and one practical challenge, embedded in the dialogue rather than as a formal worksheet.
 
-Source transcript:
+Source lesson:
 [PASTE LESSON SCRIPT HERE]
