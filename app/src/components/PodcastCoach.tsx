@@ -245,7 +245,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     setAudioPlaying(false);
     lastCueIdRef.current = null;
     lastAudioTimeMsRef.current = 0;
-    setAudioManifests({});
+    // Keep the already-loaded manifest so replay stays voice-synced.
   };
 
   const allRecall = recallDone.every(Boolean);
