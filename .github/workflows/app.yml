@@ -52,6 +52,8 @@ jobs:
           run_stage "check_advanced" npm run check:advanced
           run_stage "check_programme" npm run check:programme
           run_stage "check_runtime" npm run check:runtime
+          run_stage "unit_tests" npm run test:unit
+          run_stage "integration_tests" npm run test:integration
           run_stage "typescript" tsc -b
           run_stage "vite_build" vite build
 
