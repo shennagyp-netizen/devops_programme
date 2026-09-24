@@ -34,3 +34,32 @@ textarea{width:100%;min-height:110px;resize:vertical;border:1px solid #2b385b;bo
 .difficulty-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0}
 .difficulty-grid span{padding:10px;border-radius:10px;background:#0b1124;border:1px solid #273354;color:#cbd5ef;font-size:13px}
 @media(max-width:800px){.course-path-head,.assessment-header{flex-direction:column}.difficulty-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+.course-path-columns {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.course-path-columns > div {
+  min-width: 0;
+}
+
+.course-path-columns ol,
+.course-path-columns ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+@media (max-width: 980px) {
+  .course-path-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .course-path-columns {
+    grid-template-columns: 1fr;
+  }
+}
