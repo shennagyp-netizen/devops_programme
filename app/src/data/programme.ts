@@ -197,6 +197,6 @@ export const platformProfiles: PlatformProfile[] = [
     id: "windows",
     label: "Windows",
     shell: "PowerShell",
-    notes: "Windows-native command adapter planned; conceptual objectives remain shared."
+    notes: "Windows-native command adapter covers the current authored lesson set; conceptual objectives remain shared."
   }
 ];
