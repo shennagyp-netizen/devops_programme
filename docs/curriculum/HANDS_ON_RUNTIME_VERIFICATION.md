@@ -58,8 +58,9 @@ The runner:
 7. requires `StrictHostKeyChecking=yes`
 8. optionally uses an explicit `known_hosts` file and SSH identity
 9. executes only the task's allowlisted command
-10. records exit state and hashed stdout/stderr
-11. writes a machine-verification envelope.
+10. captures bounded stdout/stderr and hashes the captured output
+11. returns exit state plus the captured command result
+12. writes a machine-verification envelope.
 
 The remote target is identified in the envelope as an SSH target with host, user, port and strict known-hosts policy.
 
@@ -70,6 +71,8 @@ The runner currently supports verified remote execution for Linux and macOS targ
 The browser cannot open SSH itself.
 
 After the SSH runner completes, the learner imports the generated JSON evidence file in the lesson's **Optional Verified Execution** panel.
+
+The runner returns the actual command output in the evidence envelope, bounded to 64 KiB per stdout/stderr stream.
 
 The browser validates:
 
@@ -83,6 +86,7 @@ The browser validates:
 - SSH target identity
 - strict host-key policy
 - runner identity
+- captured stdout/stderr presence and size
 - timestamps
 - required step coverage
 - output hashes
