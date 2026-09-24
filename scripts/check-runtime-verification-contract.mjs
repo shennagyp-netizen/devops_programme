@@ -8,6 +8,12 @@ const source = await readFile(
   path.join(root, "app", "src", "data", "runtimeVerification.ts"),
   "utf8"
 );
+const catalog = JSON.parse(
+  await readFile(
+    path.join(root, "app", "src", "data", "runtimeTasks.json"),
+    "utf8"
+  )
+);
 
 let failed = false;
 
@@ -21,7 +27,8 @@ if (!source.includes("export function validateMachineVerification")) {
   console.error("Machine verification validator is missing.");
 }
 
-const taskIds = [...source.matchAll(/taskId:\s*"([^"]+)"/g)].map((match) => match[1]);
+const runtimeTasks = Array.isArray(catalog.runtimeTasks) ? catalog.runtimeTasks : [];
+const taskIds = runtimeTasks.map((task) => task.taskId);
 const duplicateTaskIds = taskIds.filter(
   (id, index) => taskIds.indexOf(id) !== index
 );
@@ -31,9 +38,9 @@ if (duplicateTaskIds.length) {
   console.error("Duplicate runtime task IDs: " + [...new Set(duplicateTaskIds)].join(", "));
 }
 
-const stepIds = [...source.matchAll(
-  /id:\s*"([^"]+)",\s*kind:\s*"(observe|change|failure|restore|verify)"/g
-)].map((match) => match[1]);
+const stepIds = runtimeTasks.flatMap((task) =>
+  Array.isArray(task.steps) ? task.steps.map((step) => step.id) : []
+);
 
 if (!stepIds.length) {
   failed = true;
@@ -41,8 +48,12 @@ if (!stepIds.length) {
 }
 
 for (const platform of ["macos", "linux", "windows"]) {
-  const needle = platform + ": command(";
-  if (!source.includes(needle)) {
+  const hasPlatformCommand = runtimeTasks.some((task) =>
+    Array.isArray(task.steps) &&
+    task.steps.some((step) => step.commands && step.commands[platform])
+  );
+
+  if (!hasPlatformCommand) {
     failed = true;
     console.error("Runtime task has no " + platform + " command mapping.");
   }
