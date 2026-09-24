@@ -1,0 +1,267 @@
+DAY 4 — CI/CD + TERRAFORM + CLOUD
+
+EPISODE D4.1 — Git as a Production Workflow
+
+Speaker A: Git becomes a DevOps tool when history, review, artifacts, and rollback matter.
+
+Speaker B: I already use Git. What changes?
+
+Speaker A: The change is operational accountability. A production deployment should be traceable to a reviewed change and a reproducible artifact.
+
+Speaker A: Think of a legal document. You care about versions, approvals, and exactly which version was signed. Production software needs the same discipline.
+
+Speaker A: Real-life example: if a bank asks which contract version was applied yesterday, 'I think it was the latest one' is not a satisfactory answer.
+
+Speaker A: Lab: create a branch, commit a change, inspect the diff, tag a release, and practice reverting to a known-good version.
+Speaker B: I use Git every day, but production changes feel different.
+
+Speaker A: They should. A local commit can be useful to you. A production change has to be explainable to other people and recoverable by the system.
+
+Speaker B: Meaning I want to know what changed, who reviewed it, which artifact came from it, and how to get back.
+
+Speaker A: Exactly. Git gives you history, but the operational workflow adds review, validation, release identity, and rollback thinking.
+
+Speaker B: Legal document analogy?
+
+Speaker A: If a contract changed after approval, everyone wants to know which version was approved. Software is not a legal document, obviously, but production systems need similar traceability.
+
+Speaker B: Prediction. I tag a release. Why is that more useful than saying “the latest code”?
+
+Speaker A: Because “latest” moves. A release identifier should be stable enough that you can point at exactly what was deployed.
+
+Speaker B: So incident response becomes “deployment X introduced this,” instead of “someone changed something.”
+
+Speaker A: That's the difference.
+
+Speaker B: Mac lab?
+
+Speaker A: Make a tiny change on a branch. Inspect status and history. Commit it with a meaningful message. Then compare the branch with the previous revision and describe how you would identify the exact production version.
+
+Speaker B: No fancy Git tricks.
+
+Speaker A: Not yet. Master the basic evidence first.
+
+
+EPISODE D4.2 — CI/CD Mental Model
+
+Speaker A: CI/CD is a controlled path from source code to running software.
+
+Speaker B: The path is more important than the YAML.
+
+Speaker A: Exactly. Source enters, tests run, an artifact is built, security and policy checks run, and deployment is promoted through environments.
+
+Speaker A: Real-life analogy: an airport. You do not let every passenger directly onto the runway. There are identity checks, screening, gates, and controlled movement.
+
+Speaker B: So production is the runway.
+
+Speaker A: Correct. You want fewer surprises there.
+
+Speaker A: Lab: design the pipeline on paper first, then implement a minimal GitHub Actions workflow.
+Speaker B: CI/CD seems obvious until teams make it a pile of scripts.
+
+Speaker A: The clean model is simple. Source change goes through automated checks, produces a reproducible artifact, and moves through controlled environments.
+
+Speaker B: So the artifact is important because we don't want production rebuilding something different.
+
+Speaker A: Exactly. Build once, promote the artifact when appropriate. That keeps the thing you tested close to the thing you deploy.
+
+Speaker B: Airport analogy?
+
+Speaker A: A passenger goes through identity and security checks before boarding. You don't repeat a completely different identity check after the plane takes off. The analogy isn't perfect, but it captures staged gates.
+
+Speaker B: Prediction. Tests pass, but deployment fails because the runtime environment is different.
+
+Speaker A: Good. CI success is evidence about the build and test environment. It isn't proof that every production dependency is healthy.
+
+Speaker B: So environment drift can exist even with green tests.
+
+Speaker A: Exactly.
+
+Speaker B: Mac lab?
+
+Speaker A: Sketch your own pipeline for one small app: commit, validation, artifact, staging, production. For each stage, write what evidence it should produce and what failure it can catch. Then deliberately remove one gate and explain what new risk appears.
+
+Speaker B: That is more useful than learning one vendor pipeline by button names.
+
+Speaker A: Vendors change. The control model survives.
+
+
+EPISODE D4.3 — GitHub Actions
+
+Speaker A: Now turn the pipeline into executable automation.
+
+Speaker B: Workflow, job, step, runner.
+
+Speaker A: Think of a factory. The workflow is the production order, jobs are workstations, steps are operations, and runners are machines executing them.
+
+Speaker A: Artifacts are the packaged outputs that move between stages.
+
+Speaker A: Real-life example: a bakery does not ask a different employee to guess the recipe every morning. The process is written down and reproducible.
+
+Speaker A: Lab: test, build, package, and publish a container artifact.
+
+Speaker B: And secrets?
+
+Speaker A: Credentials should enter securely at the boundary, not be baked into source or artifacts.
+Speaker B: GitHub Actions gives the model a concrete shape: workflows, jobs, steps, runners.
+
+Speaker A: Right. But don't mistake syntax for architecture. A workflow is a way to encode the pipeline you already understand.
+
+Speaker B: Cache and artifacts always confuse people.
+
+Speaker A: Cache is about reusing data to make work faster. An artifact is a produced result you may need later. Those are different purposes.
+
+Speaker B: And the runner is just where the job executes.
+
+Speaker A: Exactly.
+
+Speaker B: Real-life version?
+
+Speaker A: Think of a bakery. The recipe is the workflow. Each station performs a step. Ingredients already prepared can be reused. The finished cake is an artifact. You don't confuse the stored flour with the cake.
+
+Speaker B: Prediction. A cached dependency is corrupted. Why is “the cache restored successfully” not proof the build is healthy?
+
+Speaker A: Because the cache is an optimization, not the semantic authority of the build. Your build should still validate the result.
+
+Speaker B: Mac lab?
+
+Speaker A: Create a small workflow with checkout, setup, build, and artifact upload. Make one step fail intentionally. Read the logs from the failed step, not just the red status at the top.
+
+Speaker B: Because the red status tells me it failed, not why.
+
+Speaker A: Exactly. Statuses are summaries. Logs are evidence.
+
+
+EPISODE D4.4 — Infrastructure as Code
+
+Speaker A: Infrastructure becomes code when the intended environment is described declaratively and changes become reviewable.
+
+Speaker B: Like architecture diagrams, but executable.
+
+Speaker A: Exactly, with the important addition that state and lifecycle matter.
+
+Speaker A: Real-life analogy: building permits and construction plans. The document describes what should exist; construction changes reality.
+
+Speaker A: Real-life example: if a cloud environment can only be recreated by clicking through someone's memory, your infrastructure is a story, not a system.
+
+Speaker A: Lab: define a small network or service in Terraform and inspect the plan before applying.
+Speaker B: Infrastructure as Code feels like programming infrastructure without pretending every server is a pet.
+
+Speaker A: That's a good instinct. Declarative configuration describes desired infrastructure. The tool figures out a plan to reach that state.
+
+Speaker B: Which is different from a shell script that blindly runs commands.
+
+Speaker A: Often, yes. Declarative tools can compare configuration, observed state, and recorded state.
+
+Speaker B: Prediction. Someone changes a cloud resource manually and nobody updates the code.
+
+Speaker A: What should you expect?
+
+Speaker B: Drift. The desired configuration and actual infrastructure no longer agree.
+
+Speaker A: Right. Then plan becomes valuable evidence. It can reveal a difference before the next apply turns into a surprise.
+
+Speaker B: Real-life example?
+
+Speaker A: A construction plan says there should be a wall in one place. Someone moved it last week without updating the drawings. The building exists, but the documentation and reality disagree.
+
+Speaker B: Mac lab?
+
+Speaker A: Start with a tiny Terraform configuration. Run init and plan. Change one declared property. Then make one corresponding external change only if your chosen safe lab supports it. Run plan again and describe the drift.
+
+Speaker B: So state isn't the infrastructure itself.
+
+Speaker A: Correct. That's a crucial distinction. State is information Terraform uses to understand what it believes exists and to coordinate changes. Your real infrastructure still lives in the provider.
+
+
+EPISODE D4.5 — Terraform Lifecycle
+
+Speaker A: Terraform's important loop is init, plan, review, apply, observe.
+
+Speaker B: And state?
+
+Speaker A: State is part of Terraform's knowledge about what it manages. Drift means reality changed outside that expected path.
+
+Speaker A: Think of inventory management. If the spreadsheet says ten devices exist and the warehouse actually contains eight, the discrepancy is operationally important.
+
+Speaker A: Real-life example: manual cloud console changes create exactly this kind of drift.
+
+Speaker A: Lab: apply an environment, change one property manually, then use plan to discover the difference.
+Speaker B: Terraform lifecycle sounds procedural even though the tool is declarative.
+
+Speaker A: That's because the operational workflow matters: initialize, inspect, plan, review, apply, and understand the resulting state.
+
+Speaker B: Plan is the safety checkpoint.
+
+Speaker A: It's a checkpoint, not a guarantee. You still need to understand what will change and what external systems may do.
+
+Speaker B: State locking?
+
+Speaker A: Shared state requires coordination. Two people applying changes against the same state at the same time can create conflicts or worse if coordination is missing.
+
+Speaker B: Warehouse analogy?
+
+Speaker A: Imagine two workers updating the same inventory ledger simultaneously. Even if both have correct intentions, the shared state can become inconsistent without coordination.
+
+Speaker B: Prediction. The configuration hasn't changed, but plan suddenly proposes a resource change.
+
+Speaker A: Possible explanations?
+
+Speaker B: Drift. Provider behavior. State mismatch. A computed value changed.
+
+Speaker A: Good. Now you're thinking in hypotheses instead of assuming the code file is guilty.
+
+Speaker B: Mac lab?
+
+Speaker A: Work in a disposable environment. Initialize. Plan. Review the plan out loud. Apply. Plan again. You should see no unnecessary changes when the configuration and state are aligned.
+
+Speaker B: And then deliberately create one controlled discrepancy.
+
+Speaker A: Exactly. Terraform becomes understandable when you can explain why the second plan changed.
+
+
+EPISODE D4.6 — Cloud Primitives
+
+Speaker A: Cloud vendors package familiar primitives into managed services: compute, networking, storage, identity, load balancing, databases, queues and caches.
+
+Speaker B: So I should learn the concepts before memorizing service names.
+
+Speaker A: Absolutely. Otherwise you become excellent at flash cards and mediocre at architecture.
+
+Speaker A: Real-life example: every city needs roads, warehouses, electricity, addresses, security and public transport. Different cities give them different names and implementations. Cloud providers do the same with infrastructure primitives.
+
+Speaker A: We will map concepts to AWS examples only after the mental model is clear.
+
+Speaker A: Lab: take one reference application and identify every primitive it requires, what owns it, what can fail, and what it costs operationally.
+Speaker B: Cloud is where the vocabulary explodes.
+
+Speaker A: Then reduce it to primitives. Compute. Network. Storage. Identity. Database. Queue. Cache.
+
+Speaker B: And managed services are composed from those ideas.
+
+Speaker A: Exactly. The names differ by provider, but the operational questions remain similar.
+
+Speaker B: City infrastructure?
+
+Speaker A: Compute is like buildings and workers. Networks are roads. Storage is warehouses. Identity is access control. Queues are waiting areas for work. A cache is a nearby copy that saves expensive travel.
+
+Speaker B: Prediction. If I add more application servers but keep one database as the bottleneck, have I solved scaling?
+
+Speaker A: You changed one part of the system. The bottleneck may simply move.
+
+Speaker B: So scale is a property of the whole dependency graph.
+
+Speaker A: Exactly. That's one of the most important transitions in this programme.
+
+Speaker B: And identity?
+
+Speaker A: Every networked system needs to know who can access what. Security becomes part of the architecture, not a finishing touch.
+
+Speaker B: Mac lab?
+
+Speaker A: Draw a small cloud architecture for a web application. Use only primitives first. Then map each box to one managed service from a cloud provider you know. Finally remove the provider names and explain the system again.
+
+Speaker B: So I'm learning the architecture vocabulary, not memorizing a vendor menu.
+
+Speaker A: Right. Vendors are implementations of patterns you need to understand.
+
