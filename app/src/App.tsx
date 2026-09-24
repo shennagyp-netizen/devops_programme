@@ -13,7 +13,6 @@ import {
   uncompleteLearningItem
 } from "./data/learnerProgress";
 
-
 export default function App() {
   const [course, setCourse] = useState<CourseLevel>("intermediate");
   const [platform, setPlatform] = useState<PlatformId>("macos");
@@ -260,7 +259,7 @@ export default function App() {
           onSelectLesson={setS}
           onEvidenceRecorded={() => setEvidenceVersion((value) => value + 1)}
           onMaster={() => void toggle(l.id)}
-                  />
+        />
       </main>
     </div>
   );
