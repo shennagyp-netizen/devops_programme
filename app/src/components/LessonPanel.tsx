@@ -36,7 +36,9 @@ export function LessonPanel({
   onMaster,
   diagnosticRecommendation,
   onSelectLesson,
-  onEvidenceRecorded
+  onEvidenceRecorded,
+  progressReady = true,
+  progressSaving = false
 }: {
   lesson: CourseLesson;
   mastered: boolean;
@@ -45,6 +47,8 @@ export function LessonPanel({
   diagnosticRecommendation?: DiagnosticRecommendation;
   onSelectLesson?: (lessonId: string) => void;
   onEvidenceRecorded?: () => void;
+  progressReady?: boolean;
+  progressSaving?: boolean;
 }) {
   const [mode, setMode] = useState<Mode>("learn");
   const [showTheory, setShowTheory] = useState(true);
@@ -294,13 +298,21 @@ export function LessonPanel({
         <button
           className={mastered ? "mastered" : "primary"}
           onClick={onMaster}
-          disabled={!exerciseRecorded && !mastered}
+          disabled={
+            !progressReady ||
+            progressSaving ||
+            (!exerciseRecorded && !mastered)
+          }
         >
-          {mastered
-            ? "Mastered"
-            : exerciseRecorded
-              ? "Mark complete"
-              : "Complete the required exercise first"}
+          {!progressReady
+            ? "Loading saved progress..."
+            : progressSaving
+              ? "Saving..."
+              : mastered
+                ? "Mastered"
+                : exerciseRecorded
+                  ? "Mark complete"
+                  : "Complete the required exercise first"}
         </button>
       </div>
 
