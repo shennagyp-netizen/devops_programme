@@ -73,6 +73,52 @@ describe("assessment bank integration", () => {
     }
   });
 
+  it("matches family quotas and validates item-level response contracts", async () => {
+    const familyCounts = {
+      conceptual: 20,
+      diagnostic: 12,
+      "hands-on": 8
+    };
+
+    const allowedCognitiveLevels = {
+      conceptual: new Set(["mechanism", "application", "design"]),
+      diagnostic: new Set(["application", "diagnosis"]),
+      "hands-on": new Set(["application", "diagnosis", "design"])
+    };
+
+    for (const { course, section } of cases) {
+      const bank = JSON.parse(
+        await readFile(path.join(root, course, section + ".json"), "utf8")
+      );
+
+      for (const [family, expectedCount] of Object.entries(familyCounts)) {
+        const items = bank.items.filter((item) => item.family === family);
+        expect(items).toHaveLength(expectedCount);
+
+        for (const item of items) {
+          expect(allowedCognitiveLevels[family].has(item.cognitiveLevel)).toBe(true);
+          expect(item.competencyId.startsWith(section + ".")).toBe(true);
+          expect(item.prompt.trim()).not.toBe("");
+          expect(item.itemType.trim()).not.toBe("");
+          expect(item.expectedMinutes).toBeGreaterThan(0);
+
+          if (item.options) {
+            expect(item.options.length).toBeGreaterThan(1);
+            expect(Number.isInteger(item.correctOption)).toBe(true);
+            expect(item.correctOption).toBeGreaterThanOrEqual(0);
+            expect(item.correctOption).toBeLessThan(item.options.length);
+          } else {
+            expect(
+              item.expectedElements?.length ||
+              item.scoring?.full?.length ||
+              item.scoringNote
+            ).toBeTruthy();
+          }
+        }
+      }
+    }
+  });
+
   it("contains executable evidence contracts for hands-on items", async () => {
     for (const { course, section } of cases) {
       const bank = JSON.parse(
