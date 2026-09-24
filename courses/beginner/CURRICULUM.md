@@ -104,12 +104,14 @@ Human example: when a shop cannot take orders, the first job is to keep customer
 
 ## Beginner assessment
 
-Each section has:
-- conceptual exam
-- diagnostic exam
-- hands-on exam
+Each of the seven sections has:
+- a 40-item pilot bank
+- conceptual assessment
+- diagnostic assessment
+- hands-on assessment
+- the controlled 15% foundation / 35% applied / 35% difficult / 15% challenge difficulty mix
 
-Each form contains varied difficulty from foundation to challenge.
+The seven pilot banks currently contain 280 items in total. They are learning/pilot pools, not certification pools.
 
 ## Human teaching rule
 
