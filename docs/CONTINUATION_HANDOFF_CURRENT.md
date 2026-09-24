@@ -1323,3 +1323,44 @@ TDD:
 - PostgreSQL enforces the supported item-type invariant and unique user/item identity.
 
 The branch is intended to be merged to `main` only as this single architecture. A hosted CI failure caused by runner infrastructure must remain visible rather than being bypassed or reclassified as a source-code pass.
+
+
+============================================================
+33. POST-AUTH MIGRATION RED-TEAM AUDIT — 2026-09-24
+============================================================
+
+Security/TDD pass after the authenticated Next.js + Clerk migration:
+
+Fixed:
+- completion persistence now resolves item identity through the server-side published curriculum catalog;
+- fabricated lesson/project IDs are rejected before database access;
+- client course/project metadata must match the server-authoritative item;
+- stronger unsupported completion claims such as machine-verified are rejected;
+- the broken literal \\n environment ignore entry was replaced with real .env ignore rules;
+- the Vitest runner no longer imports the removed @vitejs/plugin-react dependency;
+- the Node runtime floor and CI runner were moved from EOL Node 20 to maintained Node 22;
+- local terminal-agent CORS is origin-allowlisted rather than reflecting arbitrary origins;
+- terminal pairing tokens are browser-session scoped instead of persistent localStorage;
+- local terminal execution is serialized and output/request sizes are bounded.
+
+Current published completion registry:
+- lessons
+- projects
+- assignments/questions remain forward-compatible in the input type but are rejected until a server-side published registry exists.
+
+Important boundary:
+verificationLevel is completion metadata, not proof of machine execution. The current learner-completion path does not promote browser claims to machine authority.
+
+Tests added:
+- published learning-item registry unit tests
+- fabricated progress red-team test
+- metadata consistency test
+- verification-claim red-team test
+- repository/security boundary tests.
+
+CI truth for PR #18:
+The connector has not returned an executed GitHub Actions run for the security branch snapshot, so the branch is not described as CI-green. The implementation should not be called fully validated until an actual runner result is observed.
+
+Operational security follow-up:
+- the repository still has no committed npm lockfile, so npm install can resolve ranged transitive dependencies differently across runs;
+- Next.js 16.3.6 is the currently pinned patched release for the September 22, 2026 critical next/og advisory, but the scheduled September 30 security release should be reviewed before production promotion.
