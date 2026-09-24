@@ -89,7 +89,7 @@ Speaker A: Exactly.
 
 Speaker B: Prediction. A replica is healthy but slightly behind. Can it always answer a read that requires the newest write?
 
-Speaker A: Not necessarily. You need to understand the consistency semantics of that system.
+Speaker A: Not necessarily. You need to understand the consistency rules of that system.
 
 Speaker B: And sharding changes the question.
 
@@ -350,7 +350,7 @@ Speaker B: That sounds less like an exam and more like a personal attack.
 
 Speaker A: It is a practical exam.
 
-Speaker A: In a real incident, you do not start by changing random settings. Observe. Form a hypothesis. Measure. Isolate. Mitigate. Recover. Then find root cause and prevent recurrence.
+Speaker A: In a real incident, you do not start by changing random settings. Observe. Form a hypothesis. Measure. Isolate. Reduce the impact. Recover. Then find root cause and prevent recurrence.
 
 Speaker A: Real-life analogy: emergency medicine. Triage first, stabilize the patient, then investigate the deeper cause.
 
@@ -358,7 +358,7 @@ Speaker B: And the social lesson?
 
 Speaker A: During an incident, calm communication is part of the system. People need clear facts, ownership, timelines, and decisions. Panic is not an observability signal.
 
-Speaker A: Lab: given a dashboard and logs, identify the most likely failure, perform the minimum safe mitigation, and explain why you chose it.
+Speaker A: Lab: given a dashboard and logs, identify the most likely failure, perform the minimum safe safer action, and explain why you chose it.
 
 Speaker B: So the final skill is not knowing every tool.
 
@@ -371,7 +371,7 @@ Speaker B: Emergency medicine analogy.
 
 Speaker A: Triage. First determine what is failing, who is affected, and whether there is immediate danger. Then stabilize. Then investigate deeply.
 
-Speaker B: So mitigation before root-cause perfection.
+Speaker B: So safer action before root-cause perfection.
 
 Speaker A: Often, yes. You need to reduce harm while preserving enough evidence to understand what happened.
 
@@ -379,9 +379,9 @@ Speaker B: Prediction. Latency doubles across one region. Error rate is rising. 
 
 Speaker A: What's your first move?
 
-Speaker B: Don't immediately roll back just because the deploy is suspicious. First determine whether the affected population matches the deployment scope, compare the timing, inspect signals, and decide whether rollback is a safe mitigation.
+Speaker B: Don't immediately roll back just because the deploy is suspicious. First determine whether the affected population matches the deployment scope, compare the timing, inspect signals, and decide whether rollback is a safe safer action.
 
-Speaker A: Good. And if rollback is clearly the lowest-risk mitigation?
+Speaker A: Good. And if rollback is clearly the lowest-risk safer action?
 
 Speaker B: Do it, then keep investigating.
 
@@ -393,11 +393,11 @@ Speaker A: Please put that on the wall.
 
 Speaker B: Mac exercise?
 
-Speaker A: Take a fictional incident and write the first ten minutes minute by minute. What do you observe? What hypothesis do you form? What is the least risky mitigation? What evidence do you preserve? What tells you recovery succeeded?
+Speaker A: Take a fictional incident and write the first ten minutes minute by minute. What do you observe? What hypothesis do you form? What is the least risky safer action? What evidence do you preserve? What tells you recovery succeeded?
 
 Speaker B: Then after recovery, postmortem.
 
-Speaker A: Right. Not a blame document. A learning document: what failed, why detection or mitigation took time, what changes reduce recurrence, and what evidence would tell us the fix works.
+Speaker A: Right. Not a blame document. A learning document: what failed, why detection or safer action took time, what changes reduce recurrence, and what evidence would tell us the fix works.
 
 Speaker B: So the final skill isn't knowing every tool.
 
