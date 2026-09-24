@@ -38,11 +38,25 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   const [episodeSource, setEpisodeSource] = useState("");
   const [audioTimeMs, setAudioTimeMs] = useState(0);
   const [audioPlaying, setAudioPlaying] = useState(false);
+  const [scriptVersions, setScriptVersions] = useState<Record<string, string>>({});
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const lastCueIdRef = useRef<string | null>(null);
   const lastAudioTimeMsRef = useRef(0);
 
-  const audioManifest = getPodcastAudioManifest(lesson.id);
+  const rawAudioManifest = getPodcastAudioManifest(lesson.id);
+  const scriptVersion = scriptVersions[lesson.id];
+  const audioManifest =
+    rawAudioManifest && scriptVersion === rawAudioManifest.scriptVersion
+      ? rawAudioManifest
+      : undefined;
+  const audioSyncState =
+    rawAudioManifest && !scriptVersion
+      ? "checking"
+      : rawAudioManifest && audioManifest
+        ? "voice-synced"
+        : rawAudioManifest
+          ? "stale-audio"
+          : "guided";
 
   useEffect(() => {
     let cancelled = false;
@@ -63,13 +77,31 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     audioRef.current?.pause();
     audioRef.current = null;
 
-    fetch(podcastUrl(dayFor(lesson.id)))
-      .then((r) => (r.ok ? r.text() : ""))
-      .then((t) => {
-        if (!cancelled) setEpisodeSource(t);
+    Promise.all([
+      fetch(podcastUrl(dayFor(lesson.id))).then((r) => (r.ok ? r.text() : "")),
+      fetch("/podcasts/manifest.json")
+        .then((r) =>
+          r.ok
+            ? (r.json() as Promise<{
+                schemaVersion: number;
+                source: string;
+                episodes: Record<string, string>;
+              }>)
+            : { schemaVersion: 0, source: "", episodes: {} }
+        )
+        .catch(() => ({ schemaVersion: 0, source: "", episodes: {} }))
+    ])
+      .then(([text, manifest]) => {
+        if (!cancelled) {
+          setEpisodeSource(text);
+          setScriptVersions(manifest.episodes ?? {});
+        }
       })
       .catch(() => {
-        if (!cancelled) setEpisodeSource("");
+        if (!cancelled) {
+          setEpisodeSource("");
+          setScriptVersions({});
+        }
       });
 
     return () => {
@@ -216,7 +248,13 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
           <h3>The podcast teaches. I make you think.</h3>
         </div>
         <div className="coach-phase">
-          {audioManifest ? "voice-synced" : "guided transcript"}
+          {audioSyncState === "voice-synced"
+            ? "voice-synced"
+            : audioSyncState === "stale-audio"
+              ? "stale audio"
+              : audioSyncState === "checking"
+                ? "checking audio"
+                : "guided transcript"}
         </div>
       </div>
 
@@ -267,9 +305,13 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
               {audioManifest ? "Voice + React are synchronized" : "Audio sync is not yet available"}
             </h4>
             <p>
-              {audioManifest
+              {audioSyncState === "voice-synced"
                 ? "The audio clock drives the transcript and exercise cues. React never guesses timing from sentence length."
-                : "The current repository has text scripts but no aligned audio manifest for this episode yet. Until aligned audio exists, use the guided transcript as a safe fallback."
+                : audioSyncState === "stale-audio"
+                  ? "This recording was generated from an older script revision. React is refusing to use it until the recording is realigned."
+                  : audioSyncState === "checking"
+                    ? "Checking that the recording and the current episode script are the same revision."
+                    : "The current repository has text scripts but no aligned audio manifest for this episode yet. The guided transcript is the safe fallback."
               }
             </p>
           </div>
