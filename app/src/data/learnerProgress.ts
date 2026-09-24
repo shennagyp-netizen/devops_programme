@@ -90,7 +90,7 @@ async function migrateLegacyMasteredLessons(items: CompletionRecord[]) {
   return legacyIds.length > 0;
 }
 
-export async function listCompletedItems(): Promise<CompletionRecord[]> {
+export async function listCompletionHistory(): Promise<CompletionRecord[]> {
   const learnerId = getLearnerId();
   const result = await request<{ items: CompletionRecord[] }>(
     API_URL + "?learnerId=" + encodeURIComponent(learnerId),
