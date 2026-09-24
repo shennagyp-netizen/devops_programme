@@ -180,9 +180,7 @@ export const diagnosticDefinitions: DiagnosticDefinition[] = [
         correctOption: 1
       }
     ]
-  }
-];
-
+  },
   {
     sectionId: "I-F1",
     course: "intermediate",
@@ -341,7 +339,9 @@ export const diagnosticDefinitions: DiagnosticDefinition[] = [
         correctOption: 0
       }
     ]
-  },
+  }
+];
+
 export const diagnosticBySection = Object.fromEntries(
   diagnosticDefinitions.map((definition) => [definition.sectionId, definition])
 ) as Record<string, DiagnosticDefinition>;
