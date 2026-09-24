@@ -3,6 +3,7 @@ import type { CourseLesson } from "../data/courseLessons";
 import type { PlatformId } from "../data/programme";
 import type { DiagnosticRecommendation } from "../data/diagnostics";
 import { diagnosticBySection } from "../data/diagnostics";
+import { addEvidence } from "../data/evidence";
 import { MotionIllustration } from "./MotionIllustration";
 import { PodcastCoach } from "./PodcastCoach";
 import { AssessmentPanel } from "./AssessmentPanel";
@@ -21,7 +22,8 @@ export function LessonPanel({
   platform,
   onMaster,
   diagnosticRecommendation,
-  onSelectLesson
+  onSelectLesson,
+  onEvidenceRecorded
 }: {
   lesson: CourseLesson;
   mastered: boolean;
@@ -29,6 +31,7 @@ export function LessonPanel({
   onMaster: () => void;
   diagnosticRecommendation?: DiagnosticRecommendation;
   onSelectLesson?: (lessonId: string) => void;
+  onEvidenceRecorded?: () => void;
 }) {
   const [mode, setMode] = useState<Mode>("learn");
   const evidenceKey = `devops-programme-exercise-evidence:${lesson.id}`;
@@ -213,7 +216,15 @@ export function LessonPanel({
                 } catch {
                   // Local evidence is best-effort in the MVP.
                 }
+                addEvidence({
+                  course: lesson.course,
+                  projectId: lesson.projectId,
+                  lessonId: lesson.id,
+                  kind: "exercise",
+                  summary: exerciseEvidence.trim()
+                });
                 setExerciseRecorded(true);
+                onEvidenceRecorded?.();
               }}
             >
               Record exercise evidence
