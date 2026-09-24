@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { CourseLesson } from "../data/courseLessons";
 import type { PlatformId } from "../data/programme";
 import type { DiagnosticRecommendation } from "../data/diagnostics";
@@ -31,9 +31,33 @@ export function LessonPanel({
   onSelectLesson?: (lessonId: string) => void;
 }) {
   const [mode, setMode] = useState<Mode>("learn");
-  const [exerciseEvidence, setExerciseEvidence] = useState("");
-  const [exerciseRecorded, setExerciseRecorded] = useState(false);
+  const evidenceKey = `devops-programme-exercise-evidence:${lesson.id}`;
+  const [exerciseEvidence, setExerciseEvidence] = useState(() => {
+    try {
+      return localStorage.getItem(evidenceKey) ?? "";
+    } catch {
+      return "";
+    }
+  });
+  const [exerciseRecorded, setExerciseRecorded] = useState(() => {
+    try {
+      return Boolean(localStorage.getItem(evidenceKey));
+    } catch {
+      return false;
+    }
+  });
   const command = lesson.platformCommands[platform] ?? lesson.lab.command;
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(evidenceKey) ?? "";
+      setExerciseEvidence(stored);
+      setExerciseRecorded(Boolean(stored));
+    } catch {
+      setExerciseEvidence("");
+      setExerciseRecorded(false);
+    }
+  }, [evidenceKey]);
   const remediationTarget =
     diagnosticBySection[lesson.sectionId]?.remediationLessonIds[0];
 
@@ -165,15 +189,32 @@ export function LessonPanel({
             <textarea
               value={exerciseEvidence}
               onChange={(event) => {
-                setExerciseEvidence(event.target.value);
+                const value = event.target.value;
+                setExerciseEvidence(value);
                 setExerciseRecorded(false);
+                try {
+                  if (value.trim()) {
+                    localStorage.setItem(evidenceKey, value);
+                  } else {
+                    localStorage.removeItem(evidenceKey);
+                  }
+                } catch {
+                  // Local evidence is best-effort in the MVP.
+                }
               }}
               placeholder="Example: DNS resolved, TCP connected, but TLS failed after the certificate changed."
             />
             <button
               className="primary"
               disabled={!exerciseEvidence.trim()}
-              onClick={() => setExerciseRecorded(true)}
+              onClick={() => {
+                try {
+                  localStorage.setItem(evidenceKey, exerciseEvidence);
+                } catch {
+                  // Local evidence is best-effort in the MVP.
+                }
+                setExerciseRecorded(true);
+              }}
             >
               Record exercise evidence
             </button>
