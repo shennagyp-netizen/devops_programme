@@ -20,11 +20,20 @@ The application accepts machine-verified evidence only when the envelope is stru
 
 ## Current state
 
-The repository now contains the transport-neutral runtime task contract and fail-closed envelope validator.
+The repository contains:
+- the transport-neutral runtime task contract
+- the fail-closed machine-verification envelope validator
+- a local runner for B1.2
 
-The current implementation does not claim that a runtime runner is deployed or that any learner command has already been machine-verified.
+The local runner defaults to dry-run. Actual execution requires explicit --execute.
 
-The first runner-ready task is the request-path observation for B1.2. It is intentionally non-destructive: DNS resolution and an HTTPS connectivity check.
+From the app directory, the runner can be invoked as:
+
+npm run hands-on:run -- --execute --task=hands-on-B1.2
+
+The B1.2 task is intentionally non-destructive: DNS resolution and an HTTPS connectivity check.
+
+Running the command on a learner machine can produce machine-verification evidence for those two observations. The repository does not claim that a learner has already run it merely because the runner exists.
 
 ## Safety
 
