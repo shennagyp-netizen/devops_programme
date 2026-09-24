@@ -45,6 +45,7 @@ for (const sectionId of sections) {
 
   for (const item of bank.items) {
     if (!item.prompt || !item.prompt.trim()) fail("Empty prompt: " + sectionId + "/" + item.id);
+    if (typeof item.itemType !== "string" || !item.itemType.trim()) fail("Invalid itemType: " + sectionId + "/" + item.id);
     if (!item.competencyId || !item.competencyId.startsWith(sectionId + ".")) fail("Wrong competency: " + sectionId + "/" + item.id);
     if (!Number.isFinite(item.expectedMinutes) || item.expectedMinutes <= 0) fail("Bad time: " + sectionId + "/" + item.id);
 
