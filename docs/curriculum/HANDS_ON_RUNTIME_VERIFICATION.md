@@ -55,7 +55,7 @@ The local agent:
 - captures bounded stdout/stderr and hashes the captured output
 - returns the machine-verification envelope directly to the website.
 
-The browser can reach a loopback service from a secure context subject to browser local-network permissions and normal CORS/security rules. The application therefore detects agent availability and keeps the manual terminal path visible whenever the agent is unavailable. Current browser standards expose loopback/local-network controls for this use case. citeturn258037search1turn258037search3
+The browser can reach a loopback service from a secure context subject to browser local-network permissions and normal CORS/security rules. The application therefore detects agent availability and keeps the manual terminal path visible whenever the agent is unavailable. Current browser standards expose loopback/local-network controls for this use case.
 
 The website never receives arbitrary shell access. It can request only catalogued task IDs.
 
