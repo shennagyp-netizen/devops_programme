@@ -94,12 +94,16 @@ The transcript is a recovery aid, not a replacement for listening and operating.
 
 The learner should accumulate an evidence ledger rather than only a completion percentage.
 
+The current MVP persists local diagnostic and exercise evidence and associates it with the project.
+
 Examples:
 - successful prerequisite exercise
 - deliberate failure diagnosis
 - hands-on repair
 - project incident
 - exam evidence
+
+The current ledger is local and learner-entered. A future hands-on engine will add machine-verified evidence and stronger integrity controls.
 
 The eventual competency record should be explainable: what was demonstrated, under what conditions, and by which evidence.
 
