@@ -1,0 +1,58 @@
+import type { CourseLevel } from "./programme";
+
+export type EvidenceKind =
+  | "diagnostic"
+  | "exercise"
+  | "failure"
+  | "recovery"
+  | "assessment"
+  | "design";
+
+export type EvidenceEntry = {
+  id: string;
+  course: CourseLevel;
+  projectId: string;
+  lessonId?: string;
+  kind: EvidenceKind;
+  summary: string;
+  createdAt: string;
+};
+
+const STORAGE_KEY = "devops-programme-evidence-ledger";
+
+function readLedger(): EvidenceEntry[] {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]") as EvidenceEntry[];
+  } catch {
+    return [];
+  }
+}
+
+function writeLedger(entries: EvidenceEntry[]) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  } catch {
+    // Local evidence is best-effort in the MVP.
+  }
+}
+
+export function listEvidence(projectId?: string) {
+  const entries = readLedger();
+  return projectId
+    ? entries.filter((entry) => entry.projectId === projectId)
+    : entries;
+}
+
+export function addEvidence(entry: Omit<EvidenceEntry, "id" | "createdAt">) {
+  const next: EvidenceEntry = {
+    ...entry,
+    id: `evidence-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    createdAt: new Date().toISOString()
+  };
+  writeLedger([...readLedger(), next]);
+  return next;
+}
+
+export function clearEvidence() {
+  writeLedger([]);
+}
