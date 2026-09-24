@@ -50,10 +50,10 @@ assert.equal(packageJson.devDependencies.vite, undefined);
 assert.equal(packageJson.devDependencies["@vitejs/plugin-react"], undefined);
 
 assert.match(content.schema, /userId\("user_id"\)/);
-assert.match(content.schema, /learner_progress_history_user_item_uq/);
+assert.match(content.schema, /learner_progress_history_user_item_uq/);\nassert.match(content.schema, /item_type IN/);
 assert.doesNotMatch(content.schema, /learnerId/);
 
-assert.match(content.progress, /onConflictDoNothing/);
+assert.match(content.progress, /onConflictDoNothing/);\nassert.match(content.progress, /orderBy[\\s\\S]*completedAt/);
 assert.match(content.progress, /completedAt/);
 assert.doesNotMatch(content.progress, /stdout|stderr|attempt|machineEnvelope/);
 
