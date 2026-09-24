@@ -62,6 +62,8 @@ describe("machine verification contract", () => {
           startedAt: "2026-09-24T10:00:01.000Z",
           completedAt: "2026-09-24T10:00:02.000Z",
           exitCode: 0,
+          stdout: "",
+          stderr: "",
           stdoutHash: "stdout",
           stderrHash: "stderr",
           result: "passed"
@@ -123,6 +125,8 @@ describe("machine verification contract", () => {
           startedAt: "2026-09-24T10:00:01.000Z",
           completedAt: "2026-09-24T10:00:02.000Z",
           exitCode: 0,
+          stdout: "",
+          stderr: "",
           stdoutHash: validHash,
           stderrHash: validHash,
           result: "passed"
@@ -132,6 +136,8 @@ describe("machine verification contract", () => {
           startedAt: "2026-09-24T10:00:01.000Z",
           completedAt: "2026-09-24T10:00:02.000Z",
           exitCode: 0,
+          stdout: "",
+          stderr: "",
           stdoutHash: validHash,
           stderrHash: validHash,
           result: "passed"
@@ -141,6 +147,8 @@ describe("machine verification contract", () => {
           startedAt: "2026-09-24T10:00:01.000Z",
           completedAt: "2026-09-24T10:00:02.000Z",
           exitCode: 0,
+          stdout: "",
+          stderr: "",
           stdoutHash: validHash,
           stderrHash: validHash,
           result: "passed"
@@ -176,6 +184,8 @@ describe("machine verification contract", () => {
           startedAt: "2026-09-24T10:00:02.000Z",
           completedAt: "2026-09-24T10:00:01.000Z",
           exitCode: 1,
+          stdout: "",
+          stderr: "",
           stdoutHash: "",
           stderrHash: "",
           result: "passed"
@@ -185,6 +195,8 @@ describe("machine verification contract", () => {
           startedAt: "2026-09-24T10:00:03.000Z",
           completedAt: "2026-09-24T10:00:04.000Z",
           exitCode: 0,
+          stdout: "",
+          stderr: "",
           stdoutHash: "b".repeat(64),
           stderrHash: "b".repeat(64),
           result: "passed"
@@ -256,6 +268,8 @@ describe("machine verification contract", () => {
         startedAt: `2026-09-24T10:00:0${index}.000Z`,
         completedAt: `2026-09-24T10:00:1${index}.000Z`,
         exitCode: 0,
+        stdout: "",
+        stderr: "",
         stdoutHash: validHash,
         stderrHash: validHash,
         result: "passed"
@@ -316,6 +330,8 @@ describe("machine verification contract", () => {
         startedAt: `2026-09-24T10:00:0${index}.000Z`,
         completedAt: `2026-09-24T10:00:1${index}.000Z`,
         exitCode: index === 0 ? 1 : 0,
+        stdout: "",
+        stderr: "",
         stdoutHash: validHash,
         stderrHash: validHash,
         result: index === 0 ? "failed" : "passed"
@@ -357,6 +373,8 @@ describe("machine verification contract", () => {
         startedAt: `2026-09-24T10:00:0${index}.000Z`,
         completedAt: `2026-09-24T10:00:1${index}.000Z`,
         exitCode: 0,
+        stdout: "",
+        stderr: "",
         stdoutHash: validHash,
         stderrHash: validHash,
         result: "passed"
@@ -395,6 +413,8 @@ describe("machine verification contract", () => {
         startedAt: "2026-09-24T10:00:01.000Z",
         completedAt: "2026-09-24T10:00:02.000Z",
         exitCode: 0,
+        stdout: "",
+        stderr: "",
         stdoutHash: validHash,
         stderrHash: validHash,
         result: "passed"
@@ -415,6 +435,8 @@ describe("machine verification contract", () => {
       startedAt: `2026-09-24T10:00:0${index}.000Z`,
       completedAt: `2026-09-24T10:00:1${index}.000Z`,
       exitCode: 0,
+      stdout: "",
+      stderr: "",
       stdoutHash: "c".repeat(64),
       stderrHash: "d".repeat(64),
       result: "passed"
