@@ -1,18 +1,141 @@
-import{useState}from"react";
-import type{Lesson}from"../data/curriculum";
-import{MotionIllustration}from"./MotionIllustration";
-import{PodcastCoach}from"./PodcastCoach";
+import { useState } from "react";
+import type { CourseLesson } from "../data/courseLessons";
+import type { PlatformId } from "../data/programme";
+import { MotionIllustration } from "./MotionIllustration";
+import { PodcastCoach } from "./PodcastCoach";
+import { AssessmentPanel } from "./AssessmentPanel";
 
-type Mode="learn"|"listen"|"do"|"recall"|"design";
-export function LessonPanel({lesson,mastered,onMaster}:{lesson:Lesson;mastered:boolean;onMaster:()=>void}){
- const[m,setM]=useState<Mode>("learn");
- return <section className="lesson"><div className="lesson-head"><div><span className="eyebrow">{lesson.id} · {lesson.domain}</span><h2>{lesson.title}</h2><p>{lesson.objective}</p></div><button className={mastered?"mastered":"primary"} onClick={onMaster}>{mastered?"Mastered":"Mark mastered"}</button></div>
- <MotionIllustration lesson={lesson}/>
- <nav className="mode-tabs">{(["learn","listen","do","recall","design"]as Mode[]).map(x=><button key={x} className={m===x?"active":""} onClick={()=>setM(x)}>{x==="listen"?"co-teacher":x}</button>)}</nav>
- {m==="learn"&&<div className="content-card"><h3>Mental model</h3><p>{lesson.objective}</p><p>Connect it to the layer below, the layer above and the failure mode that appears when it is wrong.</p></div>}
- {m==="listen"&&<PodcastCoach lesson={lesson}/>}
- {m==="do"&&<div className="content-card"><h3>Mac lab</h3><p>{lesson.lab.objective}</p><pre><code>{lesson.lab.command}</code></pre><h4>Break/fix</h4><p>{lesson.lab.challenge}</p></div>}
- {m==="recall"&&<div className="content-card"><h3>Retrieval</h3><ol>{lesson.recall.map(q=><li key={q}>{q}</li>)}</ol></div>}
- {m==="design"&&<div className="content-card"><h3>Production design</h3><p>Place this concept in a system serving millions of users. Identify dependency, failure domain, first signal, mitigation and recovery.</p></div>}
- </section>
+type Mode =
+  | "learn"
+  | "listen"
+  | "do"
+  | "recall"
+  | "design"
+  | "assessment";
+
+export function LessonPanel({
+  lesson,
+  mastered,
+  platform,
+  onMaster
+}: {
+  lesson: CourseLesson;
+  mastered: boolean;
+  platform: PlatformId;
+  onMaster: () => void;
+}) {
+  const [mode, setMode] = useState<Mode>("learn");
+  const command = lesson.platformCommands[platform] ?? lesson.lab.command;
+
+  return (
+    <section className="lesson">
+      <div className="lesson-head">
+        <div>
+          <span className="eyebrow">
+            {lesson.id} · {lesson.domain} · {lesson.projectId}
+          </span>
+          <h2>{lesson.title}</h2>
+          <p>{lesson.objective}</p>
+        </div>
+        <button
+          className={mastered ? "mastered" : "primary"}
+          onClick={onMaster}
+        >
+          {mastered ? "Mastered" : "Mark mastered"}
+        </button>
+      </div>
+
+      <div className="content-card">
+        <span className="eyebrow">{lesson.kind.toUpperCase()}</span>
+        <h3>Remember this</h3>
+        <p>{lesson.humanExample}</p>
+        <p className="range">
+          Course section: {lesson.sectionId} · Project: {lesson.projectId}
+        </p>
+      </div>
+
+      <MotionIllustration lesson={lesson} />
+
+      <nav className="mode-tabs">
+        {(
+          ["learn", "listen", "do", "recall", "design", "assessment"] as Mode[]
+        ).map((item) => (
+          <button
+            key={item}
+            className={mode === item ? "active" : ""}
+            onClick={() => setMode(item)}
+          >
+            {item === "listen" ? "co-teacher" : item}
+          </button>
+        ))}
+      </nav>
+
+      {mode === "learn" && (
+        <div className="content-card">
+          <h3>Mental model</h3>
+          <p>{lesson.objective}</p>
+          <p>
+            Start with the smallest question that can separate two possible
+            causes. Then test that question.
+          </p>
+        </div>
+      )}
+
+      {mode === "listen" &&
+        (lesson.podcastStatus === "ready" && lesson.podcast ? (
+          <PodcastCoach lesson={lesson} />
+        ) : (
+          <div className="content-card">
+            <span className="eyebrow">VOICE AUTHORING</span>
+            <h3>This episode is being written</h3>
+            <p>
+              The lesson is already usable as text, lab, recall and assessment.
+              The human spoken episode will be added only after its script
+              passes the human-speech and plain-English checks.
+            </p>
+          </div>
+        ))}
+
+      {mode === "do" && (
+        <div className="content-card">
+          <h3>Operate on {platform}</h3>
+          <p>{lesson.lab.objective}</p>
+          <pre>
+            <code>{command}</code>
+          </pre>
+          <h4>Break / fix</h4>
+          <p>{lesson.lab.challenge}</p>
+        </div>
+      )}
+
+      {mode === "recall" && (
+        <div className="content-card">
+          <h3>Retrieval</h3>
+          <ol>
+            {lesson.recall.map((question) => (
+              <li key={question}>{question}</li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      {mode === "design" && (
+        <div className="content-card">
+          <h3>Production design</h3>
+          <p>
+            Put this concept into a system serving millions of users. Name the
+            dependency, first signal, failure domain, safe action and recovery
+            check.
+          </p>
+        </div>
+      )}
+
+      {mode === "assessment" && (
+        <AssessmentPanel
+          courseId={lesson.course}
+          sectionId={lesson.sectionId}
+        />
+      )}
+    </section>
+  );
 }
