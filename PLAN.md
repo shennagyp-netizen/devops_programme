@@ -21,7 +21,7 @@ The learner chooses an environment profile first:
 - Linux
 - Windows
 
-The target learning architecture uses diagnostics to determine what introductory theory can be skipped. In the current MVP, course and platform selection are implemented, while prerequisite diagnostics and automatic remediation routing remain planned.
+The target learning architecture uses diagnostics to determine what introductory theory can be skipped. In the current MVP, course and platform selection and prerequisite diagnostics for the authored sections are implemented; full automatic remediation routing across the whole programme remains planned.
 
 Rules:
 - known theory may be skipped when diagnostic evidence supports it
