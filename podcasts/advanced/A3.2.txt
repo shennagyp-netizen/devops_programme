@@ -20,13 +20,9 @@ Speaker A: Cost.
 
 Speaker B: Operational complexity.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That is the key step.\n\nSpeaker B: The mistake is trying to maximize everything at once.
 
-Speaker B: The mistake is trying to maximize everything at once.
-
-Speaker A: Right.
-
-Speaker B: Because improving one target can make another worse.
+Speaker A: Right. The point is not the command; it is the evidence.\n\nSpeaker B: Because improving one target can make another worse.
 
 Speaker A: So architecture needs explicit choices.
 
@@ -40,17 +36,13 @@ Speaker A: Every branch asks one central system before confirming a sale.
 
 Speaker B: Fresh data.
 
-Speaker A: Yes.
-
-Speaker B: But every sale depends on the central system.
+Speaker A: Yes. The important part is what happens next.\n\nSpeaker B: But every sale depends on the central system.
 
 Speaker A: And the network.
 
 Speaker B: So availability can fall when the central path fails.
 
-Speaker A: Correct.
-
-Speaker B: Alternative?
+Speaker A: Correct. And there is another part to watch.\n\nSpeaker B: Alternative?
 
 Speaker A: Let each branch keep local stock.
 
@@ -60,13 +52,9 @@ Speaker A: Usually.
 
 Speaker B: More available locally.
 
-Speaker A: Maybe.
+Speaker A: Maybe. I would treat that as a hypothesis, not a conclusion.\n\nSpeaker B: But now counts can disagree.
 
-Speaker B: But now counts can disagree.
-
-Speaker A: Exactly.
-
-Speaker B: There is no free lunch.
+Speaker A: Exactly. That changes the diagnosis.\n\nSpeaker B: There is no free lunch.
 
 Speaker A: Distributed systems serve the bill first.
 
@@ -96,17 +84,11 @@ Speaker A: Maybe not.
 
 Speaker B: A product description can tolerate some delay.
 
-Speaker A: Correct.
+Speaker A: Correct. That is an important distinction.\n\nSpeaker B: A payment state cannot safely behave like that.
 
-Speaker B: A payment state cannot safely behave like that.
+Speaker A: Exactly. That is why the failure is useful.\n\nSpeaker B: So we classify data by business consequence.
 
-Speaker A: Exactly.
-
-Speaker B: So we classify data by business consequence.
-
-Speaker A: Good.
-
-Speaker B: Availability.
+Speaker A: Right. That is the assumption we need to test.\n\nWe need explicit choices, not a promise to maximize everything.\n\nSpeaker B: Availability.
 
 Speaker A: What happens when a dependency is unreachable?
 
@@ -144,13 +126,9 @@ Speaker A: More network traffic.
 
 Speaker B: More people needed to operate it.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now we have a real boundary.\n\nSpeaker B: A design can be technically possible and still be a bad business choice.
 
-Speaker B: A design can be technically possible and still be a bad business choice.
-
-Speaker A: Right.
-
-Speaker B: Not because it is ugly.
+Speaker A: Right. Now the failure becomes observable.\n\nSpeaker B: Not because it is ugly.
 
 Speaker A: Because the cost or operational burden is not justified by the user benefit.
 
@@ -184,9 +162,7 @@ Speaker A: What improves?
 
 Speaker B: Local write latency.
 
-Speaker A: Maybe.
-
-Speaker B: What gets harder?
+Speaker A: Maybe. I would treat that as a hypothesis, not a conclusion.\n\nSpeaker B: What gets harder?
 
 Speaker A: Coordination and conflict handling.
 
@@ -204,9 +180,7 @@ Speaker A: New risk?
 
 Speaker B: Stale data and cache invalidation.
 
-Speaker A: Exactly.
-
-Speaker B: Another.
+Speaker A: Exactly. That is the key step.\n\nSpeaker B: Another.
 
 Speaker A: Add aggressive retries.
 
@@ -216,9 +190,7 @@ Speaker A: New risk?
 
 Speaker B: Retry storms and longer request times.
 
-Speaker A: Good.
-
-Speaker B: So every architecture choice gets two columns.
+Speaker A: Good. Now ask what the user sees when that path is unavailable.\n\nSpeaker B: So every architecture choice gets two columns.
 
 Speaker A: Benefit.
 
@@ -232,33 +204,23 @@ Speaker A: Operational work.
 
 Speaker B: User impact.
 
-Speaker A: Good.
-
-Speaker B: What about measuring the trade-off?
+Speaker A: Correct. But we still need evidence.\n\nThe business consequence tells us how much staleness we can accept.\n\nSpeaker B: What about measuring the trade-off?
 
 Speaker A: Each decision needs an observable outcome.
 
 Speaker B: If we add a cache, measure hit rate and backing load.
 
-Speaker A: Yes.
+Speaker A: Yes. Keep following the request path.\n\nSpeaker B: If we add replicas, measure read latency, lag and failover behavior.
 
-Speaker B: If we add replicas, measure read latency, lag and failover behavior.
+Speaker A: Yes. That can change the load pattern.\n\nSpeaker B: If we add another region, measure cross-region traffic, user latency, recovery behavior and operating cost.
 
-Speaker A: Yes.
-
-Speaker B: If we add another region, measure cross-region traffic, user latency, recovery behavior and operating cost.
-
-Speaker A: Exactly.
-
-Speaker B: So architecture is not finished when the diagram looks good.
+Speaker A: Exactly. That changes the diagnosis.\n\nSpeaker B: So architecture is not finished when the diagram looks good.
 
 Speaker A: It is tested against behavior.
 
 Speaker B: This is where SRE and architecture meet.
 
-Speaker A: Good.
-
-Speaker B: Mac lab?
+Speaker A: Exactly. That is why the failure is useful.\n\nThe architecture cannot decide that without the product rule.\n\nSpeaker B: Mac lab?
 
 Speaker A: Take your A3 design.
 
@@ -346,4 +308,4 @@ Speaker A: Explicit architecture.
 
 Speaker B: With evidence.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now we have a real boundary.\n\n
