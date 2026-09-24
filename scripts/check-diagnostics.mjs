@@ -156,7 +156,7 @@ const intermediateSections = [
 ];
 
 for (const sectionId of intermediateSections) {
-  if (!lessons.includes(`return "${sectionId}"`) || !intermediateLessons.match(/id:\s*"D\d+\.\d+"/)) {
+  if (!lessons.includes(`return "${sectionId}"`) || !intermediateLessons.match(/"id":\s*"D\d+\.\d+"/)) {
     failed = true;
     console.error(
       `Intermediate mapping has no lesson coverage contract for ${sectionId}.`
