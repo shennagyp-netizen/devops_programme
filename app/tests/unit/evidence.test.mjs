@@ -140,6 +140,8 @@ describe("evidence ledger", () => {
           startedAt: `2026-09-24T10:00:0${index}.000Z`,
           completedAt: `2026-09-24T10:00:1${index}.000Z`,
           exitCode: 0,
+          stdout: "",
+          stderr: "",
           stdoutHash: validHash,
           stderrHash: validHash,
           result: "passed"
