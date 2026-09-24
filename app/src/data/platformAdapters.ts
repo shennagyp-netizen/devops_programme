@@ -1,7 +1,7 @@
 import type { CourseLesson } from "./courseLessons";
 import type { PlatformId } from "./programme";
 
-const windowsCommands: Record<string, string> = {
+export const windowsCommands: Record<string, string> = {
   "B1.1": "Get-Process | Select-Object -First 10; Get-NetTCPConnection | Select-Object -First 10",
   "B1.2": "Resolve-DnsName example.com; Test-NetConnection example.com -Port 443",
   "B1.3": "curl.exe -v https://example.com",
