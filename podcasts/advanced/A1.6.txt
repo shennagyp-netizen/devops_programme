@@ -12,7 +12,7 @@ Speaker A: Good first guess.
 
 Speaker B: So put the data in Singapore.
 
-Speaker A: Maybe.
+Speaker A: Maybe. That gives us a useful boundary.
 
 Speaker A: Let’s keep that as a testable claim.
 
@@ -26,37 +26,37 @@ Speaker A: Distance affects network latency. But moving data changes other thing
 
 Speaker B: Consistency.
 
-Speaker A: Yes.
+Speaker A: Yes. Now connect that to the request path.
 
 Speaker A: That gives us a useful boundary.
 
 Speaker B: Replication.
 
-Speaker A: Yes.
+Speaker A: Yes. I would measure that before changing anything.
 
 Speaker A: Now connect that to the request path.
 
 Speaker B: Cost.
 
-Speaker A: Yes.
+Speaker A: Yes. That is where the failure becomes useful.
 
 Speaker A: I would measure that before changing anything.
 
 Speaker B: More copies.
 
-Speaker A: Yes.
+Speaker A: Yes. Now we can compare it with the real system.
 
 Speaker A: That is where the failure becomes useful.
 
 Speaker B: More failure cases.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Keep the user-visible effect in the model.
 
 Speaker A: Now we can compare it with the real system.
 
 Speaker B: So data locality is about keeping data close to the work that needs it.
 
-Speaker A: Right.
+Speaker A: Right. That is the part I would verify first.
 
 Speaker A: Keep the user-visible effect in the model.
 
@@ -74,13 +74,13 @@ Speaker A: Cost.
 
 Speaker B: Coordination.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now the assumption is explicit.
 
 Speaker A: That is the part I would verify first.
 
 Speaker B: And some data cannot be safely copied everywhere for business or legal reasons.
 
-Speaker A: Correct.
+Speaker A: Correct. That gives us a cleaner diagnosis.
 
 Speaker A: Now the assumption is explicit.
 
@@ -90,25 +90,25 @@ Speaker A: User in Cairo requests a product page.
 
 Speaker B: If product data is nearby, latency can be lower.
 
-Speaker A: Yes.
+Speaker A: Yes. We can test that without changing the whole system.
 
 Speaker A: That gives us a cleaner diagnosis.
 
 Speaker B: If the request has to cross a region to get the data, latency rises.
 
-Speaker A: Right.
+Speaker A: Right. That is a better reason to make the change.
 
 Speaker A: We can test that without changing the whole system.
 
 Speaker B: If we replicate the product data locally, the read can be faster.
 
-Speaker A: Good.
+Speaker A: Good. Now we have a concrete test.
 
 Speaker A: That is a better reason to make the change.
 
 Speaker B: But now the local copy may be stale.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Keep that distinction visible in the incident.
 
 Speaker B: Again.
 
@@ -120,7 +120,7 @@ Speaker A: Three shops in three cities.
 
 Speaker B: Each keeps a stock list.
 
-Speaker A: Right.
+Speaker A: Right. That is the behavior I would expect to observe.
 
 Speaker B: A customer in Cairo asks if a product is in stock.
 
@@ -128,19 +128,19 @@ Speaker A: The local shop answers quickly.
 
 Speaker B: But its stock list may be ten minutes old.
 
-Speaker A: Right.
+Speaker A: Right. Now the trade-off is much easier to see.
 
 Speaker B: The central warehouse has the current count.
 
-Speaker A: Yes.
+Speaker A: Yes. The next step should follow the evidence.
 
 Speaker B: So the local answer is fast but may be old.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That is where the operational cost appears.
 
 Speaker B: The current central answer is fresher but takes longer to reach.
 
-Speaker A: Right.
+Speaker A: Right. Now we can state the failure boundary clearly.
 
 Speaker B: Now the business has to decide which matters more.
 
