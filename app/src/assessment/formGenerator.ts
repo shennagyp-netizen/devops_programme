@@ -63,6 +63,11 @@ function validatePool(
       item.family === blueprint.family
   );
 
+  const targets = targetCounts(
+    blueprint.targetItemCount,
+    blueprint.targetDifficultyMix
+  );
+
   const counts = new Map<DifficultyBand, number>();
   for (const band of bands) {
     counts.set(
@@ -70,8 +75,6 @@ function validatePool(
       pool.filter((item) => item.difficulty === band).length
     );
   }
-
-  const targets = targetCounts(blueprint.targetItemCount, blueprint.targetDifficultyMix);
 
   for (const band of bands) {
     if ((counts.get(band) ?? 0) < targets[band]) {
@@ -89,7 +92,21 @@ function validatePool(
     }
   }
 
+  for (const cognitiveLevel of blueprint.requiredCognitiveLevels) {
+    if (!pool.some((item) => item.cognitiveLevel === cognitiveLevel)) {
+      throw new Error(
+        `Assessment pool is missing cognitive level ${cognitiveLevel}.`
+      );
+    }
+  }
+
   return pool;
+}
+
+function candidateOrder(items: AssessmentItem[], seed: string) {
+  return [...items].sort((a, b) =>
+    stableScore(`${seed}:${a.id}`) - stableScore(`${seed}:${b.id}`)
+  );
 }
 
 export function generateAssessmentForm(
@@ -98,28 +115,75 @@ export function generateAssessmentForm(
   seed: string
 ): AssessmentForm {
   const pool = validatePool(blueprint, itemPool);
-  const targets = targetCounts(
+  const remainingTargets = targetCounts(
     blueprint.targetItemCount,
     blueprint.targetDifficultyMix
   );
-
+  const ordered = candidateOrder(pool, seed);
   const selected: AssessmentItem[] = [];
+  const selectedIds = new Set<string>();
+
+  const addCandidate = (item: AssessmentItem) => {
+    if (selectedIds.has(item.id)) return false;
+    if (remainingTargets[item.difficulty] <= 0) return false;
+
+    selected.push(item);
+    selectedIds.add(item.id);
+    remainingTargets[item.difficulty] -= 1;
+    return true;
+  };
+
+  // Cover required competencies and cognitive levels first. The selected
+  // items still have to fit the exact difficulty distribution.
+  for (const competency of blueprint.minimumCompetencies) {
+    const candidate = ordered.find(
+      (item) => item.competencyId === competency && !selectedIds.has(item.id)
+    );
+    if (!candidate || !addCandidate(candidate)) {
+      throw new Error(
+        `Cannot cover competency ${competency} while preserving the difficulty blueprint.`
+      );
+    }
+  }
+
+  for (const cognitiveLevel of blueprint.requiredCognitiveLevels) {
+    const candidate = ordered.find(
+      (item) =>
+        item.cognitiveLevel === cognitiveLevel && !selectedIds.has(item.id)
+    );
+    if (!candidate || !addCandidate(candidate)) {
+      throw new Error(
+        `Cannot cover cognitive level ${cognitiveLevel} while preserving the difficulty blueprint.`
+      );
+    }
+  }
 
   for (const band of bands) {
-    const candidates = pool
-      .filter((item) => item.difficulty === band)
-      .sort((a, b) =>
-        stableScore(`${seed}:${a.id}`) - stableScore(`${seed}:${b.id}`)
-      );
+    for (const candidate of ordered) {
+      if (remainingTargets[band] <= 0) break;
+      if (candidate.difficulty !== band || selectedIds.has(candidate.id)) continue;
+      addCandidate(candidate);
+    }
+  }
 
-    selected.push(...candidates.slice(0, targets[band]));
+  if (selected.length !== blueprint.targetItemCount) {
+    throw new Error(
+      `Generated form has ${selected.length} items; expected ${blueprint.targetItemCount}.`
+    );
   }
 
   for (const competency of blueprint.minimumCompetencies) {
-    const covered = selected.some((item) => item.competencyId === competency);
-    if (!covered) {
+    if (!selected.some((item) => item.competencyId === competency)) {
       throw new Error(
         `Generated form does not cover required competency ${competency}.`
+      );
+    }
+  }
+
+  for (const cognitiveLevel of blueprint.requiredCognitiveLevels) {
+    if (!selected.some((item) => item.cognitiveLevel === cognitiveLevel)) {
+      throw new Error(
+        `Generated form does not cover required cognitive level ${cognitiveLevel}.`
       );
     }
   }
