@@ -93,7 +93,15 @@ export function ProjectPanel({
             <strong>Evidence ledger:</strong> {evidence.length} recorded item
             {evidence.length === 1 ? "" : "s"}
             {evidence.length
-              ? " · " + evidence.map((item) => item.kind).join(" · ")
+              ? " · " +
+                evidence
+                  .map(
+                    (item) =>
+                      item.verificationLevel
+                        ? `${item.kind} · ${item.verificationLevel}`
+                        : item.kind
+                  )
+                  .join(" · ")
               : " · no evidence recorded yet"}
           </p>
         </article>
