@@ -18,6 +18,8 @@ jobs:
       - run: npm install
       - name: Build
         run: npm run build 2>&1 | tee build.log
+      - name: Review podcast conversation quality
+        run: npm run review:podcast
       - name: Upload build log
         if: always()
         uses: actions/upload-artifact@v4
