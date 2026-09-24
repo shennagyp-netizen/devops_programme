@@ -2,10 +2,12 @@
 
 The learning engine begins by collecting the learner's environment profile.
 
-Supported target platforms:
+Platform profiles:
 - macOS
 - Linux
 - Windows
+
+macOS and Linux currently have direct command examples. Windows has a platform profile and conceptual path; the native command adapter is still planned.
 
 A platform profile records:
 - operating system
