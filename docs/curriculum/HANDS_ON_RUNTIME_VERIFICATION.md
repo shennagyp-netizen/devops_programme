@@ -16,7 +16,7 @@ The envelope contains:
 - stdout and stderr hashes
 - reset completion when the task requires it
 
-The application accepts machine-verified evidence only when the envelope is structurally valid for the exact task contract. Verification source is explicit: local-runner means the learner-controlled local runner executed the task; managed-runner is reserved for a separately controlled execution service.
+The application accepts machine-verified evidence only when the envelope is structurally valid for the exact task contract. Probe evidence must not be presented as proof that the full exercise failure/recovery sequence was completed. Verification source is explicit: local-runner means the learner-controlled local runner executed the task; managed-runner is reserved for a separately controlled execution service.
 
 ## Current state
 
