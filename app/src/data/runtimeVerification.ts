@@ -47,6 +47,7 @@ export type MachineVerificationEnvelope = {
   lessonId: string;
   platform: PlatformId;
   verificationLevel: "machine-verified";
+  verificationSource: "local-runner" | "managed-runner";
   runnerVersion: string;
   environmentFingerprint: string;
   startedAt: string;
@@ -131,6 +132,10 @@ export function validateMachineVerification(
 
   if (envelope.verificationLevel !== "machine-verified") {
     failures.push("Envelope must declare machine-verified status.");
+  }
+
+  if (!["local-runner", "managed-runner"].includes(envelope.verificationSource)) {
+    failures.push("Envelope verificationSource is invalid.");
   }
 
   if (!envelope.runnerVersion.trim()) {
