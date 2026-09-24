@@ -7,19 +7,28 @@ export type LocalTerminalAgentStatus =
 const AGENT_URL = "http://127.0.0.1:4317";
 const TOKEN_KEY = "devops-programme-terminal-agent-token";
 
-export function getLocalTerminalToken() {
+function readToken() {
   try {
-    return localStorage.getItem(TOKEN_KEY) ?? "";
+    return sessionStorage.getItem(TOKEN_KEY) ?? "";
   } catch {
     return "";
   }
 }
 
+export function getLocalTerminalToken() {
+  return readToken();
+}
+
 export function setLocalTerminalToken(token: string) {
   try {
-    localStorage.setItem(TOKEN_KEY, token.trim());
+    const trimmed = token.trim();
+    if (!trimmed) {
+      sessionStorage.removeItem(TOKEN_KEY);
+      return;
+    }
+    sessionStorage.setItem(TOKEN_KEY, trimmed);
   } catch {
-    // Best-effort local preference.
+    // Best-effort session preference.
   }
 }
 
