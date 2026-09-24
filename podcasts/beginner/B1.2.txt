@@ -12,19 +12,25 @@ Speaker A: Usually. The name has to become something the network can use.
 
 Speaker B: DNS.
 
-Speaker A: Right.
+Speaker A: Right. That makes the diagnosis easier to test.
+
+Speaker A: Let's keep that tied to the actual problem.
 
 Speaker B: Then we need a route.
 
-Speaker A: Right.
+Speaker A: Right. We can check that without changing everything.
+
+Speaker A: Now say what evidence would confirm that.
 
 Speaker B: Then a connection.
 
-Speaker A: Right.
+Speaker A: Right. Now we have a concrete prediction.
+
+Speaker A: That gives us a useful next test.
 
 Speaker B: Then the application protocol.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Keep the recovery condition in the plan.
 
 Speaker B: So the request is not one thing. It's a chain.
 
@@ -32,7 +38,7 @@ Speaker A: That's the key idea.
 
 Speaker B: And when something fails, the chain tells us where to look.
 
-Speaker A: Yes.
+Speaker A: Yes. That is a safer way to reason about it.
 
 Speaker B: Give me the simplest possible request.
 
@@ -60,7 +66,7 @@ Speaker A: That is where routing comes in.
 
 Speaker B: The local machine checks its routing table.
 
-Speaker A: Yes.
+Speaker A: Yes. Now compare that with the known-good state.
 
 Speaker B: And if the destination is not local, it uses the default gateway or another route.
 
