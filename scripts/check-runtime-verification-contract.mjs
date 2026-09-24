@@ -29,6 +29,17 @@ if (!source.includes("export function validateMachineVerification")) {
 
 const runtimeTasks = Array.isArray(catalog.runtimeTasks) ? catalog.runtimeTasks : [];
 const taskIds = runtimeTasks.map((task) => task.taskId);
+
+for (const task of runtimeTasks) {
+  if (!Number.isInteger(task.contractVersion) || task.contractVersion < 1) {
+    failed = true;
+    console.error("Every runtime task must declare a positive contractVersion.");
+  }
+  if (task.scope !== "probe" && task.scope !== "exercise") {
+    failed = true;
+    console.error("Every runtime task must declare scope=probe or scope=exercise.");
+  }
+}
 const duplicateTaskIds = taskIds.filter(
   (id, index) => taskIds.indexOf(id) !== index
 );
