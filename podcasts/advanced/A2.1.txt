@@ -22,6 +22,8 @@ Speaker B: And the second question is, "What was supposed to happen?"
 
 Speaker A: Yes.
 
+Speaker A: Let’s keep that as a testable claim.
+
 Speaker B: So this is not chaos.
 
 Speaker A: It is a controlled experiment.
@@ -34,15 +36,21 @@ Speaker B: Maybe a cache too.
 
 Speaker A: Good.
 
+Speaker A: That gives us a useful boundary.
+
 Speaker B: The API depends on the database for the main request.
 
 Speaker A: Yes.
+
+Speaker A: Now connect that to the request path.
 
 Speaker B: The cache helps with reads.
 
 Speaker B: But I would not call it optional until we prove that.
 
 Speaker A: Right.
+
+Speaker A: I would measure that before changing anything.
 
 Speaker B: We kill the cache.
 
@@ -51,6 +59,8 @@ Speaker A: First prediction?
 Speaker B: I would still expect the API itself to stay alive unless the cache is secretly required.
 
 Speaker A: Good.
+
+Speaker A: That is where the failure becomes useful.
 
 Speaker B: Reads may get slower.
 
@@ -80,6 +90,8 @@ Speaker B: But if everyone suddenly stops moving, that door was more important t
 
 Speaker A: Exactly.
 
+Speaker A: Now we can compare it with the real system.
+
 Speaker B: Or all the other doors lead to the same locked corridor.
 
 Speaker A: Good. That is a shared dependency, and it is easy to miss when the diagram looks clean.
@@ -87,6 +99,8 @@ Speaker A: Good. That is a shared dependency, and it is easy to miss when the di
 Speaker B: So in software, "we have three copies" does not mean we have three independent paths.
 
 Speaker A: Correct.
+
+Speaker A: Keep the user-visible effect in the model.
 
 Speaker B: Let's define dependency.
 
