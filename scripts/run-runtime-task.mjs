@@ -1,32 +1,26 @@
+#!/usr/bin/env node
+
 import { createHash } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { spawn } from "node:child_process";
 import process from "node:process";
-import runtimeTaskCatalog from "../app/src/data/runtimeTasks.json" with { type: "json" };
-
+import { spawn } from "node:child_process";
 
 const RUNNER_VERSION = "0.1.0";
-/** @typedef {"macos"|"linux"|"windows"} PlatformId */
-/** @typedef {import("../app/src/data/runtimeVerification.ts").MachineVerificationEnvelope} MachineVerificationEnvelope */
-/** @typedef {import("../app/src/data/runtimeVerification.ts").RuntimeCommand} RuntimeCommand */
-/** @typedef {import("../app/src/data/runtimeVerification.ts").RuntimeTask} RuntimeTask */
-/** @typedef {import("../app/src/data/runtimeVerification.ts").RuntimeStepResult} RuntimeStepResult */
 
-
-function platformId(): PlatformId {
+function platformId() {
   if (process.platform === "win32") return "windows";
   if (process.platform === "darwin") return "macos";
   if (process.platform === "linux") return "linux";
-  throw new Error(\`Unsupported host platform: \${process.platform}\`);
+  throw new Error("Unsupported host platform: " + process.platform);
 }
 
-function hash(value: string) {
+function hash(value) {
   return createHash("sha256").update(value).digest("hex");
 }
 
-function environmentFingerprint(platform: PlatformId) {
+function environmentFingerprint(platform) {
   return hash(
     JSON.stringify({
       platform,
@@ -36,21 +30,26 @@ function environmentFingerprint(platform: PlatformId) {
   );
 }
 
-function parseArgs(argv: string[]) {
-  const args = new Map<string, string>();
+function parseArgs(argv) {
+  const args = new Map();
 
   for (let index = 2; index < argv.length; index += 1) {
     const token = argv[index];
 
+    if (token === "--dry-run") {
+      args.set("dry-run", "true");
+      continue;
+    }
+
     if (!token.startsWith("--")) {
-      throw new Error(\`Unexpected argument: \${token}\`);
+      throw new Error("Unexpected argument: " + token);
     }
 
     const key = token.slice(2);
     const value = argv[index + 1];
 
     if (!value || value.startsWith("--")) {
-      throw new Error(\`Missing value for --\${key}\`);
+      throw new Error("Missing value for --" + key);
     }
 
     args.set(key, value);
@@ -60,21 +59,46 @@ function parseArgs(argv: string[]) {
   const lessonId = args.get("lesson");
 
   if (!lessonId) {
-    throw new Error("Usage: node scripts/run-runtime-task.mjs --lesson B1.2 [--output path]");
+    throw new Error(
+      "Usage: node scripts/run-runtime-task.mjs --lesson B1.2 [--dry-run] [--output path]"
+    );
   }
 
   return {
     lessonId,
+    dryRun: args.get("dry-run") === "true",
     output: args.get("output")
   };
 }
 
-function execute(command: RuntimeCommand) {
-  return new Promise<{
-    exitCode: number;
-    stdout: string;
-    stderr: string;
-  }>((resolve) => {
+async function loadCatalog() {
+  const file = path.resolve(
+    new URL("../app/src/data/runtimeTasks.json", import.meta.url).pathname
+  );
+  const source = await readFile(file, "utf8");
+  return JSON.parse(source);
+}
+
+function commandForTask(task, step, platform) {
+  const runtimeCommand = step.commands[platform];
+
+  if (!runtimeCommand) {
+    throw new Error("No " + platform + " command exists for step " + step.id + ".");
+  }
+
+  if (runtimeCommand.destructive) {
+    throw new Error(
+      "Task step " +
+        step.id +
+        " is marked destructive and cannot run through this default runner."
+    );
+  }
+
+  return runtimeCommand;
+}
+
+function execute(command) {
+  return new Promise((resolve) => {
     const child = spawn(command.program, command.args, {
       cwd: process.cwd(),
       shell: false,
@@ -85,11 +109,7 @@ function execute(command: RuntimeCommand) {
     let stderr = "";
     let settled = false;
 
-    const finish = (result: {
-      exitCode: number;
-      stdout: string;
-      stderr: string;
-    }) => {
+    const finish = (result) => {
       if (settled) return;
       settled = true;
       resolve(result);
@@ -100,15 +120,19 @@ function execute(command: RuntimeCommand) {
       finish({
         exitCode: 124,
         stdout,
-        stderr: \`\${stderr}\nCommand timed out after \${command.timeoutMs} ms.\`
+        stderr:
+          stderr +
+          "\nCommand timed out after " +
+          command.timeoutMs +
+          " ms."
       });
     }, command.timeoutMs);
 
-    child.stdout.on("data", (chunk: Buffer | string) => {
+    child.stdout.on("data", (chunk) => {
       stdout += chunk.toString();
     });
 
-    child.stderr.on("data", (chunk: Buffer | string) => {
+    child.stderr.on("data", (chunk) => {
       stderr += chunk.toString();
     });
 
@@ -117,7 +141,7 @@ function execute(command: RuntimeCommand) {
       finish({
         exitCode: 127,
         stdout,
-        stderr: \`\${stderr}\n\${error.message}\`
+        stderr: stderr + "\n" + error.message
       });
     });
 
@@ -132,40 +156,52 @@ function execute(command: RuntimeCommand) {
   });
 }
 
-function commandForTask(task: RuntimeTask, stepIndex: number, platform: PlatformId) {
-  const step = task.steps[stepIndex];
-  if (!step) throw new Error(\`Task has no step at index \${stepIndex}.\`);
-
-  const runtimeCommand = step.commands[platform];
-
-  if (!runtimeCommand) {
-    throw new Error(\`No \${platform} command exists for step \${step.id}.\`);
-  }
-
-  if (runtimeCommand.destructive) {
-    throw new Error(
-      \`Task step \${step.id} is marked destructive and cannot run through this default local runner.\`
-    );
-  }
-
-  return runtimeCommand;
+function dryRunOutput(task, platform) {
+  return {
+    mode: "dry-run",
+    taskId: task.taskId,
+    contractVersion: task.contractVersion,
+    lessonId: task.lessonId,
+    platform,
+    steps: task.steps.map((step) => {
+      const runtimeCommand = commandForTask(task, step, platform);
+      return {
+        id: step.id,
+        kind: step.kind,
+        purpose: step.purpose,
+        program: runtimeCommand.program,
+        args: runtimeCommand.args,
+        timeoutMs: runtimeCommand.timeoutMs,
+        destructive: runtimeCommand.destructive
+      };
+    })
+  };
 }
 
 async function main() {
-  const { lessonId, output } = parseArgs(process.argv);
+  const { lessonId, dryRun, output } = parseArgs(process.argv);
   const platform = platformId();
-  const task = runtimeTaskCatalog.runtimeTasks.find((item) => item.lessonId === lessonId);
+  const catalog = await loadCatalog();
+  const task = catalog.runtimeTasks.find((item) => item.lessonId === lessonId);
 
   if (!task) {
-    throw new Error(\`No machine-verification task is defined for lesson \${lessonId}.\`);
+    throw new Error("No machine-verification task is defined for lesson " + lessonId + ".");
+  }
+
+  for (const step of task.steps) {
+    commandForTask(task, step, platform);
+  }
+
+  if (dryRun) {
+    console.log(JSON.stringify(dryRunOutput(task, platform), null, 2));
+    return;
   }
 
   const startedAt = new Date().toISOString();
-  const stepResults: RuntimeStepResult[] = [];
+  const stepResults = [];
 
-  for (let index = 0; index < task.steps.length; index += 1) {
-    const step = task.steps[index];
-    const command = commandForTask(task, index, platform);
+  for (const step of task.steps) {
+    const command = commandForTask(task, step, platform);
     const stepStarted = new Date().toISOString();
     const result = await execute(command);
     const stepCompleted = new Date().toISOString();
@@ -181,11 +217,10 @@ async function main() {
     });
 
     if (result.exitCode !== 0 && step.required) {
-      for (let remaining = index + 1; remaining < task.steps.length; remaining += 1) {
-        const skipped = task.steps[remaining];
+      for (const remaining of task.steps.slice(stepResults.length)) {
         const timestamp = new Date().toISOString();
         stepResults.push({
-          stepId: skipped.id,
+          stepId: remaining.id,
           startedAt: timestamp,
           completedAt: timestamp,
           exitCode: -1,
@@ -199,7 +234,7 @@ async function main() {
   }
 
   const completedAt = new Date().toISOString();
-  const envelope: MachineVerificationEnvelope = {
+  const envelope = {
     schemaVersion: 1,
     taskId: task.taskId,
     contractVersion: task.contractVersion,
@@ -219,20 +254,26 @@ async function main() {
     path.join(
       process.cwd(),
       ".runtime-evidence",
-      \`\${task.taskId}-\${startedAt.replace(/[:.]/g, "-")}.json\`
+      task.taskId + "-" + startedAt.replace(/[:.]/g, "-") + ".json"
     );
 
   await mkdir(path.dirname(outputPath), { recursive: true });
   await writeFile(outputPath, JSON.stringify(envelope, null, 2) + "\n", "utf8");
 
-  console.log(JSON.stringify({
-    taskId: task.taskId,
-    lessonId: task.lessonId,
-    platform,
-    outputPath,
-    passed: stepResults.every((step) => step.result === "passed"),
-    stepResults
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        taskId: task.taskId,
+        lessonId: task.lessonId,
+        platform,
+        outputPath,
+        passed: stepResults.every((step) => step.result === "passed"),
+        stepResults
+      },
+      null,
+      2
+    )
+  );
 
   if (!stepResults.every((step) => step.result === "passed")) {
     process.exitCode = 1;
