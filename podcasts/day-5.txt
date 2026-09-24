@@ -1,159 +1,151 @@
-DAY 5
+DAY 5 — SCALE + DISTRIBUTED SYSTEMS + SRE
 
 EPISODE D5.1 — Scaling
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: Scaling is not 'buy a bigger server.' It is deciding where capacity is constrained and how to distribute work.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: Horizontal versus vertical.
 
-Speaker A: Scale begins with bottlenecks and failure domains. Horizontal scale, statelessness, caching, queues, load balancing and data locality solve different constraints.
+Speaker A: Exactly. Vertical scaling makes one unit larger. Horizontal scaling adds units. Stateless services generally scale more easily because requests can move between instances.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Real-life analogy: one supermarket cashier working faster versus opening ten checkout lanes.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker B: Ten lanes create a new problem: the queue and payment system now have to coordinate.
 
-Hands-on: Use the Mac to perform an experiment related to Scaling. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Exactly. Scale moves bottlenecks.
 
-Production: Place Scaling in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker A: Real-life example: social-media traffic can spike during a major event. Caches and queues can absorb some pressure, but every buffer eventually has a limit.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker A: Lab: design a traffic-spike strategy and identify the first three likely bottlenecks.
 
-==============================
+
 
 EPISODE D5.2 — Databases at Scale
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: Databases become interesting when data volume, concurrency, availability, and geography grow.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: Transaction, index, MVCC, replication, partitioning, sharding.
 
-Speaker A: Distributed systems fail partially. Replication, consistency, quorum, ordering, timeouts and recovery describe what different nodes can know and when.
+Speaker A: These are solutions to different problems, not a menu you order blindly.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Think of a warehouse. An index is like a location system that lets workers find an item without searching every shelf. Replication is another stocked location. Partitioning divides inventory into manageable regions.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: Real-life example: a global retailer may keep data close to its customers while accepting certain consistency trade-offs for some workloads.
 
-Hands-on: Use the Mac to perform an experiment related to Databases at Scale. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Lab: identify a query bottleneck, inspect an index, and reason about what changes when the dataset is much larger.
 
-Production: Place Databases at Scale in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
-
-==============================
 
 EPISODE D5.3 — Distributed Systems
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: The central difficulty of distributed systems is partial failure. One machine can be healthy while the network path to it is broken.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: Which means 'the server is up' can be completely useless.
 
-Speaker A: Distributed systems fail partially. Replication, consistency, quorum, ordering, timeouts and recovery describe what different nodes can know and when.
+Speaker A: Correct.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Real-life analogy: imagine several branches of the same company that cannot reliably call each other. Each branch knows some facts, but not necessarily the latest facts.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: That makes replication, consistency, quorum, ordering, and timeouts fundamental.
 
-Hands-on: Use the Mac to perform an experiment related to Distributed Systems. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Joke: distributed systems are where two computers finally discover that communication is hard.
 
-Production: Place Distributed Systems in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker B: Very philosophical for a Tuesday.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker A: And annoyingly expensive when true.
 
-==============================
+Speaker A: Lab: design what users see when one replica is delayed, unavailable, or partitioned.
+
+
 
 EPISODE D5.4 — Reliability Patterns
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: Reliability patterns exist because a failure in one component can trigger more work than the system can handle.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: Retry sounds friendly until everyone retries at once.
 
-Speaker A: Reliability patterns reduce blast radius. Timeouts bound waiting; retries need control; backoff and jitter reduce synchronized pressure; idempotency makes repeats safe; backpressure prevents overload.
+Speaker A: Exactly. That is a retry storm.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Imagine a restaurant phone that rings because an order failed. If every caller retries every second, the failure becomes worse. Exponential backoff and jitter spread retries over time.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: Idempotency makes repeated operations safer. Circuit breakers stop calls to unhealthy dependencies. Backpressure prevents unlimited work from entering an overloaded system.
 
-Hands-on: Use the Mac to perform an experiment related to Reliability Patterns. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Real-life example: a delivery company may safely retry 'check delivery status' many times, but a blind retry of 'charge this credit card' needs much more careful semantics.
 
-Production: Place Reliability Patterns in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker A: Lab: simulate a slow dependency and compare fixed retries with exponential backoff and a circuit breaker.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
 
-==============================
 
 EPISODE D5.5 — Observability
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: Production systems cannot be managed by vibes.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: Finally, a formal definition of engineering.
 
-Speaker A: Observability turns behavior into evidence. Logs, metrics and traces answer different questions; SLI, SLO, error budget, RPO and RTO make reliability measurable.
+Speaker A: Logs record events. Metrics quantify behavior. Traces show causal paths across services.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Think of a traffic control room. Cameras show events. Counters show volume. A map traces a vehicle's route. You need all three views to understand congestion.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: SLI measures a behavior. SLO states a target. Error budget expresses how much unreliability is acceptable.
 
-Hands-on: Use the Mac to perform an experiment related to Observability. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Real-life example: if users report 'the site feels slow,' one good metric like CPU might not explain it. You need latency, error rate, dependency timing, traces, and workload context.
 
-Production: Place Observability in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker A: Lab: define one SLI, an SLO, an alert, and a trace path for the application.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
 
-==============================
 
 EPISODE D5.6 — Disaster Recovery
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: A backup is not a recovery strategy until you can restore from it.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: Painfully true.
 
-Speaker A: Observability turns behavior into evidence. Logs, metrics and traces answer different questions; SLI, SLO, error budget, RPO and RTO make reliability measurable.
+Speaker A: RPO asks how much data loss is acceptable. RTO asks how long recovery may take.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Real-life analogy: a fire extinguisher is equipment; a fire drill is an operational capability.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: Multi-AZ and multi-region architectures reduce different classes of failure. More redundancy also means more complexity and cost.
 
-Hands-on: Use the Mac to perform an experiment related to Disaster Recovery. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Real-life example: a business that can survive a server outage but not a regional outage has two different recovery problems.
 
-Production: Place Disaster Recovery in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker A: Lab: write a restore procedure and calculate whether it meets a stated RPO and RTO.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
 
-==============================
 
 EPISODE D5.7 — Global-Scale Architecture
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: Now we combine everything. A global system needs traffic distribution, compute, data, cache, queues, observability, identity, security, and recovery.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: And the fun part is that every decision changes another decision.
 
-Speaker A: Scale begins with bottlenecks and failure domains. Horizontal scale, statelessness, caching, queues, load balancing and data locality solve different constraints.
+Speaker A: Exactly. This is architecture as a dependency graph.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Real-life example: international airports do not simply add more gates. They need runways, terminals, baggage systems, security, traffic routing, emergency procedures, and regional coordination.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: For a global software system, ask where users enter, where data lives, which failures are isolated, what is cached, what is asynchronous, and what can degrade gracefully.
 
-Hands-on: Use the Mac to perform an experiment related to Global-Scale Architecture. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Lab: design a multi-region architecture for millions of users and explain every major failure domain.
 
-Production: Place Global-Scale Architecture in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
-
-==============================
 
 EPISODE D5.8 — The Production Incident
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: Final exercise. Latency rises. Error rate rises. Queue depth rises. Database CPU rises. Pods restart.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: That sounds less like an exam and more like a personal attack.
 
-Speaker A: Observability turns behavior into evidence. Logs, metrics and traces answer different questions; SLI, SLO, error budget, RPO and RTO make reliability measurable.
+Speaker A: It is a practical exam.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: In a real incident, you do not start by changing random settings. Observe. Form a hypothesis. Measure. Isolate. Mitigate. Recover. Then find root cause and prevent recurrence.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: Real-life analogy: emergency medicine. Triage first, stabilize the patient, then investigate the deeper cause.
 
-Hands-on: Use the Mac to perform an experiment related to The Production Incident. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker B: And the social lesson?
 
-Production: Place The Production Incident in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker A: During an incident, calm communication is part of the system. People need clear facts, ownership, timelines, and decisions. Panic is not an observability signal.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker A: Lab: given a dashboard and logs, identify the most likely failure, perform the minimum safe mitigation, and explain why you chose it.
+
+Speaker B: So the final skill is not knowing every tool.
+
+Speaker A: Correct. It is knowing how to think when the tools disagree with your expectations.
