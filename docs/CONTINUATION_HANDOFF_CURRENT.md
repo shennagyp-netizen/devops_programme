@@ -881,4 +881,11 @@ Project contract closure:
 - check-project-contract.mjs now validates these fields.
 - Beginner unit and focused gate tests require them for B1/B2/B3.
 - The global project contract is therefore no longer structurally missing these fields.
+ 
+Hosted-runner diagnosis:
+- A temporary workflow containing one Ubuntu job with one shell command and no checkout, Node setup, dependencies or repository access also failed after roughly four seconds.
+- This isolates the remaining GitHub Actions failure from the Beginner code, package installation, checkout logic and marketplace actions.
+- The temporary probe was removed after the diagnosis.
+- GitHub's public status API reported the Actions component operational at the latest status snapshot, so the failure is specific to repository/account runner availability or permissions rather than a confirmed platform-wide outage.
+- The repository must not claim CI green until a real hosted job starts and completes successfully.
 
