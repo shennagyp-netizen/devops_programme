@@ -3,13 +3,14 @@ import type { CourseLesson } from "../data/courseLessons";
 import type { PlatformId } from "../data/programme";
 import type { DiagnosticRecommendation } from "../data/diagnostics";
 import { diagnosticBySection } from "../data/diagnostics";
-import { recordHandsOnEvidence } from "../data/evidence";
+import { recordHandsOnEvidence, recordMachineVerification } from "../data/evidence";
 import {
   getHandsOnTask,
   validateHandsOnEvidence,
   type HandsOnTask
 } from "../data/handsOn";
 import { commandForPlatform } from "../data/platformAdapters";
+import { runtimeTaskForLesson } from "../data/runtimeVerification";
 import { MotionIllustration } from "./MotionIllustration";
 import { PodcastCoach } from "./PodcastCoach";
 import { AssessmentPanel } from "./AssessmentPanel";
@@ -45,8 +46,10 @@ export function LessonPanel({
   const [handsOnEvidence, setHandsOnEvidence] = useState<Record<string, string>>({});
   const [exerciseRecorded, setExerciseRecorded] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
+  const [machineVerificationMessage, setMachineVerificationMessage] = useState("");
   const command = commandForPlatform(lesson, platform);
   const handsOnTask: HandsOnTask = getHandsOnTask(lesson);
+  const runtimeTask = runtimeTaskForLesson(lesson.id);
 
   useEffect(() => {
     try {
@@ -72,6 +75,49 @@ export function LessonPanel({
   useEffect(() => {
     setShowTheory(diagnosticRecommendation !== "skip-theory");
   }, [diagnosticRecommendation]);
+
+  async function importMachineEvidence(file: File | undefined) {
+    if (!file) return;
+
+    if (!runtimeTask) {
+      setMachineVerificationMessage(
+        "No verified execution contract is published for this lesson. Use the manual terminal path."
+      );
+      return;
+    }
+
+    try {
+      const source = await file.text();
+      const envelope = JSON.parse(source);
+      const result = recordMachineVerification({
+        course: lesson.course,
+        projectId: lesson.projectId,
+        task: runtimeTask,
+        envelope,
+        summary: `Verified remote execution for ${lesson.id}`
+      });
+
+      if (!result.recorded) {
+        setExerciseRecorded(false);
+        setMachineVerificationMessage(
+          `Machine evidence rejected: ${result.failures.join(" ")}`
+        );
+        return;
+      }
+
+      setExerciseRecorded(true);
+      setMachineVerificationMessage(
+        "Verified execution evidence was accepted and saved locally."
+      );
+    } catch (error) {
+      setExerciseRecorded(false);
+      setMachineVerificationMessage(
+        error instanceof Error
+          ? `Could not read machine evidence: ${error.message}`
+          : "Could not read machine evidence."
+      );
+    }
+  }
 
   const remediationTarget =
     diagnosticBySection[lesson.sectionId]?.remediationLessonIds[0];
@@ -202,6 +248,50 @@ export function LessonPanel({
           <pre>
             <code>{command}</code>
           </pre>
+
+          {runtimeTask ? (
+            <div className="content-card">
+              <span className="eyebrow">OPTIONAL VERIFIED EXECUTION</span>
+              <h4>Run this exercise on a real machine</h4>
+              {platform === "windows" ? (
+                <p>
+                  Verified SSH execution is currently available for Linux and
+                  macOS targets. Run the command above manually on Windows; the
+                  manual path is always supported.
+                </p>
+              ) : (
+                <>
+                  <p>
+                    The browser does not open SSH itself. Run the repository
+                    runner from your development machine; it connects to the
+                    selected real VM or physical machine, executes only the
+                    allowlisted task, and returns a verification envelope.
+                  </p>
+                  <pre>
+                    <code>{`npm run hands-on:remote -- --execute --lesson ${runtimeTask.lessonId} --platform ${platform} --host <host> --user <user>`}</code>
+                  </pre>
+                  <p className="range">
+                    SSH host-key checking is strict. The target must already be
+                    trusted by your SSH known_hosts configuration.
+                  </p>
+                  <label className="evidence-field">
+                    <strong>Import the returned verification JSON</strong>
+                    <input
+                      type="file"
+                      accept="application/json,.json"
+                      onChange={(event) => {
+                        void importMachineEvidence(event.target.files?.[0]);
+                      }}
+                    />
+                  </label>
+                  {machineVerificationMessage ? (
+                    <p className="range">{machineVerificationMessage}</p>
+                  ) : null}
+                </>
+              )}
+            </div>
+          ) : null}
+
           <h4>Break / fix</h4>
           <p>{lesson.lab.challenge}</p>
 
