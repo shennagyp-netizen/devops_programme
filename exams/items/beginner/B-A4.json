@@ -1,0 +1,817 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "B-A4",
+  "purpose": "Pilot item bank for Observability and Recovery. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "BA4-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-A4.core",
+      "prompt": "What is a log?",
+      "options": [
+        "A record of discrete events or messages produced by a system",
+        "A CPU allocation",
+        "A DNS record",
+        "A container image"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA4-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-A4.core",
+      "prompt": "What is a metric?",
+      "options": [
+        "A numeric measurement tracked over time",
+        "A source-code file",
+        "A network route",
+        "A backup archive"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA4-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-A4.core",
+      "prompt": "What is a health check?",
+      "options": [
+        "A defined test of some service condition",
+        "A guarantee of full system health",
+        "A deployment artifact",
+        "A firewall rule"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA4-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A4.core",
+      "prompt": "Why are logs and metrics complementary?",
+      "options": [
+        "Metrics show patterns and levels; logs can show event detail and context",
+        "They are exactly the same",
+        "Logs replace metrics",
+        "Metrics replace all diagnosis"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA4-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A4.core",
+      "prompt": "Why attach a request or correlation ID?",
+      "options": [
+        "To connect related work across logs or service boundaries",
+        "To increase CPU",
+        "To change DNS",
+        "To create a backup"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA4-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A4.core",
+      "prompt": "What makes an alert useful?",
+      "options": [
+        "It points to a condition that needs action and can be interpreted in context",
+        "It fires for every normal event",
+        "It hides the actual signal",
+        "It replaces diagnosis"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA4-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A4.core",
+      "prompt": "Why establish a baseline?",
+      "options": [
+        "You need to know what normal behavior looks like to judge a change",
+        "Baseline removes all failures",
+        "It makes logs unnecessary",
+        "It guarantees capacity"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA4-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A4.core",
+      "prompt": "Why can a green health endpoint be misleading?",
+      "options": [
+        "It may test only a small part of the real user path",
+        "It always means the whole system is healthy",
+        "It measures all dependencies",
+        "It proves recovery"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA4-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A4.core",
+      "prompt": "What is recovery verification?",
+      "options": [
+        "Evidence that the user-visible or system condition has returned to an acceptable state",
+        "A restart command",
+        "A deployment timestamp",
+        "A new alert"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA4-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A4.core",
+      "prompt": "What is an RPO?",
+      "options": [
+        "The amount of data loss a recovery design is intended to tolerate",
+        "The maximum CPU usage",
+        "The recovery password",
+        "The time a log is kept"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA4-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "selected-response",
+      "expectedMinutes": 3,
+      "competencyId": "B-A4.core",
+      "prompt": "What is an RTO?",
+      "options": [
+        "The target time to restore service after a disruption",
+        "The maximum backup size",
+        "The number of logs per minute",
+        "The network round-trip time"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA4-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A4.core",
+      "prompt": "A service is slow but CPU is low. What is still plausible?",
+      "expectedElements": [
+        "I/O wait",
+        "dependency latency",
+        "lock contention",
+        "network delay"
+      ]
+    },
+    {
+      "id": "BA4-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A4.core",
+      "prompt": "Why can high error rate with normal request rate be easier to diagnose than 'everything is slow'?",
+      "expectedElements": [
+        "The symptom is more specific and can be correlated with endpoint/dependency evidence"
+      ]
+    },
+    {
+      "id": "BA4-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A4.core",
+      "prompt": "Why should you preserve incident evidence before restarting a process?",
+      "expectedElements": [
+        "Restart may remove transient state, logs or timing clues",
+        "It guarantees the process is guilty",
+        "It prevents recovery"
+      ]
+    },
+    {
+      "id": "BA4-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A4.core",
+      "prompt": "What does a useful dashboard combine?",
+      "expectedElements": [
+        "traffic",
+        "errors",
+        "latency",
+        "saturation or dependency signals"
+      ]
+    },
+    {
+      "id": "BA4-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "B-A4.core",
+      "prompt": "Design a dashboard for a small API.",
+      "expectedElements": [
+        "request rate",
+        "error rate",
+        "latency",
+        "saturation",
+        "dependency health"
+      ]
+    },
+    {
+      "id": "BA4-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "B-A4.core",
+      "prompt": "Explain why a single average latency number can hide an incident.",
+      "expectedElements": [
+        "tail latency can be bad while average looks normal",
+        "different endpoints/users can have different experience"
+      ]
+    },
+    {
+      "id": "BA4-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A4.core",
+      "prompt": "A service reports 200 health but users report failed writes. Give two hypotheses and tests.",
+      "expectedElements": [
+        "health check is too shallow with real write-path test",
+        "database/dependency issue with write-specific telemetry"
+      ]
+    },
+    {
+      "id": "BA4-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "B-A4.core",
+      "prompt": "Design a recovery verification checklist after a backup restore.",
+      "expectedElements": [
+        "service reachable",
+        "critical data present/correct",
+        "normal error/latency signals",
+        "known user operation succeeds"
+      ]
+    },
+    {
+      "id": "BA4-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "B-A4.core",
+      "prompt": "Build a diagnosis tree for 'everything is slow' using observability evidence.",
+      "expectedElements": [
+        "scope",
+        "latency/error breakdown",
+        "dependency timing",
+        "resource saturation",
+        "safe next test"
+      ]
+    },
+    {
+      "id": "BA4-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "dependency latency",
+        "I/O",
+        "locks or queueing"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "CPU is low but latency is high. What should you inspect?"
+    },
+    {
+      "id": "BA4-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "application logs/traces",
+        "dependency timings/errors",
+        "recent changes"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "Errors rise while traffic stays flat. What evidence can separate application regression from dependency failure?"
+    },
+    {
+      "id": "BA4-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "health test is narrower than the real operation"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "Health endpoint is 200 but writes fail. What is the likely lesson?"
+    },
+    {
+      "id": "BA4-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "tail latency percentiles",
+        "affected endpoint/user group",
+        "dependency path"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "Average latency is normal but users complain. What should you examine?"
+    },
+    {
+      "id": "BA4-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "restart changed state",
+        "root cause is not isolated",
+        "pre-restart evidence may be lost"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "A restart makes an incident disappear. Why is the evidence incomplete?"
+    },
+    {
+      "id": "BA4-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "threshold and baseline",
+        "whether the signal maps to user impact",
+        "noise or missing context"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "An alert fires continuously. What should be reviewed?"
+    },
+    {
+      "id": "BA4-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "latency needs workload context",
+        "changes in request volume can explain behavior"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "A dashboard shows latency but not traffic. Why is that limiting?"
+    },
+    {
+      "id": "BA4-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "data correctness",
+        "schema/application compatibility",
+        "critical user operations"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "After restore, the service is up but writes are wrong. What should you test next?"
+    },
+    {
+      "id": "BA4-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "API latency",
+        "DB query/connection timing",
+        "DB saturation",
+        "correlation with deployment/load"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "Design evidence for a database-related latency incident."
+    },
+    {
+      "id": "BA4-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "regional request timing",
+        "dependency/data locality",
+        "server-side telemetry"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "A service is healthy in one region and slow in another. Design the next three observations."
+    },
+    {
+      "id": "BA4-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "user-impact signal",
+        "sustained condition",
+        "context signals",
+        "clear action"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "Design a small incident dashboard and alert set that avoids paging on every minor spike."
+    },
+    {
+      "id": "BA4-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "application health",
+        "data correctness",
+        "dependency compatibility",
+        "user-path verification"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "Create a recovery decision tree for 'backup restored but users still fail'."
+    },
+    {
+      "id": "BA4-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "B-A4.hands-on",
+      "prompt": "Collect baseline logs and metrics for a disposable service.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "run normal traffic",
+        "record logs/metrics",
+        "define baseline",
+        "stop"
+      ],
+      "success": [
+        "baseline captured",
+        "signals identified"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA4-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "B-A4.hands-on",
+      "prompt": "Create a controlled latency incident.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "introduce safe delay",
+        "observe latency/errors",
+        "identify signal",
+        "remove delay",
+        "verify"
+      ],
+      "success": [
+        "before/after latency",
+        "recovery evidence"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA4-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "B-A4.hands-on",
+      "prompt": "Correlate one request across logs.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "generate request",
+        "capture correlation ID",
+        "find related log events",
+        "record chain"
+      ],
+      "success": [
+        "same request linked across events"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA4-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "B-A4.hands-on",
+      "prompt": "Break a health dependency.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "record healthy state",
+        "break dependency",
+        "observe health/user path",
+        "restore",
+        "verify"
+      ],
+      "success": [
+        "health change",
+        "user impact",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA4-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "B-A4.hands-on",
+      "prompt": "Perform a backup and restore verification.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "backup",
+        "restore elsewhere",
+        "run critical operation",
+        "compare data",
+        "record result"
+      ],
+      "success": [
+        "backup identity",
+        "restore result",
+        "data verification"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA4-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "B-A4.hands-on",
+      "prompt": "Build an incident dashboard from supplied signals.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "choose traffic/errors/latency/saturation",
+        "define useful views",
+        "simulate failure",
+        "interpret"
+      ],
+      "success": [
+        "signals selected for diagnosis",
+        "failure identifiable"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA4-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "B-A4.hands-on",
+      "prompt": "Run an 'everything is slow' diagnosis drill.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "scope impact",
+        "check latency/error",
+        "check dependency/resource signals",
+        "choose next test",
+        "record"
+      ],
+      "success": [
+        "evidence chain",
+        "next test justified"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA4-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "B-A4.hands-on",
+      "prompt": "Lead a recovery verification drill.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "restore known-good state",
+        "check service",
+        "check key data",
+        "check user path",
+        "record"
+      ],
+      "success": [
+        "all recovery gates passed or failure explained"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    }
+  ]
+}
