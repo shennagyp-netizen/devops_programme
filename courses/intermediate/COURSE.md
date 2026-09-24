@@ -17,7 +17,7 @@ application, Kubernetes, infrastructure, observability, database, recovery and i
 
 ## Prerequisite diagnostics
 
-The current adaptive pilot includes I-F1, I-F2 and I-A1. A diagnostic recommendation may compress introductory theory, but the associated exercises remain mandatory.
+The authored Intermediate core is now complete across all eight sections (I-F1/I-F2/I-A1/I-A2/I-A3/I-A4/I-A5/I-A6). Each section has prerequisite diagnostics, a 40-item pilot assessment bank, lesson coverage and project-linked hands-on work. A diagnostic recommendation may compress introductory theory, but associated exercises remain mandatory.
 
 ## Teaching model
 
