@@ -33,10 +33,16 @@ export type PodcastAudioManifest = {
  * because a single turn can contain the words that cause React to hand control
  * to the learner.
  */
-export const podcastAudioManifest: Record<string, PodcastAudioManifest> = {};
-
-export function getPodcastAudioManifest(episodeId: string) {
-  return podcastAudioManifest[episodeId];
+export async function loadPodcastAudioManifest(): Promise<
+  Record<string, PodcastAudioManifest>
+> {
+  try {
+    const response = await fetch("/podcasts/audio-manifest.json");
+    if (!response.ok) return {};
+    return (await response.json()) as Record<string, PodcastAudioManifest>;
+  } catch {
+    return {};
+  }
 }
 
 export function findActiveCue(
