@@ -31,6 +31,8 @@ export function LessonPanel({
   onSelectLesson?: (lessonId: string) => void;
 }) {
   const [mode, setMode] = useState<Mode>("learn");
+  const [exerciseEvidence, setExerciseEvidence] = useState("");
+  const [exerciseRecorded, setExerciseRecorded] = useState(false);
   const command = lesson.platformCommands[platform] ?? lesson.lab.command;
   const remediationTarget =
     diagnosticBySection[lesson.sectionId]?.remediationLessonIds[0];
@@ -48,8 +50,13 @@ export function LessonPanel({
         <button
           className={mastered ? "mastered" : "primary"}
           onClick={onMaster}
+          disabled={!exerciseRecorded && !mastered}
         >
-          {mastered ? "Mastered" : "Mark mastered"}
+          {mastered
+            ? "Mastered"
+            : exerciseRecorded
+              ? "Mark complete"
+              : "Complete the required exercise first"}
         </button>
       </div>
 
@@ -146,6 +153,36 @@ export function LessonPanel({
           </pre>
           <h4>Break / fix</h4>
           <p>{lesson.lab.challenge}</p>
+
+          <div className="content-card">
+            <span className="eyebrow">EXERCISE EVIDENCE</span>
+            <h4>What did you actually observe?</h4>
+            <p>
+              Record the key observation and the evidence that supports your
+              diagnosis or recovery. This is a local self-report for now; the
+              future hands-on engine will replace it with machine-verified evidence.
+            </p>
+            <textarea
+              value={exerciseEvidence}
+              onChange={(event) => {
+                setExerciseEvidence(event.target.value);
+                setExerciseRecorded(false);
+              }}
+              placeholder="Example: DNS resolved, TCP connected, but TLS failed after the certificate changed."
+            />
+            <button
+              className="primary"
+              disabled={!exerciseEvidence.trim()}
+              onClick={() => setExerciseRecorded(true)}
+            >
+              Record exercise evidence
+            </button>
+            {exerciseRecorded ? (
+              <p className="range">
+                Exercise evidence recorded locally. You can now mark this lesson complete.
+              </p>
+            ) : null}
+          </div>
         </div>
       )}
 
