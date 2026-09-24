@@ -109,7 +109,12 @@
         "zero": [
           "treats them as the same component"
         ]
-      }
+      },
+      "expectedElements": [
+        "shell is a user-facing command interpreter/process",
+        "the kernel provides privileged OS services such as process, memory, filesystem and device management",
+        "a shell invokes programs and requests kernel services but is not the kernel"
+      ]
     },
     {
       "id": "IF1-C-007",
@@ -166,7 +171,12 @@
         "zero": [
           "gives only a restart action"
         ]
-      }
+      },
+      "expectedElements": [
+        "at least one host-wide signal such as CPU, memory, I/O, load or system-level resource pressure",
+        "at least one process-specific signal such as process CPU, memory, state, file descriptors or sockets",
+        "an explanation of how the two observations separate host-wide from process-local pressure"
+      ]
     },
     {
       "id": "IF1-C-010",
@@ -236,7 +246,12 @@
         "zero": [
           "says restart proves the cause"
         ]
-      }
+      },
+      "expectedElements": [
+        "restart can change or clear process state and transient evidence",
+        "restart does not identify the original causal condition",
+        "additional evidence before and after restart is needed to establish cause"
+      ]
     },
     {
       "id": "IF1-C-014",
@@ -306,7 +321,13 @@
         "zero": [
           "always checks the same component first"
         ]
-      }
+      },
+      "expectedElements": [
+        "start with the smallest observation that distinguishes host pressure from dependency pressure",
+        "use host evidence when local resource/process evidence points to the host",
+        "use dependency/network evidence when local host capacity does not explain the symptom",
+        "choose the next check based on evidence rather than the symptom alone"
+      ]
     },
     {
       "id": "IF1-C-018",
@@ -362,7 +383,14 @@
         "zero": [
           "recommends repeated restarts only"
         ]
-      }
+      },
+      "expectedElements": [
+        "confirm the restart only removed the symptom temporarily",
+        "capture the latency and load conditions when the problem returns",
+        "inspect process/resource and dependency evidence under the failing load",
+        "identify the repeating condition that explains recurrence",
+        "verify the proposed cause with a controlled observation or change"
+      ]
     },
     {
       "id": "IF1-D-001",
