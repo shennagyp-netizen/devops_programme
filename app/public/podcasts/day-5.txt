@@ -1,0 +1,405 @@
+DAY 5 — SCALE + DISTRIBUTED SYSTEMS + SRE
+
+EPISODE D5.1 — Scaling
+
+Speaker A: Scaling is not 'buy a bigger server.' It is deciding where capacity is constrained and how to distribute work.
+
+Speaker B: Horizontal versus vertical.
+
+Speaker A: Exactly. Vertical scaling makes one unit larger. Horizontal scaling adds units. Stateless services generally scale more easily because requests can move between instances.
+
+Speaker A: Real-life analogy: one supermarket cashier working faster versus opening ten checkout lanes.
+
+Speaker B: Ten lanes create a new problem: the queue and payment system now have to coordinate.
+
+Speaker A: Exactly. Scale moves bottlenecks.
+
+Speaker A: Real-life example: social-media traffic can spike during a major event. Caches and queues can absorb some pressure, but every buffer eventually has a limit.
+
+Speaker A: Lab: design a traffic-spike strategy and identify the first three likely bottlenecks.
+Speaker B: Scaling sounds simple until the system gets bigger and the bottleneck moves.
+
+Speaker A: Exactly. Vertical scaling means making one machine bigger. Horizontal scaling means adding more instances. Neither is a magic answer.
+
+Speaker B: And statelessness makes horizontal scaling easier.
+
+Speaker A: Usually. If any application instance can handle a request without depending on private memory from one specific server, a load balancer can distribute work more freely.
+
+Speaker B: Real-life example?
+
+Speaker A: Supermarket checkout. If one checkout is overloaded, you can make that cashier faster, or open more lanes. But if every cashier needs the same single paper notebook locked in one lane, adding cashiers doesn't solve the problem.
+
+Speaker B: That's the hidden shared state.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction. We double the web servers and latency barely changes.
+
+Speaker A: What would you inspect?
+
+Speaker B: Database latency. Cache hit rate. Network. Downstream services. Lock contention.
+
+Speaker A: Good. Notice you didn't say “add more servers again.”
+
+Speaker B: Because the bottleneck may not be compute.
+
+Speaker A: Right. Capacity is a system property.
+
+Speaker B: Mac exercise?
+
+Speaker A: Take a tiny application and draw its request path. Put a number beside each dependency: expected concurrency, latency, capacity. Then ask which component saturates first as traffic doubles.
+
+Speaker B: That's basically a paper load test.
+
+Speaker A: Exactly. Before you reach for Kubernetes autoscaling, understand what you're actually scaling.
+
+
+EPISODE D5.2 — Databases at Scale
+
+Speaker A: Databases become interesting when data volume, concurrency, availability, and geography grow.
+
+Speaker B: Transaction, index, MVCC, replication, partitioning, sharding.
+
+Speaker A: These are solutions to different problems, not a menu you order blindly.
+
+Speaker A: Think of a warehouse. An index is like a location system that lets workers find an item without searching every shelf. Replication is another stocked location. Partitioning divides inventory into manageable regions.
+
+Speaker A: Real-life example: a global retailer may keep data close to its customers while accepting certain consistency trade-offs for some workloads.
+
+Speaker A: Lab: identify a query bottleneck, inspect an index, and reason about what changes when the dataset is much larger.
+Speaker B: Databases are where “just scale it” goes to become complicated.
+
+Speaker A: Because correctness matters at the same time as capacity.
+
+Speaker B: Transactions, MVCC, replication, partitioning, sharding.
+
+Speaker A: Start with the invariant: your application needs a consistent way to read and change data according to its business rules.
+
+Speaker B: And replication gives more copies, but those copies can introduce lag and consistency choices.
+
+Speaker A: Correct.
+
+Speaker B: Real-life analogy?
+
+Speaker A: A warehouse keeps inventory records. If three branches each keep a copy, the copies are useful for local work, but now you have a synchronization problem. Two branches can believe they sold the last item.
+
+Speaker B: So more copies can create a coordination problem.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction. A replica is healthy but slightly behind. Can it always answer a read that requires the newest write?
+
+Speaker A: Not necessarily. You need to understand the consistency semantics of that system.
+
+Speaker B: And sharding changes the question.
+
+Speaker A: Right. Now data ownership is distributed across partitions. Queries that span partitions can become more expensive or operationally complicated.
+
+Speaker B: Mac exercise?
+
+Speaker A: Draw one logical database, then add a read replica, then partition it. For each step, write what gets faster, what gets harder, and what new failure mode appears.
+
+Speaker B: So every scaling mechanism buys something and creates another responsibility.
+
+Speaker A: That's the mature way to think about it.
+
+
+EPISODE D5.3 — Distributed Systems
+
+Speaker A: The central difficulty of distributed systems is partial failure. One machine can be healthy while the network path to it is broken.
+
+Speaker B: Which means 'the server is up' can be completely useless.
+
+Speaker A: Correct.
+
+Speaker A: Real-life analogy: imagine several branches of the same company that cannot reliably call each other. Each branch knows some facts, but not necessarily the latest facts.
+
+Speaker A: That makes replication, consistency, quorum, ordering, and timeouts fundamental.
+
+Speaker A: Joke: distributed systems are where two computers finally discover that communication is hard.
+
+Speaker B: Very philosophical for a Tuesday.
+
+Speaker A: And annoyingly expensive when true.
+
+Speaker A: Lab: design what users see when one replica is delayed, unavailable, or partitioned.
+Speaker B: Distributed systems are basically “the computer is no longer one thing.”
+
+Speaker A: That's a good opening.
+
+Speaker B: Partial failure feels like the big idea.
+
+Speaker A: It is. One node can be healthy while another is unreachable. One request can succeed while its caller times out. Two replicas can temporarily disagree.
+
+Speaker B: Real-life example?
+
+Speaker A: Two branches of the same company lose their phone connection to each other. Each branch is still open. Neither knows exactly what the other has done in the last hour.
+
+Speaker B: Humans can survive that. Computers get very upset.
+
+Speaker A: Computers are excellent at arithmetic and surprisingly bad at uncertainty.
+
+Speaker B: Prediction. Service A sends a request to Service B. B completes the operation, but A times out waiting. What does A know?
+
+Speaker A: Only that it didn't observe the response within its deadline. It does not automatically know whether B failed, succeeded, or succeeded and the response was lost.
+
+Speaker B: Which is why blind retries can duplicate work.
+
+Speaker A: Exactly. This is where idempotency and careful retry policy become crucial.
+
+Speaker B: Mac exercise?
+
+Speaker A: Write a tiny mental distributed system with two services. Introduce a one-way delay or dropped response in your model. Then list what each side knows at each step. You're learning to reason about incomplete information.
+
+Speaker B: That's much more fundamental than memorizing CAP slogans.
+
+Speaker A: Much more.
+
+
+EPISODE D5.4 — Reliability Patterns
+
+Speaker A: Reliability patterns exist because a failure in one component can trigger more work than the system can handle.
+
+Speaker B: Retry sounds friendly until everyone retries at once.
+
+Speaker A: Exactly. That is a retry storm.
+
+Speaker A: Imagine a restaurant phone that rings because an order failed. If every caller retries every second, the failure becomes worse. Exponential backoff and jitter spread retries over time.
+
+Speaker A: Idempotency makes repeated operations safer. Circuit breakers stop calls to unhealthy dependencies. Backpressure prevents unlimited work from entering an overloaded system.
+
+Speaker A: Real-life example: a delivery company may safely retry 'check delivery status' many times, but a blind retry of 'charge this credit card' needs much more careful semantics.
+
+Speaker A: Lab: simulate a slow dependency and compare fixed retries with exponential backoff and a circuit breaker.
+Speaker B: Reliability patterns are all about what happens when things don't behave like the happy path.
+
+Speaker A: Right. Timeout means stop waiting after a bounded period. Retry means try again. Backoff slows repeated attempts. Jitter prevents synchronized retries. Idempotency makes repeated requests safer. Backpressure prevents overloaded systems from accepting more work than they can handle.
+
+Speaker B: The dangerous part is combining them carelessly.
+
+Speaker A: Exactly. A retry storm can turn a struggling dependency into a dead dependency.
+
+Speaker B: Restaurant example?
+
+Speaker A: Ten customers call because their delivery order hasn't arrived. The restaurant is overwhelmed, so every customer calls again every five seconds. Now the phone system itself becomes another failure source.
+
+Speaker B: That's basically a retry storm.
+
+Speaker A: Yes.
+
+Speaker B: Prediction. Two services both retry aggressively with the same delay.
+
+Speaker A: What happens under widespread failure?
+
+Speaker B: Their retries synchronize. Load spikes exactly when the dependency is already struggling.
+
+Speaker A: Good. Jitter exists for a reason.
+
+Speaker B: Mac exercise?
+
+Speaker A: Write a tiny retry policy on paper. Give it a timeout, maximum attempts, backoff, and jitter range. Then calculate how much traffic it creates when one hundred callers hit a failed dependency.
+
+Speaker B: That turns “resilience” into arithmetic.
+
+Speaker A: It should. Reliability is an engineering discipline, not a mood.
+
+
+EPISODE D5.5 — Observability
+
+Speaker A: Production systems cannot be managed by vibes.
+
+Speaker B: Finally, a formal definition of engineering.
+
+Speaker A: Logs record events. Metrics quantify behavior. Traces show causal paths across services.
+
+Speaker A: Think of a traffic control room. Cameras show events. Counters show volume. A map traces a vehicle's route. You need all three views to understand congestion.
+
+Speaker A: SLI measures a behavior. SLO states a target. Error budget expresses how much unreliability is acceptable.
+
+Speaker A: Real-life example: if users report 'the site feels slow,' one good metric like CPU might not explain it. You need latency, error rate, dependency timing, traces, and workload context.
+
+Speaker A: Lab: define one SLI, an SLO, an alert, and a trace path for the application.
+Speaker B: Observability is where all the evidence we've been collecting gets organized.
+
+Speaker A: Exactly. Logs tell stories. Metrics summarize behavior over time. Traces connect work across components.
+
+Speaker B: And SLI and SLO stop it from becoming a dashboard collection hobby.
+
+Speaker A: Right. An SLI is a measured indicator of service behavior. An SLO sets a target. An error budget connects reliability work to a defined tolerance for failure.
+
+Speaker B: Traffic control room analogy?
+
+Speaker A: A traffic control room doesn't display every possible sensor just because it can. It highlights the signals needed to detect congestion, incidents, and changes in flow.
+
+Speaker B: Prediction. CPU is normal, but user latency is terrible.
+
+Speaker A: What does that tell you?
+
+Speaker B: CPU isn't the dominant bottleneck. I need to inspect dependencies, queues, network, database, lock contention, or maybe tail latency.
+
+Speaker A: Good. Observability helps you ask which hypothesis fits the evidence.
+
+Speaker B: And high-cardinality labels can become their own problem.
+
+Speaker A: Exactly. Instrumentation has cost and design trade-offs.
+
+Speaker B: Mac exercise?
+
+Speaker A: Take one request through a hypothetical web service and name the logs, metrics, and trace spans you'd want. Then remove half the signals and ask what diagnosis becomes harder.
+
+Speaker B: So observability design starts from questions.
+
+Speaker A: Always. Instrumentation should answer operational questions.
+
+
+EPISODE D5.6 — Disaster Recovery
+
+Speaker A: A backup is not a recovery strategy until you can restore from it.
+
+Speaker B: Painfully true.
+
+Speaker A: RPO asks how much data loss is acceptable. RTO asks how long recovery may take.
+
+Speaker A: Real-life analogy: a fire extinguisher is equipment; a fire drill is an operational capability.
+
+Speaker A: Multi-AZ and multi-region architectures reduce different classes of failure. More redundancy also means more complexity and cost.
+
+Speaker A: Real-life example: a business that can survive a server outage but not a regional outage has two different recovery problems.
+
+Speaker A: Lab: write a restore procedure and calculate whether it meets a stated RPO and RTO.
+Speaker B: Disaster recovery is one of those things everyone approves until someone asks when the last restore test happened.
+
+Speaker A: Exactly.
+
+Speaker B: RPO is how much data loss you can tolerate. RTO is how long recovery can take.
+
+Speaker A: Right.
+
+Speaker B: Backup is not recovery.
+
+Speaker A: That's the line to remember.
+
+Speaker B: Fire extinguisher versus fire drill?
+
+Speaker A: Perfect. Owning a fire extinguisher does not prove that the building can be evacuated. A backup file existing does not prove you can restore the service, the dependencies, the credentials, and the application state correctly.
+
+Speaker B: Prediction. The database backup is valid, but the application can't start in the recovery environment.
+
+Speaker A: Then the database backup didn't solve the incident. The recovery system is incomplete.
+
+Speaker B: So DR is a system.
+
+Speaker A: Exactly. Data, infrastructure, configuration, identity, dependencies, runbooks, and people.
+
+Speaker B: Mac exercise?
+
+Speaker A: Write an RPO and RTO for a fictional service. Then design a restore test. Don't just say “restore the backup.” State what evidence proves the service is actually usable.
+
+Speaker B: That's uncomfortable.
+
+Speaker A: Recovery planning should make you uncomfortable before the incident does.
+
+
+EPISODE D5.7 — Global-Scale Architecture
+
+Speaker A: Now we combine everything. A global system needs traffic distribution, compute, data, cache, queues, observability, identity, security, and recovery.
+
+Speaker B: And the fun part is that every decision changes another decision.
+
+Speaker A: Exactly. This is architecture as a dependency graph.
+
+Speaker A: Real-life example: international airports do not simply add more gates. They need runways, terminals, baggage systems, security, traffic routing, emergency procedures, and regional coordination.
+
+Speaker A: For a global software system, ask where users enter, where data lives, which failures are isolated, what is cached, what is asynchronous, and what can degrade gracefully.
+
+Speaker A: Lab: design a multi-region architecture for millions of users and explain every major failure domain.
+Speaker B: Global scale adds geography to every previous problem.
+
+Speaker A: And latency.
+
+Speaker B: And failure domains.
+
+Speaker A: And data sovereignty, routing, replication, deployment, capacity planning.
+
+Speaker B: Airport analogy?
+
+Speaker A: Think about an international airport system. You might have regional hubs, local feeder routes, traffic control, baggage systems, security, and alternate airports. A global application has analogous layers, though the mechanisms are different.
+
+Speaker B: Prediction. If one region fails, should traffic automatically move to another region?
+
+Speaker A: Only if the architecture, data model, routing, capacity, and recovery design make that safe.
+
+Speaker B: So “multi-region” is not one checkbox.
+
+Speaker A: Exactly. You can have two regions and still have one logical bottleneck.
+
+Speaker B: Mac exercise?
+
+Speaker A: Draw a two-region web service. Mark where users enter, where sessions live, where writes go, how data replicates, and what happens when one region disappears. Then calculate whether the surviving region has enough capacity.
+
+Speaker B: The last part is easy to forget.
+
+Speaker A: And that forgotten part is how failover becomes a second outage.
+
+
+EPISODE D5.8 — The Production Incident
+
+Speaker A: Final exercise. Latency rises. Error rate rises. Queue depth rises. Database CPU rises. Pods restart.
+
+Speaker B: That sounds less like an exam and more like a personal attack.
+
+Speaker A: It is a practical exam.
+
+Speaker A: In a real incident, you do not start by changing random settings. Observe. Form a hypothesis. Measure. Isolate. Mitigate. Recover. Then find root cause and prevent recurrence.
+
+Speaker A: Real-life analogy: emergency medicine. Triage first, stabilize the patient, then investigate the deeper cause.
+
+Speaker B: And the social lesson?
+
+Speaker A: During an incident, calm communication is part of the system. People need clear facts, ownership, timelines, and decisions. Panic is not an observability signal.
+
+Speaker A: Lab: given a dashboard and logs, identify the most likely failure, perform the minimum safe mitigation, and explain why you chose it.
+
+Speaker B: So the final skill is not knowing every tool.
+
+Speaker A: Correct. It is knowing how to think when the tools disagree with your expectations.
+Speaker B: Production incident. No architecture diagram saves you when the phones start ringing.
+
+Speaker A: They help, but yes, the immediate problem is turning noise into a bounded diagnosis.
+
+Speaker B: Emergency medicine analogy.
+
+Speaker A: Triage. First determine what is failing, who is affected, and whether there is immediate danger. Then stabilize. Then investigate deeply.
+
+Speaker B: So mitigation before root-cause perfection.
+
+Speaker A: Often, yes. You need to reduce harm while preserving enough evidence to understand what happened.
+
+Speaker B: Prediction. Latency doubles across one region. Error rate is rising. A deploy happened fifteen minutes ago.
+
+Speaker A: What's your first move?
+
+Speaker B: Don't immediately roll back just because the deploy is suspicious. First determine whether the affected population matches the deployment scope, compare the timing, inspect signals, and decide whether rollback is a safe mitigation.
+
+Speaker A: Good. And if rollback is clearly the lowest-risk mitigation?
+
+Speaker B: Do it, then keep investigating.
+
+Speaker A: Exactly.
+
+Speaker B: “Panic is not an observability signal.”
+
+Speaker A: Please put that on the wall.
+
+Speaker B: Mac exercise?
+
+Speaker A: Take a fictional incident and write the first ten minutes minute by minute. What do you observe? What hypothesis do you form? What is the least risky mitigation? What evidence do you preserve? What tells you recovery succeeded?
+
+Speaker B: Then after recovery, postmortem.
+
+Speaker A: Right. Not a blame document. A learning document: what failed, why detection or mitigation took time, what changes reduce recurrence, and what evidence would tell us the fix works.
+
+Speaker B: So the final skill isn't knowing every tool.
+
+Speaker A: It's staying rational while the system is not.
+
