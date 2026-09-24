@@ -9,168 +9,101 @@ permissions:
   pull-requests: write
 
 jobs:
-  beginner_diagnostic:
-    name: beginner-diagnostic
-    if: github.event_name == 'pull_request'
+  beginner_runner_smoke:
+    name: beginner-runner-smoke
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Mark diagnostic start
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const content = [
-              "Beginner diagnostic started.",
-              "run=" + context.runId,
-              "event=" + context.eventName,
-              "sha=" + context.sha,
-              "runner=" + process.env.RUNNER_OS
-            ].join("\n");
-            const branch = context.payload.pull_request?.head?.ref;
-            if (!branch) return;
-            await github.rest.repos.createOrUpdateFileContents({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              path: "ci-debug/beginner-" + context.runId + ".txt",
-              message: "ci: record Beginner diagnostic start",
-              content: Buffer.from(content).toString("base64"),
-              branch
-            });
-
-      - uses: actions/checkout@v4
-        id: checkout
-
       - uses: actions/setup-node@v4
-        id: setup
         with:
           node-version: 22
-
-      - name: Run Beginner diagnostic stages
-        id: stages
-        shell: bash
+      - name: Runner smoke
         run: |
-          set +e
-          report="ci-debug-local.txt"
-          : > "$report"
+          node --version
+          npm --version
+          printf 'runner-ok\n'
 
-          run_stage() {
-            name="$1"
-            shift
-            echo "===== $name =====" >> "$report"
-            echo "COMMAND: $*" >> "$report"
-            "$@" > /tmp/beginner-stage.out 2>&1
-            code=$?
-            echo "EXIT: $code" >> "$report"
-            tail -n 250 /tmp/beginner-stage.out >> "$report"
-            echo >> "$report"
-          }
-
-          run_stage "npm-install" npm install
-          run_stage "beginner-structural" node ../scripts/check-beginner-gate.mjs
-          run_stage "beginner-unit" npm exec vitest run tests/unit/beginner-course.test.mjs
-          run_stage "beginner-integration" npm exec vitest run tests/integration/beginner-course.integration.test.mjs
-          run_stage "beginner-completeness" npm run check:beginner
-
-          exit 0
-
-      - name: Publish Beginner diagnostic report
-        if: always()
-        uses: actions/github-script@v7
-        env:
-          CHECKOUT: ${{ steps.checkout.outcome }}
-          SETUP: ${{ steps.setup.outcome }}
-          STAGES: ${{ steps.stages.outcome }}
-        with:
-          script: |
-            const fs = require("node:fs");
-            const branch = context.payload.pull_request?.head?.ref;
-            if (!branch) return;
-
-            let report = [
-              "Beginner diagnostic final report",
-              "run=" + context.runId,
-              "sha=" + context.sha,
-              "checkout=" + process.env.CHECKOUT,
-              "setup=" + process.env.SETUP,
-              "stages=" + process.env.STAGES,
-              ""
-            ].join("\n");
-
-            if (fs.existsSync("ci-debug-local.txt")) {
-              report += fs.readFileSync("ci-debug-local.txt", "utf8");
-            }
-
-            await github.rest.repos.createOrUpdateFileContents({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              path: "ci-debug/beginner-" + context.runId + "-final.txt",
-              message: "ci: record Beginner diagnostic result",
-              content: Buffer.from(report).toString("base64"),
-              branch
-            });
-  beginner_gate:
-    name: beginner-gate
+  beginner_install:
+    name: beginner-install
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: app
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
       - name: Install
-        id: install
         run: npm install
 
-      - name: Beginner structural contract
-        id: structural
+
+  beginner_structural:
+    name: beginner-structural
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        run: npm install
+
+      - name: Structural contract
         run: node ../scripts/check-beginner-gate.mjs
 
-      - name: Beginner unit tests
-        id: unit
+  beginner_unit:
+    name: beginner-unit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        run: npm install
+
+      - name: Unit tests
         run: npm exec vitest run tests/unit/beginner-course.test.mjs
 
-      - name: Beginner integration tests
-        id: integration
+  beginner_integration:
+    name: beginner-integration
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        run: npm install
+
+      - name: Integration tests
         run: npm exec vitest run tests/integration/beginner-course.integration.test.mjs
 
-      - name: Beginner completeness validator
-        id: completeness
-        run: npm run check:beginner
-
-      - name: Report Beginner gate outcomes
-        if: always()
-        uses: actions/github-script@v7
-        env:
-          INSTALL: ${{ steps.install.outcome }}
-          STRUCTURAL: ${{ steps.structural.outcome }}
-          UNIT: ${{ steps.unit.outcome }}
-          INTEGRATION: ${{ steps.integration.outcome }}
-          COMPLETENESS: ${{ steps.completeness.outcome }}
+  beginner_completeness:
+    name: beginner-completeness
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          script: |
-            if (context.eventName !== "pull_request") return;
-            const body = [
-              "### Beginner gate diagnostic",
-              "",
-              "| Stage | Outcome |",
-              "|---|---|",
-              "| npm install | " + process.env.INSTALL + " |",
-              "| structural contract | " + process.env.STRUCTURAL + " |",
-              "| unit tests | " + process.env.UNIT + " |",
-              "| integration tests | " + process.env.INTEGRATION + " |",
-              "| completeness validator | " + process.env.COMPLETENESS + " |"
-            ].join("\\n");
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-              body
-            });
+          node-version: 22
+      - name: Install
+        run: npm install
+
+      - name: Completeness validator
+        run: npm run check:beginner
 
   build:
     runs-on: ubuntu-latest
