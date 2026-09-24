@@ -22,7 +22,7 @@ export type AssessmentItem = {
   prompt: string;
   options?: string[];
   correctOption?: number;
-  expectedElements?: string[];
+  expectedElements?: string[] | number;
   scoring?: {
     full?: string[];
     partial?: string[];
