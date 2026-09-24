@@ -5,6 +5,7 @@ import {
   recommendationForScore
 } from "../../src/data/diagnostics.ts";
 import { courseLessons } from "../../src/data/courseLessons.ts";
+import { courses } from "../../src/data/programme.ts";
 
 describe("diagnostic engine definitions", () => {
   it("has exactly one definition for every authored section", () => {
@@ -23,6 +24,29 @@ describe("diagnostic engine definitions", () => {
         expect(question.options).toHaveLength(4);
         expect(question.correctOption).toBeGreaterThanOrEqual(0);
         expect(question.correctOption).toBeLessThan(question.options.length);
+      }
+    }
+  });
+
+  it("keeps diagnostic section/course ownership aligned with programme sections", () => {
+    const sectionCourse = new Map(
+      courses.flatMap((course) =>
+        course.sections.map((section) => [section.id, course.id])
+      )
+    );
+
+    for (const definition of diagnosticDefinitions) {
+      expect(sectionCourse.get(definition.sectionId)).toBe(definition.course);
+      expect(definition.title.trim()).not.toBe("");
+    }
+  });
+
+  it("keeps each question prompt and option set meaningful", () => {
+    for (const definition of diagnosticDefinitions) {
+      for (const question of definition.questions) {
+        expect(question.prompt.trim()).not.toBe("");
+        expect(new Set(question.options).size).toBe(question.options.length);
+        expect(question.options.every((option) => option.trim() !== "")).toBe(true);
       }
     }
   });
@@ -50,7 +74,12 @@ describe("diagnostic recommendation thresholds", () => {
   it("condenses theory from 70% through 89%", () => {
     expect(recommendationForScore(7, 10)).toBe("condense-theory");
     expect(recommendationForScore(8, 10)).toBe("condense-theory");
-    expect(recommendationForScore(8.9, 10)).toBe("condense-theory");
+    expect(recommendationForScore(89, 100)).toBe("condense-theory");
+  });
+
+  it("uses the exact 90% boundary for theory skipping", () => {
+    expect(recommendationForScore(89, 100)).toBe("condense-theory");
+    expect(recommendationForScore(90, 100)).toBe("skip-theory");
   });
 
   it("remediates below 70% and on empty diagnostics", () => {
