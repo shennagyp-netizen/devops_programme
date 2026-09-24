@@ -90,9 +90,13 @@ jobs:
         working-directory: repo/app
         run: npm run check:progress
 
-      - name: Full unit and integration tests
+      - name: Unit tests
         working-directory: repo/app
-        run: npm test
+        run: npm run test:unit
+
+      - name: Integration tests
+        working-directory: repo/app
+        run: npm run test:integration
 
       - name: TypeScript typecheck
         working-directory: repo/app
