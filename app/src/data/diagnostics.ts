@@ -74,6 +74,59 @@ export const diagnosticDefinitions: DiagnosticDefinition[] = [
     ]
   },
   {
+    sectionId: "B-A1",
+    course: "beginner",
+    title: "Service Communication",
+    prerequisiteLessonIds: ["B1.2"],
+    remediationLessonIds: ["B1.2", "B1.3"],
+    questions: [
+      {
+        id: "BA1-P-1",
+        prompt: "DNS and TCP both succeed, but the TLS handshake fails. Which area should you inspect next?",
+        options: [
+          "TLS configuration or certificate behavior",
+          "Subnet size",
+          "Process IDs",
+          "Git history"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "BA1-P-2",
+        prompt: "An HTTPS endpoint returns HTTP 500. What does that prove?",
+        options: [
+          "An application-level endpoint handled the request and reported an error",
+          "The database is definitely broken",
+          "DNS failed",
+          "The network cable is unplugged"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "BA1-P-3",
+        prompt: "A health endpoint is 200, but a real user operation is 503. What is the useful inference?",
+        options: [
+          "The real operation exercises more state or dependencies than the health check",
+          "The network is definitely down",
+          "The health endpoint proves the whole application is healthy",
+          "The DNS record must be stale"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "BA1-P-4",
+        prompt: "Why should you avoid restarting first when an API returns intermittent 500 errors?",
+        options: [
+          "It can remove evidence before the failing mechanism is understood",
+          "Restarting can never restore service",
+          "HTTP 500 means TCP is disabled",
+          "A restart changes the DNS record"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+  {
     sectionId: "B-F2",
     course: "beginner",
     title: "Networking Foundations",
