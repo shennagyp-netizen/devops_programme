@@ -85,6 +85,7 @@ export function LessonPanel({
       const parsed = JSON.parse(stored) as {
         evidence?: Record<string, string>;
         verified?: boolean;
+        machineVerified?: boolean;
         machineEnvelope?: {
           stepResults?: Array<{
             stepId: string;
@@ -183,7 +184,8 @@ export function LessonPanel({
           evidenceKey,
           JSON.stringify({
             taskId: runtimeTask.taskId,
-            verified: true,
+            verified: runtimeTask.scope === "exercise",
+            machineVerified: true,
             verificationLevel: "machine-verified",
             machineEnvelope: envelope,
             savedAt: new Date().toISOString()
@@ -251,7 +253,8 @@ export function LessonPanel({
           JSON.stringify({
             ...parsedExisting,
             taskId: runtimeTask.taskId,
-            verified: true,
+            verified: runtimeTask.scope === "exercise",
+            machineVerified: true,
             verificationLevel: "machine-verified",
             machineEnvelope: envelope,
             savedAt: new Date().toISOString()
