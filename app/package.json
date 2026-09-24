@@ -26,7 +26,8 @@
     "test:integration": "vitest run tests/integration",
     "test": "vitest run",
     "hands-on:remote": "node ../scripts/run-remote-runtime-task.mjs",
-    "runtime:remote": "node ../scripts/run-remote-runtime-task.mjs"
+    "runtime:remote": "node ../scripts/run-remote-runtime-task.mjs",
+    "terminal-agent": "node ../scripts/devops-terminal-agent.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",
