@@ -33,7 +33,7 @@ export function AssessmentPanel({
             <div>
               <h4>{labels[assessment.family]}</h4>
               <p>
-                {assessment.expectedMinutes} minutes ·{" "}
+                {assessment.targetItemCount} items · {assessment.expectedMinutes} minutes ·{" "}
                 {assessment.requiredCognitiveLevels.join(" · ")}
               </p>
             </div>
