@@ -1,0 +1,469 @@
+EPISODE B1.1 — The App Is Slow — Where Do We Look?
+
+Speaker A: The support team just sent us one sentence.
+
+Speaker B: Let me guess. "The app is slow."
+
+Speaker A: Exactly.
+
+Speaker B: That's not much to work with.
+
+Speaker A: It is enough to start. It is not enough to diagnose.
+
+Speaker B: So where do we begin?
+
+Speaker A: First, we slow ourselves down. Not the app. Us.
+
+Speaker B: Fair.
+
+Speaker A: Tell me what "the app is slow" actually says.
+
+Speaker B: A user waited too long.
+
+Speaker A: Good. That's the user-facing symptom. What does it not tell us?
+
+Speaker B: Which part is slow.
+
+Speaker A: Right. It doesn't tell us if the CPU is busy. It doesn't tell us if memory is under pressure. It doesn't tell us if one process is stuck. It doesn't tell us if the app is waiting on a file, a database, or a network call.
+
+Speaker B: So the first mistake is treating the symptom as the cause.
+
+Speaker A: That's the first one.
+
+Speaker B: What's the second one?
+
+Speaker A: Picking a layer because it feels familiar.
+
+Speaker B: I do that.
+
+Speaker A: Everybody does. Application engineer sees a slow page and checks the application. Network engineer sees a timeout and checks the network. Database engineer sees a slow query and checks the database. Sometimes they're all right. Sometimes the problem is one layer lower.
+
+Speaker B: Or higher.
+
+Speaker A: Exactly.
+
+Speaker B: Okay. Let's build the machine from the bottom.
+
+Speaker A: Good. A normal application is not floating in space. It runs as one or more processes. The operating system gives those processes CPU time, memory, file access, network access and other services.
+
+Speaker B: So the process is the running thing.
+
+Speaker A: Yes. The program on disk is not the same thing as the running process.
+
+Speaker B: Like a recipe is not the same as a cook who is using the recipe.
+
+Speaker A: That's a good one. The recipe is the program. The cook doing the work is closer to the process.
+
+Speaker B: And the operating system is the kitchen manager?
+
+Speaker A: More or less. It decides who gets access to shared resources and it keeps the system moving.
+
+Speaker B: I like that. The kitchen manager is probably angry already.
+
+Speaker A: Linux usually is.
+
+Speaker B: Okay. What does Linux actually manage for a process?
+
+Speaker A: CPU time. Memory. Files. Sockets. Signals. Process IDs. Permissions. There is more, but those are enough for our first model.
+
+Speaker B: Process ID is just an ID number.
+
+Speaker A: Yes. It lets us identify the process when we inspect or control it.
+
+Speaker B: And a socket is a network endpoint.
+
+Speaker A: Right. Your process may open a socket, listen on a port, connect to another service, or hold several connections at once.
+
+Speaker B: Which means one process can look healthy and still be stuck waiting on the network.
+
+Speaker A: Exactly. That's why "CPU is low" is not good news by itself.
+
+Speaker B: Wait. Why not?
+
+Speaker A: Imagine the application is waiting for a database response. CPU can be very low because the process is not doing much work. The user can still be waiting five seconds.
+
+Speaker B: So low CPU can happen when the app is healthy and when the app is stuck.
+
+Speaker A: Yes.
+
+Speaker B: Same metric, different causes.
+
+Speaker A: Now you're thinking like an operator.
+
+Speaker B: Don't say that too early.
+
+Speaker A: Fair.
+
+Speaker B: Let's make this real. Say it is a clinic system. Someone at reception says the patient screen takes ten seconds to open.
+
+Speaker A: Good. What do you ask?
+
+Speaker B: Is it one user or everybody?
+
+Speaker A: Good.
+
+Speaker B: Did it start today?
+
+Speaker A: Good.
+
+Speaker B: Is only that screen slow, or all screens?
+
+Speaker A: Good.
+
+Speaker B: Did traffic go up?
+
+Speaker A: Yes.
+
+Speaker B: Did we deploy anything?
+
+Speaker A: Yes.
+
+Speaker B: Is the database slow?
+
+Speaker A: Maybe. Notice what you are doing. You're not fixing anything yet. You're trying to separate the possible causes.
+
+Speaker B: So the first tool is really the question.
+
+Speaker A: Exactly.
+
+Speaker B: That sounds simple.
+
+Speaker A: It is simple. It is also easy to forget when someone is standing behind you saying, "Why is it still broken?"
+
+Speaker B: That's the real production timer.
+
+Speaker A: Nothing makes a CPU graph more exciting than somebody watching over your shoulder.
+
+Speaker B: Let's go back to the machine.
+
+Speaker A: Good. A process has a state. It can be running, waiting, sleeping, stopped, or gone. The exact states are more detailed in Linux, but the key idea is that the process can be alive without doing useful work at this exact moment.
+
+Speaker B: So if I run ps, I'm asking Linux to show me process state.
+
+Speaker A: Yes. Try:
+
+Speaker A: ps aux | head
+
+Speaker B: And then I look for my process.
+
+Speaker A: Right. Don't just look at the numbers. Look at which process is actually using CPU and memory.
+
+Speaker B: What about lsof?
+
+Speaker A: lsof is useful when you want to know what files and network endpoints a process has open. For this lesson, think of it as a way to ask, "What outside thing is this process connected to?"
+
+Speaker B: So ps answers "what is running?" and lsof can help answer "what does it have open?"
+
+Speaker A: Exactly.
+
+Speaker B: Pause me for a second.
+
+Speaker A: Okay.
+
+Speaker B: Before I tell you the answer, what do you think happens if I start a long-running process in a terminal and then close the terminal?
+
+Speaker A: Don't look it up yet. Predict it.
+
+Speaker B: My first thought is the process dies.
+
+Speaker A: That may happen, but I don't want you to memorize a yes or no answer. Tell me what you would inspect to know why it happened.
+
+Speaker B: The process relationship to the terminal. Maybe its session. Maybe signals.
+
+Speaker A: Good. That's the skill. We care about the mechanism.
+
+Speaker B: So if my prediction is wrong, that's useful.
+
+Speaker A: Very useful.
+
+Speaker B: Let's say the process stays alive. Then the terminal was not the real owner of the process lifetime.
+
+Speaker A: Right. And if it dies, we ask what signal or session behavior caused that.
+
+Speaker B: This is a better way to learn Linux than memorizing commands.
+
+Speaker A: Commands are just tools for asking the machine questions.
+
+Speaker B: That's actually a good line.
+
+Speaker A: Don't get attached to it.
+
+Speaker B: Fine.
+
+Speaker A: Now let's look at memory.
+
+Speaker B: Everyone loves the memory chart.
+
+Speaker A: Especially when it turns red.
+
+Speaker B: Red means panic.
+
+Speaker A: No. Red means look closer.
+
+Speaker B: Right.
+
+Speaker A: A process has its own address space. The operating system manages physical memory and virtual memory for the system. The details get deep, but for our first operational model, the useful point is this: one process can use a lot of memory, many processes can share the machine, and the machine can start reclaiming or running low.
+
+Speaker B: So if a service grows in memory over time, I should look for the process that owns that growth.
+
+Speaker A: Yes. And ask whether the growth is expected.
+
+Speaker B: Cache can look like memory usage.
+
+Speaker A: Exactly.
+
+Speaker B: Another trap.
+
+Speaker A: There are many.
+
+Speaker B: That's comforting.
+
+Speaker A: It should be. Good operations is mostly learning which simple-looking observation can lie to you.
+
+Speaker B: What about files?
+
+Speaker A: Processes can open files. They can read them, write them, wait on them, and keep file descriptors open.
+
+Speaker B: File descriptors. The term sounds much harder than it is.
+
+Speaker A: They are basically handles the process uses to talk to something.
+
+Speaker B: File, socket, pipe?
+
+Speaker A: Yes. Standard input, standard output, standard error are the famous three.
+
+Speaker B: And a pipe connects one process to another.
+
+Speaker A: Right. The shell can take the output of one process and connect it to the input of another.
+
+Speaker B: Which is why commands can be combined.
+
+Speaker A: Exactly.
+
+Speaker B: So the shell is another process.
+
+Speaker A: Yes.
+
+Speaker B: It asks the kernel to start other processes.
+
+Speaker A: Correct.
+
+Speaker B: So the shell is not the operating system.
+
+Speaker A: Right. That sounds obvious now, but this distinction matters when you debug.
+
+Speaker B: Why?
+
+Speaker A: Because you want to know who actually owns an action. The shell can start a process. The kernel manages the process. The process can open a socket. A service can supervise the process. These are different roles.
+
+Speaker B: So "who owns this?" is another good question.
+
+Speaker A: Very good question.
+
+Speaker B: I almost said "exactly."
+
+Speaker A: Please don't.
+
+Speaker B: Fair.
+
+Speaker A: Let's make the failure harder.
+
+Speaker B: Finally.
+
+Speaker A: The support team says the page is slow. CPU is only twenty percent. Memory looks normal. The application process is running. What do you do next?
+
+Speaker B: Check the network.
+
+Speaker A: Maybe. Why?
+
+Speaker B: Because the app could be waiting on another service.
+
+Speaker A: Good. What evidence would you want?
+
+Speaker B: Request timing. Network connection state. Logs. Maybe a trace if we have one.
+
+Speaker A: Good.
+
+Speaker B: So even though today's lesson is Linux, I should not stay trapped inside Linux.
+
+Speaker A: Exactly. The goal is not to stare at one tool. The goal is to move down and up the system until the evidence points somewhere.
+
+Speaker B: That sounds like a ladder.
+
+Speaker A: It is. But don't climb every step every time.
+
+Speaker B: Start with the smallest observation that separates the likely causes.
+
+Speaker A: Yes.
+
+Speaker B: What does that look like in practice?
+
+Speaker A: Start with something like:
+
+Speaker A: "Is the problem local to one process, local to one machine, or spread across the service?"
+
+Speaker B: Then inspect the process.
+
+Speaker A: Right.
+
+Speaker B: Then inspect its connections.
+
+Speaker A: Right.
+
+Speaker B: Then move outward if the evidence says to.
+
+Speaker A: Exactly.
+
+Speaker B: This is basically debugging by narrowing the space.
+
+Speaker A: Yes. Don't search the whole universe. Ask one question that cuts the possibilities down.
+
+Speaker B: Human example?
+
+Speaker A: Your house lights stop working.
+
+Speaker B: The classic electrician story.
+
+Speaker A: You don't open the wall first. You check whether one bulb is out, one room is out, the whole house is out, or the street is out.
+
+Speaker B: Because each observation points to a different layer.
+
+Speaker A: Exactly. One bulb suggests one bulb. One room suggests a local circuit. The whole house suggests a bigger problem. The street being dark points outside your house.
+
+Speaker B: And the mistake would be changing the bulb while the whole street is dark.
+
+Speaker A: Very good.
+
+Speaker B: That's basically what people do in production.
+
+Speaker A: All the time.
+
+Speaker B: Okay. Bring it back to Linux.
+
+Speaker A: One application process slow? Inspect that process. Every service on the host slow? Inspect the host. Several machines show the same problem? Move outward. The same application is slow only when it calls another service? Now the dependency matters.
+
+Speaker B: So the machine gives us facts, but we have to choose the right question.
+
+Speaker A: Yes.
+
+Speaker B: Mac lab?
+
+Speaker A: Now you do it.
+
+Speaker A: Open a terminal. Run:
+
+Speaker A: ps aux | head
+
+Speaker A: Then look for a process you recognize.
+
+Speaker A: Next run:
+
+Speaker A: lsof -i -P -n | head
+
+Speaker A: You are not trying to understand every column. Find one listening socket or one network connection.
+
+Speaker A: Pause here. Before you run the next command, predict what you think you will see.
+
+Speaker B: And if I don't know what a column means?
+
+Speaker A: That's fine. Pick one column. Find out what it means. Don't try to learn the entire command at once.
+
+Speaker B: That's much friendlier.
+
+Speaker A: It also works.
+
+Speaker B: What should count as a successful lab?
+
+Speaker A: You should be able to answer four things without reading the notes.
+
+Speaker A: What process are you looking at?
+
+Speaker A: What resource is it using?
+
+Speaker A: What network or file endpoints does it have open?
+
+Speaker A: And what observation would make you look somewhere else?
+
+Speaker B: So "I ran ps" is not success.
+
+Speaker A: Correct. Running a command is not competence. Understanding the evidence is.
+
+Speaker B: That's a good rule for the whole course.
+
+Speaker A: It is.
+
+Speaker B: Let's do recall.
+
+Speaker A: No notes.
+
+Speaker B: I'm ready.
+
+Speaker A: Question one. What is the difference between a program and a process?
+
+Speaker B: The program is the stored code. The process is that code running with state and resources.
+
+Speaker A: Good.
+
+Speaker B: Question two.
+
+Speaker A: What does the kernel do for a process?
+
+Speaker B: It manages access to CPU, memory, files, network and other system resources.
+
+Speaker A: Good.
+
+Speaker B: Question three.
+
+Speaker A: Why is CPU usage alone not a diagnosis?
+
+Speaker B: Because a process can be slow while waiting on memory, disk, a lock, or another service. High or low CPU can have several causes.
+
+Speaker A: Good.
+
+Speaker B: Question four.
+
+Speaker A: What is a file descriptor?
+
+Speaker B: A handle a process uses to work with things like files, sockets and pipes.
+
+Speaker A: Good.
+
+Speaker B: Question five.
+
+Speaker A: What should you do before changing a production system?
+
+Speaker B: Get an observation that separates the likely causes.
+
+Speaker A: Good.
+
+Speaker B: Now the practical challenge.
+
+Speaker A: Yes. Imagine your B1 application is slow for ten seconds, but only for some users.
+
+Speaker B: What do I know?
+
+Speaker A: Almost nothing.
+
+Speaker B: Great.
+
+Speaker A: Exactly.
+
+Speaker B: So I start with the smallest useful questions.
+
+Speaker A: Right. Is it tied to one server? One endpoint? One user group? One dependency? One time window?
+
+Speaker B: Then I choose a measurement that can separate those cases.
+
+Speaker A: That's the skill I want you to keep.
+
+Speaker B: Not "know Linux commands."
+
+Speaker A: Know how the system works, then use the commands to ask it good questions.
+
+Speaker B: Okay. That I can work with.
+
+Speaker A: Good. Now run the lab. Then come back and tell me what the machine actually said.
+
+Speaker B: And not what I hoped it said.
+
+Speaker A: Exactly.
