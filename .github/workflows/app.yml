@@ -99,4 +99,4 @@ jobs:
 
       - name: Next.js production build
         working-directory: repo/app
-        run: npm run build
+        run: npx next build
