@@ -258,6 +258,8 @@ export default function App() {
           diagnosticRecommendation={diagnosticRecommendations[l.sectionId]}
           onSelectLesson={setS}
           onEvidenceRecorded={() => setEvidenceVersion((value) => value + 1)}
+          progressReady={!progressLoading}
+          progressSaving={progressBusyId === l.id}
           onMaster={() => void toggle(l.id)}
         />
       </main>
