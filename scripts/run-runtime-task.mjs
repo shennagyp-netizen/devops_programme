@@ -202,6 +202,7 @@ async function main() {
   const envelope: MachineVerificationEnvelope = {
     schemaVersion: 1,
     taskId: task.taskId,
+    contractVersion: task.contractVersion,
     lessonId: task.lessonId,
     platform,
     verificationLevel: "machine-verified",
