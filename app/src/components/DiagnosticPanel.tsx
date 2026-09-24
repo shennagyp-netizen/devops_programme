@@ -71,14 +71,13 @@ export function DiagnosticPanel({
     );
   }
 
-  const result = results[definition.sectionId];
-
   useEffect(() => {
     for (const [storedSectionId, storedResult] of Object.entries(results)) {
       onRecommendation(storedSectionId, storedResult.recommendation);
     }
-  }, [onRecommendation]);
+  }, [onRecommendation, results]);
 
+  const result = results[definition.sectionId];
   const complete = answers.every((answer) => answer >= 0);
 
   function chooseSection(next: string) {
