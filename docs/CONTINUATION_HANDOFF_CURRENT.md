@@ -1262,7 +1262,6 @@ Current files:
 - `app/src/lib/server/db.ts`
 - `app/src/lib/server/progress.ts`
 - `app/drizzle/migrations/0000_learner_completions.sql`
-- `app/drizzle/migrations/0001_authenticated_user_identity.sql`
 - `app/tests/unit/progress-contract.test.mjs`
 - `app/tests/integration/progress-action.test.mjs`
 - `scripts/check-learner-progress-contract.mjs`
