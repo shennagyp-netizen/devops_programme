@@ -4,6 +4,7 @@ import type { PlatformId } from "../data/programme";
 import type { DiagnosticRecommendation } from "../data/diagnostics";
 import { diagnosticBySection } from "../data/diagnostics";
 import { addEvidence } from "../data/evidence";
+import { commandForPlatform } from "../data/platformAdapters";
 import { MotionIllustration } from "./MotionIllustration";
 import { PodcastCoach } from "./PodcastCoach";
 import { AssessmentPanel } from "./AssessmentPanel";
@@ -50,7 +51,7 @@ export function LessonPanel({
       return false;
     }
   });
-  const command = lesson.platformCommands[platform] ?? lesson.lab.command;
+  const command = commandForPlatform(lesson, platform);
 
   useEffect(() => {
     try {
