@@ -3,6 +3,8 @@ import { courses, platformProfiles, type CourseLevel, type PlatformId } from "./
 import { lessonsByCourse } from "./data/courseLessons";
 import { LessonPanel } from "./components/LessonPanel";
 import { Progress } from "./components/Progress";
+import { DiagnosticPanel } from "./components/DiagnosticPanel";
+import type { DiagnosticRecommendation } from "./data/diagnostics";
 
 const K = "devops-programme-mastered";
 
@@ -10,6 +12,8 @@ export default function App() {
   const [course, setCourse] = useState<CourseLevel>("intermediate");
   const [platform, setPlatform] = useState<PlatformId>("macos");
   const [s, setS] = useState("D1.1");
+  const [diagnosticRecommendations, setDiagnosticRecommendations] =
+    useState<Record<string, DiagnosticRecommendation>>({});
   const [m, setM] = useState<string[]>(() => {
     try {
       return JSON.parse(localStorage.getItem(K) || "[]");
@@ -97,6 +101,27 @@ export default function App() {
           Environment: {selectedPlatform.label} · {selectedPlatform.shell}
         </p>
 
+        {course === "beginner" ? (
+          <DiagnosticPanel
+            course="beginner"
+            onRecommendation={(sectionId, recommendation) =>
+              setDiagnosticRecommendations((current) => ({
+                ...current,
+                [sectionId]: recommendation
+              }))
+            }
+          />
+        ) : (
+          <div className="content-card">
+            <span className="eyebrow">ADAPTATION</span>
+            <h3>Prerequisite diagnostics</h3>
+            <p>
+              Diagnostic checks are being authored course by course. Theory is
+              not automatically skipped until a validated diagnostic exists.
+            </p>
+          </div>
+        )}
+
         <div className="content-card course-path">
           <div className="course-path-head">
             <div>
@@ -168,6 +193,8 @@ export default function App() {
           lesson={l}
           platform={platform}
           mastered={m.includes(l.id)}
+          diagnosticRecommendation={diagnosticRecommendations[l.sectionId]}
+          onSelectLesson={setS}
           onMaster={() => toggle(l.id)}
         />
       </main>
