@@ -69,6 +69,7 @@ assert.match(content.contract, /project/);
 assert.doesNotMatch(content.contract, /getLearnerId|localStorage|learnerId/);
 
 assert.match(content.app, /initialCompletionHistory/);
+assert.match(content.app, /^"use client";/);
 assert.match(content.app, /completeLearningItemAction/);
 assert.doesNotMatch(content.app, /getLearnerId|listCompletionHistory|\/api\/progress/);
 
