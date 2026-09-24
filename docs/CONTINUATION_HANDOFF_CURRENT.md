@@ -904,3 +904,55 @@ BEGINNER GATE CLOSED — 2026-09-24
 - The Beginner gate validator now treats hands-on assessment items using their dedicated hands-on contract instead of requiring generic response scoring.
 - The full-program build remains intentionally deferred during this Beginner-first clearance. Its latest observed run exposed unrelated Intermediate/Advanced contract and syntax defects; those are not being marked fixed or hidden by this Beginner milestone.
 
+
+
+============================================================
+24. VERIFIED REMOTE EXECUTION + MANUAL FALLBACK — 2026-09-24
+============================================================
+
+The hands-on execution model is now explicitly two-path:
+
+1. Manual terminal execution
+- always available
+- browser displays the platform-specific command
+- learner executes the command on their own machine
+- learner records structured observation/change/failure/recovery evidence
+- structured evidence is never labeled machine-verified.
+
+2. Optional verified remote execution
+- current transport: SSH
+- target: real Linux or macOS VM or physical machine
+- execution is driven only by the authoritative runtimeTasks.json catalogue
+- SSH host-key checking is strict
+- destructive runtime steps are rejected
+- runner records step result, exit code, output hashes, timestamps and target identity
+- generated envelope is imported into the browser and validated before entering the evidence ledger.
+
+Implementation:
+- scripts/remote-runtime-core.mjs
+- scripts/run-remote-runtime-task.mjs
+- app/tests/unit/remote-runtime-core.test.mjs
+- expanded runtime runner integration tests
+- runtimeVerification.ts now distinguishes:
+  - local-machine / local-runner
+  - remote-machine / ssh-runner
+  - managed-runner remains reserved for a future managed service
+- LessonPanel now exposes the optional verified execution path where a machine-verification task exists and provides JSON evidence import.
+- .runtime-evidence/ is ignored by git.
+- docs/curriculum/HANDS_ON_RUNTIME_VERIFICATION.md documents the complete boundary and fallback behavior.
+
+Important trust boundary:
+- the browser does not open SSH.
+- the current SSH runner provides execution-backed evidence, not cryptographic remote attestation.
+- the target must already be trusted by known_hosts.
+- a returned JSON envelope is accepted only after structural validation against the exact runtime task contract.
+
+Current verified-task coverage remains intentionally narrow:
+- B1.2 only
+- DNS resolution
+- HTTPS port reachability
+- non-destructive observation/probe.
+
+Manual execution remains the course fallback for every lesson, including lessons without a verified runtime task and Windows lessons not yet supported by the SSH runner.
+
+This change does NOT claim complete machine verification of the hands-on catalogue and does NOT claim a deployed managed execution service.
