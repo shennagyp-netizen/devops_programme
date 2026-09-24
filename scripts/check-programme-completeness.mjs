@@ -7,6 +7,7 @@ const root = path.resolve(here, "..");
 
 const programme = await readFile(path.join(root, "app", "src", "data", "programme.ts"), "utf8");
 const courseLessons = await readFile(path.join(root, "app", "src", "data", "courseLessons.ts"), "utf8");
+const intermediateLessonsSource = await readFile(path.join(root, "app", "src", "data", "curriculum.ts"), "utf8");
 const diagnostics = await readFile(path.join(root, "app", "src", "data", "diagnostics.ts"), "utf8");
 const projects = await readFile(path.join(root, "app", "src", "data", "projects.ts"), "utf8");
 const assessment = await readFile(path.join(root, "app", "src", "data", "assessment.ts"), "utf8");
@@ -79,7 +80,7 @@ for (const [course, spec] of Object.entries(expected)) {
 }
 
 const beginnerLessons = [...courseLessons.matchAll(/id: "(B\d+\.\d+)",/g)].map((match) => match[1]);
-const intermediateLessons = [...courseLessons.matchAll(/"id": "(D\d+\.\d+)"/g)].map((match) => match[1]);
+const intermediateLessons = [...intermediateLessonsSource.matchAll(/"id": "(D\d+\.\d+)"/g)].map((match) => match[1]);
 const advancedLessons = [...courseLessons.matchAll(/id: "(A\d+\.\d+)",/g)].map((match) => match[1]);
 
 const counts = {
