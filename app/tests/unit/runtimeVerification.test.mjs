@@ -212,6 +212,38 @@ describe("machine verification contract", () => {
     });
   });
 
+  it("fails closed when a completed step uses a nonzero exit code", () => {
+    const task = runtimeTaskForLesson("B1.2");
+    const validHash = "e".repeat(64);
+    const result = validateMachineVerification(task, {
+      schemaVersion: 1,
+      taskId: task.taskId,
+      contractVersion: task.contractVersion,
+      lessonId: task.lessonId,
+      platform: "linux",
+      verificationLevel: "machine-verified",
+      runnerVersion: "0.1.0",
+      environmentFingerprint: "fingerprint",
+      startedAt: "2026-09-24T10:00:00.000Z",
+      completedAt: "2026-09-24T10:01:00.000Z",
+      stepResults: task.steps.map((step, index) => ({
+        stepId: step.id,
+        startedAt: `2026-09-24T10:00:0${index}.000Z`,
+        completedAt: `2026-09-24T10:00:1${index}.000Z`,
+        exitCode: index === 0 ? 1 : 0,
+        stdoutHash: validHash,
+        stderrHash: validHash,
+        result: index === 0 ? "failed" : "passed"
+      })),
+      resetPerformed: true
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.failures).toContain(
+      "Runtime step resolve-name did not pass."
+    );
+  });
+
   it("accepts a complete machine-verified envelope", () => {
     const task = runtimeTaskForLesson("B1.2");
     const results = task.steps.map((step, index) => ({
@@ -219,8 +251,8 @@ describe("machine verification contract", () => {
       startedAt: `2026-09-24T10:00:0${index}.000Z`,
       completedAt: `2026-09-24T10:00:1${index}.000Z`,
       exitCode: 0,
-      stdoutHash: `stdout-${step.id}`,
-      stderrHash: `stderr-${step.id}`,
+      stdoutHash: "c".repeat(64),
+      stderrHash: "d".repeat(64),
       result: "passed"
     }));
 
