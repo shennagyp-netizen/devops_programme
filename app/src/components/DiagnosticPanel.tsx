@@ -181,9 +181,7 @@ export function DiagnosticPanel({
             </p>
           ) : (
             <p>
-              You still must complete: {definition.remediationLessonIds
-                .filter((id) => definition.sectionId !== "B-F1" || id === "B1.1")
-                .join(" · ")}
+              The associated lesson exercise is still mandatory. Theory compression does not remove hands-on work.
             </p>
           )}
         </div>
