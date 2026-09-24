@@ -1,5 +1,6 @@
 import type { CourseLevel } from "./programme";
 import type { VerificationLevel } from "./handsOn";
+import type { RuntimeVerificationScope } from "./runtimeVerification";
 import {
   validateMachineVerification,
   type MachineVerificationEnvelope,
@@ -24,6 +25,7 @@ export type EvidenceEntry = {
   createdAt: string;
   taskId?: string;
   verificationLevel?: VerificationLevel;
+  verificationScope?: RuntimeVerificationScope;
   evidencePayload?: Record<string, string>;
 };
 
@@ -83,6 +85,7 @@ export function recordMachineVerification(input: {
   lessonId: string;
   taskId: string;
   summary: string;
+  scope: RuntimeVerificationScope;
   evidencePayload: Record<string, string>;
 }) {
   return addEvidence({
@@ -93,6 +96,7 @@ export function recordMachineVerification(input: {
     summary: input.summary,
     taskId: input.taskId,
     verificationLevel: "machine-verified",
+    verificationScope: input.scope,
     evidencePayload: input.evidencePayload
   });
 }
