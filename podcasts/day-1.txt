@@ -1,0 +1,119 @@
+DAY 1
+
+EPISODE D1.1 — Linux Operating Model
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Start with shell, kernel, process, memory, filesystem, file descriptors, services and logs.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Linux Operating Model. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Linux Operating Model in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D1.2 — Terminal as an Engineering Tool
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Start with shell, kernel, process, memory, filesystem, file descriptors, services and logs.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Terminal as an Engineering Tool. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Terminal as an Engineering Tool in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D1.3 — Processes, Services, Permissions and Logs
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Start with shell, kernel, process, memory, filesystem, file descriptors, services and logs.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Processes, Services, Permissions and Logs. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Processes, Services, Permissions and Logs in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D1.4 — What Is a Network?
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Build networking from first principles: frame, MAC, IP, route, port, socket, DNS, TCP, TLS and HTTP. Trace a request layer by layer.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to What Is a Network?. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place What Is a Network? in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D1.5 — IP Addresses, Subnets and CIDR
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Build networking from first principles: frame, MAC, IP, route, port, socket, DNS, TCP, TLS and HTTP. Trace a request layer by layer.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to IP Addresses, Subnets and CIDR. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place IP Addresses, Subnets and CIDR in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D1.6 — Routing, Gateways and NAT
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Build networking from first principles: frame, MAC, IP, route, port, socket, DNS, TCP, TLS and HTTP. Trace a request layer by layer.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Routing, Gateways and NAT. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Routing, Gateways and NAT in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
