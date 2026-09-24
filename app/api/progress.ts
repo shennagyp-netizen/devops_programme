@@ -175,7 +175,7 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     res.setHeader("Allow", "GET, POST, PUT, DELETE");
     send(res, 405, { error: "Method not allowed." });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown server error.";
-    send(res, 500, { error: message });
+    console.error("Learner progress API error", error);
+    send(res, 500, { error: "Progress service is temporarily unavailable." });
   }
 }
