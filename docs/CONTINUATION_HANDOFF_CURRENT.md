@@ -832,4 +832,46 @@ Next gate:
 1. obtain observable test-stage evidence from CI or a working local checkout/dependency environment.
 2. resolve any actual test/build failures.
 3. only after the test/build gate is green, continue runtime expansion from observation-only tasks toward reversible changes, controlled failures, recovery and finally reset verification.
+============================================================
+23. BEGINNER MILESTONE UPDATE — 2026-09-24
+============================================================
+
+Beginner source-contract audit is now clean:
+- 10 authored lessons: B1.1 through B3.2
+- 7 sections: B-F1, B-F2, B-A1, B-A2, B-A3, B-A4, B-A5
+- 3 projects: B1, B2, B3
+- 7 prerequisite diagnostics, four questions each
+- 7 assessment banks / 280 pilot items
+- exact family counts per bank: 20 conceptual / 12 diagnostic / 8 hands-on
+- exact difficulty distribution per family: 15% / 35% / 35% / 15%
+- cognitive-level coverage and competency ownership checked
+- response-schema defects in B-A2 through B-A5 were corrected
+- legacy B-F1 hands-on item shape was normalized to the current hands-on assessment contract
+- missing constructed-response expected elements in B-F1, B-F2 and B-A1 were authored
+- all 10 Beginner lessons now have explicit, lesson-specific hands-on task definitions
+- 10 Beginner podcast scripts are present and substantial; their episode identities match the lesson IDs
+
+New Beginner tests:
+- app/tests/unit/beginner-course.test.mjs
+- app/tests/integration/beginner-course.integration.test.mjs
+- scripts/check-beginner-gate.mjs
+- CI now has a dedicated Beginner gate before the full build.
+
+CI execution blocker:
+- GitHub Actions continues to fail before exposing usable step logs.
+- Independent isolation produced failure for the zero-dependency Beginner runner-smoke job as well as application jobs.
+- This means the current blocker is outside the Beginner application/test logic; the repository cannot currently obtain hosted-runner execution evidence.
+- Do not mark the Beginner milestone "CI green" until a hosted runner actually executes the gate successfully.
+- Do not weaken tests or remove the gate to manufacture green status.
+
+Current Beginner status:
+- Source/contracts: green by direct repository-content audit.
+- Test files: implemented and strengthened.
+- GitHub execution evidence: blocked by Actions runner/infrastructure observability.
+- Machine-verification coverage: only the previously defined B1.2 local probe; the rest remains structured evidence, by design.
+
+Next work:
+1. Restore observable GitHub Actions execution or provide a working local checkout/runtime.
+2. Run the focused Beginner gate and fix only real execution failures.
+3. Once Beginner is genuinely green, move to Intermediate.
 
