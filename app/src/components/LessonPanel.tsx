@@ -66,12 +66,23 @@ export function LessonPanel({
       if (!stored) {
         setHandsOnEvidence({});
         setExerciseRecorded(false);
+        setMachineResults([]);
+        setMachineVerificationMessage("");
         return;
       }
 
       const parsed = JSON.parse(stored) as {
         evidence?: Record<string, string>;
         verified?: boolean;
+        machineEnvelope?: {
+          stepResults?: Array<{
+            stepId: string;
+            stdout: string;
+            stderr: string;
+            exitCode: number;
+            result: string;
+          }>;
+        };
       };
       setHandsOnEvidence(parsed.evidence ?? {});
       setExerciseRecorded(parsed.verified === true);
@@ -126,7 +137,7 @@ export function LessonPanel({
           evidenceKey,
           JSON.stringify({
             ...parsedExisting,
-            taskId: runtimeTask.id,
+            taskId: runtimeTask.taskId,
             verified: true,
             verificationLevel: "machine-verified",
             machineEnvelope: envelope,
