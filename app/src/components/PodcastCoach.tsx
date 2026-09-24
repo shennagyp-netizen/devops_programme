@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Lesson } from "../data/curriculum";
 import {
   findActiveCue,
+  findCurrentTurnId,
   getPodcastAudioManifest,
   type PodcastCueKind
 } from "../data/podcastSync";
@@ -39,6 +40,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   const [audioPlaying, setAudioPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const lastCueIdRef = useRef<string | null>(null);
+  const lastAudioTimeMsRef = useRef(0);
 
   const audioManifest = getPodcastAudioManifest(lesson.id);
 
@@ -56,6 +58,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     setAudioTimeMs(0);
     setAudioPlaying(false);
     lastCueIdRef.current = null;
+    lastAudioTimeMsRef.current = 0;
 
     audioRef.current?.pause();
     audioRef.current = null;
@@ -90,32 +93,33 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     if (!audioManifest || !audioRef.current) return;
 
     const audio = audioRef.current;
+
     const onTime = () => {
       const timeMs = Math.round(audio.currentTime * 1000);
+      const movedBackward = timeMs + 250 < lastAudioTimeMsRef.current;
+
+      if (movedBackward) {
+        lastCueIdRef.current = null;
+      }
+      lastAudioTimeMsRef.current = timeMs;
       setAudioTimeMs(timeMs);
 
-      const activeCue = findActiveCue(audioManifest, timeMs);
-      if (!activeCue || activeCue.id === lastCueIdRef.current) {
-        const currentTurn = audioManifest.cues
-          .map((cue) => cue.turnId)
-          .map((turnId) => turns.findIndex((turn) => turn.id === turnId))
-          .filter((index) => index >= 0)
-          .findLast((index) => turns[index] && index >= 0);
-
-        if (currentTurn !== undefined && currentTurn >= 0) {
-          setTurnIndex(Math.min(currentTurn, Math.max(0, turns.length - 1)));
+      const currentTurnId = findCurrentTurnId(audioManifest, timeMs);
+      if (currentTurnId) {
+        const targetIndex = turns.findIndex(
+          (turn) => turn.id === currentTurnId
+        );
+        if (targetIndex >= 0) {
+          setTurnIndex(targetIndex);
         }
+      }
+
+      const activeCue = findActiveCue(audioManifest, timeMs);
+      if (!activeCue || activeCue.turnId === lastCueIdRef.current) {
         return;
       }
 
       lastCueIdRef.current = activeCue.turnId;
-
-      const targetIndex = turns.findIndex(
-        (turn) => turn.id === activeCue.turnId
-      );
-      if (targetIndex >= 0) {
-        setTurnIndex(targetIndex);
-      }
 
       const nextPhase = cueToPhase[activeCue.kind];
       if (nextPhase) {
@@ -158,10 +162,17 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   function seek(deltaSeconds: number) {
     const audio = audioRef.current;
     if (!audio) return;
-    audio.currentTime = Math.max(
+
+    const nextTime = Math.max(
       0,
-      Math.min(audio.duration || Number.MAX_SAFE_INTEGER, audio.currentTime + deltaSeconds)
+      Math.min(
+        Number.isFinite(audio.duration) ? audio.duration : Number.MAX_SAFE_INTEGER,
+        audio.currentTime + deltaSeconds
+      )
     );
+
+    audio.currentTime = nextTime * 1;
+    lastCueIdRef.current = null;
   }
 
   const nextTurn = () => {
@@ -174,7 +185,6 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
 
   const resumeAfterCoach = () => {
     setPhase("listen");
-    lastCueIdRef.current = null;
     void audioRef.current?.play();
   };
 
@@ -193,6 +203,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     setAudioTimeMs(0);
     setAudioPlaying(false);
     lastCueIdRef.current = null;
+    lastAudioTimeMsRef.current = 0;
   };
 
   const allRecall = recallDone.every(Boolean);
@@ -279,7 +290,10 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
           {audioManifest ? (
             <div className="audio-controls">
               <button onClick={() => seek(-10)}>−10s</button>
-              <button className="primary" onClick={audioPlaying ? pauseAudio : startAudio}>
+              <button
+                className="primary"
+                onClick={audioPlaying ? pauseAudio : startAudio}
+              >
                 {audioPlaying ? "Pause voice" : "Play voice"}
               </button>
               <button onClick={() => seek(10)}>+10s</button>
@@ -306,16 +320,16 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
 
           <div className="coach-actions">
             {!audioManifest ? (
-              <button onClick={() => setPhase("coach")}>
-                Pause for a prediction
-              </button>
-            ) : null}
-            {!audioManifest ? (
-              <button className="primary" onClick={nextTurn}>
-                {turnIndex >= turns.length - 1
-                  ? "Finish listening"
-                  : "Next spoken section"}
-              </button>
+              <>
+                <button onClick={() => setPhase("coach")}>
+                  Pause for a prediction
+                </button>
+                <button className="primary" onClick={nextTurn}>
+                  {turnIndex >= turns.length - 1
+                    ? "Finish listening"
+                    : "Next spoken section"}
+                </button>
+              </>
             ) : (
               <span className="range">
                 React will stop the voice automatically at authored exercise
@@ -344,7 +358,10 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
               <strong>{seconds}s</strong>
               <button onClick={() => setSeconds((s) => s + 5)}>+5s</button>
             </div>
-            <button className="secondary" onClick={() => setShowHint((v) => !v)}>
+            <button
+              className="secondary"
+              onClick={() => setShowHint((v) => !v)}
+            >
               {showHint ? "Hide hint" : "Show a hint"}
             </button>
             {showHint ? (
