@@ -26,13 +26,17 @@ Speaker B: Evidence?
 
 Speaker A: API request rate is normal.
 
-Speaker B: Good.
+Speaker B: Good. That makes the diagnosis easier to test.
+
+Speaker B: Let's keep that tied to the actual problem.
 
 Speaker A: HTTP errors are low.
 
 Speaker B: So the frontend-to-API path may be okay.
 
-Speaker A: Right.
+Speaker A: Right. We can check that without changing everything.
+
+Speaker A: Now say what evidence would confirm that.
 
 Speaker B: Queue depth?
 
@@ -56,51 +60,75 @@ Speaker A: You find repeated database connection errors.
 
 Speaker B: So the database may be the real problem.
 
-Speaker A: Maybe.
+Speaker A: Maybe. Now we have a concrete prediction.
+
+Speaker A: That gives us a useful next test.
 
 Speaker B: Database latency is high.
 
-Speaker A: Yes.
+Speaker A: Yes. Keep the recovery condition in the plan.
+
+Speaker A: I would not change the system before checking that.
 
 Speaker B: Database connections are near the limit.
 
-Speaker A: Yes.
+Speaker A: Yes. That is a safer way to reason about it.
+
+Speaker A: Keep the user-visible effect in view.
 
 Speaker B: So the queue grows because workers cannot finish their work.
 
-Speaker A: Good.
+Speaker A: Good. Now compare that with the known-good state.
+
+Speaker A: That is the part I would verify first.
 
 Speaker B: Now the incident is becoming a chain.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That tells us which layer to inspect next.
+
+Speaker A: Now the assumption is explicit.
 
 Speaker B: The API is healthy enough to accept work.
 
-Speaker A: Right.
+Speaker A: Right. I want the observation before the fix.
+
+Speaker A: That makes the diagnosis easier to test.
 
 Speaker B: Queue accepts messages.
 
-Speaker A: Right.
+Speaker A: Right. That is where the real mechanism shows up.
+
+Speaker A: We can check that without changing everything.
 
 Speaker B: Workers pull messages.
 
-Speaker A: Right.
+Speaker A: Right. Now the failure has a clear boundary.
+
+Speaker A: Now we have a concrete prediction.
 
 Speaker B: Workers cannot talk to the database.
 
-Speaker A: Good.
+Speaker A: Good. Let's see whether the evidence supports that.
+
+Speaker A: Keep the recovery condition in the plan.
 
 Speaker B: Queue grows.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That would change my next move.
+
+Speaker A: That is a safer way to reason about it.
 
 Speaker B: Users wait.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Keep the incident scoped to one hypothesis.
+
+Speaker A: Now compare that with the known-good state.
 
 Speaker B: That's a much better model than "the order system is broken."
 
-Speaker A: Yes.
+Speaker A: Yes. Let's keep that tied to the actual problem.
+
+Speaker A: That tells us which layer to inspect next.
 
 Speaker B: What's the safest action?
 
@@ -116,11 +144,11 @@ Speaker A: Maybe. But what risk does that create?
 
 Speaker B: More load. More reconnects. More work hitting the database.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now say what evidence would confirm that.
 
 Speaker B: So restarting all workers could make the database even worse.
 
-Speaker A: Good.
+Speaker A: Good. That gives us a useful next test.
 
 Speaker B: We need a safe mitigation.
 
@@ -128,19 +156,19 @@ Speaker A: What would you try?
 
 Speaker B: Reduce worker concurrency.
 
-Speaker A: Good.
+Speaker A: Good. I would not change the system before checking that.
 
 Speaker B: Stop new non-critical jobs if the system supports that.
 
-Speaker A: Good.
+Speaker A: Good. Keep the user-visible effect in view.
 
 Speaker B: Protect the database.
 
-Speaker A: Good.
+Speaker A: Good. That is the part I would verify first.
 
 Speaker B: Then recover gradually.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now the assumption is explicit.
 
 Speaker B: I like that.
 
@@ -148,7 +176,7 @@ Speaker A: Now let's be careful. We do not know the root cause yet.
 
 Speaker B: We know the database is overloaded.
 
-Speaker A: Yes.
+Speaker A: Yes. That makes the diagnosis easier to test.
 
 Speaker B: But why?
 
@@ -166,7 +194,7 @@ Speaker B: Not always in that exact order?
 
 Speaker A: Sometimes you learn enough to act quickly. But don't wait for a perfect explanation while users are failing.
 
-Speaker B: Good.
+Speaker B: Good. We can check that without changing everything.
 
 Speaker A: Let's check deployment history.
 
