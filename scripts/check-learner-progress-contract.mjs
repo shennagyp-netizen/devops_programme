@@ -107,6 +107,8 @@ assert.match(content.proxy, /clerkMiddleware/);
 
 assert.doesNotMatch(content.vitest, /@vite\\/plugin-react/);
 assert.match(content.terminalAgent, /DEVOPS_TERMINAL_ALLOWED_ORIGINS/);
+assert.match(content.terminalAgent, /MAX_COMMAND_TIMEOUT/);
+assert.match(content.terminalAgent, /SIGKILL/);
 assert.match(content.terminalAgent, /isAllowedOrigin/);
 assert.match(content.terminalAgent, /429/);
 assert.match(content.browserTerminalAgent, /sessionStorage/);
