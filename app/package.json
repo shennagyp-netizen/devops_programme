@@ -27,11 +27,15 @@
     "test": "vitest run",
     "hands-on:remote": "node ../scripts/run-remote-runtime-task.mjs",
     "runtime:remote": "node ../scripts/run-remote-runtime-task.mjs",
-    "terminal-agent": "node ../scripts/devops-terminal-agent.mjs"
+    "terminal-agent": "node ../scripts/devops-terminal-agent.mjs",
+    "db:generate": "drizzle-kit generate --config drizzle.config.ts",
+    "db:migrate": "drizzle-kit migrate --config drizzle.config.ts"
   },
   "dependencies": {
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "drizzle-orm": "^0.45.3",
+    "pg": "^8.23.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
@@ -39,6 +43,8 @@
     "@vitejs/plugin-react": "^6.1.1",
     "typescript": "^5.0.0",
     "vite": "^8.3.0",
-    "vitest": "^5.0.1"
+    "vitest": "^5.0.1",
+    "drizzle-kit": "^0.31.11",
+    "@types/pg": "^8.23.1"
   }
 }
