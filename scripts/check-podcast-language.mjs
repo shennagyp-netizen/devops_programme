@@ -36,7 +36,8 @@ const blocked = [
   "intricate",
   "pervasive",
   "unprecedented",
-  "constitutes"
+  "constitutes",
+  "arbitrates"
 ];
 
 async function collectScripts(directory, relative = "") {
