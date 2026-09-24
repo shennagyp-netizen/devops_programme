@@ -208,6 +208,12 @@ async function main() {
     return;
   }
 
+  if (task.resetRequired) {
+    throw new Error(
+      "This runtime task requires reset verification, but the default runner has no reset adapter."
+    );
+  }
+
   const startedAt = new Date().toISOString();
   const stepResults = [];
 
