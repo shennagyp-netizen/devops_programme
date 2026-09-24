@@ -7,6 +7,7 @@ export type PodcastTurnTiming = {
 };
 
 export type PodcastCue = {
+  id: string;
   turnId: string;
   kind: PodcastCueKind;
   startMs: number;
