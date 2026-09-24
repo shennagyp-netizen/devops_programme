@@ -333,168 +333,180 @@
       "family": "diagnostic",
       "difficulty": "foundation",
       "cognitiveLevel": "application",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 2,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "CPU is low but latency is high. What should you inspect?",
+      "expectedElements": [
         "dependency latency",
         "I/O",
         "locks or queueing"
-      ],
-      "expectedMinutes": 2,
-      "competencyId": "B-A4.diagnostic",
-      "prompt": "CPU is low but latency is high. What should you inspect?"
+      ]
     },
     {
       "id": "BA4-D-002",
       "family": "diagnostic",
       "difficulty": "foundation",
       "cognitiveLevel": "application",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 2,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "Errors rise while traffic stays flat. What evidence can separate application regression from dependency failure?",
+      "expectedElements": [
         "application logs/traces",
         "dependency timings/errors",
         "recent changes"
-      ],
-      "expectedMinutes": 2,
-      "competencyId": "B-A4.diagnostic",
-      "prompt": "Errors rise while traffic stays flat. What evidence can separate application regression from dependency failure?"
+      ]
     },
     {
       "id": "BA4-D-003",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
-        "health test is narrower than the real operation"
-      ],
+      "itemType": "scenario",
       "expectedMinutes": 3,
       "competencyId": "B-A4.diagnostic",
-      "prompt": "Health endpoint is 200 but writes fail. What is the likely lesson?"
+      "prompt": "Health endpoint is 200 but writes fail. What is the likely lesson?",
+      "expectedElements": [
+        "health test is narrower than the real operation"
+      ]
     },
     {
       "id": "BA4-D-004",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "Average latency is normal but users complain. What should you examine?",
+      "expectedElements": [
         "tail latency percentiles",
         "affected endpoint/user group",
         "dependency path"
-      ],
-      "expectedMinutes": 3,
-      "competencyId": "B-A4.diagnostic",
-      "prompt": "Average latency is normal but users complain. What should you examine?"
+      ]
     },
     {
       "id": "BA4-D-005",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "A restart makes an incident disappear. Why is the evidence incomplete?",
+      "expectedElements": [
         "restart changed state",
         "root cause is not isolated",
         "pre-restart evidence may be lost"
-      ],
-      "expectedMinutes": 3,
-      "competencyId": "B-A4.diagnostic",
-      "prompt": "A restart makes an incident disappear. Why is the evidence incomplete?"
+      ]
     },
     {
       "id": "BA4-D-006",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "An alert fires continuously. What should be reviewed?",
+      "expectedElements": [
         "threshold and baseline",
         "whether the signal maps to user impact",
         "noise or missing context"
-      ],
-      "expectedMinutes": 3,
-      "competencyId": "B-A4.diagnostic",
-      "prompt": "An alert fires continuously. What should be reviewed?"
+      ]
     },
     {
       "id": "BA4-D-007",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
-        "latency needs workload context",
-        "changes in request volume can explain behavior"
-      ],
+      "itemType": "scenario",
       "expectedMinutes": 4,
       "competencyId": "B-A4.diagnostic",
-      "prompt": "A dashboard shows latency but not traffic. Why is that limiting?"
+      "prompt": "A dashboard shows latency but not traffic. Why is that limiting?",
+      "expectedElements": [
+        "latency needs workload context",
+        "changes in request volume can explain behavior"
+      ]
     },
     {
       "id": "BA4-D-008",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "After restore, the service is up but writes are wrong. What should you test next?",
+      "expectedElements": [
         "data correctness",
         "schema/application compatibility",
         "critical user operations"
-      ],
-      "expectedMinutes": 4,
-      "competencyId": "B-A4.diagnostic",
-      "prompt": "After restore, the service is up but writes are wrong. What should you test next?"
+      ]
     },
     {
       "id": "BA4-D-009",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "Design evidence for a database-related latency incident.",
+      "expectedElements": [
         "API latency",
         "DB query/connection timing",
         "DB saturation",
         "correlation with deployment/load"
-      ],
-      "expectedMinutes": 4,
-      "competencyId": "B-A4.diagnostic",
-      "prompt": "Design evidence for a database-related latency incident."
+      ]
     },
     {
       "id": "BA4-D-010",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "A service is healthy in one region and slow in another. Design the next three observations.",
+      "expectedElements": [
         "regional request timing",
         "dependency/data locality",
         "server-side telemetry"
-      ],
-      "expectedMinutes": 4,
-      "competencyId": "B-A4.diagnostic",
-      "prompt": "A service is healthy in one region and slow in another. Design the next three observations."
+      ]
     },
     {
       "id": "BA4-D-011",
       "family": "diagnostic",
       "difficulty": "challenge",
       "cognitiveLevel": "design",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "Design a small incident dashboard and alert set that avoids paging on every minor spike.",
+      "expectedElements": [
         "user-impact signal",
         "sustained condition",
         "context signals",
         "clear action"
-      ],
-      "expectedMinutes": 5,
-      "competencyId": "B-A4.diagnostic",
-      "prompt": "Design a small incident dashboard and alert set that avoids paging on every minor spike."
+      ]
     },
     {
       "id": "BA4-D-012",
       "family": "diagnostic",
       "difficulty": "challenge",
       "cognitiveLevel": "design",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "B-A4.diagnostic",
+      "prompt": "Create a recovery decision tree for 'backup restored but users still fail'.",
+      "expectedElements": [
         "application health",
         "data correctness",
         "dependency compatibility",
         "user-path verification"
-      ],
-      "expectedMinutes": 5,
-      "competencyId": "B-A4.diagnostic",
-      "prompt": "Create a recovery decision tree for 'backup restored but users still fail'."
+      ]
     },
     {
       "id": "BA4-H-001",
