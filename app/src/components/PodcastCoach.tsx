@@ -1,6 +1,6 @@
-import{useMemo,useState}from"react";
+import{useEffect,useMemo,useState}from"react";
 import type{Lesson}from"../data/curriculum";
-import{getEpisodeText,parseTurns}from"../data/podcastsRaw";
+import{dayFor,getEpisodeText,parseTurns,podcastUrl}from"../data/podcastsRaw";
 
 type Phase="brief"|"listen"|"coach"|"lab"|"recall"|"done";
 const dayFor=(id:string)=>id.split(".")[0];
@@ -14,7 +14,9 @@ export function PodcastCoach({lesson}:{lesson:Lesson}){
  const[recallAnswers,setRecallAnswers]=useState<string[]>(()=>lesson.recall.map(()=> ""));
  const[recallDone,setRecallDone]=useState<boolean[]>(()=>lesson.recall.map(()=>false));
  const[seconds,setSeconds]=useState(20);
- const episode=useMemo(()=>getEpisodeText(dayFor(lesson.id),lesson.id),[lesson.id]);
+ const[episodeSource,setEpisodeSource]=useState("");
+ useEffect(()=>{let cancelled=false;fetch(podcastUrl(dayFor(lesson.id))).then(r=>r.ok?r.text():"").then(t=>{if(!cancelled)setEpisodeSource(t)}).catch(()=>{if(!cancelled)setEpisodeSource("")});return()=>{cancelled=true}},[lesson.id]);
+ const episode=useMemo(()=>getEpisodeText(episodeSource,lesson.id),[episodeSource,lesson.id]);
  const turns=useMemo(()=>parseTurns(episode),[episode]);
  const current=turns[turnIndex];
  const allRecall=recallDone.every(Boolean);
@@ -52,7 +54,7 @@ export function PodcastCoach({lesson}:{lesson:Lesson}){
   </div>}
 
   {phase==="listen"&&<div className="content-card">
-    <div className="coach-row"><strong>Guided transcript</strong><span>{Math.min(turnIndex+1,turns.length)}/{turns.length} turns</span></div>
+    <div className="coach-row"><strong>Guided transcript</strong><span>{turns.length?`${Math.min(turnIndex+1,turns.length)}/${turns.length} turns`:"loading transcript…"}</span></div>
     {current?<div className="turn-card"><strong>Speaker {current.speaker}</strong><p>{current.text}</p></div>:<p>Transcript unavailable for this episode. Continue with the exercise cards.</p>}
     <div className="coach-actions">
       <button onClick={()=>setPhase("coach")}>Pause for a prediction</button>
