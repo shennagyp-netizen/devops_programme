@@ -177,7 +177,7 @@ if (!remoteCore.includes("StrictHostKeyChecking=yes")) {
   console.error("SSH runner must require strict host-key checking.");
 }
 
-if (!remoteCore.includes("shellQuotePosix") || !remoteCore.includes("shell=false")) {
+if (!remoteCore.includes("shellQuotePosix") || !remoteRunner.includes("shell: false")) {
   failed = true;
   console.error("SSH runtime boundary must use safe command construction without a local shell.");
 }
