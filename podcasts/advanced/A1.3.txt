@@ -1,0 +1,411 @@
+EPISODE A1.3 — Replicas Create New Rules
+
+Speaker A: We have a database problem.
+
+Speaker B: Too much data?
+
+Speaker A: Not this time. Too many users reading at once.
+
+Speaker B: So we add replicas.
+
+Speaker A: Maybe.
+
+Speaker B: You really enjoy that word.
+
+Speaker A: Because it saves us from making fast decisions.
+
+Speaker B: Fair.
+
+Speaker A: Tell me what a replica gives us.
+
+Speaker B: Another copy of the data.
+
+Speaker A: Good. What problem can that help with?
+
+Speaker B: Read traffic.
+
+Speaker A: Right.
+
+Speaker B: If reads can go to more than one copy, one database does not have to answer every read.
+
+Speaker A: Exactly.
+
+Speaker B: So we can spread read work.
+
+Speaker A: Yes.
+
+Speaker B: Then what goes wrong?
+
+Speaker A: The copies may not have the same state at the same moment.
+
+Speaker B: Replication lag.
+
+Speaker A: Exactly.
+
+Speaker B: So the new read path may be faster but slightly stale.
+
+Speaker A: Yes.
+
+Speaker B: Which is fine for some reads.
+
+Speaker A: Right.
+
+Speaker B: Not fine for others.
+
+Speaker A: Exactly.
+
+Speaker B: Human example?
+
+Speaker A: Imagine three warehouses.
+
+Speaker B: Same company.
+
+Speaker A: Yes. Each has an inventory copy.
+
+Speaker B: A customer asks if item X is in stock.
+
+Speaker A: One warehouse has old data.
+
+Speaker B: So it says yes even though the item was just sold.
+
+Speaker A: Right.
+
+Speaker B: Another warehouse has the new data.
+
+Speaker A: Right.
+
+Speaker B: So two answers can disagree for a while.
+
+Speaker B: That's a consistency problem.
+
+Speaker A: Yes.
+
+Speaker B: So we have to choose what the business needs.
+
+Speaker A: Exactly.
+
+Speaker B: The system cannot just say "strong consistency everywhere" for free.
+
+Speaker A: Correct.
+
+Speaker B: There is a cost.
+
+Speaker A: Latency, coordination, availability, complexity, or all of them.
+
+Speaker B: This is why distributed systems get hard.
+
+Speaker A: One reason.
+
+Speaker B: Let's keep the read path simple.
+
+Speaker A: A user reads a product page.
+
+Speaker B: That can often tolerate a short delay in stock data.
+
+Speaker A: Maybe.
+
+Speaker B: But if the user is buying the last item, we may need stronger guarantees.
+
+Speaker A: Exactly.
+
+Speaker B: So a product description can be a little old.
+
+Speaker A: Often.
+
+Speaker B: Payment and stock reservation need much more care.
+
+Speaker A: Yes.
+
+Speaker B: This is a business rule becoming a data design.
+
+Speaker A: Exactly.
+
+Speaker B: What about writes?
+
+Speaker A: Replicas usually do not remove the hard part of the write path.
+
+Speaker B: Because the write still has to reach the correct authority.
+
+Speaker A: Right.
+
+Speaker B: Then the other copies have to learn about the change.
+
+Speaker A: Yes.
+
+Speaker B: So more replicas can increase read capacity while adding work to replication.
+
+Speaker A: Correct.
+
+Speaker B: Another trade-off.
+
+Speaker A: Exactly.
+
+Speaker B: Let's make a failure.
+
+Speaker A: The primary database accepts a write.
+
+Speaker B: The replica is five seconds behind.
+
+Speaker A: A user writes an address.
+
+Speaker B: Then immediately reads it.
+
+Speaker A: The read goes to the replica.
+
+Speaker B: They see the old address.
+
+Speaker A: Right.
+
+Speaker B: User thinks the write failed.
+
+Speaker A: Exactly.
+
+Speaker B: But it did not fail.
+
+Speaker A: The read was stale.
+
+Speaker B: That's a nasty user experience.
+
+Speaker A: Yes.
+
+Speaker B: So sometimes the application needs read-after-write behavior.
+
+Speaker A: Good.
+
+Speaker B: It may send that read to a suitable copy.
+
+Speaker A: Or use another design that gives the needed guarantee.
+
+Speaker B: So the application and database design have to agree.
+
+Speaker A: Very important.
+
+Speaker B: Pause.
+
+Speaker A: Go.
+
+Speaker B: Prediction. We add three read replicas and read latency gets better, but the write latency also gets worse. Can that happen?
+
+Speaker A: Yes.
+
+Speaker B: Because replication adds work to the write path.
+
+Speaker A: Good.
+
+Speaker B: So adding replicas does not only add capacity.
+
+Speaker A: Correct. It changes the system.
+
+Speaker B: Another prediction. A replica is healthy and accepting reads, but it is ten seconds behind. Is it safe for every kind of read?
+
+Speaker A: No.
+
+Speaker B: The application has to know whether stale data is acceptable.
+
+Speaker A: Exactly.
+
+Speaker B: So "replica healthy" and "replica fresh enough" are different questions.
+
+Speaker A: Very good.
+
+Speaker B: What should we monitor?
+
+Speaker A: Replication lag.
+
+Speaker B: Read latency.
+
+Speaker A: Write latency.
+
+Speaker B: Error rate.
+
+Speaker A: Data freshness when the system can measure it.
+
+Speaker B: Connection count.
+
+Speaker A: Yes.
+
+Speaker B: And the load on each copy.
+
+Speaker A: Exactly.
+
+Speaker B: What about failover?
+
+Speaker A: If the primary fails, another copy may take its role.
+
+Speaker B: Then the replica needs enough recent data.
+
+Speaker A: Yes.
+
+Speaker B: And clients need a way to find the new primary.
+
+Speaker A: Right.
+
+Speaker B: So replication and failover are related but not the same thing.
+
+Speaker A: Correct.
+
+Speaker B: Replication copies data. Failover changes which copy serves a role.
+
+Speaker A: Exactly.
+
+Speaker B: Nice.
+
+Speaker A: Now let's bring it to a global system.
+
+Speaker B: Users in Cairo, London, Singapore.
+
+Speaker A: Right.
+
+Speaker B: We want low read latency.
+
+Speaker A: Yes.
+
+Speaker B: So we keep data closer to users.
+
+Speaker A: Often.
+
+Speaker B: But now cross-region replication matters.
+
+Speaker A: Yes.
+
+Speaker B: And a user in Cairo may read data last updated in Singapore.
+
+Speaker A: Correct.
+
+Speaker B: So geography changes the consistency problem.
+
+Speaker A: Exactly.
+
+Speaker B: Human example?
+
+Speaker A: The three warehouses again.
+
+Speaker B: One near each customer group.
+
+Speaker A: Right.
+
+Speaker B: Local reads are fast.
+
+Speaker A: Yes.
+
+Speaker B: But stock changes have to move between warehouses.
+
+Speaker A: Exactly.
+
+Speaker B: And a customer might reach the wrong branch just after an order changes stock.
+
+Speaker A: Right.
+
+Speaker B: So local speed can create stale data.
+
+Speaker A: That's one common trade-off.
+
+Speaker B: What about partitioning?
+
+Speaker A: That is a different idea.
+
+Speaker B: Instead of every copy holding all the data, we split the data across owners.
+
+Speaker A: Exactly.
+
+Speaker B: So replica and partition are not the same.
+
+Speaker A: Correct.
+
+Speaker B: Replica gives more copies of the same data.
+
+Speaker A: Right.
+
+Speaker B: Partition splits data ownership.
+
+Speaker A: Exactly.
+
+Speaker B: And a large system may use both.
+
+Speaker A: Very often.
+
+Speaker B: Good.
+
+Speaker B: Mac exercise?
+
+Speaker A: Draw one database.
+
+Speaker B: Then add one read replica.
+
+Speaker A: Good.
+
+Speaker B: Write what becomes better.
+
+Speaker A: And what becomes harder.
+
+Speaker B: Then add a second region.
+
+Speaker A: Good.
+
+Speaker B: Write what happens to latency and freshness.
+
+Speaker A: Good.
+
+Speaker B: Then choose one operation that needs fresh data and one that can tolerate stale data.
+
+Speaker A: Exactly.
+
+Speaker B: That last part makes it real.
+
+Speaker A: It should.
+
+Speaker B: Recall.
+
+Speaker A: Question one. Why add a read replica?
+
+Speaker B: To spread read work and increase read capacity.
+
+Speaker A: Good.
+
+Speaker B: Question two.
+
+Speaker A: What is replication lag?
+
+Speaker B: The delay before a replica reflects a change made elsewhere.
+
+Speaker A: Good.
+
+Speaker B: Question three.
+
+Speaker A: Why can a replica be healthy but still unsafe for a read?
+
+Speaker B: It may be too far behind for the freshness the business needs.
+
+Speaker A: Good.
+
+Speaker B: Question four.
+
+Speaker A: Replica versus partition?
+
+Speaker B: A replica is another copy. A partition splits data ownership.
+
+Speaker A: Good.
+
+Speaker B: Question five.
+
+Speaker A: Why does geography change the design?
+
+Speaker B: Distance changes latency, and cross-region copies can introduce freshness and consistency trade-offs.
+
+Speaker A: Good.
+
+Speaker B: Final challenge.
+
+Speaker A: A1 serves users in three regions.
+
+Speaker B: I would choose which data can be stale, which data must be fresh, where copies live, and what happens when one region cannot reach another.
+
+Speaker A: Exactly.
+
+Speaker B: So "put a replica in every region" is not the design.
+
+Speaker A: It's only one possible building block.
+
+Speaker B: Got it.
+
+Speaker A: Good. Now let's break the network between two copies.
