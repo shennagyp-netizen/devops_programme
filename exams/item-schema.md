@@ -111,6 +111,12 @@ Beginner:
 Intermediate:
 - `I-F1` — Linux and Operating Systems
 - `I-F2` — Networking and Protocols
+- `I-A1` — Containers and Docker
+- `I-A2` — Kubernetes Control Loops
+- `I-A3` — Kubernetes Networking and Storage
+- `I-A4` — CI/CD and Infrastructure as Code
+- `I-A5` — Observability and SRE
+- `I-A6` — Distributed Systems and Recovery
 
 Each bank contains:
 - 20 conceptual items
