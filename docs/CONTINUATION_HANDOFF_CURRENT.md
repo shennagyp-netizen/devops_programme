@@ -1078,3 +1078,39 @@ CI configuration:
 - Disposable CI validation PR #10 was closed without merge.
 
 Hosted CI remains blocked before workflow steps by GitHub Actions startup failure. This is not being represented as green.
+
+
+============================================================
+28. HOSTED CI STARTUP BLOCKER — 2026-09-24
+============================================================
+
+The canonical main workflow is now a full-programme gate:
+- ubuntu-24.04 runner
+- all content/assessment/diagnostic/project/platform/hands-on/programme/runtime checks
+- full unit + integration test suite
+- TypeScript build
+- Vite production build
+- workflow_dispatch trigger for manual reruns.
+
+Exhaustive source audit after the merge found and fixed nine Intermediate constructed-response items missing expectedElements. Beginner/Intermediate/Advanced bank audits now report zero schema or difficulty-distribution findings.
+
+Hosted CI remains the only unverified boundary.
+
+Observed runner failures:
+- #834: ubuntu-24.04, zero workflow steps.
+- #843: ubuntu-slim, zero workflow steps.
+- #847: full programme gate, ubuntu-24.04, zero workflow steps. A retry briefly reached in_progress, then terminated before any visible step.
+- #849: full programme gate, ubuntu-26.04, zero workflow steps.
+- ubuntu-latest and macos-latest were also tested and failed before steps.
+
+GitHub public documentation confirms these standard runner labels are supported for private repositories. GitHub September 2026 community reports also document the same private-repository startup_failure/zero-step pattern.
+
+Repository issue #12 records the exact evidence and run identifiers.
+
+Important operational boundary:
+- No source code, test, or workflow step has been observed failing.
+- GitHub Actions currently prevents the first step from executing.
+- The remaining cause is likely account/repository Actions entitlement, spending/budget enforcement, or GitHub-side workflow/runner provisioning state.
+- GitHub Free currently includes 2,000 standard-hosted Actions minutes per month; GitHub blocks usage after the included quota when no valid payment/allowance is available.
+
+Do not weaken the full gate, mark it green manually, or merge a failing check just to remove the red state.
