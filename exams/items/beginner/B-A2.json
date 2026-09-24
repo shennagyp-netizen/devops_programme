@@ -1,0 +1,823 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "B-A2",
+  "purpose": "Pilot item bank for Containers. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "BA2-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-A2.core",
+      "prompt": "What is the main purpose of a container image?",
+      "options": [
+        "A repeatable package for an application environment",
+        "A running process",
+        "A network route",
+        "A database backup"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA2-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-A2.core",
+      "prompt": "What is a container?",
+      "options": [
+        "A runtime instance created from an image",
+        "A source-code branch",
+        "A DNS record",
+        "A load balancer"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA2-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-A2.core",
+      "prompt": "Why is process isolation useful?",
+      "options": [
+        "It limits which processes and resources a workload can see or use",
+        "It makes every workload use the same filesystem",
+        "It removes the need for networking",
+        "It guarantees zero failures"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA2-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A2.core",
+      "prompt": "Why can two containers on one host need different environments?",
+      "options": [
+        "They may need different files, libraries, configuration and process boundaries",
+        "They always use different CPUs",
+        "They cannot share a host",
+        "They must have different IP protocols"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA2-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A2.core",
+      "prompt": "What does a container port mapping normally do?",
+      "options": [
+        "Connects a host-facing port to a container network port",
+        "Changes the image contents",
+        "Creates a database backup",
+        "Changes DNS globally"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA2-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A2.core",
+      "prompt": "Why are volumes used?",
+      "options": [
+        "To keep selected data outside the container's writable layer and survive container replacement",
+        "To give the container unlimited CPU",
+        "To replace health checks",
+        "To encrypt every request"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA2-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A2.core",
+      "prompt": "A container exits immediately. What should you inspect first?",
+      "options": [
+        "Its process exit state and startup logs",
+        "The host's Git branch",
+        "The DNS TTL",
+        "The monitor refresh rate"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA2-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A2.core",
+      "prompt": "What does a health check provide?",
+      "options": [
+        "A defined signal about the application's runtime condition",
+        "A guarantee that every dependency is healthy",
+        "A replacement for backups",
+        "A new container image"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA2-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A2.core",
+      "prompt": "Why does recreating a container from the same image matter?",
+      "options": [
+        "It tests whether the workload can return to a known baseline",
+        "It proves the network never fails",
+        "It changes the source code",
+        "It disables persistence"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA2-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A2.core",
+      "prompt": "A container can reach itself but not another service. What area is especially relevant?",
+      "options": [
+        "Container network membership, ports and service address",
+        "Git history",
+        "Image layer count only",
+        "CPU frequency"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA2-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A2.core",
+      "prompt": "A new image version starts but fails health checks. What is a useful next question?",
+      "expectedElements": [
+        "What changed between the working and failing image or runtime configuration?",
+        "Whether the host has a different keyboard layout",
+        "Whether DNS TTL is larger than one hour",
+        "Whether Git has any branches"
+      ]
+    },
+    {
+      "id": "BA2-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A2.core",
+      "prompt": "Why should configuration be separated from the image where practical?",
+      "expectedElements": [
+        "It lets the same image move across environments while runtime values change",
+        "It makes every configuration error impossible",
+        "It removes the need for versioning",
+        "It guarantees persistence"
+      ]
+    },
+    {
+      "id": "BA2-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A2.core",
+      "prompt": "A container uses a volume, but deleting the container loses no application data. Why?",
+      "expectedElements": [
+        "The durable data was stored on the volume rather than only in the container writable layer",
+        "The image stores runtime state automatically",
+        "The host RAM contains the data forever",
+        "Docker copied the data into DNS"
+      ]
+    },
+    {
+      "id": "BA2-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A2.core",
+      "prompt": "A service works on the host but not from another container. Give two plausible causes.",
+      "expectedElements": [
+        "Different network namespace or network membership",
+        "Wrong service/port binding",
+        "Equivalent evidence-based network causes"
+      ]
+    },
+    {
+      "id": "BA2-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A2.core",
+      "prompt": "Why can adding replicas expose a hidden dependency bottleneck?",
+      "expectedElements": [
+        "More replicas can increase demand on a shared dependency until it saturates",
+        "Replicas always share one CPU",
+        "Docker blocks parallel requests",
+        "Volumes cannot be mounted twice"
+      ]
+    },
+    {
+      "id": "BA2-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "B-A2.core",
+      "prompt": "What evidence best separates an image problem from a runtime configuration problem?",
+      "expectedElements": [
+        "image identity/version",
+        "container environment/runtime configuration",
+        "startup logs or exit status"
+      ]
+    },
+    {
+      "id": "BA2-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "B-A2.core",
+      "prompt": "Design a safe first investigation for a container that became unhealthy after deployment.",
+      "expectedElements": [
+        "record image identity",
+        "inspect container state and health output",
+        "compare runtime configuration and recent change",
+        "avoid changing multiple variables at once"
+      ]
+    },
+    {
+      "id": "BA2-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A2.core",
+      "prompt": "A containerized API is healthy on one host and unhealthy on another using the same image. Give two competing hypotheses and a test for each.",
+      "expectedElements": [
+        "host/runtime difference with container/runtime inspection",
+        "network or dependency path difference with endpoint test"
+      ]
+    },
+    {
+      "id": "BA2-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "B-A2.core",
+      "prompt": "Design a recovery plan for a stateful container whose process is broken but volume data is intact.",
+      "expectedElements": [
+        "preserve volume",
+        "replace or restart the runtime from known image",
+        "verify application state after restart"
+      ]
+    },
+    {
+      "id": "BA2-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "B-A2.core",
+      "prompt": "Build a diagnostic tree for 'the container is up but the application is unavailable' that separates process, network, configuration and dependency causes.",
+      "expectedElements": [
+        "process/listener check",
+        "network reachability",
+        "runtime configuration",
+        "dependency health",
+        "safe mitigation and recovery check"
+      ]
+    },
+    {
+      "id": "BA2-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "startup logs and exit state"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "Container starts and exits with code 1. What is the first evidence to collect?"
+    },
+    {
+      "id": "BA2-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "container health result",
+        "listener/port mapping",
+        "client connection path"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "A container is healthy but a client gets connection refused. What should you compare?"
+    },
+    {
+      "id": "BA2-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "runtime configuration",
+        "mounted files/volumes",
+        "environment variables or secrets",
+        "host/runtime differences"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "The image digest is unchanged but behavior changed after redeploy. What should you inspect?"
+    },
+    {
+      "id": "BA2-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "network membership",
+        "container/DNS service names"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "Two containers cannot resolve each other's service name. What should you check?"
+    },
+    {
+      "id": "BA2-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "mounted path",
+        "application configuration pointing to the actual data location"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "A volume contains the expected files but the application reports an empty database. What distinction matters?"
+    },
+    {
+      "id": "BA2-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "shared dependency saturation",
+        "bad service discovery or load distribution"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "A new replica increases timeout rate. Give two hypotheses."
+    },
+    {
+      "id": "BA2-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "startup command/entrypoint",
+        "environment or working directory",
+        "logging/foreground process behavior"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "A container works with an interactive shell but fails as a service. What differs?"
+    },
+    {
+      "id": "BA2-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "application logs",
+        "dependency connection check",
+        "configuration diff"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "After a configuration change, health checks fail but the process stays alive. What evidence separates bad config from dependency failure?"
+    },
+    {
+      "id": "BA2-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "container-to-container name resolution",
+        "container port/reachability",
+        "service binding/network membership"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "An API is reachable from the host but not from a peer container. Build the smallest test sequence."
+    },
+    {
+      "id": "BA2-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "image digest",
+        "runtime/container version",
+        "environment variables/secrets",
+        "filesystem or architecture differences"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "One container image works on a developer laptop and fails in CI. Design a discriminating evidence set."
+    },
+    {
+      "id": "BA2-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "preserve data first",
+        "restore or roll back the known-good application/data state",
+        "verify schema/data integrity before reopening traffic"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "A stateful container crashes after a bad migration. What is the safest recovery decision?"
+    },
+    {
+      "id": "BA2-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "restart/exit metrics",
+        "network request results",
+        "dependency timings/errors",
+        "correlation across time"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "A container service is intermittently failing. Design an evidence chain that distinguishes process restarts, network failures, and dependency failures."
+    },
+    {
+      "id": "BA2-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "B-A2.hands-on",
+      "prompt": "Run and inspect a disposable container.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "docker run",
+        "docker inspect",
+        "record image and runtime state"
+      ],
+      "success": [
+        "image identity recorded",
+        "runtime state recorded",
+        "container removed/recreated"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA2-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "B-A2.hands-on",
+      "prompt": "Break a container configuration and recover.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "change one reversible value",
+        "capture failure",
+        "restore known-good value",
+        "verify health"
+      ],
+      "success": [
+        "one change",
+        "failure evidence",
+        "recovery evidence"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA2-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "B-A2.hands-on",
+      "prompt": "Create and verify a container network path.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "create/join network",
+        "start two disposable services",
+        "test name and port reachability",
+        "remove test network"
+      ],
+      "success": [
+        "both services share intended network",
+        "request succeeds",
+        "reset completed"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA2-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "B-A2.hands-on",
+      "prompt": "Use a volume and prove data survives container replacement.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "write disposable data",
+        "remove container",
+        "recreate with same volume",
+        "verify data"
+      ],
+      "success": [
+        "volume identity",
+        "data before replacement",
+        "data after replacement"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA2-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "B-A2.hands-on",
+      "prompt": "Introduce a health-check failure and diagnose it.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "record healthy state",
+        "break controlled dependency",
+        "capture health status/logs",
+        "repair",
+        "verify healthy"
+      ],
+      "success": [
+        "before/after health",
+        "failure signal",
+        "recovery signal"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA2-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "B-A2.hands-on",
+      "prompt": "Compare two image/runtime versions.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "run known-good version",
+        "run changed version",
+        "collect state/logs",
+        "identify difference",
+        "reset"
+      ],
+      "success": [
+        "version identities",
+        "difference evidence",
+        "selected diagnosis"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA2-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "B-A2.hands-on",
+      "prompt": "Scale a disposable service and observe a dependency bottleneck.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "start baseline",
+        "increase replicas/workload",
+        "observe latency/dependency pressure",
+        "reduce load",
+        "verify recovery"
+      ],
+      "success": [
+        "baseline",
+        "change",
+        "bottleneck evidence",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA2-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "B-A2.hands-on",
+      "prompt": "Run a container incident drill.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "state first symptom",
+        "collect process/network/dependency evidence",
+        "make one safe mitigation",
+        "recover",
+        "record timeline"
+      ],
+      "success": [
+        "evidence chain",
+        "safe action",
+        "verified recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    }
+  ]
+}
