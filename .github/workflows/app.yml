@@ -58,3 +58,9 @@ jobs:
       - name: Beginner completeness validator
         working-directory: repo/app
         run: npm run check:beginner
+
+      - name: Runtime contract tests
+        working-directory: repo/app
+        run: |
+          npm exec vitest run tests/unit/runtimeVerification.test.mjs tests/unit/remote-runtime-core.test.mjs tests/integration/runtime-runner.integration.test.mjs
+          node ../scripts/check-runtime-verification-contract.mjs
