@@ -874,4 +874,11 @@ Next work:
 1. Restore observable GitHub Actions execution or provide a working local checkout/runtime.
 2. Run the focused Beginner gate and fix only real execution failures.
 3. Once Beginner is genuinely green, move to Intermediate.
+ 
+Project contract closure:
+- ProjectDefinition now explicitly models changeHistory and incidentHistory.
+- All nine projects have authored non-empty change and incident histories.
+- check-project-contract.mjs now validates these fields.
+- Beginner unit and focused gate tests require them for B1/B2/B3.
+- The global project contract is therefore no longer structurally missing these fields.
 
