@@ -1,4 +1,5 @@
 import type { CourseLevel } from "./programme";
+import type { VerificationLevel } from "./handsOn";
 
 export type EvidenceKind =
   | "diagnostic"
@@ -16,6 +17,9 @@ export type EvidenceEntry = {
   kind: EvidenceKind;
   summary: string;
   createdAt: string;
+  taskId?: string;
+  verificationLevel?: VerificationLevel;
+  evidencePayload?: Record<string, string>;
 };
 
 const STORAGE_KEY = "devops-programme-evidence-ledger";
@@ -66,4 +70,25 @@ export function addEvidence(entry: Omit<EvidenceEntry, "id" | "createdAt">) {
 
 export function clearEvidence() {
   writeLedger([]);
+}
+
+export function recordHandsOnEvidence(input: {
+  course: CourseLevel;
+  projectId: string;
+  lessonId: string;
+  taskId: string;
+  summary: string;
+  verificationLevel: VerificationLevel;
+  evidencePayload: Record<string, string>;
+}) {
+  return addEvidence({
+    course: input.course,
+    projectId: input.projectId,
+    lessonId: input.lessonId,
+    kind: "exercise",
+    summary: input.summary,
+    taskId: input.taskId,
+    verificationLevel: input.verificationLevel,
+    evidencePayload: input.evidencePayload
+  });
 }
