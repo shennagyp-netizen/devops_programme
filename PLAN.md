@@ -84,9 +84,9 @@ Existing five-day content remains useful as the initial intermediate core while 
 
 ## Current implementation boundary
 
-The curriculum model, course-aware lesson routing, pilot prerequisite diagnostics for Beginner B-F1/B-F2/B-A1, assessment blueprints, pilot item banks, podcast scripts and safe audio-sync architecture are implemented on the clearance branch.
+The curriculum model, course-aware lesson routing, prerequisite diagnostics for Beginner B-F1/B-F2/B-A1, Intermediate I-F1/I-F2, and Advanced A-F1, assessment blueprints, pilot item banks, podcast scripts and safe audio-sync architecture are implemented on the clearance branch.
 
-Prerequisite diagnostics are implemented for the three authored Beginner sections; broader course coverage and automatic remediation routing beyond those sections are not yet complete. A complete Windows command adapter, production voice timing manifests, and calibrated/operational assessment pools are also not yet complete.
+Prerequisite diagnostics are implemented for Beginner B-F1/B-F2/B-A1, Intermediate I-F1/I-F2, and Advanced A-F1. Broader section coverage, richer diagnostic item banks, and full automatic remediation routing remain incomplete. A complete Windows command adapter, production voice timing manifests, and calibrated/operational assessment pools are also not yet complete.
 
 ## Quality gate
 
