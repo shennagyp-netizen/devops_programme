@@ -6,7 +6,7 @@ function startAgent(port, token) {
     process.execPath,
     ["scripts/devops-terminal-agent.mjs"],
     {
-      cwd: new URL("../../", import.meta.url),
+      cwd: new URL("../../../", import.meta.url),
       shell: false,
       env: {
         ...process.env,
