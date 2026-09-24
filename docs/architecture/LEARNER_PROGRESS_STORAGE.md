@@ -180,7 +180,7 @@ Database migrations:
 
 - `app/drizzle/migrations/0000_learner_completions.sql`
 
-The initial migration creates the final authenticated schema directly. The never-merged anonymous migration is not retained.
+The initial migration creates the authenticated schema directly. There is no retained anonymous progress schema.
 
 ## Environment
 
