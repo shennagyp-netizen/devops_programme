@@ -108,7 +108,11 @@
         "zero": [
           "says an alive process must always be doing useful work"
         ]
-      }
+      },
+      "expectedElements": [
+        "a process can be alive while waiting on I/O, a lock, memory, or another dependency",
+        "process existence does not prove useful progress"
+      ]
     },
     {
       "id": "BF1-C-007",
@@ -164,7 +168,11 @@
         "zero": [
           "immediately proposes a fix without gathering evidence"
         ]
-      }
+      },
+      "expectedElements": [
+        "a scope question such as one user versus all users",
+        "a time, dependency, or component question that separates plausible causes"
+      ]
     },
     {
       "id": "BF1-C-010",
@@ -235,7 +243,12 @@
         "zero": [
           "claims restart proves the cause"
         ]
-      }
+      },
+      "expectedElements": [
+        "a restart can change temporary state and remove useful evidence",
+        "restart does not identify the failing mechanism or prove its cause",
+        "evidence collected before restart is important for diagnosis"
+      ]
     },
     {
       "id": "BF1-C-014",
@@ -305,7 +318,12 @@
         "zero": [
           "always starts at the same layer regardless of evidence"
         ]
-      }
+      },
+      "expectedElements": [
+        "choose the next layer based on which layer can explain the current evidence",
+        "move downward when the current evidence points to lower-level resource or transport behavior",
+        "move toward a dependency when the process is waiting on external work"
+      ]
     },
     {
       "id": "BF1-C-018",
@@ -359,7 +377,13 @@
         "zero": [
           "lists commands without explaining what each result would mean"
         ]
-      }
+      },
+      "expectedElements": [
+        "start by defining scope and symptom precisely",
+        "separate process/resource, request-path, and dependency hypotheses",
+        "choose an observation that can eliminate competing causes",
+        "finish with a safe mitigation or targeted next test"
+      ]
     },
     {
       "id": "BF1-D-001",
