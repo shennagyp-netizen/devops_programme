@@ -5,18 +5,20 @@ export type Turn = {
   kind: "dialogue" | "prediction" | "lab" | "recall";
 };
 
-export const dayFor = (id: string) => id.split(".")[0];
-
-export const podcastUrl = (dayId: string) =>
-  `/podcasts/day-${dayId.replace("D", "")}.txt`;
+export function podcastUrl(path: string) {
+  if (path.startsWith("/")) return path;
+  return `/${path}`;
+}
 
 export function getEpisodeText(source: string, lessonId: string) {
-  const marker = new RegExp(`\\nEPISODE ${lessonId} —[^\\n]*\\n`);
+  const marker = new RegExp(`(?:^|\\n)EPISODE ${lessonId} —[^\\n]*\\n`);
   const match = source.match(marker);
   if (!match || match.index === undefined) return "";
+
   const start = match.index + match[0].length;
   const rest = source.slice(start);
-  const next = rest.search(/\\nEPISODE D\\d+\\.\\d+ —/);
+  const next = rest.search(/\\nEPISODE [A-Z0-9]+\\.[0-9]+ —/);
+
   return (next >= 0 ? rest.slice(0, next) : rest).trim();
 }
 
@@ -32,7 +34,7 @@ function classifyTurn(text: string): Turn["kind"] {
   }
 
   if (
-    /(mac lab|mac exercise|run (that|the) command|run the command|lab:|hands-on)/i.test(
+    /(mac lab|mac exercise|run (that|the) command|run the command|lab:|hands-on|practical challenge)/i.test(
       normalized
     )
   ) {
@@ -56,8 +58,9 @@ export function parseTurns(text: string, lessonId = "episode"): Turn[] {
     .map((x) => x.trim())
     .filter(Boolean)
     .map((x, index) => {
-      const m = x.match(/^Speaker ([AB]):\s*([\s\S]*)$/);
-      if (!m) {
+      const match = x.match(/^Speaker ([AB]):\s*([\s\S]*)$/);
+
+      if (!match) {
         return {
           id: `${lessonId}.T${String(index + 1).padStart(3, "0")}`,
           speaker: "A",
@@ -68,9 +71,9 @@ export function parseTurns(text: string, lessonId = "episode"): Turn[] {
 
       return {
         id: `${lessonId}.T${String(index + 1).padStart(3, "0")}`,
-        speaker: m[1] as "A" | "B",
-        text: m[2].trim(),
-        kind: classifyTurn(m[2])
+        speaker: match[1] as "A" | "B",
+        text: match[2].trim(),
+        kind: classifyTurn(match[2])
       };
     });
 }
