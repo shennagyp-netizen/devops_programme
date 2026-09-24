@@ -388,7 +388,7 @@ function lesson(input: LessonAuthoringInput): CourseLesson {
     podcast: input.id.startsWith("B")
       ? `podcasts/beginner/${input.id}.txt`
       : `podcasts/advanced/${input.id}.txt`,
-    podcastStatus: ["B1.1","B1.2","B1.3","B1.4","B1.5","B2.1","B2.2","B2.3","B3.1","B3.2"].includes(input.id) ? "script-ready" : "authoring",
+    podcastStatus: ["B1.1","B1.2","B1.3","B1.4","B1.5","B2.1","B2.2","B2.3","B3.1","B3.2","A1.1","A1.2"].includes(input.id) ? "script-ready" : "authoring",
     platformCommands: {
       macos: input.command,
       linux: input.command,
