@@ -21,7 +21,45 @@ Speaker A: Mac lab: inspect listening TCP ports and make a simple localhost conn
 Speaker B: What failure should I learn to recognize?
 
 Speaker A: Connection refused, timeout, connection reset, and application-level error are different observations. Do not collapse them into 'the network is broken.'
+Speaker B: Let me check the layers again. IP gets the packet toward a host. Then TCP or UDP gets it toward a service.
 
+Speaker A: Good. A port is part of the endpoint identity at the transport layer. A socket is the actual communication endpoint represented to the operating system.
+
+Speaker B: And TCP adds all the machinery people forget until something is slow.
+
+Speaker A: Right. Sequence numbers. Acknowledgements. Retransmission. Flow control. Congestion control. The important thing isn't memorizing every field. It's understanding why the machinery exists.
+
+Speaker B: Because packets can be lost, duplicated, reordered, or delayed.
+
+Speaker A: Exactly. The network is not a perfect pipe. TCP gives the application a much more useful abstraction on top of that imperfect environment.
+
+Speaker B: And UDP says, basically, “Here's a datagram. Good luck.”
+
+Speaker A: That's funny, but slightly unfair. UDP is valuable precisely because it stays simple. Applications can choose different trade-offs.
+
+Speaker B: Prediction. A server has a listening TCP port, but my client gets a timeout. Is that the same as connection refused?
+
+Speaker A: No. And I want you to feel the difference. A refusal tells you something answered and rejected the connection at that point. A timeout tells you that the expected response didn't arrive in the allowed time. The underlying causes can be completely different.
+
+Speaker B: So “can't connect” is almost useless information.
+
+Speaker A: It's a starting symptom, not a diagnosis.
+
+Speaker B: Real-life version?
+
+Speaker A: Imagine a phone call. “The call failed” could mean the number doesn't exist, the person rejected it, the network never delivered the call, or your phone had no signal. Same complaint. Different evidence.
+
+Speaker B: That's annoyingly familiar.
+
+Speaker A: Good. Use that feeling when you debug.
+
+Speaker B: Mac lab?
+
+Speaker A: First find listening TCP ports on your machine. Then make a local connection. Next try a port you know is closed. Compare the errors. You're training yourself to recognize evidence, not memorize screenshots.
+
+Speaker B: And UDP?
+
+Speaker A: Use a tiny local experiment. Observe that a UDP send can succeed without the same connection semantics as TCP. The lesson is not “UDP is faster.” That's too vague. The lesson is that the transport contract is different.
 
 
 EPISODE D2.2 — DNS
@@ -43,7 +81,45 @@ Speaker A: Technically accurate enough to be dangerous.
 Speaker A: Real-life example: changing a DNS record is not always instantly visible everywhere because cached information can live according to TTL.
 
 Speaker A: Lab: use dig to inspect a real domain. Ask the resolver different questions and observe record types and TTL.
+Speaker B: DNS seems simple until someone says “it must be DNS” and then starts restarting things.
 
+Speaker A: Yes. DNS is a distributed naming system, and diagnosis gets easier when you know which part of that system answered your question.
+
+Speaker B: Resolver first.
+
+Speaker A: Usually. A recursive resolver may answer from cache or go ask authoritative servers on your behalf. The authoritative server holds the authoritative data for a zone.
+
+Speaker B: So when I use dig, I'm not necessarily talking directly to the owner of the domain.
+
+Speaker A: Correct. That's why you should know what server you are asking.
+
+Speaker B: TTL is the part everyone vaguely remembers.
+
+Speaker A: Think of a shop posting a new opening time. You don't want every customer calling the shop every thirty seconds, so information is cached for a while. TTL is part of the mechanism that tells caches how long the answer may be retained.
+
+Speaker B: And negative answers can be cached too.
+
+Speaker A: Right. Which is why “I fixed the DNS record” does not necessarily mean every client immediately sees the new answer.
+
+Speaker B: Prediction pause. I change an A record, and one machine still gets the old address. Do I immediately conclude the DNS server is broken?
+
+Speaker A: No. First ask which resolver that machine uses, whether the answer is cached, what TTL applies, and whether the client has its own caching behavior.
+
+Speaker B: So you trace the path of the answer.
+
+Speaker A: Exactly.
+
+Speaker B: Real-life example?
+
+Speaker A: Hotel reservations. You update the booking information at the hotel, but a travel site may still show the old room count for a while because it cached the previous answer. The exact mechanics differ, but the operational idea is the same: information can have freshness rules.
+
+Speaker B: Mac lab?
+
+Speaker A: Ask for A, AAAA, and CNAME records with dig. Look at TTLs. Ask a specific resolver. Then change nothing. Just observe. The goal is to stop treating DNS as one invisible black box called “the Internet.”
+
+Speaker B: That's probably the real skill.
+
+Speaker A: Yes. Name the component. Ask it a precise question. Read the answer.
 
 
 EPISODE D2.3 — HTTP
@@ -65,7 +141,45 @@ Speaker B: That is much easier to remember than forty slides of status codes.
 Speaker A: We still need the status codes. We just gave them a job.
 
 Speaker A: Lab: use curl to inspect headers, status codes, redirects, and a JSON API.
+Speaker B: HTTP is where application engineers feel at home.
 
+Speaker A: Which is exactly why I want you not to skip the layers underneath it.
+
+Speaker B: Right. A browser request starts with naming, transport, security, then application semantics.
+
+Speaker A: Usually. And each layer can fail independently.
+
+Speaker B: So a 404 is not a network outage.
+
+Speaker A: Correct. A 404 is an HTTP response from an HTTP server. That tells you quite a lot already.
+
+Speaker B: And a 500 means the application or server encountered an internal problem.
+
+Speaker A: Usually, yes, though the precise source depends on the system generating it. The key is that you have received an HTTP response. You are no longer looking at a pure connectivity failure.
+
+Speaker B: Real-life example?
+
+Speaker A: Order a meal online. DNS gets you to the restaurant's system. TCP gives you a reliable transport. TLS protects the connection. HTTP says, “I'd like this particular thing.” The application decides whether it exists, whether you're authorized, and whether it can complete the request.
+
+Speaker B: And a 401 versus 403?
+
+Speaker A: Different questions. One is about authentication context; the other is about permission to perform the action. Again, don't flatten the whole system into “the request failed.”
+
+Speaker B: Prediction. If curl gets a 301, did the network fail?
+
+Speaker A: No. You received an HTTP response telling you that the resource is elsewhere. curl can follow the redirect when instructed. The important lesson is that application protocols can intentionally tell you to make another request.
+
+Speaker B: So status codes are evidence.
+
+Speaker A: Exactly. They're the server talking back.
+
+Speaker B: Mac lab?
+
+Speaker A: Use curl to inspect response headers, follow a redirect, and ask for a JSON endpoint. Read the headers before reading the body. Look for status, content type, location, caching, and any request identifiers.
+
+Speaker B: It turns a black-box request into a conversation.
+
+Speaker A: That's what HTTP is. A structured conversation carried over lower layers.
 
 
 EPISODE D2.4 — TLS and HTTPS
@@ -85,7 +199,49 @@ Speaker A: Exactly. You can encrypt data without correctly authenticating the en
 Speaker A: Real-life example: entering banking credentials into a fake website with a convincing logo. TLS is not a magic guarantee that the business itself is trustworthy; certificate validation is part of authenticating the endpoint.
 
 Speaker A: Lab: inspect the certificate chain of a real HTTPS site with browser tools and command-line tools.
+Speaker B: TLS is one of those topics where people say “encryption” and stop.
 
+Speaker A: And then they wonder why certificate warnings are so serious.
+
+Speaker B: So TLS has more than secrecy.
+
+Speaker A: Yes. It also establishes cryptographic parameters and provides mechanisms for authenticating the endpoint through certificates and the trust system around them.
+
+Speaker B: Public key, private key, certificate authority.
+
+Speaker A: Right. You don't need to become a cryptographer this week, but you do need the mental model. Your client needs confidence that it established the secure session with the intended endpoint, not just with some random machine willing to encrypt traffic.
+
+Speaker B: Real-life version?
+
+Speaker A: Imagine walking into a secure building. The locked door protects the conversation inside, but the badge at reception helps you establish who you're actually talking to.
+
+Speaker B: And a lock without identity could protect my conversation with the wrong person.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction pause. The certificate is valid cryptographically, but the hostname doesn't match. What should you think?
+
+Speaker A: Don't think “close enough.” Think authentication failure. The certificate may be valid for a different identity.
+
+Speaker B: And if the certificate is expired?
+
+Speaker A: Again, evidence that the trust conditions were not met.
+
+Speaker B: Banking example?
+
+Speaker A: A fake site can look visually identical to the real one. TLS doesn't promise that every business behind a valid certificate is morally good. It helps authenticate the endpoint according to the certificate and trust model.
+
+Speaker B: That's a distinction people miss.
+
+Speaker A: Constantly.
+
+Speaker B: Mac lab?
+
+Speaker A: Inspect a real HTTPS certificate chain in your browser, then use command-line tooling to inspect the same endpoint. Don't just admire the certificate. Identify the subject, issuer, dates, and hostname relationship.
+
+Speaker B: So the exercise is learning what the browser is quietly doing for me.
+
+Speaker A: Exactly. Once you understand it, HTTPS stops being a green padlock and becomes a sequence of verifiable steps.
 
 
 EPISODE D2.5 — Why Containers Exist
@@ -105,7 +261,41 @@ Speaker B: And that is why 'works on my machine' starts becoming less persuasive
 Speaker A: Exactly.
 
 Speaker A: Lab: build an image, run it, inspect its filesystem and process, and compare the image definition with the live container.
+Speaker B: Containers. Let's kill one misconception immediately: a container is not a tiny virtual machine.
 
+Speaker A: Good. A container is an isolated process environment using the host kernel. That distinction explains a lot of behavior.
+
+Speaker B: So the image is the packaged filesystem and metadata, and the container is the running instance.
+
+Speaker A: That's a useful working model.
+
+Speaker B: What problem are we buying with that isolation?
+
+Speaker A: Repeatability, packaging, dependency boundaries, and a clearer execution environment. Not perfect isolation, not a new physical computer.
+
+Speaker B: Real-life example?
+
+Speaker A: A commercial kitchen with standardized stations. You can replace one station without rebuilding the entire restaurant. The environment is repeatable.
+
+Speaker B: And “works on my machine” becomes harder to defend because the environment is described.
+
+Speaker A: Exactly. Though containers don't magically eliminate configuration bugs. They just make more of the environment explicit and reproducible.
+
+Speaker B: Prediction. My container exits immediately after I start it. Does that mean Docker is broken?
+
+Speaker A: No. First ask what the main process did. Containers are tied to their main process lifecycle. If that process exits, the container normally stops.
+
+Speaker B: So I should inspect the command and logs before blaming the runtime.
+
+Speaker A: Yes.
+
+Speaker B: Mac lab?
+
+Speaker A: Build a small image. Run it. Inspect the image layers and the container process. Then deliberately make the command exit. Watch what happens. You're learning the relationship among image, container, and process, not just learning docker run syntax.
+
+Speaker B: Which is why the motion diagram says Image → Container → Process.
+
+Speaker A: Exactly. The picture is a memory aid for a causal relationship.
 
 
 EPISODE D2.6 — Docker Networking and Storage
@@ -127,7 +317,49 @@ Speaker B: That's a slightly dramatic way to explain a volume.
 Speaker A: You remembered it, though.
 
 Speaker A: Lab: run a frontend, API, and database. Break the database hostname, then break the published port, and identify why the symptoms differ.
+Speaker B: Now the networking day finally connects to Docker.
 
+Speaker A: This is where your earlier work pays off. Container networking is easier once ports, addresses, routing, and name resolution are already familiar.
+
+Speaker B: Inside a Docker network, containers can discover one another.
+
+Speaker A: Through the mechanisms Docker provides, yes. And port publishing is a separate concern: exposing a container service through the host.
+
+Speaker B: So container port eighty and host port eighty are not automatically the same thing.
+
+Speaker A: Right.
+
+Speaker B: Apartment complex again?
+
+Speaker A: Apartment numbers work inside the building. Visitors still need an entrance. Internal service discovery and published access are different paths.
+
+Speaker B: Storage has a similar boundary.
+
+Speaker A: Exactly. The writable layer of a container is associated with that container's lifecycle. Persistent application data usually belongs in a volume or another external storage mechanism.
+
+Speaker B: Meaning if I delete and recreate the database container, I shouldn't expect the database files inside the disposable container filesystem to survive.
+
+Speaker A: Correct. That's one of the first painful lessons people learn.
+
+Speaker B: Prediction. Database container is healthy. Application says “cannot resolve database.”
+
+Speaker A: What does that point you toward?
+
+Speaker B: Name resolution or network configuration before database credentials.
+
+Speaker A: Good. Now change the symptom: the hostname resolves, but the TCP connection is refused.
+
+Speaker B: Different hypothesis. Something is reachable, but the service isn't accepting connections on that port.
+
+Speaker A: Exactly.
+
+Speaker B: Mac lab?
+
+Speaker A: Run a tiny frontend, API, and database stack. Break the database hostname. Then restore it and break the published port. Compare the evidence. Finally remove the database container while keeping the volume and verify what survives.
+
+Speaker B: So the lab makes the abstractions collide with reality.
+
+Speaker A: That's the idea. Otherwise Docker remains a vocabulary lesson.
 
 
 EPISODE D2.7 — Break Docker
@@ -149,3 +381,55 @@ Speaker A: Lab: introduce one failure at a time and predict the visible symptom 
 Speaker B: And if my prediction is wrong?
 
 Speaker A: Excellent. That is where learning begins.
+Speaker B: This is my favorite kind of lesson: break it on purpose.
+
+Speaker A: Good. The trick is to break one variable at a time.
+
+Speaker B: Wrong port first.
+
+Speaker A: Then wrong hostname. Then environment variable. Then permissions. Then a dependency that is alive but not ready.
+
+Speaker B: The important part is predicting the symptom before I touch anything.
+
+Speaker A: Yes. Otherwise you're just performing random mutations and calling them experiments.
+
+Speaker B: Real-life example?
+
+Speaker A: A restaurant is “closed.” But is the staff missing? Is the front door locked? Is the kitchen without power? Is the payment terminal down? Is the building open but online ordering broken?
+
+Speaker B: Same customer symptom. Completely different failure paths.
+
+Speaker A: That's the entire job.
+
+Speaker B: Prediction. Wrong hostname.
+
+Speaker A: What do you expect?
+
+Speaker B: DNS or service-discovery failure from the client. The database process itself might be perfectly healthy.
+
+Speaker A: Good. Wrong port?
+
+Speaker B: Depends. If nothing is listening there, connection refused. If traffic can't reach the destination, maybe timeout.
+
+Speaker A: Better. Now add a bad credential.
+
+Speaker B: The TCP connection can succeed, TLS might succeed if present, and the application then returns an authentication error.
+
+Speaker A: Exactly. That's why layered diagnosis matters.
+
+Speaker B: Mac lab?
+
+Speaker A: Create a tiny stack and keep notes. For every break, write four things: your hypothesis, the predicted observation, the actual observation, and the next test. At the end, erase the notes and repeat from memory.
+
+Speaker B: That last part is mean.
+
+Speaker A: It's called retrieval practice.
+
+Speaker B: Same thing, nicer branding.
+
+Speaker A: Fine. Call it supervised cruelty.
+
+Speaker B: And that's apparently our educational philosophy.
+
+Speaker A: Only on Tuesdays.
+
