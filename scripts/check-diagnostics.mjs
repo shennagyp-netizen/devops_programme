@@ -51,6 +51,33 @@ const questionBlocks = [...diagnostics.matchAll(
   /id:\s*"([A-Z0-9.-]+)",\s*prompt:/g
 )];
 
+const questionIds = questionBlocks.map((match) => match[1]);
+if (new Set(questionIds).size !== questionIds.length) {
+  failed = true;
+  console.error("Diagnostic question IDs must be unique.");
+}
+
+const questionBodies = [...diagnostics.matchAll(
+  /id:\s*"([A-Z0-9.-]+)",\s*prompt:\s*"[^"]+",\s*options:\s*\[([\\s\\S]*?)\],\s*correctOption:\s*\d+/g
+)];
+
+if (questionBodies.length !== questionBlocks.length) {
+  failed = true;
+  console.error(
+    `Could not parse every diagnostic question's option block: ${questionBodies.length} of ${questionBlocks.length}.`
+  );
+}
+
+for (const match of questionBodies) {
+  const optionCount = [...match[2].matchAll(/"[^"]*"/g)].length;
+  if (optionCount !== 4) {
+    failed = true;
+    console.error(
+      `Diagnostic question ${match[1]} must have exactly 4 options; found ${optionCount}.`
+    );
+  }
+}
+
 const correctOptions = [...diagnostics.matchAll(
   /correctOption:\s*(\d+)/g
 )].map((match) => Number(match[1]));
