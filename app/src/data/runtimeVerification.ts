@@ -41,6 +41,8 @@ export type RuntimeStepResult = {
   startedAt: string;
   completedAt: string;
   exitCode: number;
+  stdout: string;
+  stderr: string;
   stdoutHash: string;
   stderrHash: string;
   result: "passed" | "failed" | "not-run";
@@ -210,6 +212,14 @@ export function validateMachineVerification(
       failures.push(`Invalid timestamps for runtime step ${result.stepId}.`);
     } else if (Date.parse(result.completedAt) < Date.parse(result.startedAt)) {
       failures.push(`Runtime step ${result.stepId} completedAt precedes startedAt.`);
+    }
+
+    if (typeof result.stdout !== "string" || typeof result.stderr !== "string") {
+      failures.push(`Captured command output is missing for runtime step ${result.stepId}.`);
+    }
+
+    if (result.stdout.length > 65536 || result.stderr.length > 65536) {
+      failures.push(`Captured command output is too large for runtime step ${result.stepId}.`);
     }
 
     if (!result.stdoutHash.trim() || !result.stderrHash.trim()) {
