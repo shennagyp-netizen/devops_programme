@@ -80,6 +80,27 @@ export function clearEvidence() {
 export function recordMachineVerification(input: {
   course: CourseLevel;
   projectId: string;
+  lessonId: string;
+  taskId: string;
+  summary: string;
+  evidencePayload: Record<string, string>;
+}) {
+  return addEvidence({
+    course: input.course,
+    projectId: input.projectId,
+    lessonId: input.lessonId,
+    kind: "exercise",
+    summary: input.summary,
+    taskId: input.taskId,
+    verificationLevel: "machine-verified",
+    evidencePayload: input.evidencePayload
+  });
+}
+
+
+export function recordMachineVerification(input: {
+  course: CourseLevel;
+  projectId: string;
   task: RuntimeTask;
   envelope: MachineVerificationEnvelope;
   summary: string;
