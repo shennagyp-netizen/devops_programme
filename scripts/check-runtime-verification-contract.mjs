@@ -74,6 +74,11 @@ if (!source.includes("environmentFingerprint")) {
   console.error("Machine evidence must include an environment fingerprint.");
 }
 
+if (!runtimeTasks.some((task) => task.scope === "probe" || task.scope === "exercise")) {
+  failed = true;
+  console.error("Runtime tasks must declare a verification scope.");
+}
+
 const runner = await readFile(
   path.join(root, "scripts", "hands-on-runtime-runner.mjs"),
   "utf8"
