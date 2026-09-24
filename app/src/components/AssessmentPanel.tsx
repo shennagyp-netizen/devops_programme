@@ -56,8 +56,9 @@ export function AssessmentPanel({
           </div>
 
           <p className="range">
-            The item bank for this section is still being authored. These
-            values are the target form mix, not a score.
+            {assessment.status === "pilot"
+              ? "A pilot item bank exists for this section. These forms are for architecture and item-writing validation, not operational certification."
+              : "The item bank for this section is still being authored. These values are the target form mix, not a score."}
           </p>
         </div>
       ))}
