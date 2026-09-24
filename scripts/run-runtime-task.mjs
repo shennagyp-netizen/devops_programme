@@ -4,16 +4,16 @@ import os from "node:os";
 import path from "node:path";
 import { spawn } from "node:child_process";
 import process from "node:process";
-import {
-  runtimeTaskForLesson,
-  type MachineVerificationEnvelope,
-  type RuntimeCommand,
-  type RuntimeTask,
-  type RuntimeStepResult
-} from "../app/src/data/runtimeVerification.ts";
-import type { PlatformId } from "../app/src/data/programme.ts";
+import runtimeTaskCatalog from "../app/src/data/runtimeTasks.json" with { type: "json" };
+
 
 const RUNNER_VERSION = "0.1.0";
+/** @typedef {"macos"|"linux"|"windows"} PlatformId */
+/** @typedef {import("../app/src/data/runtimeVerification.ts").MachineVerificationEnvelope} MachineVerificationEnvelope */
+/** @typedef {import("../app/src/data/runtimeVerification.ts").RuntimeCommand} RuntimeCommand */
+/** @typedef {import("../app/src/data/runtimeVerification.ts").RuntimeTask} RuntimeTask */
+/** @typedef {import("../app/src/data/runtimeVerification.ts").RuntimeStepResult} RuntimeStepResult */
+
 
 function platformId(): PlatformId {
   if (process.platform === "win32") return "windows";
@@ -154,7 +154,7 @@ function commandForTask(task: RuntimeTask, stepIndex: number, platform: Platform
 async function main() {
   const { lessonId, output } = parseArgs(process.argv);
   const platform = platformId();
-  const task = runtimeTaskForLesson(lessonId);
+  const task = runtimeTaskCatalog.runtimeTasks.find((item) => item.lessonId === lessonId);
 
   if (!task) {
     throw new Error(\`No machine-verification task is defined for lesson \${lessonId}.\`);
