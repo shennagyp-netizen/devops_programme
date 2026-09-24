@@ -16,15 +16,21 @@ Speaker A: Is the system recovered?
 
 Speaker B: No.
 
-Speaker A: Good.
+Speaker A: Good. That makes the diagnosis easier to test.
+
+Speaker A: Let's keep that tied to the actual problem.
 
 Speaker B: Because a backup is not the same as a restore.
 
-Speaker A: Exactly.
+Speaker A: Exactly. We can check that without changing everything.
+
+Speaker A: Now say what evidence would confirm that.
 
 Speaker B: And restore is not the same as recovery.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now we have a concrete prediction.
+
+Speaker A: That gives us a useful next test.
 
 Speaker B: So let's build the terms.
 
@@ -32,15 +38,21 @@ Speaker A: A backup is a copy of data kept so we can use it later.
 
 Speaker B: Restore means we put that data somewhere usable again.
 
-Speaker A: Right.
+Speaker A: Right. Keep the recovery condition in the plan.
+
+Speaker A: I would not change the system before checking that.
 
 Speaker B: Recovery means the service is back to a useful state.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That is a safer way to reason about it.
+
+Speaker A: Keep the user-visible effect in view.
 
 Speaker B: So I can have a backup, restore it, and still have a broken application.
 
-Speaker A: Yes.
+Speaker A: Yes. Now compare that with the known-good state.
+
+Speaker A: That is the part I would verify first.
 
 Speaker B: Nice.
 
@@ -60,7 +72,9 @@ Speaker A: You have a spare key in a drawer.
 
 Speaker B: So you have a backup.
 
-Speaker A: Right.
+Speaker A: Right. That tells us which layer to inspect next.
+
+Speaker A: Now the assumption is explicit.
 
 Speaker B: Your main key breaks.
 
@@ -72,13 +86,15 @@ Speaker A: Restore.
 
 Speaker B: But then the lock has changed.
 
-Speaker A: Exactly.
+Speaker A: Exactly. I want the observation before the fix.
+
+Speaker A: That makes the diagnosis easier to test.
 
 Speaker B: The spare key is real, but it no longer opens the door.
 
 Speaker A: So the existence of a backup did not prove recovery.
 
-Speaker B: Good.
+Speaker B: Good. That is where the real mechanism shows up.
 
 Speaker A: Now let's use the real system.
 
@@ -88,7 +104,7 @@ Speaker A: Suppose the database stores orders.
 
 Speaker B: We back it up every hour.
 
-Speaker A: Good.
+Speaker A: Good. Now the failure has a clear boundary.
 
 Speaker B: At 4 p.m., someone deletes a table.
 
@@ -96,11 +112,11 @@ Speaker A: What happens if we restore the 3 p.m. backup?
 
 Speaker B: We lose one hour of changes.
 
-Speaker A: Correct.
+Speaker A: Correct. Let's see whether the evidence supports that.
 
 Speaker B: So that is the recovery point.
 
-Speaker A: Yes.
+Speaker A: Yes. That would change my next move.
 
 Speaker B: RPO.
 
