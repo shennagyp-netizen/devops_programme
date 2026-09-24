@@ -94,9 +94,37 @@ jobs:
         working-directory: repo/app
         run: npm run test:unit
 
-      - name: Integration tests
+      - name: Integration assessment banks
         working-directory: repo/app
-        run: npm run test:integration
+        run: npx vitest run tests/integration/assessment-banks.integration.test.mjs
+
+      - name: Integration beginner course
+        working-directory: repo/app
+        run: npx vitest run tests/integration/beginner-course.integration.test.mjs
+
+      - name: Integration contract validators
+        working-directory: repo/app
+        run: npx vitest run tests/integration/contract-validators.integration.test.mjs
+
+      - name: Integration local terminal agent
+        working-directory: repo/app
+        run: npx vitest run tests/integration/local-terminal-agent.integration.test.mjs
+
+      - name: Integration platform and content
+        working-directory: repo/app
+        run: npx vitest run tests/integration/platform-and-content.integration.test.mjs
+
+      - name: Integration programme
+        working-directory: repo/app
+        run: npx vitest run tests/integration/programme.integration.test.mjs
+
+      - name: Integration progress action
+        working-directory: repo/app
+        run: npx vitest run tests/integration/progress-action.test.mjs
+
+      - name: Integration runtime runner
+        working-directory: repo/app
+        run: npx vitest run tests/integration/runtime-runner.integration.test.mjs
 
       - name: TypeScript typecheck
         working-directory: repo/app
