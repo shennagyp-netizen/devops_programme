@@ -195,17 +195,15 @@ for (const file of files) {
       );
     }
 
-    const ordered = [...familyItems].sort((a, b) => a.expectedMinutes - b.expectedMinutes);
     const selectedBudget = [];
-    const remaining = { ...targets };
-
-    // Approximate the generator's constrained selection while checking that
-    // the blueprint has enough time budget for a valid form.
-    for (const item of ordered) {
-      if (remaining[item.difficulty] > 0) {
-        selectedBudget.push(item);
-        remaining[item.difficulty] -= 1;
-      }
+    // Check the worst-case time, not the shortest possible form. A valid pool
+    // must let every deterministic seed stay inside the declared time limit.
+    for (const band of Object.keys(targets)) {
+      const longest = familyItems
+        .filter((item) => item.difficulty === band)
+        .sort((a, b) => b.expectedMinutes - a.expectedMinutes)
+        .slice(0, targets[band]);
+      selectedBudget.push(...longest);
     }
 
     const totalMinutes = selectedBudget.reduce(
