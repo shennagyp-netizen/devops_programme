@@ -180,3 +180,48 @@ A future managed runner must preserve the same contract:
 - perform and report required reset operations.
 
 Future expansion should proceed from observation-only tasks to reversible changes, controlled failures, recovery and finally reset verification.
+
+## Security red-team clarification — 2026-09-24
+
+Runtime evidence validation now recomputes SHA-256 hashes from the captured stdout/stderr instead of only checking that hash fields exist.
+
+The validator also requires:
+- exact step count
+- exact step order
+- step timestamps inside the envelope execution window
+- source/execution-mode consistency
+- target-type consistency
+- rejection of the reserved managed-runner source.
+
+These checks detect edited or internally inconsistent evidence. They do not create independent attestation.
+
+Imported JSON remains learner-controlled input. A user who controls both the machine and the application runtime can fabricate a self-consistent envelope.
+
+Therefore imported machine evidence must not be treated as certification proof.
+
+Normal progress completion is stored separately as learner self-report. The progress Server Action does not trust browser-selected course, project or verification metadata.
+
+The local terminal pairing token is held in browser memory rather than localStorage, and the local agent restricts CORS to configured application origins.
+## Local-agent attestation and replay protection
+
+The direct local-agent path now uses a fresh browser challenge for every execution.
+
+The local agent generates an Ed25519 signing key pair when it starts. The private key stays in the agent process.
+
+The agent signs the canonical machine-verification envelope, including:
+- runtime task identity
+- contract version
+- lesson identity
+- platform
+- execution target
+- environment fingerprint
+- timestamps
+- step results
+- reset state
+- the fresh browser challenge.
+
+The browser verifies the returned Ed25519 signature before accepting direct local execution as machine-verified.
+
+A previously captured envelope is rejected for a new execution because the browser challenge changes.
+
+SSH JSON imports do not have this direct local-agent trust boundary. They remain structured and imported-untrusted until a future managed attestation service exists.

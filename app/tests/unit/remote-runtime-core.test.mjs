@@ -12,6 +12,38 @@ describe("remote runtime core", () => {
     expect(shellQuotePosix("it's safe")).toBe("'it'\\''s safe'");
   });
 
+  it("rejects SSH user values that could be parsed as command-line options", () => {
+    const task = runtimeTaskForLesson("B1.2");
+    const step = task.steps[0];
+
+    expect(() =>
+      sshArguments({
+        host: "vm.example",
+        user: "-oProxyCommand=touch /tmp/pwned",
+        port: 22,
+        task,
+        step,
+        platform: "linux"
+      })
+    ).toThrow("Invalid SSH user.");
+  });
+
+  it("rejects SSH host values containing command-line injection syntax", () => {
+    const task = runtimeTaskForLesson("B1.2");
+    const step = task.steps[0];
+
+    expect(() =>
+      sshArguments({
+        host: "-oProxyCommand=touch /tmp/pwned",
+        user: "student",
+        port: 22,
+        task,
+        step,
+        platform: "linux"
+      })
+    ).toThrow("Invalid SSH host.");
+  });
+
   it("builds SSH arguments with strict host-key checking", () => {
     const task = runtimeTaskForLesson("B1.2");
     const step = task.steps[0];

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, generateKeyPairSync, randomBytes, sign } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import http from "node:http";
 import os from "node:os";
@@ -13,6 +13,19 @@ const PORT = Number(process.env.DEVOPS_TERMINAL_PORT ?? "4317");
 const RUNNER_VERSION = "0.2.0-local-agent";
 const MAX_OUTPUT = 64 * 1024;
 const TOKEN = process.env.DEVOPS_TERMINAL_TOKEN ?? randomBytes(24).toString("base64url");
+const { publicKey: ATTESTATION_PUBLIC_KEY, privateKey: ATTESTATION_PRIVATE_KEY } =
+  generateKeyPairSync("ed25519");
+const ATTESTATION_PUBLIC_KEY_B64 = ATTESTATION_PUBLIC_KEY
+  .export({ type: "spki", format: "der" })
+  .toString("base64url");
+
+const ALLOWED_ORIGINS = new Set(
+  (process.env.DEVOPS_TERMINAL_ALLOWED_ORIGINS ??
+    "http://localhost:3000,http://127.0.0.1:3000")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+);
 
 function hash(value) {
   return createHash("sha256").update(value).digest("hex");
@@ -48,12 +61,22 @@ async function loadCatalog() {
   return JSON.parse(await readFile(file, "utf8"));
 }
 
+function isAllowedOrigin(origin) {
+  return !origin || ALLOWED_ORIGINS.has(origin);
+}
+
+function applyCors(res, origin) {
+  if (!origin) return;
+  res.setHeader("Access-Control-Allow-Origin", origin);
+  res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Vary", "Origin");
+}
+
 function send(res, status, body, origin) {
   res.statusCode = status;
   res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.setHeader("Access-Control-Allow-Origin", origin || "*");
-  res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  applyCors(res, origin);
   res.setHeader("Cache-Control", "no-store");
   res.end(JSON.stringify(body));
 }
@@ -139,12 +162,52 @@ function runCommand(command) {
   });
 }
 
-async function executeTask(task, platform) {
+function attestationPayload(envelope) {
+  return JSON.stringify({
+    schemaVersion: envelope.schemaVersion,
+    taskId: envelope.taskId,
+    contractVersion: envelope.contractVersion,
+    lessonId: envelope.lessonId,
+    platform: envelope.platform,
+    verificationLevel: envelope.verificationLevel,
+    verificationSource: envelope.verificationSource,
+    executionMode: envelope.executionMode,
+    target: envelope.target,
+    runnerVersion: envelope.runnerVersion,
+    environmentFingerprint: envelope.environmentFingerprint,
+    challenge: envelope.challenge ?? "",
+    startedAt: envelope.startedAt,
+    completedAt: envelope.completedAt,
+    stepResults: envelope.stepResults,
+    resetPerformed: envelope.resetPerformed
+  });
+}
+
+function attachAttestation(envelope) {
+  return {
+    ...envelope,
+    attestation: {
+      algorithm: "Ed25519",
+      publicKey: ATTESTATION_PUBLIC_KEY_B64,
+      signature: sign(
+        null,
+        Buffer.from(attestationPayload(envelope), "utf8"),
+        ATTESTATION_PRIVATE_KEY
+      ).toString("base64url")
+    }
+  };
+}
+
+async function executeTask(task, platform, challenge) {
   if (task.verificationLevel !== "machine-verified") {
     throw new Error("This task is not machine-verifiable.");
   }
   if (task.resetRequired) {
     throw new Error("This task requires reset verification and is not supported by the local agent yet.");
+  }
+
+  if (!/^[a-f0-9]{64}$/i.test(challenge)) {
+    throw new Error("Execution challenge is invalid.");
   }
 
   const startedAt = new Date().toISOString();
@@ -193,7 +256,7 @@ async function executeTask(task, platform) {
     }
   }
 
-  return {
+  const envelope = {
     schemaVersion: 1,
     taskId: task.taskId,
     contractVersion: task.contractVersion,
@@ -205,11 +268,14 @@ async function executeTask(task, platform) {
     target: { kind: "local" },
     runnerVersion: RUNNER_VERSION,
     environmentFingerprint: fingerprint(platform),
+    challenge,
     startedAt,
     completedAt: new Date().toISOString(),
     stepResults,
     resetPerformed: !task.resetRequired
   };
+
+  return attachAttestation(envelope);
 }
 
 async function main() {
@@ -218,11 +284,19 @@ async function main() {
     const origin = req.headers.origin ?? "*";
 
     if (req.method === "OPTIONS") {
+      if (!isAllowedOrigin(origin === "*" ? "" : origin)) {
+        res.statusCode = 403;
+        res.end();
+        return;
+      }
       res.statusCode = 204;
-      res.setHeader("Access-Control-Allow-Origin", origin);
-      res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
-      res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+      applyCors(res, origin === "*" ? "" : origin);
       res.end();
+      return;
+    }
+
+    if (!isAllowedOrigin(origin === "*" ? "" : origin)) {
+      send(res, 403, { error: "Origin is not allowed." }, "");
       return;
     }
 
@@ -231,7 +305,11 @@ async function main() {
         service: "devops-terminal-agent",
         version: RUNNER_VERSION,
         platform: platformId(),
-        authenticatedExecution: true
+        authenticatedExecution: true,
+        attestation: {
+          algorithm: "Ed25519",
+          publicKey: ATTESTATION_PUBLIC_KEY_B64
+        }
       }, origin);
       return;
     }
@@ -263,7 +341,13 @@ async function main() {
           return;
         }
 
-        const envelope = await executeTask(task, platform);
+        const challenge = String(body.challenge ?? "");
+        if (!/^[a-f0-9]{64}$/i.test(challenge)) {
+          send(res, 400, { error: "Invalid execution challenge." }, origin);
+          return;
+        }
+
+        const envelope = await executeTask(task, platform, challenge);
         send(res, 200, envelope, origin);
       } catch (error) {
         send(res, 400, {

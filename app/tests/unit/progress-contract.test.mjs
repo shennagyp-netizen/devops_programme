@@ -34,24 +34,19 @@ describe("completion input contract", () => {
     });
   });
 
-  it("keeps optional metadata bounded and ignores unknown fields", () => {
+  it("accepts only item identity and strips browser-selected trusted metadata", () => {
     const input = {
       itemType: "lesson",
       itemId: "B1.2",
-      course: "beginner",
-      projectId: "B1",
-      verificationLevel: "exercise-validated",
-      stdout: "must never be stored",
-      stderr: "must never be stored",
-      attempt: 3
+      course: "advanced",
+      projectId: "A3",
+      verificationLevel: "machine-verified",
+      stdout: "must never be stored"
     };
 
     expect(parseCompletionInput(input)).toEqual({
       itemType: "lesson",
-      itemId: "B1.2",
-      course: "beginner",
-      projectId: "B1",
-      verificationLevel: "exercise-validated"
+      itemId: "B1.2"
     });
   });
 

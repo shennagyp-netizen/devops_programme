@@ -73,10 +73,7 @@ describe("completeLearningItemAction", () => {
 
     expect(completeForUserMock).toHaveBeenCalledWith("user_456", {
       itemType: "assignment",
-      itemId: "I1",
-      course: "intermediate",
-      projectId: "I1",
-      verificationLevel: "exercise-validated"
+      itemId: "I1"
     });
   });
 });

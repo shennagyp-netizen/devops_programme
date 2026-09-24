@@ -4,7 +4,7 @@
 
 **Repository:** `shennagyp-netizen/devops_programme`
 
-**Current branch:** `main`
+**Current branch:** `redteam/security-hardening-20260924` (PR #17 pending review; not merged to `main`)
 
 **Latest architecture merge:** PR #16, merge commit `655d66925bd9ccb081efc808ffd9c83c51a0e5e8`
 
@@ -1323,3 +1323,58 @@ TDD:
 - PostgreSQL enforces the supported item-type invariant and unique user/item identity.
 
 The branch is intended to be merged to `main` only as this single architecture. A hosted CI failure caused by runner infrastructure must remain visible rather than being bypassed or reclassified as a source-code pass.
+
+
+============================================================
+34. SECURITY / RED-TEAM HARDENING — 2026-09-24
+============================================================
+
+The authenticated architecture has been red-teamed and hardened.
+
+Concrete changes:
+- server-side canonical learning-item authority added
+- progress input reduced to item type + item ID
+- browser-selected course/project/verification metadata removed from the trust boundary
+- normal completion stored as self-report
+- arbitrary/nonexistent completion identities rejected before database insertion
+- assessment question identity bound to the authored bank contract
+- runtime stdout/stderr SHA-256 hashes are recomputed during validation
+- runtime step order and exact step count are enforced
+- runtime step timestamps must stay inside the envelope execution window
+- impossible runner/source and execution-mode combinations fail closed
+- reserved managed-runner evidence fails closed until a real managed runner exists
+- loopback terminal-agent CORS is restricted to configured application origins
+- terminal pairing token is held in memory instead of localStorage
+- local evidence is revalidated on lesson reload rather than trusting a persisted boolean
+- baseline browser security headers added
+- GitHub Actions checkout no longer embeds the GitHub token in a traced Git remote command
+- explicit security architecture contract added to the build/CI gate
+- extensive red-team tests added for identity, authorization, runtime evidence, local agent, browser state and CI boundaries.
+
+Important semantic correction:
+self-report completion is learner progress, not secure assessment proof.
+
+Machine verification remains a structured integrity check. It is not independent remote attestation.
+
+Current security document:
+docs/SECURITY_ARCHITECTURE.md
+
+Current security contract:
+scripts/check-security-contract.mjs
+
+CI truth remains unchanged:
+the latest observable hosted runner failure occurs before workflow steps become available, so no hosted-green result is claimed.
+
+Additional red-team hardening after section 34:
+- manual evidence writer can only create structured evidence
+- manual evidence task identity is derived from canonical lesson data
+- runtime machine evidence uses the canonical published runtime task instead of trusting a caller-provided task object
+- direct local-agent evidence now requires an Ed25519 signature
+- each local execution uses a fresh 32-byte browser challenge
+- replayed signed evidence is rejected when the challenge does not match
+- imported SSH/JSON evidence remains untrusted for machine completion.
+
+Security dependency review note — 2026-09-24:
+- direct pinned framework versions reviewed against current public advisories
+- npm audit high-severity gate added to CI
+- no lockfile is committed, so dependency installation is still nondeterministic until a lockfile is added.

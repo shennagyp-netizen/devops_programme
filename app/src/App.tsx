@@ -76,10 +76,7 @@ export default function App({
 
       await completeLearningItemAction({
         itemType: "lesson",
-        itemId: id,
-        course: selected.course,
-        projectId: selected.projectId,
-        verificationLevel: "exercise-validated"
+        itemId: id
       });
       setM((current) => (current.includes(id) ? current : [...current, id]));
     } catch (error) {
