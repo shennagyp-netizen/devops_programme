@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 class MemoryStorage {
-  private values = new Map<string, string>();
+  constructor() {\n    this.values = new Map();\n  }
 
   getItem(key: string) {
     return this.values.get(key) ?? null;
@@ -17,10 +17,10 @@ class MemoryStorage {
 }
 
 const storage = new MemoryStorage();
-globalThis.localStorage = storage as Storage;
+globalThis.localStorage = storage;
 
 const fetchMock = vi.fn();
-globalThis.fetch = fetchMock as typeof fetch;
+globalThis.fetch = fetchMock;
 
 const {
   completeLearningItem,
