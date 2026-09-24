@@ -38,6 +38,16 @@ describe("red-team repository boundaries", () => {
     expect(source).not.toContain('res.setHeader("Access-Control-Allow-Origin", origin || "*")');
   });
 
+  it("pins the GitHub Node setup action to an immutable release", async () => {
+    const workflow = await readFile(
+      path.join(root, ".github", "workflows", "app.yml"),
+      "utf8"
+    );
+    expect(workflow).toContain("actions/setup-node@820762786026740c76f36085b0efc47a31fe5020");
+    expect(workflow).toContain("# v7.0.0");
+    expect(workflow).not.toContain("actions/setup-node@v4");
+  });
+
   it("does not expose GitHub credentials through traced CI checkout commands", async () => {
     const workflow = await readFile(
       path.join(root, ".github", "workflows", "app.yml"),
