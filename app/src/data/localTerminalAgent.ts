@@ -27,10 +27,9 @@ export async function localTerminalAgentStatus(): Promise<LocalTerminalAgentStat
   try {
     const request = new Request(`${AGENT_URL}/health`, {
       method: "GET",
-      mode: "cors"
-    } as RequestInit & { targetAddressSpace?: "loopback" });
-    (request as Request & { targetAddressSpace?: "loopback" }).targetAddressSpace =
-      "loopback";
+      mode: "cors",
+      targetAddressSpace: "loopback"
+    } as RequestInit & { targetAddressSpace: "loopback" });
 
     const response = await fetch(request);
     if (!response.ok) {
@@ -70,10 +69,9 @@ export async function runLocalTerminalTask(input: {
     body: JSON.stringify({
       taskId: input.taskId,
       platform: input.platform
-    })
-  } as RequestInit & { targetAddressSpace?: "loopback" });
-  (request as Request & { targetAddressSpace?: "loopback" }).targetAddressSpace =
-    "loopback";
+    }),
+    targetAddressSpace: "loopback"
+  } as RequestInit & { targetAddressSpace: "loopback" });
 
   const response = await fetch(request);
   const body = await response.json().catch(() => ({}));
