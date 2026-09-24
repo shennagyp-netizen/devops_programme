@@ -4,6 +4,7 @@ on:
     paths: ["app/**","podcasts/**","scripts/**",".github/workflows/app.yml"]
   pull_request:
     paths: ["app/**","podcasts/**","scripts/**",".github/workflows/app.yml"]
+  workflow_dispatch:
 permissions:
   contents: read
   pull-requests: write
