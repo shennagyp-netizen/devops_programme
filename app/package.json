@@ -19,7 +19,8 @@
     "check:intermediate": "node ../scripts/check-intermediate-completeness.mjs",
     "check:advanced": "node ../scripts/check-advanced-completeness.mjs",
     "check:programme": "node ../scripts/check-programme-completeness.mjs",
-    "check:runtime": "node ../scripts/check-runtime-verification-contract.mjs"
+    "check:runtime": "node ../scripts/check-runtime-verification-contract.mjs",
+    "hands-on:run": "node ../scripts/hands-on-runtime-runner.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",
