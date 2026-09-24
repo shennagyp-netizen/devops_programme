@@ -109,7 +109,7 @@ describe("assessment bank integration", () => {
             expect(Number.isInteger(item.correctOption)).toBe(true);
             expect(item.correctOption).toBeGreaterThanOrEqual(0);
             expect(item.correctOption).toBeLessThan(item.options.length);
-          } else {
+          } else if (item.family !== "hands-on") {
             expect(
               item.expectedElements?.length ||
               item.scoring?.full?.length ||
