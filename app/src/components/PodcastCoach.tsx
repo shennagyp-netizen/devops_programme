@@ -1,109 +1,445 @@
-import{useEffect,useMemo,useState}from"react";
-import type{Lesson}from"../data/curriculum";
-import{dayFor,getEpisodeText,parseTurns,podcastUrl}from"../data/podcastsRaw";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { Lesson } from "../data/curriculum";
+import {
+  findActiveCue,
+  getPodcastAudioManifest,
+  type PodcastCueKind
+} from "../data/podcastSync";
+import {
+  dayFor,
+  getEpisodeText,
+  parseTurns,
+  podcastUrl,
+  type Turn
+} from "../data/podcastsRaw";
 
-type Phase="brief"|"listen"|"coach"|"lab"|"recall"|"done";
-export function PodcastCoach({lesson}:{lesson:Lesson}){
- const[phase,setPhase]=useState<Phase>("brief");
- const[turnIndex,setTurnIndex]=useState(0);
- const[prediction,setPrediction]=useState("");
- const[coachAnswer,setCoachAnswer]=useState("");
- const[showHint,setShowHint]=useState(false);
- const[recallAnswers,setRecallAnswers]=useState<string[]>(()=>lesson.recall.map(()=> ""));
- const[recallDone,setRecallDone]=useState<boolean[]>(()=>lesson.recall.map(()=>false));
- const[seconds,setSeconds]=useState(20);
- const[episodeSource,setEpisodeSource]=useState("");
- useEffect(()=>{let cancelled=false;fetch(podcastUrl(dayFor(lesson.id))).then(r=>r.ok?r.text():"").then(t=>{if(!cancelled)setEpisodeSource(t)}).catch(()=>{if(!cancelled)setEpisodeSource("")});return()=>{cancelled=true}},[lesson.id]);
- const episode=useMemo(()=>getEpisodeText(episodeSource,lesson.id),[episodeSource,lesson.id]);
- const turns=useMemo(()=>parseTurns(episode),[episode]);
- const current=turns[turnIndex];
- const allRecall=recallDone.every(Boolean);
+type Phase = "brief" | "listen" | "coach" | "lab" | "recall" | "done";
 
- const nextTurn=()=>{
-   if(turnIndex>=turns.length-1){setPhase("lab");return;}
-   const next=turnIndex+1;
-   setTurnIndex(next);
-   if(next>0&&next%6===0)setPhase("coach");
- };
- const reset=()=>{
-   setPhase("brief");setTurnIndex(0);setPrediction("");setCoachAnswer("");setShowHint(false);
-   setRecallAnswers(lesson.recall.map(()=> ""));setRecallDone(lesson.recall.map(()=>false));setSeconds(20);
- };
+const cueToPhase: Partial<Record<PodcastCueKind, Phase>> = {
+  prediction: "coach",
+  lab: "lab",
+  recall: "recall"
+};
 
- return <div className="podcast-coach">
-  <div className="coach-banner">
-   <div><span className="eyebrow">CO-TEACHER MODE</span><h3>The podcast teaches. I make you think.</h3></div>
-   <div className="coach-phase">{phase}</div>
-  </div>
+export function PodcastCoach({ lesson }: { lesson: Lesson }) {
+  const [phase, setPhase] = useState<Phase>("brief");
+  const [turnIndex, setTurnIndex] = useState(0);
+  const [prediction, setPrediction] = useState("");
+  const [coachAnswer, setCoachAnswer] = useState("");
+  const [showHint, setShowHint] = useState(false);
+  const [recallAnswers, setRecallAnswers] = useState<string[]>(() =>
+    lesson.recall.map(() => "")
+  );
+  const [recallDone, setRecallDone] = useState<boolean[]>(() =>
+    lesson.recall.map(() => false)
+  );
+  const [seconds, setSeconds] = useState(20);
+  const [episodeSource, setEpisodeSource] = useState("");
+  const [audioTimeMs, setAudioTimeMs] = useState(0);
+  const [audioPlaying, setAudioPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const lastCueIdRef = useRef<string | null>(null);
 
-  {phase==="brief"&&<div className="coach-grid">
-    <div className="content-card">
-      <h4>Before you press play</h4>
-      <p>Do not try to memorize this episode. Listen for the causal chain: what talks to what, what state changes, and what evidence would expose a failure.</p>
-      <p><strong>Prediction:</strong> In one sentence, what do you expect to be the first thing that breaks when this concept is misconfigured?</p>
-      <textarea value={prediction} onChange={e=>setPrediction(e.target.value)} placeholder="Write your prediction in your own words." />
-      <button className="primary" onClick={()=>setPhase("listen")} disabled={!prediction.trim()}>Start guided listening</button>
-    </div>
-    <div className="content-card coach-rule">
-      <h4>How to use the audio</h4>
-      <p>Play the episode in your normal audio player. Keep this panel open. When the speaker asks you to predict, pause the audio here and answer before continuing.</p>
-      <p>Do not read the transcript instead of listening on the first pass. The transcript is the recovery path when a sentence was hard to catch.</p>
-    </div>
-  </div>}
+  const audioManifest = getPodcastAudioManifest(lesson.id);
 
-  {phase==="listen"&&<div className="content-card">
-    <div className="coach-row"><strong>Guided transcript</strong><span>{turns.length?`${Math.min(turnIndex+1,turns.length)}/${turns.length} turns`:"loading transcript…"}</span></div>
-    {current?<div className="turn-card"><strong>Speaker {current.speaker}</strong><p>{current.text}</p></div>:<p>Transcript unavailable for this episode. Continue with the exercise cards.</p>}
-    <div className="coach-actions">
-      <button onClick={()=>setPhase("coach")}>Pause for a prediction</button>
-      <button className="primary" onClick={nextTurn}>{turnIndex>=turns.length-1?"Finish listening":"Next spoken section"}</button>
-    </div>
-  </div>}
+  useEffect(() => {
+    let cancelled = false;
 
-  {phase==="coach"&&<div className="coach-grid">
-    <div className="content-card">
-      <span className="eyebrow">STOP HERE</span>
-      <h4>Say it before you see it</h4>
-      <p>{lesson.recall[1]??lesson.recall[0]}</p>
-      <textarea value={coachAnswer} onChange={e=>setCoachAnswer(e.target.value)} placeholder="Explain it like you are talking to another engineer." />
-      <div className="timer-row">
-        <button onClick={()=>setSeconds(s=>Math.max(0,s-5))}>−5s</button>
-        <strong>{seconds}s</strong>
-        <button onClick={()=>setSeconds(s=>s+5)}>+5s</button>
+    setPhase("brief");
+    setTurnIndex(0);
+    setPrediction("");
+    setCoachAnswer("");
+    setShowHint(false);
+    setRecallAnswers(lesson.recall.map(() => ""));
+    setRecallDone(lesson.recall.map(() => false));
+    setSeconds(20);
+    setAudioTimeMs(0);
+    setAudioPlaying(false);
+    lastCueIdRef.current = null;
+
+    audioRef.current?.pause();
+    audioRef.current = null;
+
+    fetch(podcastUrl(dayFor(lesson.id)))
+      .then((r) => (r.ok ? r.text() : ""))
+      .then((t) => {
+        if (!cancelled) setEpisodeSource(t);
+      })
+      .catch(() => {
+        if (!cancelled) setEpisodeSource("");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [lesson.id, lesson.recall]);
+
+  const episode = useMemo(
+    () => getEpisodeText(episodeSource, lesson.id),
+    [episodeSource, lesson.id]
+  );
+
+  const turns = useMemo(
+    () => parseTurns(episode, lesson.id),
+    [episode, lesson.id]
+  );
+
+  const current: Turn | undefined = turns[turnIndex];
+
+  useEffect(() => {
+    if (!audioManifest || !audioRef.current) return;
+
+    const audio = audioRef.current;
+    const onTime = () => {
+      const timeMs = Math.round(audio.currentTime * 1000);
+      setAudioTimeMs(timeMs);
+
+      const activeCue = findActiveCue(audioManifest, timeMs);
+      if (!activeCue || activeCue.id === lastCueIdRef.current) {
+        const currentTurn = audioManifest.cues
+          .map((cue) => cue.turnId)
+          .map((turnId) => turns.findIndex((turn) => turn.id === turnId))
+          .filter((index) => index >= 0)
+          .findLast((index) => turns[index] && index >= 0);
+
+        if (currentTurn !== undefined && currentTurn >= 0) {
+          setTurnIndex(Math.min(currentTurn, Math.max(0, turns.length - 1)));
+        }
+        return;
+      }
+
+      lastCueIdRef.current = activeCue.turnId;
+
+      const targetIndex = turns.findIndex(
+        (turn) => turn.id === activeCue.turnId
+      );
+      if (targetIndex >= 0) {
+        setTurnIndex(targetIndex);
+      }
+
+      const nextPhase = cueToPhase[activeCue.kind];
+      if (nextPhase) {
+        audio.pause();
+        setAudioPlaying(false);
+        setPhase(nextPhase);
+      }
+    };
+
+    const onPlay = () => setAudioPlaying(true);
+    const onPause = () => setAudioPlaying(false);
+    const onEnded = () => {
+      setAudioPlaying(false);
+      setPhase("lab");
+    };
+
+    audio.addEventListener("timeupdate", onTime);
+    audio.addEventListener("play", onPlay);
+    audio.addEventListener("pause", onPause);
+    audio.addEventListener("ended", onEnded);
+
+    return () => {
+      audio.removeEventListener("timeupdate", onTime);
+      audio.removeEventListener("play", onPlay);
+      audio.removeEventListener("pause", onPause);
+      audio.removeEventListener("ended", onEnded);
+    };
+  }, [audioManifest, turns]);
+
+  function startAudio() {
+    const audio = audioRef.current;
+    if (!audio) return;
+    void audio.play();
+  }
+
+  function pauseAudio() {
+    audioRef.current?.pause();
+  }
+
+  function seek(deltaSeconds: number) {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.currentTime = Math.max(
+      0,
+      Math.min(audio.duration || Number.MAX_SAFE_INTEGER, audio.currentTime + deltaSeconds)
+    );
+  }
+
+  const nextTurn = () => {
+    if (turnIndex >= turns.length - 1) {
+      setPhase("lab");
+      return;
+    }
+    setTurnIndex(turnIndex + 1);
+  };
+
+  const resumeAfterCoach = () => {
+    setPhase("listen");
+    lastCueIdRef.current = null;
+    void audioRef.current?.play();
+  };
+
+  const reset = () => {
+    audioRef.current?.pause();
+    if (audioRef.current) audioRef.current.currentTime = 0;
+
+    setPhase("brief");
+    setTurnIndex(0);
+    setPrediction("");
+    setCoachAnswer("");
+    setShowHint(false);
+    setRecallAnswers(lesson.recall.map(() => ""));
+    setRecallDone(lesson.recall.map(() => false));
+    setSeconds(20);
+    setAudioTimeMs(0);
+    setAudioPlaying(false);
+    lastCueIdRef.current = null;
+  };
+
+  const allRecall = recallDone.every(Boolean);
+
+  return (
+    <div className="podcast-coach">
+      <div className="coach-banner">
+        <div>
+          <span className="eyebrow">CO-TEACHER MODE</span>
+          <h3>The podcast teaches. I make you think.</h3>
+        </div>
+        <div className="coach-phase">
+          {audioManifest ? "voice-synced" : "guided transcript"}
+        </div>
       </div>
-      <button className="secondary" onClick={()=>setShowHint(v=>!v)}>{showHint?"Hide hint":"Show a hint"}</button>
-      {showHint&&<p className="hint">Start from the layer below the current concept. Name the request, the state change, and the evidence you expect to observe.</p>}
-      <button className="primary" onClick={()=>setPhase("listen")}>Resume podcast</button>
+
+      {audioManifest ? (
+        <audio
+          ref={audioRef}
+          src={audioManifest.audioUrl}
+          preload="metadata"
+          onLoadedMetadata={(event) => {
+            setAudioTimeMs(Math.round(event.currentTarget.currentTime * 1000));
+          }}
+        />
+      ) : null}
+
+      {phase === "brief" && (
+        <div className="coach-grid">
+          <div className="content-card">
+            <h4>Before you press play</h4>
+            <p>
+              Do not try to memorize this episode. Listen for the causal chain:
+              what talks to what, what state changes, and what evidence would
+              expose a failure.
+            </p>
+            <p>
+              <strong>Prediction:</strong> In one sentence, what do you expect
+              to be the first thing that breaks when this concept is
+              misconfigured?
+            </p>
+            <textarea
+              value={prediction}
+              onChange={(e) => setPrediction(e.target.value)}
+              placeholder="Write your prediction in your own words."
+            />
+            <button
+              className="primary"
+              onClick={() => {
+                setPhase("listen");
+                if (audioManifest) startAudio();
+              }}
+              disabled={!prediction.trim()}
+            >
+              {audioManifest ? "Start voice-synced lesson" : "Start guided listening"}
+            </button>
+          </div>
+
+          <div className="content-card coach-rule">
+            <h4>
+              {audioManifest ? "Voice + React are synchronized" : "Audio sync is not yet available"}
+            </h4>
+            <p>
+              {audioManifest
+                ? "The audio clock drives the transcript and exercise cues. React never guesses timing from sentence length."
+                : "The current repository has text scripts but no aligned audio manifest for this episode yet. Until aligned audio exists, use the guided transcript as a safe fallback."
+              }
+            </p>
+          </div>
+        </div>
+      )}
+
+      {phase === "listen" && (
+        <div className="content-card">
+          <div className="coach-row">
+            <strong>{current ? `Speaker ${current.speaker}` : "Guided transcript"}</strong>
+            <span>
+              {turns.length
+                ? `${Math.min(turnIndex + 1, turns.length)}/${turns.length} turns`
+                : "loading transcript…"}
+            </span>
+          </div>
+
+          {audioManifest ? (
+            <div className="audio-controls">
+              <button onClick={() => seek(-10)}>−10s</button>
+              <button className="primary" onClick={audioPlaying ? pauseAudio : startAudio}>
+                {audioPlaying ? "Pause voice" : "Play voice"}
+              </button>
+              <button onClick={() => seek(10)}>+10s</button>
+              <span className="audio-time">
+                {Math.floor(audioTimeMs / 1000)}s
+                {Number.isFinite(audioManifest.durationMs)
+                  ? ` / ${Math.round(audioManifest.durationMs / 1000)}s`
+                  : ""}
+              </span>
+            </div>
+          ) : null}
+
+          {current ? (
+            <div className="turn-card">
+              <strong>Speaker {current.speaker}</strong>
+              <p>{current.text}</p>
+            </div>
+          ) : (
+            <p>
+              Transcript unavailable for this episode. Continue with the
+              exercise cards.
+            </p>
+          )}
+
+          <div className="coach-actions">
+            {!audioManifest ? (
+              <button onClick={() => setPhase("coach")}>
+                Pause for a prediction
+              </button>
+            ) : null}
+            {!audioManifest ? (
+              <button className="primary" onClick={nextTurn}>
+                {turnIndex >= turns.length - 1
+                  ? "Finish listening"
+                  : "Next spoken section"}
+              </button>
+            ) : (
+              <span className="range">
+                React will stop the voice automatically at authored exercise
+                cues.
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
+      {phase === "coach" && (
+        <div className="coach-grid">
+          <div className="content-card">
+            <span className="eyebrow">STOP HERE</span>
+            <h4>Say it before you see it</h4>
+            <p>{lesson.recall[1] ?? lesson.recall[0]}</p>
+            <textarea
+              value={coachAnswer}
+              onChange={(e) => setCoachAnswer(e.target.value)}
+              placeholder="Explain it like you are talking to another engineer."
+            />
+            <div className="timer-row">
+              <button onClick={() => setSeconds((s) => Math.max(0, s - 5))}>
+                −5s
+              </button>
+              <strong>{seconds}s</strong>
+              <button onClick={() => setSeconds((s) => s + 5)}>+5s</button>
+            </div>
+            <button className="secondary" onClick={() => setShowHint((v) => !v)}>
+              {showHint ? "Hide hint" : "Show a hint"}
+            </button>
+            {showHint ? (
+              <p className="hint">
+                Start from the layer below the current concept. Name the
+                request, the state change, and the evidence you expect to
+                observe.
+              </p>
+            ) : null}
+            <button className="primary" onClick={resumeAfterCoach}>
+              Resume podcast
+            </button>
+          </div>
+          <div className="content-card">
+            <h4>Co-teacher note</h4>
+            <p>
+              A good answer is specific enough that another engineer could
+              test it. “The network is broken” is a symptom-shaped guess, not
+              a useful hypothesis.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {phase === "lab" && (
+        <div className="content-card">
+          <span className="eyebrow">OPERATE → BREAK → DIAGNOSE</span>
+          <h4>Now leave the podcast and touch the system</h4>
+          <p>{lesson.lab.objective}</p>
+          <pre>
+            <code>{lesson.lab.command}</code>
+          </pre>
+          <p>
+            <strong>Challenge:</strong> {lesson.lab.challenge}
+          </p>
+          <div className="coach-actions">
+            <button className="primary" onClick={() => setPhase("recall")}>
+              I ran the lab — test me
+            </button>
+          </div>
+        </div>
+      )}
+
+      {phase === "recall" && (
+        <div className="content-card">
+          <span className="eyebrow">RETRIEVAL</span>
+          <h4>No notes now.</h4>
+          {lesson.recall.map((q, i) => (
+            <label className="recall-row" key={q}>
+              <span>
+                {i + 1}. {q}
+              </span>
+              <textarea
+                value={recallAnswers[i]}
+                onChange={(e) =>
+                  setRecallAnswers((a) =>
+                    a.map((v, j) => (j === i ? e.target.value : v))
+                  )
+                }
+                placeholder="Answer in your own words."
+              />
+              <button
+                onClick={() =>
+                  setRecallDone((r) =>
+                    r.map((v, j) => (j === i ? !v : v))
+                  )
+                }
+              >
+                {recallDone[i] ? "Done ✓" : "Mark answer checked"}
+              </button>
+            </label>
+          ))}
+          <button
+            className="primary"
+            disabled={!allRecall}
+            onClick={() => setPhase("done")}
+          >
+            Finish episode
+          </button>
+        </div>
+      )}
+
+      {phase === "done" && (
+        <div className="content-card success-card">
+          <span className="eyebrow">EPISODE COMPLETE</span>
+          <h4>You listened, predicted, operated and recalled.</h4>
+          <p>
+            Your next move is not another video. Repeat the failure challenge
+            until you can explain the evidence before running the command.
+          </p>
+          <button className="primary" onClick={reset}>
+            Replay as a second pass
+          </button>
+        </div>
+      )}
     </div>
-    <div className="content-card">
-      <h4>Co-teacher note</h4>
-      <p>A good answer is specific enough that another engineer could test it. “The network is broken” is a symptom-shaped guess, not a useful hypothesis.</p>
-    </div>
-  </div>}
-
-  {phase==="lab"&&<div className="content-card">
-    <span className="eyebrow">OPERATE → BREAK → DIAGNOSE</span>
-    <h4>Now leave the podcast and touch the system</h4>
-    <p>{lesson.lab.objective}</p>
-    <pre><code>{lesson.lab.command}</code></pre>
-    <p><strong>Challenge:</strong> {lesson.lab.challenge}</p>
-    <div className="coach-actions"><button className="primary" onClick={()=>setPhase("recall")}>I ran the lab — test me</button></div>
-  </div>}
-
-  {phase==="recall"&&<div className="content-card">
-    <span className="eyebrow">RETRIEVAL</span><h4>No notes now.</h4>
-    {lesson.recall.map((q,i)=><label className="recall-row" key={q}>
-      <span>{i+1}. {q}</span>
-      <textarea value={recallAnswers[i]} onChange={e=>setRecallAnswers(a=>a.map((v,j)=>j===i?e.target.value:v))} placeholder="Answer in your own words." />
-      <button onClick={()=>setRecallDone(r=>r.map((v,j)=>j===i?!v:v))}>{recallDone[i]?"Done ✓":"Mark answer checked"}</button>
-    </label>)}
-    <button className="primary" disabled={!allRecall} onClick={()=>setPhase("done")}>Finish episode</button>
-  </div>}
-
-  {phase==="done"&&<div className="content-card success-card">
-    <span className="eyebrow">EPISODE COMPLETE</span><h4>You listened, predicted, operated and recalled.</h4>
-    <p>Your next move is not another video. Repeat the failure challenge until you can explain the evidence before running the command.</p>
-    <button className="primary" onClick={reset}>Replay as a second pass</button>
-  </div>}
- </div>
+  );
 }
