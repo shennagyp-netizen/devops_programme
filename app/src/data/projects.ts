@@ -20,6 +20,8 @@ export const projects: ProjectDefinition[] = [
     title: "Containerized Application",
     objective: "Turn a small useful service into a repeatable locally operated workload.",
     environment: "macOS, Linux or Windows development machine with a container runtime.",
+    changeHistory: ["Record the known-good service and request-path baseline before containerization.","Record the containerization change, image identity and resulting runtime state.","Record the deliberate configuration or dependency change and the recovery evidence.","Record the redesign decision made after the first failure."],
+    incidentHistory: ["Record a request-path incident with scope, observations and recovery verification.","Record a container or configuration incident without hiding the pre-change evidence.","Record the incident review and the prevention change added afterward."],
     milestones: [
       "Observe the service as a process",
       "Trace one request through DNS, transport and HTTP",
@@ -51,6 +53,8 @@ export const projects: ProjectDefinition[] = [
     title: "Productionized Service",
     objective: "Add controlled delivery, observability and recovery to the service.",
     environment: "Repository plus local or disposable CI/deployment environment.",
+    changeHistory: ["Record the release identity and automated checks before promotion.","Record the artifact promoted and the deployment change.","Record the observability or recovery change introduced after the first failure.","Record the rollback or restore procedure after it is tested."],
+    incidentHistory: ["Record a bad-release incident and the evidence used to choose rollback.","Record a dependency-performance incident and its mitigation.","Record a restore or rollback incident and the verification that recovery was complete."],
     milestones: [
       "Create a release identity",
       "Run automated checks",
@@ -82,6 +86,8 @@ export const projects: ProjectDefinition[] = [
     title: "Distributed Service",
     objective: "Add asynchronous work and recover from a real distributed-service failure.",
     environment: "Disposable multi-service environment with a queue and worker.",
+    changeHistory: ["Record the baseline synchronous path before adding asynchronous work.","Record the producer, queue and consumer change and the expected protection it adds.","Record the retry and idempotency change and the observed effect.","Record the redesign after dependency failure."],
+    incidentHistory: ["Record a slow-consumer incident and queue recovery.","Record a retry-amplification incident and the safe mitigation.","Record a downstream database or dependency incident and the recovery verification."],
     milestones: [
       "Add producer and consumer",
       "Observe queue growth",
@@ -113,6 +119,8 @@ export const projects: ProjectDefinition[] = [
     title: "Production Kubernetes Platform",
     objective: "Operate an application on Kubernetes with networking, state, health and scaling.",
     environment: "Local Kubernetes cluster or disposable managed cluster.",
+    changeHistory: ["Record the initial Kubernetes deployment and service topology.","Record configuration, storage and health-probe changes with rollout evidence.","Record the scaling change and its effect on the request path.","Record the redesign after a controlled Kubernetes failure."],
+    incidentHistory: ["Record an image or deployment failure with pod evidence.","Record a service or selector/networking failure and recovery.","Record a health or storage failure and recovery verification."],
     milestones: [
       "Deploy the container",
       "Expose it through a service",
@@ -145,6 +153,8 @@ export const projects: ProjectDefinition[] = [
     title: "Infrastructure and Observability",
     objective: "Build reproducible infrastructure and operational evidence around a service.",
     environment: "Terraform-compatible cloud or local infrastructure plus CI.",
+    changeHistory: ["Record the baseline infrastructure plan and applied resources.","Record the observability instrumentation and signal changes.","Record the SLO and alerting changes.","Record the rollback procedure after a controlled infrastructure change."],
+    incidentHistory: ["Record a configuration-drift incident and its evidence.","Record a deployment failure and rollback decision.","Record an observability-gap incident and the telemetry redesign."],
     milestones: [
       "Review an infrastructure plan",
       "Apply a controlled change",
@@ -176,6 +186,8 @@ export const projects: ProjectDefinition[] = [
     title: "Integrated Production Platform",
     objective: "Operate application, Kubernetes, infrastructure, observability and recovery as one system.",
     environment: "Disposable end-to-end production-like environment.",
+    changeHistory: ["Record integration changes across application, Kubernetes and infrastructure.","Record database behavior and recovery-path changes.","Record the disaster-recovery design and tested recovery changes.","Record post-incident redesign decisions."],
+    incidentHistory: ["Record a database degradation incident across all relevant layers.","Record a distributed dependency failure and recovery.","Record a disaster-recovery exercise and the resulting corrective actions."],
     milestones: [
       "Integrate I1 and I2",
       "Add database behavior",
@@ -207,6 +219,8 @@ export const projects: ProjectDefinition[] = [
     title: "Global Distributed Platform",
     objective: "Design and operate a multi-region system with capacity, traffic and data-locality constraints.",
     environment: "Multi-region simulation or disposable cloud environment.",
+    changeHistory: ["Record the baseline workload and single-region capacity assumptions.","Record the second-region deployment and global traffic policy.","Record caching or replica changes and the resulting locality behavior.","Record the redesign after a regional failure."],
+    incidentHistory: ["Record a regional saturation incident and capacity evidence.","Record a stale-data incident and freshness recovery.","Record a regional failover incident and recovery verification."],
     milestones: [
       "Model capacity",
       "Deploy two regions",
@@ -238,6 +252,8 @@ export const projects: ProjectDefinition[] = [
     title: "Failure Engineering Platform",
     objective: "Use controlled fault injection to expose dependency, retry and partial-network failures.",
     environment: "Disposable distributed system with safe fault injection.",
+    changeHistory: ["Record the dependency map before fault injection.","Record the first controlled dependency failure and its blast radius.","Record retry-policy changes and the effect on load.","Record the partial-network failure design and recovery changes."],
+    incidentHistory: ["Record a dependency-collapse incident and recovery.","Record a retry-storm incident and bounded retry mitigation.","Record a partial-network failure incident and recovery verification."],
     milestones: [
       "Map dependencies",
       "Break one dependency",
@@ -269,6 +285,8 @@ export const projects: ProjectDefinition[] = [
     title: "Massive-Scale Service",
     objective: "Design a very large system while making latency, consistency, availability, cost and complexity trade-offs explicit.",
     environment: "Capacity simulation plus a representative distributed-service prototype.",
+    changeHistory: ["Record the initial workload model and capacity assumptions.","Record each scaling change and the bottleneck it moves.","Record consistency, availability and caching design changes.","Record the final architecture revision after controlled stress."],
+    incidentHistory: ["Record a capacity-collapse incident and bottleneck evidence.","Record cache-miss amplification and the mitigation.","Record a trade-off failure under load and the resulting redesign."],
     milestones: [
       "Build a workload model",
       "Find the first bottleneck",
