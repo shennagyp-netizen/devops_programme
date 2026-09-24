@@ -22,6 +22,8 @@ Speaker B: So we need failure domains.
 
 Speaker A: Exactly.
 
+Speaker A: Let’s keep that as a testable claim.
+
 Speaker B: Process.
 
 Speaker A: Small.
@@ -45,6 +47,8 @@ Speaker A: Potentially bigger still.
 Speaker B: So the goal is to stop one failure from taking out everything.
 
 Speaker A: Yes.
+
+Speaker A: That gives us a useful boundary.
 
 Speaker B: Human example?
 
@@ -74,17 +78,25 @@ Speaker B: In software, one process dying is not the same as one host dying.
 
 Speaker A: Exactly.
 
+Speaker A: Now connect that to the request path.
+
 Speaker B: If we run three services on one host, we have three processes but one failure domain.
 
 Speaker A: Good.
+
+Speaker A: I would measure that before changing anything.
 
 Speaker B: If the host dies, all three disappear.
 
 Speaker A: Right.
 
+Speaker A: That is where the failure becomes useful.
+
 Speaker B: So process count is not the same as failure isolation.
 
 Speaker A: Correct.
+
+Speaker A: Now we can compare it with the real system.
 
 Speaker B: What about two hosts in the same zone?
 
@@ -94,15 +106,21 @@ Speaker B: So they can fail together.
 
 Speaker A: Exactly.
 
+Speaker A: Keep the user-visible effect in the model.
+
 Speaker B: This is why topology matters.
 
 Speaker A: Yes.
+
+Speaker A: That is the part I would verify first.
 
 Speaker B: Let's make a common mistake.
 
 Speaker A: Two copies.
 
 Speaker B: Good.
+
+Speaker B: I would still want evidence before calling it done.
 
 Speaker A: Both in the same rack.
 
@@ -114,9 +132,13 @@ Speaker B: Not against a rack problem.
 
 Speaker A: Good.
 
+Speaker A: Now the assumption is explicit.
+
 Speaker B: So redundancy only protects against failures that the copies do not share.
 
 Speaker A: Exactly.
+
+Speaker A: That gives us a cleaner diagnosis.
 
 Speaker B: That's a very useful rule.
 
@@ -125,6 +147,8 @@ Speaker A: It is.
 Speaker B: Shared failure is the key.
 
 Speaker A: Right.
+
+Speaker A: We can test that without changing the whole system.
 
 Speaker B: If both replicas use the same storage system, a storage failure can hit both.
 
