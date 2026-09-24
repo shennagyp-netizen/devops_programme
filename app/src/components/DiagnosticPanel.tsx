@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   diagnosticDefinitions,
   recommendationForScore,
@@ -72,6 +72,13 @@ export function DiagnosticPanel({
   }
 
   const result = results[definition.sectionId];
+
+  useEffect(() => {
+    for (const [storedSectionId, storedResult] of Object.entries(results)) {
+      onRecommendation(storedSectionId, storedResult.recommendation);
+    }
+  }, [onRecommendation]);
+
   const complete = answers.every((answer) => answer >= 0);
 
   function chooseSection(next: string) {
