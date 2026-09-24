@@ -1,20 +1,15 @@
 import { useMemo, useState } from "react";
-import { days, lessons } from "./data/curriculum";
-import {
-  courses,
-  platformProfiles,
-  type CourseLevel,
-  type PlatformId
-} from "./data/programme";
+import { courses, platformProfiles, type CourseLevel, type PlatformId } from "./data/programme";
+import { lessonsByCourse } from "./data/courseLessons";
 import { LessonPanel } from "./components/LessonPanel";
 import { Progress } from "./components/Progress";
 
 const K = "devops-programme-mastered";
 
 export default function App() {
-  const [s, setS] = useState(lessons[0].id);
   const [course, setCourse] = useState<CourseLevel>("intermediate");
   const [platform, setPlatform] = useState<PlatformId>("macos");
+  const [s, setS] = useState("D1.1");
   const [m, setM] = useState<string[]>(() => {
     try {
       return JSON.parse(localStorage.getItem(K) || "[]");
@@ -23,19 +18,35 @@ export default function App() {
     }
   });
 
+  const selectedCourse = courses.find((item) => item.id === course) ?? courses[1];
+  const selectedPlatform =
+    platformProfiles.find((item) => item.id === platform) ?? platformProfiles[0];
+  const selectedLessons = lessonsByCourse[course];
+
   const l = useMemo(
-    () => lessons.find((x) => x.id === s) ?? lessons[0],
-    [s]
+    () =>
+      selectedLessons.find((item) => item.id === s) ??
+      selectedLessons[0],
+    [selectedLessons, s]
   );
 
-  const selectedCourse = courses.find((x) => x.id === course) ?? courses[1];
-  const selectedPlatform =
-    platformProfiles.find((x) => x.id === platform) ?? platformProfiles[0];
+  const completedInCourse = selectedLessons.filter((item) =>
+    m.includes(item.id)
+  ).length;
+
+  function changeCourse(next: CourseLevel) {
+    setCourse(next);
+    const first = lessonsByCourse[next][0];
+    if (first) setS(first.id);
+  }
 
   function toggle(id: string) {
-    const n = m.includes(id) ? m.filter((x) => x !== id) : [...m, id];
-    setM(n);
-    localStorage.setItem(K, JSON.stringify(n));
+    const next = m.includes(id)
+      ? m.filter((item) => item !== id)
+      : [...m, id];
+
+    setM(next);
+    localStorage.setItem(K, JSON.stringify(next));
   }
 
   return (
@@ -45,15 +56,15 @@ export default function App() {
           <span className="eyebrow">DEVOPS PROGRAMME</span>
           <h1>From scattered knowledge to operational mastery.</h1>
           <p>
-            Three genuinely different courses. Human-first teaching.
-            Platform-aware labs.
+            Hard engineering. Easy English. Human speech. Real failure work.
           </p>
         </div>
-        <Progress total={lessons.length} completed={m.length} />
+        <Progress total={selectedLessons.length} completed={completedInCourse} />
       </header>
 
       <section className="content-card">
         <div>
+          <span className="eyebrow">{selectedCourse.id.toUpperCase()}</span>
           <h3>{selectedCourse.title}</h3>
           <p>{selectedCourse.purpose}</p>
         </div>
@@ -63,7 +74,7 @@ export default function App() {
             <button
               key={item.id}
               className={course === item.id ? "active" : ""}
-              onClick={() => setCourse(item.id)}
+              onClick={() => changeCourse(item.id)}
             >
               {item.title}
             </button>
@@ -86,52 +97,76 @@ export default function App() {
           Environment: {selectedPlatform.label} · {selectedPlatform.shell}
         </p>
 
-        <div className="content-card">
-          <h4>Course path</h4>
+        <div className="content-card course-path">
+          <div className="course-path-head">
+            <div>
+              <h4>Course path</h4>
+              <p>
+                Foundations and application sections stay separate, but they
+                are used together inside the projects.
+              </p>
+            </div>
+            <span className="coach-phase">
+              {selectedCourse.projects.join(" · ")}
+            </span>
+          </div>
+
           <ol>
             {selectedCourse.sections.map((section) => (
               <li key={section.id}>
-                <strong>{section.id}</strong> — {section.title}{" "}
-                <span className="range">
-                  [{section.kind}]
-                </span>
+                <strong>{section.id}</strong> — {section.title}
+                <span className="range"> · {section.kind}</span>
                 <div>{section.humanExample}</div>
               </li>
             ))}
           </ol>
-          <p className="range">
-            Projects: {selectedCourse.projects.join(" · ")}
-          </p>
         </div>
       </section>
 
       <main className="layout">
         <aside className="sidebar">
-          <h3>Current operational core</h3>
-          {days.map((d) => (
-            <div className="day" key={d.id}>
-              <div className="day-title">{d.title}</div>
-              <div className="range">{d.range}</div>
-              {lessons
-                .filter((x) => x.id.startsWith(d.id))
-                .map((x) => (
+          <h3>
+            {selectedCourse.title} · {selectedLessons.length} lessons
+          </h3>
+
+          {selectedCourse.projects.map((projectId) => {
+            const projectLessons = selectedLessons.filter(
+              (item) => item.projectId === projectId
+            );
+
+            if (!projectLessons.length) return null;
+
+            return (
+              <div className="day" key={projectId}>
+                <div className="day-title">{projectId}</div>
+                <div className="range">
+                  {projectLessons.length} lesson
+                  {projectLessons.length === 1 ? "" : "s"}
+                </div>
+
+                {projectLessons.map((item) => (
                   <button
-                    key={x.id}
+                    key={item.id}
                     className={
-                      l.id === x.id ? "lesson-link selected" : "lesson-link"
+                      l.id === item.id
+                        ? "lesson-link selected"
+                        : "lesson-link"
                     }
-                    onClick={() => setS(x.id)}
+                    onClick={() => setS(item.id)}
                   >
-                    <span>{x.id}</span>
-                    <span>{x.title}</span>
-                    {m.includes(x.id) ? <b>✓</b> : null}
+                    <span>{item.id}</span>
+                    <span>{item.title}</span>
+                    {m.includes(item.id) ? <b>✓</b> : null}
                   </button>
                 ))}
-            </div>
-          ))}
+              </div>
+            );
+          })}
         </aside>
+
         <LessonPanel
           lesson={l}
+          platform={platform}
           mastered={m.includes(l.id)}
           onMaster={() => toggle(l.id)}
         />
