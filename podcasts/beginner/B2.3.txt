@@ -1,0 +1,465 @@
+EPISODE B2.3 — Backups Are Not the Same as Recovery
+
+Speaker A: I have a question for you.
+
+Speaker B: That usually means something is broken.
+
+Speaker A: The database was deleted.
+
+Speaker B: Okay.
+
+Speaker A: The team says, "Don't worry. We have backups."
+
+Speaker B: That sounds good.
+
+Speaker A: Is the system recovered?
+
+Speaker B: No.
+
+Speaker A: Good.
+
+Speaker B: Because a backup is not the same as a restore.
+
+Speaker A: Exactly.
+
+Speaker B: And restore is not the same as recovery.
+
+Speaker A: Exactly.
+
+Speaker B: So let's build the terms.
+
+Speaker A: A backup is a copy of data kept so we can use it later.
+
+Speaker B: Restore means we put that data somewhere usable again.
+
+Speaker A: Right.
+
+Speaker B: Recovery means the service is back to a useful state.
+
+Speaker A: Exactly.
+
+Speaker B: So I can have a backup, restore it, and still have a broken application.
+
+Speaker A: Yes.
+
+Speaker B: Nice.
+
+Speaker A: Very nice.
+
+Speaker B: I hate that answer.
+
+Speaker A: That's why we test recovery.
+
+Speaker B: Give me a real example.
+
+Speaker A: A spare key.
+
+Speaker B: The classic.
+
+Speaker A: You have a spare key in a drawer.
+
+Speaker B: So you have a backup.
+
+Speaker A: Right.
+
+Speaker B: Your main key breaks.
+
+Speaker A: Incident.
+
+Speaker B: You take the spare.
+
+Speaker A: Restore.
+
+Speaker B: But then the lock has changed.
+
+Speaker A: Exactly.
+
+Speaker B: The spare key is real, but it no longer opens the door.
+
+Speaker A: So the existence of a backup did not prove recovery.
+
+Speaker B: Good.
+
+Speaker A: Now let's use the real system.
+
+Speaker B: Database.
+
+Speaker A: Suppose the database stores orders.
+
+Speaker B: We back it up every hour.
+
+Speaker A: Good.
+
+Speaker B: At 4 p.m., someone deletes a table.
+
+Speaker A: What happens if we restore the 3 p.m. backup?
+
+Speaker B: We lose one hour of changes.
+
+Speaker A: Correct.
+
+Speaker B: So that is the recovery point.
+
+Speaker A: Yes.
+
+Speaker B: RPO.
+
+Speaker A: Right. Recovery Point Objective asks how much recent data we can afford to lose.
+
+Speaker B: So if the business says, "We can lose at most five minutes," an hourly backup is not enough.
+
+Speaker A: Exactly.
+
+Speaker B: And RTO?
+
+Speaker A: How long can recovery take before the business needs the service back?
+
+Speaker B: So maybe the business says, "We can accept losing five minutes of orders, but the service must be back within thirty minutes."
+
+Speaker A: Good.
+
+Speaker B: Then we need both an RPO and an RTO target.
+
+Speaker A: Exactly.
+
+Speaker B: And those targets affect the system design.
+
+Speaker A: Yes.
+
+Speaker B: More frequent copies. Faster restore. More automation. Maybe another live copy.
+
+Speaker A: Right.
+
+Speaker B: So backup policy is not only a storage question.
+
+Speaker A: Very important.
+
+Speaker B: It is a business decision turned into technical work.
+
+Speaker A: Exactly.
+
+Speaker B: Let's make a bad backup.
+
+Speaker A: Okay.
+
+Speaker B: We save files to another folder on the same machine.
+
+Speaker A: Better than nothing.
+
+Speaker B: But if the disk dies?
+
+Speaker A: Both copies may be gone.
+
+Speaker B: So backup location matters.
+
+Speaker A: Yes.
+
+Speaker B: Another bad one. We make a backup but never test it.
+
+Speaker A: Very common.
+
+Speaker B: Then the incident happens.
+
+Speaker A: And the restore fails.
+
+Speaker B: Because the command was wrong.
+
+Speaker A: Or the file is damaged. Or the encryption key is missing. Or the backup is too old. Or the system changed.
+
+Speaker B: So the restore path is part of the backup system.
+
+Speaker A: Exactly.
+
+Speaker B: Another one. We restore the database, but the application version is different.
+
+Speaker A: Good.
+
+Speaker B: Schema mismatch.
+
+Speaker A: Yes.
+
+Speaker B: So the application is still broken.
+
+Speaker A: Exactly.
+
+Speaker B: Now I understand why recovery is a system problem.
+
+Speaker A: Good.
+
+Speaker B: What should the recovery plan contain?
+
+Speaker A: What data is backed up.
+
+Speaker B: Where.
+
+Speaker A: How often.
+
+Speaker B: How to restore.
+
+Speaker A: What version of the application works with the restored data.
+
+Speaker B: How to verify it.
+
+Speaker A: Good.
+
+Speaker B: Who performs the steps.
+
+Speaker A: Good.
+
+Speaker B: And how long they should take.
+
+Speaker A: Exactly.
+
+Speaker B: So a recovery plan is almost a recipe.
+
+Speaker A: Yes, but a recipe you hope you don't need during dinner.
+
+Speaker B: Great image.
+
+Speaker A: The first time you test it should not be during the fire.
+
+Speaker B: Exactly.
+
+Speaker A: You test in advance.
+
+Speaker B: Let's do an incident.
+
+Speaker A: Orders disappeared.
+
+Speaker B: Backup exists.
+
+Speaker A: Good.
+
+Speaker B: We stop changes to the database.
+
+Speaker A: Good.
+
+Speaker B: We choose the newest safe backup.
+
+Speaker A: Good.
+
+Speaker B: Restore it to a separate location first.
+
+Speaker A: Good.
+
+Speaker B: Verify the data.
+
+Speaker A: Good.
+
+Speaker B: Then decide how to move the application back to the restored data.
+
+Speaker A: Right.
+
+Speaker B: We don't immediately overwrite the only working copy.
+
+Speaker A: Good.
+
+Speaker B: So recovery also needs safe steps.
+
+Speaker A: Exactly.
+
+Speaker B: Pause.
+
+Speaker A: Go ahead.
+
+Speaker B: Make a prediction. We have a perfect backup from yesterday. The production database is damaged today. Can we say our RPO is zero?
+
+Speaker A: No.
+
+Speaker B: Because the backup is old.
+
+Speaker A: Exactly.
+
+Speaker B: RPO is about how much recent work we may lose.
+
+Speaker A: Right.
+
+Speaker B: So the backup frequency matters.
+
+Speaker A: Yes.
+
+Speaker B: Another prediction. A backup restores successfully. Does that mean the application is recovered?
+
+Speaker A: What do you think?
+
+Speaker B: No. We still need the right application version, configuration, connections, and a real user-path test.
+
+Speaker A: Exactly.
+
+Speaker B: Good.
+
+Speaker A: Now let's make the test practical.
+
+Speaker B: Small and safe.
+
+Speaker A: Yes.
+
+Speaker A: Create a small folder with test data.
+
+Speaker B: Then make a tar archive.
+
+Speaker A: Right.
+
+Speaker B: tar -czf backup-demo.tgz ./project-data
+
+Speaker A: Then list it.
+
+Speaker B: tar -tzf backup-demo.tgz | head
+
+Speaker A: Then restore it to another folder.
+
+Speaker B: Not over the original.
+
+Speaker A: Correct.
+
+Speaker B: Then compare the data.
+
+Speaker A: Exactly.
+
+Speaker B: That's a tiny restore test.
+
+Speaker A: It is.
+
+Speaker B: But the important part is that I prove the copy can become usable data.
+
+Speaker A: Yes.
+
+Speaker B: Human example?
+
+Speaker A: Imagine a shop has a spare inventory list.
+
+Speaker B: Good.
+
+Speaker A: The list is useful only if it is recent enough and the shop still has a way to check the stock.
+
+Speaker B: So a copy on paper is not the same as being ready to reopen the shop.
+
+Speaker A: Exactly.
+
+Speaker B: Nice.
+
+Speaker A: Bring it back to the system.
+
+Speaker B: Backup is the copy. Restore makes the copy usable. Recovery gets the service working again.
+
+Speaker A: Good.
+
+Speaker B: I think that will stick.
+
+Speaker A: Good.
+
+Speaker B: What about secrets?
+
+Speaker A: Important. If the backup is encrypted, you also need the key or the recovery path for that key.
+
+Speaker B: So backup security and recovery security are connected.
+
+Speaker A: Yes.
+
+Speaker B: Another hidden dependency.
+
+Speaker A: Exactly.
+
+Speaker B: What if the cloud account is down?
+
+Speaker A: Then the backup location itself may be unavailable.
+
+Speaker B: Which means serious systems usually use more than one failure domain.
+
+Speaker A: Yes, depending on the risk.
+
+Speaker B: So a disaster-recovery plan grows with the size of the system.
+
+Speaker A: Exactly. We start small and keep the same logic.
+
+Speaker B: The Beginner course is teaching the same ideas that show up at scale.
+
+Speaker A: That's the goal.
+
+Speaker B: Mac lab?
+
+Speaker A: Make a small test dataset.
+
+Speaker A: Back it up.
+
+Speaker A: Delete the working copy.
+
+Speaker B: Safe test directory.
+
+Speaker A: Yes.
+
+Speaker B: Restore the backup somewhere new.
+
+Speaker A: Verify the data.
+
+Speaker B: Then write the steps in plain English.
+
+Speaker A: Good.
+
+Speaker B: What would make the lab fail?
+
+Speaker A: If you can create the backup but cannot explain how you would restore it. Or if you restore it but do not verify what came back.
+
+Speaker B: So "backup command finished" is not enough.
+
+Speaker A: Correct.
+
+Speaker B: Recall.
+
+Speaker A: Question one. What is a backup?
+
+Speaker B: A stored copy of data that can be used later.
+
+Speaker A: Good.
+
+Speaker B: Question two.
+
+Speaker A: Restore versus recovery?
+
+Speaker B: Restore makes data usable again. Recovery gets the service back to the required state.
+
+Speaker A: Good.
+
+Speaker B: Question three.
+
+Speaker A: What does RPO mean?
+
+Speaker B: How much recent data we can accept losing.
+
+Speaker A: Good.
+
+Speaker B: Question four.
+
+Speaker A: What does RTO mean?
+
+Speaker B: How long recovery can take.
+
+Speaker A: Good.
+
+Speaker B: Question five.
+
+Speaker A: Why test restores?
+
+Speaker B: Because having a backup file does not prove that it can actually restore the system.
+
+Speaker A: Good.
+
+Speaker B: Final challenge.
+
+Speaker A: Imagine your B2 database is gone.
+
+Speaker B: I want the backup age, restore steps, compatible application version, secret recovery path, and a clear recovery check.
+
+Speaker A: Good.
+
+Speaker B: And I want to have tested all of that before the incident.
+
+Speaker A: Exactly.
+
+Speaker B: Because the incident is a terrible time to discover that the backup is only decorative.
+
+Speaker A: Now that's a production sentence.
+
+Speaker B: I hate how true it is.
+
+Speaker A: Good. Run the restore test.
