@@ -13,3 +13,17 @@ BEGIN
       RENAME TO "learner_progress_history_user_item_uq";
   END IF;
 END $$;
+
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint
+    WHERE conname = 'learner_progress_history_item_type_ck'
+  ) THEN
+    ALTER TABLE "learner_progress_history"
+      ADD CONSTRAINT "learner_progress_history_item_type_ck"
+      CHECK ("item_type" IN ('lesson', 'assignment', 'question', 'project'));
+  END IF;
+END $$;
