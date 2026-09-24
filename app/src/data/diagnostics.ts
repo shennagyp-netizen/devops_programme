@@ -288,6 +288,219 @@ export const diagnosticDefinitions: DiagnosticDefinition[] = [
     ]
   },
   {
+    sectionId: "B-A2",
+    course: "beginner",
+    title: "Containers and Repeatable Environments",
+    prerequisiteLessonIds: ["B1.4"],
+    remediationLessonIds: ["B1.4", "B1.5"],
+    questions: [
+      {
+        id: "BA2-P-1",
+        prompt: "What problem does an image solve in a container workflow?",
+        options: [
+          "It captures a repeatable application environment",
+          "It guarantees the application is bug-free",
+          "It replaces the network",
+          "It stores every future database change"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "BA2-P-2",
+        prompt: "A container starts but cannot reach its dependency. What should you inspect first?",
+        options: [
+          "The container network and dependency endpoint path",
+          "The Git commit count",
+          "The monitor brightness",
+          "The image name only"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "BA2-P-3",
+        prompt: "Why is container state different from the image?",
+        options: [
+          "The image is a reusable package while a running container has runtime state",
+          "The image is always a live process",
+          "A container cannot read files",
+          "The image is the network interface"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "BA2-P-4",
+        prompt: "Why should broken configuration be restored to a known-good value during the exercise?",
+        options: [
+          "So recovery can be verified against a defined baseline",
+          "Because containers cannot fail twice",
+          "So logs are deleted",
+          "Because the image changes automatically"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+  {
+    sectionId: "B-A3",
+    course: "beginner",
+    title: "CI/CD and Reproducible Delivery",
+    prerequisiteLessonIds: ["B2.1"],
+    remediationLessonIds: ["B2.1"],
+    questions: [
+      {
+        id: "BA3-P-1",
+        prompt: "Why keep a release identity from commit to deployment?",
+        options: [
+          "To know exactly what artifact was tested and deployed",
+          "To make every deployment identical to the previous one",
+          "To avoid recording failures",
+          "To replace version control"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "BA3-P-2",
+        prompt: "What should CI prove before a deployment is promoted?",
+        options: [
+          "That the selected change passes the defined checks and produces the expected artifact",
+          "That production can never fail",
+          "That every developer used the same laptop",
+          "That DNS will never change"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "BA3-P-3",
+        prompt: "Why write the rollback path before deployment?",
+        options: [
+          "The recovery decision is clearer before pressure rises",
+          "Rollback is only needed after a successful release",
+          "Rollback deletes the release identity",
+          "It guarantees zero downtime"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "BA3-P-4",
+        prompt: "Which observation most directly proves a deployment reached the intended version?",
+        options: [
+          "Runtime evidence that identifies the deployed release",
+          "A screenshot of the code editor",
+          "The size of the Git repository",
+          "A DNS TTL value"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+  {
+    sectionId: "I-A1",
+    course: "intermediate",
+    title: "Containers and Docker",
+    prerequisiteLessonIds: ["D2.5", "D2.6", "D2.7"],
+    remediationLessonIds: ["D2.5", "D2.6", "D2.7"],
+    questions: [
+      {
+        id: "IA1-P-1",
+        prompt: "Why does adding another container replica not automatically solve a dependency bottleneck?",
+        options: [
+          "The dependency can remain the limiting resource",
+          "Containers cannot run concurrently",
+          "Docker disables networking between replicas",
+          "Replicas always reduce throughput"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA1-P-2",
+        prompt: "A container has the right process but the wrong network behavior. Which evidence is most useful?",
+        options: [
+          "Container network configuration plus a request from the affected path",
+          "Only the image tag",
+          "The host's Git history",
+          "A browser theme"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA1-P-3",
+        prompt: "What does a healthcheck add to a containerized service?",
+        options: [
+          "An explicit signal about whether the service is ready or healthy according to the check",
+          "A guarantee that every dependency is healthy",
+          "A replacement for logs",
+          "Unlimited retry capacity"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA1-P-4",
+        prompt: "Why is volume behavior important for stateful containers?",
+        options: [
+          "Container lifetime and durable data lifetime may need different boundaries",
+          "Volumes make CPU unlimited",
+          "Volumes replace all backups",
+          "Volumes remove network failures"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+  {
+    sectionId: "A-F2",
+    course: "advanced",
+    title: "Distributed State Foundations",
+    prerequisiteLessonIds: ["A1.3"],
+    remediationLessonIds: ["A1.3", "A1.4"],
+    questions: [
+      {
+        id: "AF2-P-1",
+        prompt: "Why does replication not automatically mean every reader sees the newest value?",
+        options: [
+          "Replication can introduce lag or different visibility rules",
+          "Replicas never contain data",
+          "Replication removes all network paths",
+          "Readers always contact every replica"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "AF2-P-2",
+        prompt: "What does a partition-aware design have to recognize?",
+        options: [
+          "Some communication paths can fail while other parts of the system keep running",
+          "Every failure stops the whole system",
+          "Partitions only happen in storage devices",
+          "Latency cannot change during partitions"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "AF2-P-3",
+        prompt: "Why is consistency a system property rather than just a database setting?",
+        options: [
+          "Applications, replicas, caches and clients all influence what state users observe",
+          "Only the database can ever return data",
+          "Consistency is identical to CPU utilization",
+          "Caching always removes consistency concerns"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "AF2-P-4",
+        prompt: "What evidence helps distinguish stale data from a missing service?",
+        options: [
+          "A known value, read path and replica/cache timing evidence",
+          "Only the process count",
+          "Only the UI screenshot",
+          "Only the deployment timestamp"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+
+  {
     sectionId: "A-F1",
     course: "advanced",
     title: "Capacity and Queueing Foundations",
