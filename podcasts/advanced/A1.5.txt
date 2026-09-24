@@ -6,9 +6,13 @@ Speaker B: Three regions.
 
 Speaker A: Yes.
 
+Speaker A: Let’s keep that as a testable claim.
+
 Speaker B: So we send each user to the nearest region.
 
 Speaker A: Maybe.
+
+Speaker A: That gives us a useful boundary.
 
 Speaker B: Again.
 
@@ -22,6 +26,8 @@ Speaker B: So "nearest region" is not enough.
 
 Speaker A: Correct.
 
+Speaker A: Now connect that to the request path.
+
 Speaker B: Let's make the simple version first.
 
 Speaker A: A user makes a request.
@@ -30,13 +36,19 @@ Speaker B: A traffic layer chooses a region.
 
 Speaker A: Right.
 
+Speaker A: I would measure that before changing anything.
+
 Speaker B: That region serves the request.
 
 Speaker A: Yes.
 
+Speaker A: That is where the failure becomes useful.
+
 Speaker B: If the region is unhealthy, traffic may move elsewhere.
 
 Speaker A: Exactly.
+
+Speaker A: Now we can compare it with the real system.
 
 Speaker B: Sounds simple.
 
@@ -44,15 +56,21 @@ Speaker A: Until the backup region is full.
 
 Speaker B: Right.
 
+Speaker B: I would still want evidence before calling it done.
+
 Speaker A: Or the user needs data that is far away.
 
 Speaker B: Or the health check says the region is healthy but one business function is broken.
 
 Speaker A: Exactly.
 
+Speaker A: Keep the user-visible effect in the model.
+
 Speaker B: So traffic routing needs good signals.
 
 Speaker A: Yes.
+
+Speaker A: That is the part I would verify first.
 
 Speaker B: Human example?
 
@@ -62,6 +80,8 @@ Speaker B: One in each city.
 
 Speaker A: Right.
 
+Speaker A: Now the assumption is explicit.
+
 Speaker B: A customer wants to buy something.
 
 Speaker A: You send them to the closest shop.
@@ -70,9 +90,13 @@ Speaker B: Unless that shop has no stock.
 
 Speaker A: Good.
 
+Speaker A: That gives us a cleaner diagnosis.
+
 Speaker B: Or is closed.
 
 Speaker A: Good.
+
+Speaker A: We can test that without changing the whole system.
 
 Speaker B: Or has a huge queue.
 
