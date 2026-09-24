@@ -116,7 +116,7 @@ Speaker A: Configuration and persistent data should not be confused with the con
 
 Speaker B: Because configuration changes more often than the image?
 
-Speaker A: Often, yes. ConfigMaps hold non-secret configuration. Secrets provide a mechanism for sensitive values, but security still depends on how those values are handled. Volumes provide storage semantics beyond the ephemeral container filesystem.
+Speaker A: Often, yes. ConfigMaps hold non-secret configuration. Secrets provide a mechanism for sensitive values, but security still depends on how those values are handled. Volumes provide storage behavior beyond the temporary container filesystem.
 
 Speaker A: Think of a theater production. The actors are the containers. The script configuration is separate. The stage props and persistent archive are another concern entirely.
 
@@ -177,7 +177,7 @@ Speaker B: This is the “alive but useless” problem.
 
 Speaker A: Exactly. A process can be running and still be unable to serve traffic.
 
-Speaker B: Hence readiness and liveness.
+Speaker B: So now we need readiness and liveness.
 
 Speaker A: And startup behavior. Those checks answer different questions. A workload might need time to initialize. It might be alive but not ready. Or it might be wedged and need a restart.
 

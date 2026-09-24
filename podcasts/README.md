@@ -1,38 +1,66 @@
 # Podcast Library
 
-Five normal-text files contain all 32 episode scripts, grouped by day. Stable episode IDs are preserved.
+The library contains 53 episode scripts across 37 text files: 32 Intermediate episodes in the five day-grouped files, 10 Beginner lesson files, and 11 Advanced lesson files. Stable episode IDs are preserved.
 
-## How the podcast works
+## Human speech is a hard requirement
 
-These are written as spoken conversations between two engineers, not as textbook narration.
+These are not narrated lessons and not "two AI voices taking turns."
 
-The target balance is roughly:
-- 75% technical reasoning, troubleshooting, architecture and retrieval.
-- 25% real-life situations, familiar stories, analogies and short jokes.
+The intended sound is two competent engineers sitting together with the problem in front of them. They interrupt naturally, disagree sometimes, change their minds when evidence appears, finish each other's thought occasionally, and use ordinary spoken language.
 
-The dialogue deliberately uses interruptions, disagreement, contractions, short turns, corrections and natural transitions. The listener should feel like two engineers are working through a problem together.
+The dialogue must feel comfortable when spoken aloud at normal speed.
 
-Every episode should move through the same learning rhythm without announcing it as a formal lecture:
+A good episode should pass these checks:
 
-problem -> mental model -> real-life example -> prediction -> failure -> diagnosis -> Mac lab -> recall -> production transfer
+- Does it sound believable when read aloud?
+- Would a real engineer actually say these sentences this way?
+- Are the speakers recognisably different people?
+- Do they sometimes disagree or correct themselves?
+- Is the conversation driven by the actual problem rather than by lecture structure?
+- Does the learner get invited to predict, act, diagnose and explain?
+- Are analogies brief and followed by the literal technical mechanism?
+- Is humour occasional rather than manufactured?
+
+Bad signs:
+- perfect A/B alternation
+- "great question" after every question
+- corporate transitions
+- textbook definitions appearing as dialogue
+- constant agreement
+- generic motivational statements
+- excessive filler
+- a speaker who sounds like a professor or voice-over narrator
+
+## Learning rhythm
+
+problem -> competing hypotheses -> mental model -> prediction -> operation -> failure -> evidence -> diagnosis -> repair -> recall -> production transfer -> challenge
+
+The rhythm should be felt, not announced.
+
+## Technical / human balance
+
+The target is roughly:
+- 75% technical reasoning, troubleshooting, architecture and retrieval
+- 25% familiar real-life situations, workplace moments, analogies and short observational jokes
+
+The percentages are design targets, not a mechanical requirement for every episode.
 
 ## React co-teacher
 
-The React app wraps the spoken lesson in an active-learning loop:
+The React app wraps the spoken lesson in active learning:
 
 1. Make a prediction before listening.
-2. Listen to the episode in your audio player.
-3. Pause when the speaker asks for a prediction.
-4. Use the in-app transcript only when a spoken section was unclear.
-5. Run the Mac lab.
-6. Complete retrieval questions without notes.
+2. Listen to the episode.
+3. Pause at spoken prediction cues.
+4. Use the transcript only when needed.
+5. Run the platform-specific lab.
+6. Complete retrieval.
+7. Carry the result back into the project.
 
-The app stores learner answers and mastery locally in the browser. No podcast database is required.
-
-The current co-teacher uses manual audio synchronization: the learner controls the external audio and advances the transcript/exercise cards in the React app.
+The podcast teaches through conversation. The React app provides the interactive control layer.
 
 ## Audio generation
 
-Use prompts/google_ai_studio_podcast_prompt.txt when generating the spoken version. The prompt is specifically written to make the delivery sound like natural conversation rather than AI-style narration.
+Use `prompts/google_ai_studio_podcast_prompt.txt`.
 
-The text files remain the source scripts. Audio is a derived presentation format.
+The text scripts are the source. Audio is a derived presentation format.

@@ -1,26 +1,66 @@
 name: devops-programme-app
 on:
   push:
-    paths: ["app/**",".github/workflows/app.yml"]
+    paths: ["app/**","podcasts/**","scripts/**",".github/workflows/app.yml"]
   pull_request:
-    paths: ["app/**",".github/workflows/app.yml"]
+    paths: ["app/**","podcasts/**","scripts/**",".github/workflows/app.yml"]
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: app
+  beginner_gate:
+    name: beginner-gate
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - run: npm install
-      - name: Build
-        run: npm run build 2>&1 | tee build.log
-      - name: Upload build log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: devops-app-build-log
-          path: app/build.log
+      - name: Runner diagnostics
+        shell: bash
+        run: |
+          set -euxo pipefail
+          uname -a
+          command -v git
+          git --version
+          command -v node
+          node --version
+          command -v npm
+          npm --version
+
+      - name: Checkout repository without marketplace actions
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euxo pipefail
+          rm -rf repo
+          git init repo
+          cd repo
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach "${GITHUB_SHA}"
+
+      - name: Beginner structural contract
+        working-directory: repo/app
+        run: node ../scripts/check-beginner-gate.mjs
+
+      - name: Beginner unit tests
+        working-directory: repo/app
+        run: |
+          npm install
+          npm exec vitest run tests/unit/beginner-course.test.mjs
+
+      - name: Beginner integration tests
+        working-directory: repo/app
+        run: npm exec vitest run tests/integration/beginner-course.integration.test.mjs
+
+      - name: Beginner completeness validator
+        working-directory: repo/app
+        run: npm run check:beginner
+
+      - name: Runtime contract tests
+        working-directory: repo/app
+        run: |
+          npm exec vitest run tests/unit/runtimeVerification.test.mjs tests/unit/remote-runtime-core.test.mjs tests/integration/runtime-runner.integration.test.mjs tests/integration/local-terminal-agent.integration.test.mjs
+          node ../scripts/check-runtime-verification-contract.mjs

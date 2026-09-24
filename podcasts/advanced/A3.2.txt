@@ -1,0 +1,311 @@
+EPISODE A3.2 — The Trade-off Review
+
+Speaker A: We have built the system.
+
+Speaker B: Great.
+
+Speaker A: Now let's make the decision uncomfortable.
+
+Speaker B: I knew there was a catch.
+
+Speaker A: Every large system has trade-offs.
+
+Speaker B: Latency.
+
+Speaker A: Consistency.
+
+Speaker B: Availability.
+
+Speaker A: Cost.
+
+Speaker B: Operational complexity.
+
+Speaker A: Exactly. That is the key step.\n\nSpeaker B: The mistake is trying to maximize everything at once.
+
+Speaker A: Right. The point is not the command; it is the evidence.\n\nSpeaker B: Because improving one target can make another worse.
+
+Speaker A: So architecture needs explicit choices.
+
+Speaker B: Human example?
+
+Speaker A: A shop wants every customer to get a fresh stock count.
+
+Speaker B: Easy.
+
+Speaker A: Every branch asks one central system before confirming a sale.
+
+Speaker B: Fresh data.
+
+Speaker A: Yes. The important part is what happens next.\n\nSpeaker B: But every sale depends on the central system.
+
+Speaker A: And the network.
+
+Speaker B: So availability can fall when the central path fails.
+
+Speaker A: Correct. And there is another part to watch.\n\nSpeaker B: Alternative?
+
+Speaker A: Let each branch keep local stock.
+
+Speaker B: Faster.
+
+Speaker A: Usually.
+
+Speaker B: More available locally.
+
+Speaker A: Maybe. I would treat that as a hypothesis, not a conclusion.\n\nSpeaker B: But now counts can disagree.
+
+Speaker A: Exactly. That changes the diagnosis.\n\nSpeaker B: There is no free lunch.
+
+Speaker A: Distributed systems serve the bill first.
+
+Speaker B: Nice.
+
+Speaker A: Let's make the review concrete.
+
+Speaker B: Start with latency.
+
+Speaker A: What does the user need?
+
+Speaker B: Fast response for a page.
+
+Speaker A: Fine.
+
+Speaker B: Maybe 100 milliseconds for one request.
+
+Speaker A: The exact target depends on the product.
+
+Speaker B: Right.
+
+Speaker A: Now consistency.
+
+Speaker B: Does every read need the newest value?
+
+Speaker A: Maybe not.
+
+Speaker B: A product description can tolerate some delay.
+
+Speaker A: Correct. That is an important distinction.\n\nSpeaker B: A payment state cannot safely behave like that.
+
+Speaker A: Exactly. That is why the failure is useful.\n\nSpeaker B: So we classify data by business consequence.
+
+Speaker A: Right. That is the assumption we need to test.\n\nWe need explicit choices, not a promise to maximize everything.\n\nSpeaker B: Availability.
+
+Speaker A: What happens when a dependency is unreachable?
+
+Speaker B: Fail closed?
+
+Speaker A: Sometimes.
+
+Speaker B: Serve stale data?
+
+Speaker A: Sometimes.
+
+Speaker B: Queue the request?
+
+Speaker A: Sometimes.
+
+Speaker B: Reject only one feature?
+
+Speaker A: Sometimes.
+
+Speaker B: Again.
+
+Speaker A: The product decides what is safe.
+
+Speaker B: Cost.
+
+Speaker A: More replicas.
+
+Speaker B: More regions.
+
+Speaker A: More replicas of data.
+
+Speaker B: More observability.
+
+Speaker A: More network traffic.
+
+Speaker B: More people needed to operate it.
+
+Speaker A: Exactly. Now we have a real boundary.\n\nSpeaker B: A design can be technically possible and still be a bad business choice.
+
+Speaker A: Right. Now the failure becomes observable.\n\nSpeaker B: Not because it is ugly.
+
+Speaker A: Because the cost or operational burden is not justified by the user benefit.
+
+Speaker B: That's a useful distinction.
+
+Speaker A: Now complexity.
+
+Speaker B: Multi-region systems add failure cases.
+
+Speaker A: Caches add invalidation rules.
+
+Speaker B: Queues add delayed work.
+
+Speaker A: Retries add duplicate-work risk.
+
+Speaker B: Replicas add consistency rules.
+
+Speaker A: Every mechanism creates new behavior.
+
+Speaker B: So the design review should ask not only "what does this improve?"
+
+Speaker A: But also "what new failure does it create?"
+
+Speaker B: Prediction.
+
+Speaker A: Go.
+
+Speaker B: We move a write from one region to three active regions.
+
+Speaker A: What improves?
+
+Speaker B: Local write latency.
+
+Speaker A: Maybe. I would treat that as a hypothesis, not a conclusion.\n\nSpeaker B: What gets harder?
+
+Speaker A: Coordination and conflict handling.
+
+Speaker B: Good.
+
+Speaker A: Another.
+
+Speaker B: We add a cache in front of the database.
+
+Speaker A: Improvement?
+
+Speaker B: Lower read load and often lower latency.
+
+Speaker A: New risk?
+
+Speaker B: Stale data and cache invalidation.
+
+Speaker A: Exactly. That is the key step.\n\nSpeaker B: Another.
+
+Speaker A: Add aggressive retries.
+
+Speaker B: Temporary failures may be hidden.
+
+Speaker A: New risk?
+
+Speaker B: Retry storms and longer request times.
+
+Speaker A: Good. Now ask what the user sees when that path is unavailable.\n\nSpeaker B: So every architecture choice gets two columns.
+
+Speaker A: Benefit.
+
+Speaker B: Cost.
+
+Speaker A: More columns if needed.
+
+Speaker B: Failure modes.
+
+Speaker A: Operational work.
+
+Speaker B: User impact.
+
+Speaker A: Correct. But we still need evidence.\n\nThe business consequence tells us how much staleness we can accept.\n\nSpeaker B: What about measuring the trade-off?
+
+Speaker A: Each decision needs an observable outcome.
+
+Speaker B: If we add a cache, measure hit rate and backing load.
+
+Speaker A: Yes. Keep following the request path.\n\nSpeaker B: If we add replicas, measure read latency, lag and failover behavior.
+
+Speaker A: Yes. That can change the load pattern.\n\nSpeaker B: If we add another region, measure cross-region traffic, user latency, recovery behavior and operating cost.
+
+Speaker A: Exactly. That changes the diagnosis.\n\nSpeaker B: So architecture is not finished when the diagram looks good.
+
+Speaker A: It is tested against behavior.
+
+Speaker B: This is where SRE and architecture meet.
+
+Speaker A: Exactly. That is why the failure is useful.\n\nThe architecture cannot decide that without the product rule.\n\nSpeaker B: Mac lab?
+
+Speaker A: Take your A3 design.
+
+Speaker B: Draw one table with five columns.
+
+Speaker A: Latency.
+
+Speaker B: Consistency.
+
+Speaker A: Availability.
+
+Speaker B: Cost.
+
+Speaker A: Complexity.
+
+Speaker B: For each major design choice, write the expected benefit.
+
+Speaker A: Then write the new risk.
+
+Speaker B: Then write one metric.
+
+Speaker A: Then write one failure test.
+
+Speaker B: Example?
+
+Speaker A: "Add cache."
+
+Speaker B: Benefit: lower read latency.
+
+Speaker A: Risk: stale values.
+
+Speaker B: Metric: cache hit rate and read latency.
+
+Speaker A: Failure test: make the backing store slow or unavailable and observe behavior.
+
+Speaker B: Good.
+
+Speaker A: Then review the whole table.
+
+Speaker B: Find one choice where two benefits are hiding one large cost.
+
+Speaker A: That's the challenge.
+
+Speaker B: Recall.
+
+Speaker A: One. Why are trade-offs unavoidable?
+
+Speaker B: System resources and failure behavior are limited, so improving one property can reduce another.
+
+Speaker A: Two. Why classify data by business consequence?
+
+Speaker B: Different data can tolerate different levels of staleness or unavailability.
+
+Speaker A: Three. Why does complexity matter?
+
+Speaker B: More mechanisms create more behavior, failure modes and operating work.
+
+Speaker A: Four. What should every major architecture choice include?
+
+Speaker B: The intended benefit, new risks, operational cost, user impact and measurements.
+
+Speaker A: Five. When is a design decision really tested?
+
+Speaker B: When its predicted behavior is checked against real measurements and controlled failure.
+
+Speaker B: Final challenge?
+
+Speaker A: Defend one A3 choice.
+
+Speaker B: But do not say, "It is better."
+
+Speaker A: Say what it improves.
+
+Speaker B: Say what it makes worse.
+
+Speaker A: Say how you will measure both.
+
+Speaker B: And say what happens when the design assumption fails.
+
+Speaker A: That is the level of reasoning we want.
+
+Speaker B: Not perfect architecture.
+
+Speaker A: Explicit architecture.
+
+Speaker B: With evidence.
+
+Speaker A: Exactly. Now we have a real boundary.\n\n

@@ -1,0 +1,832 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "I-A4",
+  "purpose": "Pilot item bank for CI/CD and Infrastructure as Code. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "IA4-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A4.core",
+      "prompt": "What does Infrastructure as Code aim to make explicit?",
+      "options": [
+        "Desired infrastructure configuration that can be reviewed and reproduced",
+        "Only application source code",
+        "Only logs",
+        "Only DNS"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA4-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A4.core",
+      "prompt": "What is Terraform state used for?",
+      "options": [
+        "Tracking managed resources and their known relationships/attributes",
+        "Storing application logs",
+        "Replacing Git commits",
+        "Running containers"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA4-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A4.core",
+      "prompt": "Why does plan-before-apply matter?",
+      "options": [
+        "It lets engineers review intended infrastructure changes before making them",
+        "It guarantees no drift",
+        "It removes state",
+        "It replaces testing"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA4-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A4.core",
+      "prompt": "What is drift?",
+      "options": [
+        "Actual infrastructure differs from declared/managed intent",
+        "A failed DNS request",
+        "A slow HTTP response",
+        "A duplicate Git commit"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA4-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A4.core",
+      "prompt": "Why is state locking useful?",
+      "options": [
+        "It reduces conflicting concurrent state changes",
+        "It speeds up every plan",
+        "It deletes old resources",
+        "It encrypts traffic"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA4-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A4.core",
+      "prompt": "What is an environment promotion?",
+      "options": [
+        "Moving a known change or artifact through controlled environments",
+        "Changing a user's password",
+        "Moving a Pod between nodes",
+        "Changing a DNS TTL"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA4-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A4.core",
+      "prompt": "Why use pull requests for infrastructure changes?",
+      "options": [
+        "They create a review and traceability point before changes are promoted",
+        "They automatically prove runtime health",
+        "They replace Terraform state",
+        "They prevent drift"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA4-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A4.core",
+      "prompt": "What does a reusable module provide?",
+      "options": [
+        "A parameterized infrastructure pattern that can be used consistently",
+        "A live Kubernetes Pod",
+        "A backup archive",
+        "A CI runner"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA4-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A4.core",
+      "prompt": "Why separate planning from applying permissions?",
+      "options": [
+        "It limits who can make actual infrastructure changes",
+        "It removes the need for review",
+        "It makes state unnecessary",
+        "It guarantees zero downtime"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA4-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A4.core",
+      "prompt": "What makes infrastructure changes reproducible?",
+      "options": [
+        "Versioned configuration plus controlled inputs and state handling",
+        "A screenshot of the console",
+        "Manual memory",
+        "One person's laptop"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA4-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A4.core",
+      "prompt": "Why can plan output change without a source-code change?",
+      "expectedElements": [
+        "external infrastructure drift, provider behavior or input/state changes can alter the plan"
+      ]
+    },
+    {
+      "id": "IA4-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A4.core",
+      "prompt": "Why is deleting a Terraform state file dangerous?",
+      "expectedElements": [
+        "the tool can lose its mapping to managed resources and subsequent behavior becomes unsafe or ambiguous"
+      ]
+    },
+    {
+      "id": "IA4-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A4.core",
+      "prompt": "Why can applying a correct plan still cause an incident?",
+      "expectedElements": [
+        "dependencies, capacity, runtime behavior or assumptions outside the plan can fail"
+      ]
+    },
+    {
+      "id": "IA4-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A4.core",
+      "prompt": "What evidence proves an infrastructure change actually reached the intended target?",
+      "expectedElements": [
+        "plan/apply identity plus target state inspection and runtime verification"
+      ]
+    },
+    {
+      "id": "IA4-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A4.core",
+      "prompt": "Why pin provider/tool versions?",
+      "expectedElements": [
+        "uncontrolled tool changes can alter plan or apply behavior"
+      ]
+    },
+    {
+      "id": "IA4-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-A4.core",
+      "prompt": "Design a safe Terraform change workflow.",
+      "expectedElements": [
+        "versioned change",
+        "validate/plan",
+        "review",
+        "controlled apply",
+        "state/lock handling",
+        "verification"
+      ]
+    },
+    {
+      "id": "IA4-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-A4.core",
+      "prompt": "Explain why state is not simply a cache.",
+      "expectedElements": [
+        "it participates in resource tracking and reconciliation",
+        "incorrect state can lead to destructive/wrong plans"
+      ]
+    },
+    {
+      "id": "IA4-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "I-A4.core",
+      "prompt": "A plan wants to replace a database during a small config change. Give two hypotheses and evidence.",
+      "expectedElements": [
+        "dependency/provider/state difference",
+        "immutable field or changed resource identity",
+        "plan diff/state inspection"
+      ]
+    },
+    {
+      "id": "IA4-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "I-A4.core",
+      "prompt": "Design a drift-recovery workflow.",
+      "expectedElements": [
+        "detect drift",
+        "compare desired/actual",
+        "choose import/update/reconcile path",
+        "review plan",
+        "apply safely",
+        "verify"
+      ]
+    },
+    {
+      "id": "IA4-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "I-A4.core",
+      "prompt": "Build a diagnosis tree for 'Terraform wants to destroy something unexpected'.",
+      "expectedElements": [
+        "inspect plan diff",
+        "state/resource mapping",
+        "configuration/provider inputs",
+        "dependencies/lifecycle",
+        "safe refusal if unclear"
+      ]
+    },
+    {
+      "id": "IA4-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "full diff",
+        "resource identity/state",
+        "lifecycle/configuration changes"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "I-A4.diagnostic",
+      "prompt": "Plan shows an unexpected destroy. What should you inspect first?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA4-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "state conflict or concurrent infrastructure mutation"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "I-A4.diagnostic",
+      "prompt": "Two engineers run apply concurrently. What risk exists?",
+      "expectedElements": 2
+    },
+    {
+      "id": "IA4-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "change may not be managed/detected",
+        "state/provider observation gap"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A4.diagnostic",
+      "prompt": "Plan is empty but cloud console shows a changed resource. What might that mean?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA4-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "module diff",
+        "expanded plan",
+        "affected resource dependencies"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A4.diagnostic",
+      "prompt": "A module change alters many resources. What evidence should be reviewed?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA4-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "provider version",
+        "plan diff",
+        "state/resource behavior"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A4.diagnostic",
+      "prompt": "Provider upgrade changes a plan. What should you compare?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA4-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "refresh/plan behavior",
+        "state/resource mapping",
+        "cloud-side state"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A4.diagnostic",
+      "prompt": "Terraform state appears inconsistent with actual infrastructure. Give two safe next checks.",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA4-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "infrastructure mutation succeeded but runtime/application dependencies failed"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A4.diagnostic",
+      "prompt": "An apply succeeds but application traffic fails. Why is IaC success insufficient?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA4-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "change impact may be large",
+        "recovery path is unplanned"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A4.diagnostic",
+      "prompt": "A pull request has a correct plan but missing rollback strategy. Why is that a gap?",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA4-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "desired config",
+        "actual state",
+        "plan diff",
+        "reason for drift",
+        "repair and verification"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A4.diagnostic",
+      "prompt": "Design evidence for an infrastructure drift incident.",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA4-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "stop apply",
+        "inspect resource identity and immutable fields",
+        "inspect state/provider version",
+        "reproduce plan"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A4.diagnostic",
+      "prompt": "A database replacement appears in plan after a harmless variable change. Design a safe investigation.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA4-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "same reviewed version",
+        "environment-specific inputs",
+        "plan evidence",
+        "approval boundary",
+        "post-apply verification"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "I-A4.diagnostic",
+      "prompt": "Design a multi-environment promotion rule for infrastructure.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA4-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "impact/partial state",
+        "logs/state",
+        "safe retry conditions",
+        "rollback/recovery",
+        "verification"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "I-A4.diagnostic",
+      "prompt": "Create an incident decision tree for Terraform apply failure.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA4-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "I-A4.hands-on",
+      "prompt": "Run and review a Terraform plan in a disposable environment.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "init/validate/plan",
+        "record diff",
+        "review",
+        "reset"
+      ],
+      "success": [
+        "plan identity",
+        "reviewed changes",
+        "known state"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA4-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A4.hands-on",
+      "prompt": "Introduce configuration drift and detect it.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "apply baseline",
+        "change disposable target externally",
+        "plan",
+        "record drift",
+        "reconcile",
+        "verify"
+      ],
+      "success": [
+        "drift evidence",
+        "plan evidence",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA4-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A4.hands-on",
+      "prompt": "Create a module change and review its blast radius.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "baseline module",
+        "change parameter",
+        "plan",
+        "inspect affected resources",
+        "restore"
+      ],
+      "success": [
+        "module diff",
+        "plan scope",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA4-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A4.hands-on",
+      "prompt": "Simulate concurrent state access safely.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "use disposable state backend",
+        "start controlled overlapping operation",
+        "observe lock behavior",
+        "release/reset"
+      ],
+      "success": [
+        "lock behavior",
+        "no conflicting apply",
+        "reset"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA4-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A4.hands-on",
+      "prompt": "Break an infrastructure input and recover.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "baseline",
+        "change one input",
+        "plan/apply safely if allowed",
+        "capture error",
+        "repair",
+        "verify"
+      ],
+      "success": [
+        "input change",
+        "failure",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA4-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A4.hands-on",
+      "prompt": "Run a provider/version comparison.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "record current version/plan",
+        "switch controlled version",
+        "compare plan",
+        "restore"
+      ],
+      "success": [
+        "version identity",
+        "plan difference",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA4-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A4.hands-on",
+      "prompt": "Perform a failed-apply incident drill.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "start safe change",
+        "inject failure",
+        "capture partial state",
+        "choose recovery",
+        "verify"
+      ],
+      "success": [
+        "partial-state evidence",
+        "decision rationale",
+        "verified recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA4-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "I-A4.hands-on",
+      "prompt": "Lead an I2 infrastructure change review.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "review source diff",
+        "review plan",
+        "identify risk",
+        "approve/refuse",
+        "verify final state"
+      ],
+      "success": [
+        "review evidence",
+        "decision",
+        "verification"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    }
+  ]
+}

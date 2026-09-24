@@ -1,0 +1,556 @@
+EPISODE B3.2 — The First Real Incident
+
+Speaker A: It's 10:17 a.m.
+
+Speaker B: That's a very specific time.
+
+Speaker A: Because production incidents love exact times.
+
+Speaker B: What happened?
+
+Speaker A: Users are placing orders. The API is up. The website loads.
+
+Speaker B: So far, fine.
+
+Speaker A: But orders are not appearing for some customers.
+
+Speaker B: That's bad.
+
+Speaker A: The support team says, "The order button works, but the order is missing."
+
+Speaker B: So maybe the API accepts the request but the background work fails.
+
+Speaker A: Good first hypothesis.
+
+Speaker B: Evidence?
+
+Speaker A: API request rate is normal.
+
+Speaker B: Good. That makes the diagnosis easier to test.
+
+Speaker B: Let's keep that tied to the actual problem.
+
+Speaker A: HTTP errors are low.
+
+Speaker B: So the frontend-to-API path may be okay.
+
+Speaker A: Right. We can check that without changing everything.
+
+Speaker A: Now say what evidence would confirm that.
+
+Speaker B: Queue depth?
+
+Speaker A: Six thousand.
+
+Speaker B: Was it usually that high?
+
+Speaker A: No. Usually under one hundred.
+
+Speaker B: Now we have something.
+
+Speaker A: What do you think?
+
+Speaker B: Workers are probably failing or too slow.
+
+Speaker A: Good. But don't stop there.
+
+Speaker B: Check worker errors.
+
+Speaker A: You find repeated database connection errors.
+
+Speaker B: So the database may be the real problem.
+
+Speaker A: Maybe. Now we have a concrete prediction.
+
+Speaker A: That gives us a useful next test.
+
+Speaker B: Database latency is high.
+
+Speaker A: Yes. Keep the recovery condition in the plan.
+
+Speaker A: I would not change the system before checking that.
+
+Speaker B: Database connections are near the limit.
+
+Speaker A: Yes. That is a safer way to reason about it.
+
+Speaker A: Keep the user-visible effect in view.
+
+Speaker B: So the queue grows because workers cannot finish their work.
+
+Speaker A: Good. Now compare that with the known-good state.
+
+Speaker A: That is the part I would verify first.
+
+Speaker B: Now the incident is becoming a chain.
+
+Speaker A: Exactly. That tells us which layer to inspect next.
+
+Speaker A: Now the assumption is explicit.
+
+Speaker B: The API is healthy enough to accept work.
+
+Speaker A: Right. I want the observation before the fix.
+
+Speaker A: That makes the diagnosis easier to test.
+
+Speaker B: Queue accepts messages.
+
+Speaker A: Right. That is where the real mechanism shows up.
+
+Speaker A: We can check that without changing everything.
+
+Speaker B: Workers pull messages.
+
+Speaker A: Right. Now the failure has a clear boundary.
+
+Speaker A: Now we have a concrete prediction.
+
+Speaker B: Workers cannot talk to the database.
+
+Speaker A: Good. Let's see whether the evidence supports that.
+
+Speaker A: Keep the recovery condition in the plan.
+
+Speaker B: Queue grows.
+
+Speaker A: Exactly. That would change my next move.
+
+Speaker A: That is a safer way to reason about it.
+
+Speaker B: Users wait.
+
+Speaker A: Exactly. Keep the incident scoped to one hypothesis.
+
+Speaker A: Now compare that with the known-good state.
+
+Speaker B: That's a much better model than "the order system is broken."
+
+Speaker A: Yes. Let's keep that tied to the actual problem.
+
+Speaker A: That tells us which layer to inspect next.
+
+Speaker B: What's the safest action?
+
+Speaker A: Good question.
+
+Speaker B: We could restart everything.
+
+Speaker A: Why?
+
+Speaker B: Maybe it clears the connection problem.
+
+Speaker A: Maybe. But what risk does that create?
+
+Speaker B: More load. More reconnects. More work hitting the database.
+
+Speaker A: Exactly. Now say what evidence would confirm that.
+
+Speaker B: So restarting all workers could make the database even worse.
+
+Speaker A: Good. That gives us a useful next test.
+
+Speaker B: We need a safe mitigation.
+
+Speaker A: What would you try?
+
+Speaker B: Reduce worker concurrency.
+
+Speaker A: Good. I would not change the system before checking that.
+
+Speaker B: Stop new non-critical jobs if the system supports that.
+
+Speaker A: Good. Keep the user-visible effect in view.
+
+Speaker B: Protect the database.
+
+Speaker A: Good. That is the part I would verify first.
+
+Speaker B: Then recover gradually.
+
+Speaker A: Exactly. Now the assumption is explicit.
+
+Speaker B: I like that.
+
+Speaker A: Now let's be careful. We do not know the root cause yet.
+
+Speaker B: We know the database is overloaded.
+
+Speaker A: Yes. That makes the diagnosis easier to test.
+
+Speaker B: But why?
+
+Speaker A: Maybe a new query. Maybe traffic. Maybe a connection leak. Maybe storage. Maybe a network problem.
+
+Speaker B: So mitigation can happen before root cause is fully known.
+
+Speaker A: Often.
+
+Speaker B: That's important.
+
+Speaker A: The goal during an incident is first to reduce harm, then recover, then understand deeply.
+
+Speaker B: Not always in that exact order?
+
+Speaker A: Sometimes you learn enough to act quickly. But don't wait for a perfect explanation while users are failing.
+
+Speaker B: Good. We can check that without changing everything.
+
+Speaker A: Let's check deployment history.
+
+Speaker B: A new worker version went out ten minutes ago.
+
+Speaker A: Interesting.
+
+Speaker B: Does that prove it caused the issue?
+
+Speaker A: No.
+
+Speaker B: But it is a strong clue.
+
+Speaker A: Yes.
+
+Speaker B: So compare the timing.
+
+Speaker A: You do. The first database connection errors appear six minutes after the worker release.
+
+Speaker B: That's suspicious.
+
+Speaker A: It is.
+
+Speaker B: What changed?
+
+Speaker A: The new version opens more database connections per worker.
+
+Speaker B: So worker count times connection count may have pushed the database over its limit.
+
+Speaker A: Exactly.
+
+Speaker B: Now we have a likely cause.
+
+Speaker A: Good.
+
+Speaker B: Safest action?
+
+Speaker A: Roll back the worker version or reduce worker count, depending on the system and risk.
+
+Speaker B: We already have evidence that the new version changes database usage.
+
+Speaker A: Yes.
+
+Speaker B: So rollback may be a reasonable mitigation.
+
+Speaker A: Good.
+
+Speaker B: Then watch the queue.
+
+Speaker A: Yes.
+
+Speaker B: Watch database connections.
+
+Speaker A: Yes.
+
+Speaker B: Watch order completion.
+
+Speaker A: Exactly.
+
+Speaker B: If those improve, we have recovery evidence.
+
+Speaker A: Good.
+
+Speaker B: Then the root-cause work can continue after service is stable.
+
+Speaker A: Right.
+
+Speaker B: That's very different from "find the bug, then fix it."
+
+Speaker A: Production incidents are not classroom bugs.
+
+Speaker B: Fair.
+
+Speaker A: There may be users waiting. Data may be moving. Other systems may be affected.
+
+Speaker B: So every change has risk.
+
+Speaker A: Exactly.
+
+Speaker B: Human example?
+
+Speaker A: A shop has too many orders coming into one kitchen.
+
+Speaker B: The cooks are overloaded.
+
+Speaker A: Someone opens the door and lets even more orders in.
+
+Speaker B: That makes the kitchen worse.
+
+Speaker A: Right.
+
+Speaker B: A safer move might be to slow new orders, finish the ones already inside, and get the kitchen back under control.
+
+Speaker A: Exactly.
+
+Speaker B: Then you find out why the orders were coming so fast.
+
+Speaker A: Right.
+
+Speaker B: So backpressure is an incident tool.
+
+Speaker A: Very much.
+
+Speaker B: Pause.
+
+Speaker A: Go ahead.
+
+Speaker B: Make a prediction. The queue is growing and the database is near its connection limit. We add twice as many workers. What do you expect?
+
+Speaker A: Think carefully.
+
+Speaker B: The queue may drain faster in theory, but the database may get even more overloaded. So the whole system could get worse.
+
+Speaker A: Exactly.
+
+Speaker B: The right action depends on the bottleneck.
+
+Speaker A: Good.
+
+Speaker B: Another prediction. We roll back the worker version and the queue starts shrinking. Is the incident finished?
+
+Speaker A: Not yet.
+
+Speaker B: We need to verify the user path and watch the system for stable recovery.
+
+Speaker A: Exactly.
+
+Speaker B: And we still need to understand what caused it.
+
+Speaker A: Yes.
+
+Speaker B: Good.
+
+Speaker A: Now let's write the incident in minutes.
+
+Speaker B: 10:17 support report.
+
+Speaker A: Good.
+
+Speaker B: 10:18 API and HTTP look normal. Queue depth high.
+
+Speaker A: Good.
+
+Speaker B: 10:19 worker logs show database connection errors.
+
+Speaker A: Good.
+
+Speaker B: 10:20 database near connection limit.
+
+Speaker A: Good.
+
+Speaker B: 10:21 reduce worker concurrency.
+
+Speaker A: Good.
+
+Speaker B: 10:23 queue stops growing.
+
+Speaker A: Good.
+
+Speaker B: 10:25 rollback worker release.
+
+Speaker A: Good.
+
+Speaker B: 10:28 database connections fall.
+
+Speaker A: Good.
+
+Speaker B: 10:31 orders begin completing normally.
+
+Speaker A: Good.
+
+Speaker B: 10:35 verify new orders from the user path.
+
+Speaker A: Good.
+
+Speaker B: Then later we review why the new version opened more connections.
+
+Speaker A: Exactly.
+
+Speaker B: That's a real incident timeline.
+
+Speaker A: It is.
+
+Speaker B: What evidence should we keep?
+
+Speaker A: Logs. Metrics. Deployment identity. Change history. The actions we took. The time each action happened. And the evidence that showed recovery.
+
+Speaker B: So the incident record should tell the story.
+
+Speaker A: Yes.
+
+Speaker B: Not just blame someone.
+
+Speaker A: Never start there.
+
+Speaker B: Good.
+
+Speaker A: After recovery, ask:
+what failed?
+why did we not catch it earlier?
+what made mitigation slow?
+what can we change?
+what test could catch it next time?
+
+Speaker B: That's how the incident becomes learning.
+
+Speaker A: Exactly.
+
+Speaker B: This feels like the whole course loop in one event.
+
+Speaker A: It is.
+
+Speaker B: Understand.
+
+Speaker A: Predict.
+
+Speaker B: Operate.
+
+Speaker A: Break.
+
+Speaker B: Diagnose.
+
+Speaker A: Repair.
+
+Speaker B: Recall.
+
+Speaker A: Design.
+
+Speaker B: Nice.
+
+Speaker A: You can keep that one.
+
+Speaker B: Thank you.
+
+Speaker A: Now the practical lab.
+
+Speaker B: We break the B3 system on purpose.
+
+Speaker A: Yes.
+
+Speaker B: Make the database unavailable or slow in a safe environment.
+
+Speaker A: Good.
+
+Speaker B: Watch the API.
+
+Speaker A: Good.
+
+Speaker B: Watch the queue.
+
+Speaker A: Good.
+
+Speaker B: Watch the worker.
+
+Speaker A: Good.
+
+Speaker B: Find the first signal.
+
+Speaker A: Good.
+
+Speaker B: Make one safe change.
+
+Speaker A: Good.
+
+Speaker B: Verify recovery.
+
+Speaker A: Good.
+
+Speaker B: Then write the timeline.
+
+Speaker A: Exactly.
+
+Speaker B: What should not happen?
+
+Speaker A: Random changes.
+
+Speaker B: Restart everything.
+
+Speaker A: Blame.
+
+Speaker B: Guessing.
+
+Speaker A: Or changing three things at once.
+
+Speaker B: Because then we won't know which change helped.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: Question one. What was the first useful signal?
+
+Speaker B: The queue depth rising far above normal.
+
+Speaker A: Good.
+
+Speaker B: Question two.
+
+Speaker A: Why was the queue growing?
+
+Speaker B: Workers could not complete work because the database was overloaded.
+
+Speaker A: Good.
+
+Speaker B: Question three.
+
+Speaker A: Why was adding workers risky?
+
+Speaker B: More workers could open more database connections and make the bottleneck worse.
+
+Speaker A: Good.
+
+Speaker B: Question four.
+
+Speaker A: What is mitigation?
+
+Speaker B: A safe action that reduces the impact while we work toward full recovery and root-cause understanding.
+
+Speaker A: Good.
+
+Speaker B: Question five.
+
+Speaker A: What proves recovery?
+
+Speaker B: The user path works again and the key system signals return to a stable healthy range.
+
+Speaker A: Good.
+
+Speaker B: Final challenge.
+
+Speaker A: Run a B3 incident drill.
+
+Speaker B: Give myself one failure.
+
+Speaker A: Yes.
+
+Speaker B: Do not look at the answer.
+
+Speaker A: Yes.
+
+Speaker B: Write observations, hypothesis, safe action, evidence, recovery, and follow-up.
+
+Speaker A: Exactly.
+
+Speaker B: That's probably the most important exercise in Beginner.
+
+Speaker A: I think so.
+
+Speaker B: Because now I am not just using DevOps tools.
+
+Speaker A: You're operating a system.
+
+Speaker B: Good.
+
+Speaker A: End of B3.
+
+Speaker B: And not the end of learning how to break things.
+
+Speaker A: Unfortunately, no.

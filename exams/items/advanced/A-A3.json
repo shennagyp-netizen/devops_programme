@@ -1,0 +1,826 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "A-A3",
+  "purpose": "Pilot item bank for Massive-Scale Service Design. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "AA3-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-A3.core",
+      "prompt": "What is a capacity model?",
+      "options": [
+        "A model linking workload demand to resource or dependency capacity",
+        "A source-code file",
+        "A DNS policy",
+        "A backup archive"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA3-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-A3.core",
+      "prompt": "Why make assumptions explicit in large-scale design?",
+      "options": [
+        "Hidden assumptions can become failure points as scale changes",
+        "Scale removes uncertainty",
+        "Assumptions are unnecessary",
+        "Only cost matters"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA3-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-A3.core",
+      "prompt": "Why can a small per-request cost matter at large scale?",
+      "options": [
+        "It multiplies across very large request volume",
+        "Large systems ignore per-request cost",
+        "Cost never scales",
+        "Caching makes cost zero"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA3-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A3.core",
+      "prompt": "What does a bottleneck represent?",
+      "options": [
+        "A limiting resource or dependency that constrains overall system performance",
+        "Any slow log",
+        "A healthy replica",
+        "A DNS cache"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA3-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A3.core",
+      "prompt": "Why is caching a trade-off?",
+      "options": [
+        "It can reduce load and latency but introduces freshness and invalidation concerns",
+        "Caching always increases correctness",
+        "Caching removes storage",
+        "Caching prevents failure"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA3-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A3.core",
+      "prompt": "Why are consistency and latency often coupled in global systems?",
+      "options": [
+        "Stronger coordination can require more communication or waiting",
+        "Consistency always lowers latency",
+        "Latency has no relation to data",
+        "Global systems never coordinate"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA3-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A3.core",
+      "prompt": "Why should architecture include operational complexity as a design cost?",
+      "options": [
+        "More components and failure modes increase the work required to operate and recover the system",
+        "Complexity is free",
+        "Operations only matter after launch",
+        "More services always improve reliability"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA3-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A3.core",
+      "prompt": "What is graceful degradation at massive scale?",
+      "options": [
+        "Protecting core user outcomes while reducing noncritical work under pressure",
+        "Serving every feature at all costs",
+        "Turning off monitoring",
+        "Deleting queues"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA3-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A3.core",
+      "prompt": "Why should disaster recovery be part of architecture rather than a document only?",
+      "options": [
+        "The system must actually support the recovery path and its verification",
+        "Documents guarantee recovery",
+        "Recovery is unrelated to design",
+        "Backups are always enough"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA3-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A3.core",
+      "prompt": "What makes a scalability claim useful?",
+      "options": [
+        "A workload definition, measured/modelled capacity and assumptions about bottlenecks",
+        "A large number in a slide",
+        "One successful local test",
+        "A vendor name"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA3-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-A3.core",
+      "prompt": "Why can adding a cache increase operational risk?",
+      "expectedElements": [
+        "it adds another stateful layer, invalidation path and failure mode"
+      ]
+    },
+    {
+      "id": "AA3-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-A3.core",
+      "prompt": "Why can sharding improve scale while making operations harder?",
+      "expectedElements": [
+        "data distribution raises routing, rebalancing and cross-shard complexity"
+      ]
+    },
+    {
+      "id": "AA3-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-A3.core",
+      "prompt": "Why can a very available system still be unacceptable to users?",
+      "expectedElements": [
+        "latency, correctness or stale data can violate the actual product requirement"
+      ]
+    },
+    {
+      "id": "AA3-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-A3.core",
+      "prompt": "Why can a design with more regions increase cost without improving user experience?",
+      "expectedElements": [
+        "traffic or data locality may not justify the extra replication/operation cost"
+      ]
+    },
+    {
+      "id": "AA3-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-A3.core",
+      "prompt": "Why should architecture reviews include failure assumptions?",
+      "expectedElements": [
+        "scale exposes rare correlated failures and recovery constraints"
+      ]
+    },
+    {
+      "id": "AA3-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "A-A3.core",
+      "prompt": "Design a capacity model for a service expected to grow 10x.",
+      "expectedElements": [
+        "traffic mix",
+        "resource limits",
+        "dependency capacity",
+        "headroom",
+        "bottleneck migration"
+      ]
+    },
+    {
+      "id": "AA3-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "A-A3.core",
+      "prompt": "Design an explicit consistency policy for a global application.",
+      "expectedElements": [
+        "which operations need strong consistency",
+        "which tolerate staleness",
+        "latency/cost trade-off",
+        "failure behavior"
+      ]
+    },
+    {
+      "id": "AA3-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "A-A3.core",
+      "prompt": "A design meets latency targets but cost doubles at 5x traffic. Give two hypotheses and tests.",
+      "expectedElements": [
+        "resource scaling curve",
+        "cache efficiency",
+        "dependency pricing/usage"
+      ]
+    },
+    {
+      "id": "AA3-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "A-A3.core",
+      "prompt": "Design a recovery architecture for a very large service.",
+      "expectedElements": [
+        "failure domains",
+        "traffic control",
+        "data recovery",
+        "capacity of survivors",
+        "verification"
+      ]
+    },
+    {
+      "id": "AA3-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "A-A3.core",
+      "prompt": "Build a trade-off review for availability, latency, consistency and cost.",
+      "expectedElements": [
+        "state priorities",
+        "identify tension",
+        "quantify where possible",
+        "define failure boundary",
+        "decision"
+      ]
+    },
+    {
+      "id": "AA3-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "new bottleneck",
+        "resource/queue curve",
+        "dependency saturation"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "A-A3.diagnostic",
+      "prompt": "A service scales linearly to 4x traffic but not 8x. What should you inspect?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AA3-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "tail-sensitive bottleneck",
+        "small affected cohort or path"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "A-A3.diagnostic",
+      "prompt": "p99 latency rises while average stays flat. What does that suggest?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AA3-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "resource scaling efficiency",
+        "cache/miss rate",
+        "dependency cost model"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-A3.diagnostic",
+      "prompt": "Cost grows faster than traffic. What evidence matters?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AA3-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "freshness/TTL/invalidation",
+        "data locality/path"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-A3.diagnostic",
+      "prompt": "Users see stale data after global cache expansion. What should you inspect?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AA3-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "skewed workload/data distribution"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-A3.diagnostic",
+      "prompt": "A sharded database has one hot partition. What is the class of problem?",
+      "expectedElements": 2
+    },
+    {
+      "id": "AA3-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "consistency/coordination/replication versus latency"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-A3.diagnostic",
+      "prompt": "A design has excellent availability but unacceptable write latency. What trade-off is visible?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AA3-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "failure capacity was not modelled",
+        "traffic shift/survivor dependency"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-A3.diagnostic",
+      "prompt": "A multi-region system is within normal capacity but fails during regional failover. Why?",
+      "expectedElements": 4
+    },
+    {
+      "id": "AA3-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "business freshness requirement",
+        "cache policy/invalidation"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-A3.diagnostic",
+      "prompt": "A cache improves p95 but worsens correctness. What should be decided?",
+      "expectedElements": 4
+    },
+    {
+      "id": "AA3-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "workload curve",
+        "resource saturation",
+        "dependency limits",
+        "cost",
+        "latency percentiles"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-A3.diagnostic",
+      "prompt": "Design evidence for a 10x traffic scaling limit.",
+      "expectedElements": 4
+    },
+    {
+      "id": "AA3-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "protect critical traffic",
+        "shed/degrade",
+        "scale bottleneck",
+        "watch survivor capacity"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-A3.diagnostic",
+      "prompt": "Create a decision tree for a globally distributed service under sudden demand spike.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AA3-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "representative workload",
+        "failure domain",
+        "synthetic traffic",
+        "data verification",
+        "abort/reset"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "A-A3.diagnostic",
+      "prompt": "Design a massive-scale recovery test that does not require full production traffic.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AA3-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "capacity",
+        "latency",
+        "state",
+        "failure domains",
+        "recovery",
+        "cost",
+        "operations"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "A-A3.diagnostic",
+      "prompt": "Build an architecture review checklist for scale and failure.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AA3-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "A-A3.hands-on",
+      "prompt": "Build a representative capacity model.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "define traffic/workload",
+        "set resource assumptions",
+        "increase demand",
+        "find bottleneck"
+      ],
+      "success": [
+        "assumptions",
+        "bottleneck",
+        "headroom"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA3-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-A3.hands-on",
+      "prompt": "Run a simulated 10x load and observe bottleneck migration.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "baseline",
+        "increase load",
+        "record first/next bottleneck",
+        "reset"
+      ],
+      "success": [
+        "bottleneck movement",
+        "evidence"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA3-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-A3.hands-on",
+      "prompt": "Measure cache benefit and freshness cost.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "baseline origin",
+        "enable cache",
+        "compare latency/load",
+        "change freshness",
+        "record"
+      ],
+      "success": [
+        "performance",
+        "freshness",
+        "trade-off"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA3-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-A3.hands-on",
+      "prompt": "Simulate a hot partition.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "skew workload",
+        "observe partition",
+        "rebalance/shard policy",
+        "verify"
+      ],
+      "success": [
+        "skew evidence",
+        "mitigation",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA3-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-A3.hands-on",
+      "prompt": "Run a multi-region capacity stress test.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "normal traffic",
+        "shift/fail region",
+        "observe survivor",
+        "apply controls",
+        "recover"
+      ],
+      "success": [
+        "survivor capacity",
+        "control",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA3-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-A3.hands-on",
+      "prompt": "Evaluate a consistency/latency trade-off.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "choose two policies",
+        "run representative workload",
+        "measure latency/freshness",
+        "decide"
+      ],
+      "success": [
+        "comparative evidence",
+        "decision"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA3-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-A3.hands-on",
+      "prompt": "Lead an A3 scale incident drill.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "state impact",
+        "measure bottleneck",
+        "degrade/mitigate",
+        "recover",
+        "record"
+      ],
+      "success": [
+        "incident evidence",
+        "trade-off",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA3-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "A-A3.hands-on",
+      "prompt": "Defend an A3 architecture review.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "present assumptions",
+        "challenge capacity/state/failure claims",
+        "revise",
+        "test one risk"
+      ],
+      "success": [
+        "review evidence",
+        "revision",
+        "test"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    }
+  ]
+}

@@ -1,0 +1,837 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "I-F2",
+  "purpose": "Pilot item bank for Networking and Protocols. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "IF2-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-F2.core",
+      "prompt": "What does a subnet describe?",
+      "options": [
+        "A network prefix and the address space associated with it",
+        "An HTTP status",
+        "A process tree",
+        "A TLS certificate"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF2-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-F2.core",
+      "prompt": "What is a default gateway used for?",
+      "options": [
+        "Forwarding traffic when the destination is outside the local network",
+        "Resolving every DNS name",
+        "Encrypting HTTP",
+        "Starting processes"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF2-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-F2.core",
+      "prompt": "What does DNS normally provide?",
+      "options": [
+        "A name-to-address answer",
+        "A CPU scheduling decision",
+        "A database transaction",
+        "A TLS session key"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF2-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-F2.core",
+      "prompt": "DNS succeeds but a TCP connection times out. Which conclusion is safest?",
+      "options": [
+        "Name resolution worked, but a later network step is failing",
+        "HTTP is definitely broken",
+        "TLS authentication already failed",
+        "The service is healthy"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF2-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-F2.core",
+      "prompt": "Why can a successful request from one host fail from another host to the same service name?",
+      "options": [
+        "Routes, DNS answers, policies, proxies or destinations can differ by source",
+        "TCP uses different internet standards per host",
+        "HTTP changes the service name",
+        "CIDR applies only to servers"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF2-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "constructed-response",
+      "expectedMinutes": 3,
+      "competencyId": "I-F2.core",
+      "prompt": "Explain the difference between an IP address and a port.",
+      "scoring": {
+        "full": [
+          "IP identifies the network endpoint/address",
+          "port identifies a service endpoint on that host"
+        ],
+        "partial": [
+          "gives one correct distinction"
+        ],
+        "zero": [
+          "treats them as interchangeable"
+        ]
+      }
+    },
+    {
+      "id": "IF2-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-F2.core",
+      "prompt": "Why is a TCP refusal different from a long timeout?",
+      "options": [
+        "A refusal can show an endpoint actively rejected the connection or had no listener, while a timeout can show no useful response arrived",
+        "They always mean the same thing",
+        "Refusal proves DNS failed",
+        "Timeout proves HTTP succeeded"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF2-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-F2.core",
+      "prompt": "What does CIDR /24 indicate for IPv4?",
+      "options": [
+        "A 24-bit network prefix",
+        "A 24-port service",
+        "A 24-byte address",
+        "24 DNS records"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF2-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "constructed-response",
+      "expectedMinutes": 3,
+      "competencyId": "I-F2.core",
+      "prompt": "Why should network tests be run from the source where the failure occurs?",
+      "scoring": {
+        "full": [
+          "states that routing, DNS, policy, interface and proxy state can differ by source",
+          "connects source location to the evidence"
+        ],
+        "partial": [
+          "states that different machines can have different paths"
+        ],
+        "zero": [
+          "claims one successful test proves every source path"
+        ]
+      }
+    },
+    {
+      "id": "IF2-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-F2.core",
+      "prompt": "TCP connects but TLS fails. Which layer should be investigated next?",
+      "options": [
+        "TLS negotiation, certificate and hostname behavior",
+        "Subnet calculation only",
+        "Git history",
+        "CPU scheduling only"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF2-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-F2.core",
+      "prompt": "One subnet times out to a destination while another subnet works. Give two plausible causes.",
+      "expectedElements": [
+        "source-specific routing",
+        "firewall or network policy",
+        "other source-path difference"
+      ]
+    },
+    {
+      "id": "IF2-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-F2.core",
+      "prompt": "A service is reachable over TCP but HTTPS fails during the handshake. What should be checked?",
+      "expectedElements": [
+        "certificate trust or hostname",
+        "TLS protocol/cipher compatibility",
+        "SNI or server configuration when relevant"
+      ]
+    },
+    {
+      "id": "IF2-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-F2.core",
+      "prompt": "Explain why ping does not prove an HTTPS API is healthy.",
+      "scoring": {
+        "full": [
+          "ping can use a different protocol/path",
+          "HTTPS requires DNS, TCP, TLS and HTTP/application behavior",
+          "the actual required path must be tested"
+        ],
+        "partial": [
+          "recognizes that ping tests a different protocol"
+        ],
+        "zero": [
+          "claims ping proves application health"
+        ]
+      }
+    },
+    {
+      "id": "IF2-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "I-F2.core",
+      "prompt": "Two clients resolve the same hostname to different addresses. One is fast and one times out. What should be compared first?",
+      "expectedElements": [
+        "DNS answers and resolver context",
+        "routes to the returned destinations",
+        "health/listener state of each destination"
+      ]
+    },
+    {
+      "id": "IF2-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "selected-response",
+      "expectedMinutes": 3,
+      "competencyId": "I-F2.core",
+      "prompt": "A service listens locally on 8080 but remote clients get refused. Which explanation remains plausible?",
+      "options": [
+        "Remote firewall or network policy can reject the path even though a local listener exists",
+        "DNS must be broken because the port is numeric",
+        "The process cannot accept local connections",
+        "HTTP is causing the TCP refusal"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF2-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "I-F2.core",
+      "prompt": "Design a first-minute network investigation for a request that works from one source but fails from another.",
+      "expectedElements": [
+        "DNS comparison",
+        "route/path comparison",
+        "TCP result",
+        "TLS or HTTP result",
+        "source-specific policy evidence"
+      ]
+    },
+    {
+      "id": "IF2-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-F2.core",
+      "prompt": "Give a decision rule for choosing between DNS, routing, TCP, TLS and HTTP checks.",
+      "scoring": {
+        "full": [
+          "starts from the earliest unproven layer",
+          "uses observed failure behavior",
+          "does not repeat already-proven layers without a reason"
+        ],
+        "partial": [
+          "follows the request path but lacks a precise rule"
+        ],
+        "zero": [
+          "uses a fixed command list regardless of evidence"
+        ]
+      }
+    },
+    {
+      "id": "IF2-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "I-F2.core",
+      "prompt": "An API is fast from one subnet, slow from a second, and unavailable from a third. DNS is identical. Propose two competing source-path hypotheses and a discriminating test for each.",
+      "expectedElements": [
+        "two technically plausible source-path causes",
+        "route/policy/firewall/proxy or latency evidence tied to each",
+        "recognition that identical DNS does not prove identical path"
+      ]
+    },
+    {
+      "id": "IF2-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "I-F2.core",
+      "prompt": "A team says 'the network is down' because one API times out. Build an evidence tree that can reject or support that claim.",
+      "expectedElements": [
+        "affected-scope comparison",
+        "known-good destination comparison",
+        "layered checks",
+        "branching based on evidence"
+      ]
+    },
+    {
+      "id": "IF2-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "I-F2.core",
+      "prompt": "A route change restores TCP but HTTPS still fails. Explain exactly how the evidence changes the next investigation.",
+      "expectedElements": [
+        "routing was one prior blocker",
+        "TCP reachability is now proven if connection succeeds",
+        "investigation moves to TLS/HTTP/application behavior"
+      ]
+    },
+    {
+      "id": "IF2-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "scenario",
+      "expectedMinutes": 2,
+      "competencyId": "I-F2.diagnostic",
+      "prompt": "A user reports an unreachable hostname. What is the first useful observation?",
+      "expectedElements": [
+        "whether the hostname resolves from the failing source"
+      ]
+    },
+    {
+      "id": "IF2-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "scenario",
+      "expectedMinutes": 2,
+      "competencyId": "I-F2.diagnostic",
+      "prompt": "A TCP connection is refused immediately. What does that narrow down?",
+      "expectedElements": [
+        "the destination was reached enough to reject or show no listener",
+        "it differs from a silent timeout"
+      ]
+    },
+    {
+      "id": "IF2-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-F2.diagnostic",
+      "prompt": "DNS works on the host but not in a container. Give two checks.",
+      "expectedElements": [
+        "container resolver configuration",
+        "container path to its DNS service"
+      ]
+    },
+    {
+      "id": "IF2-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-F2.diagnostic",
+      "prompt": "An API works from host B but times out from host A. What should be compared before restarting anything?",
+      "expectedElements": [
+        "routes",
+        "DNS results if a name is used",
+        "firewall or policy context",
+        "destination behavior"
+      ]
+    },
+    {
+      "id": "IF2-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-F2.diagnostic",
+      "prompt": "A service listens on all interfaces and local requests work, but remote requests are refused. What evidence separates listener state from network policy?",
+      "expectedElements": [
+        "remote connection test",
+        "firewall/network policy evidence",
+        "comparison from another remote source"
+      ]
+    },
+    {
+      "id": "IF2-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-F2.diagnostic",
+      "prompt": "TCP connects but the TLS handshake fails. What should be inspected?",
+      "expectedElements": [
+        "certificate and trust",
+        "hostname/SNI",
+        "TLS protocol compatibility"
+      ]
+    },
+    {
+      "id": "IF2-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "incident",
+      "expectedMinutes": 4,
+      "competencyId": "I-F2.diagnostic",
+      "prompt": "One availability zone cannot reach a service in another zone while same-zone traffic works. Give two hypotheses and separating tests.",
+      "expectedElements": [
+        "cross-zone route or policy issue with source-specific path evidence",
+        "destination/load-balancer policy issue with endpoint comparison"
+      ]
+    },
+    {
+      "id": "IF2-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "incident",
+      "expectedMinutes": 4,
+      "competencyId": "I-F2.diagnostic",
+      "prompt": "A DNS name has two addresses. One is fast and one times out. What should be tested before changing DNS?",
+      "expectedElements": [
+        "direct connectivity to both addresses",
+        "health/listener state",
+        "routing or policy differences"
+      ]
+    },
+    {
+      "id": "IF2-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "incident",
+      "expectedMinutes": 4,
+      "competencyId": "I-F2.diagnostic",
+      "prompt": "TCP and TLS succeed, but HTTP takes 8 seconds. What has already been narrowed out and what remains?",
+      "expectedElements": [
+        "basic connection and TLS are not the current blocker",
+        "application processing or downstream dependency latency remains"
+      ]
+    },
+    {
+      "id": "IF2-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "incident",
+      "expectedMinutes": 5,
+      "competencyId": "I-F2.diagnostic",
+      "prompt": "A network change fixes one client but breaks another. Design the smallest evidence set that separates DNS, routing and policy.",
+      "expectedElements": [
+        "DNS comparison",
+        "source-specific route comparison",
+        "policy/firewall comparison",
+        "same destination/protocol where possible"
+      ]
+    },
+    {
+      "id": "IF2-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "incident",
+      "expectedMinutes": 5,
+      "competencyId": "I-F2.diagnostic",
+      "prompt": "A service is reachable over IPv4 but not IPv6. Propose two causes and evidence that separates them.",
+      "expectedElements": [
+        "IPv6 listener/bind state",
+        "IPv6 route or policy",
+        "IPv6 DNS behavior",
+        "equivalent client tests"
+      ]
+    },
+    {
+      "id": "IF2-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "incident",
+      "expectedMinutes": 5,
+      "competencyId": "I-F2.diagnostic",
+      "prompt": "A remote request sometimes works and sometimes times out. Design a small evidence set to reveal whether the variation follows source, destination or load-balancer choice.",
+      "expectedElements": [
+        "record source",
+        "record selected destination",
+        "compare successful and failed attempts",
+        "endpoint-specific path/health evidence"
+      ]
+    },
+    {
+      "id": "IF2-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 5,
+      "competencyId": "I-F2.hands-on",
+      "prompt": "Resolve a hostname and record the returned address or addresses.",
+      "environment": [
+        "macOS/Linux dig or equivalent",
+        "Windows Resolve-DnsName equivalent"
+      ],
+      "initialState": "Use a reachable test hostname.",
+      "allowedOperations": [
+        "run DNS lookup",
+        "record answer"
+      ],
+      "success": [
+        "hostname is recorded",
+        "answer or no-answer result is recorded"
+      ],
+      "evidence": [
+        "lookup output",
+        "one-sentence interpretation"
+      ],
+      "failureConditions": [
+        "claims DNS failure without output"
+      ],
+      "recoveryRequirements": [
+        "none"
+      ],
+      "resetStrategy": "not applicable"
+    },
+    {
+      "id": "IF2-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 7,
+      "competencyId": "I-F2.hands-on",
+      "prompt": "Compare DNS and TCP behavior for a service name.",
+      "environment": [
+        "terminal"
+      ],
+      "initialState": "Use a known HTTPS endpoint.",
+      "allowedOperations": [
+        "resolve name",
+        "attempt TCP/HTTPS connection",
+        "record each result"
+      ],
+      "success": [
+        "DNS result recorded",
+        "connection result recorded",
+        "learner states whether failure is before or after name resolution"
+      ],
+      "evidence": [
+        "lookup output",
+        "connection output",
+        "diagnosis"
+      ],
+      "failureConditions": [
+        "calls successful HTTP proof of both lower layers"
+      ],
+      "recoveryRequirements": [
+        "none"
+      ],
+      "resetStrategy": "not applicable"
+    },
+    {
+      "id": "IF2-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 7,
+      "competencyId": "I-F2.hands-on",
+      "prompt": "Find the route to a remote address and explain the selected gateway/interface.",
+      "environment": [
+        "macOS/Linux route tools",
+        "Windows route/Test-NetConnection equivalent"
+      ],
+      "initialState": "Choose a reachable remote address.",
+      "allowedOperations": [
+        "inspect route",
+        "record interface and gateway"
+      ],
+      "success": [
+        "selected route is identified",
+        "gateway use is explained"
+      ],
+      "evidence": [
+        "route output",
+        "short path explanation"
+      ],
+      "failureConditions": [
+        "confuses destination with gateway"
+      ],
+      "recoveryRequirements": [
+        "none"
+      ],
+      "resetStrategy": "not applicable"
+    },
+    {
+      "id": "IF2-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-F2.hands-on",
+      "prompt": "Use a verbose HTTP client to identify the last successful layer in a request.",
+      "environment": [
+        "macOS/Linux curl",
+        "Windows curl/PowerShell equivalent"
+      ],
+      "initialState": "Use a reachable endpoint or a controlled fault.",
+      "allowedOperations": [
+        "run verbose request",
+        "record DNS, connection, TLS and HTTP stages"
+      ],
+      "success": [
+        "learner identifies the last proven layer",
+        "learner records status/failure"
+      ],
+      "evidence": [
+        "verbose output",
+        "layered interpretation"
+      ],
+      "failureConditions": [
+        "reports only generic failure"
+      ],
+      "recoveryRequirements": [
+        "none"
+      ],
+      "resetStrategy": "not applicable"
+    },
+    {
+      "id": "IF2-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-F2.hands-on",
+      "prompt": "Create a controlled local listener failure and diagnose the difference between listener state and client behavior.",
+      "environment": [
+        "local disposable service"
+      ],
+      "initialState": "Test listener works.",
+      "allowedOperations": [
+        "verify listener",
+        "stop listener",
+        "repeat connection",
+        "restore listener"
+      ],
+      "success": [
+        "working result is recorded",
+        "changed result is recorded",
+        "cause is explained",
+        "listener restored"
+      ],
+      "evidence": [
+        "before/after tests",
+        "listener state",
+        "recovery"
+      ],
+      "failureConditions": [
+        "uses a shared service"
+      ],
+      "recoveryRequirements": [
+        "restart listener",
+        "verify connection"
+      ],
+      "resetStrategy": "restart disposable listener"
+    },
+    {
+      "id": "IF2-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "I-F2.hands-on",
+      "prompt": "Create a source-specific network failure in a disposable environment and localize it to routing or policy evidence.",
+      "environment": [
+        "two disposable client sources",
+        "one test service"
+      ],
+      "initialState": "Both clients can reach the service.",
+      "allowedOperations": [
+        "capture baseline",
+        "inject one route or policy fault",
+        "repeat identical tests",
+        "compare source evidence",
+        "restore configuration"
+      ],
+      "success": [
+        "only one source fails",
+        "smallest affected path is identified",
+        "both sources recover"
+      ],
+      "evidence": [
+        "working/failing matrix",
+        "route/policy evidence",
+        "recovery"
+      ],
+      "failureConditions": [
+        "injects multiple faults"
+      ],
+      "recoveryRequirements": [
+        "restore original state",
+        "verify both clients"
+      ],
+      "resetStrategy": "restore saved test configuration"
+    },
+    {
+      "id": "IF2-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "I-F2.hands-on",
+      "prompt": "Build a layered evidence table for a controlled network failure and use it to choose the next action.",
+      "environment": [
+        "disposable networked service"
+      ],
+      "initialState": "Baseline request works.",
+      "allowedOperations": [
+        "test DNS",
+        "test route",
+        "test TCP",
+        "test TLS/HTTP as applicable",
+        "inject one fault",
+        "restore"
+      ],
+      "success": [
+        "highest confirmed layer identified",
+        "first failing/unproven layer identified",
+        "next action follows evidence",
+        "recovery verified"
+      ],
+      "evidence": [
+        "table",
+        "command outputs",
+        "decision",
+        "recovery"
+      ],
+      "failureConditions": [
+        "fixes before identifying failure layer"
+      ],
+      "recoveryRequirements": [
+        "restore baseline"
+      ],
+      "resetStrategy": "reset disposable environment"
+    },
+    {
+      "id": "IF2-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 15,
+      "competencyId": "I-F2.hands-on",
+      "prompt": "Run a complete diagnosis of a service that works from one source and fails from another. Prove the smallest failure area and restore the path.",
+      "environment": [
+        "two disposable source environments",
+        "one controlled HTTPS service"
+      ],
+      "initialState": "Both sources work before fault injection.",
+      "allowedOperations": [
+        "record baseline",
+        "inject one source-path fault",
+        "run layered evidence tests",
+        "state competing hypotheses",
+        "restore"
+      ],
+      "success": [
+        "baseline recorded",
+        "one path fails",
+        "smallest supported failure area identified",
+        "both paths restored"
+      ],
+      "evidence": [
+        "baseline matrix",
+        "fault record",
+        "layered evidence",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one path condition",
+        "uses production"
+      ],
+      "recoveryRequirements": [
+        "remove fault",
+        "verify both sources"
+      ],
+      "resetStrategy": "restore saved configuration"
+    }
+  ]
+}

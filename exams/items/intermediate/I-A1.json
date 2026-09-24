@@ -1,0 +1,834 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "I-A1",
+  "purpose": "Pilot item bank for Containers and Docker. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "IA1-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A1.core",
+      "prompt": "What problem do containers solve well in production workflows?",
+      "options": [
+        "Repeatable application environments with process and filesystem isolation",
+        "Guaranteed application correctness",
+        "Automatic database replication",
+        "Global traffic routing"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA1-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A1.core",
+      "prompt": "Why is an image different from a running container?",
+      "options": [
+        "An image is a reusable packaged state; a container is a runtime instance",
+        "An image is always a live process",
+        "A container is only source code",
+        "They are identical objects"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA1-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A1.core",
+      "prompt": "What does a container registry primarily store?",
+      "options": [
+        "Container images and related metadata",
+        "Running processes",
+        "Kubernetes Services",
+        "Terraform state"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA1-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A1.core",
+      "prompt": "Why do image layers matter?",
+      "options": [
+        "They can improve reuse and make image composition explicit",
+        "They guarantee security",
+        "They replace volumes",
+        "They are network routes"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA1-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A1.core",
+      "prompt": "What is a container network used for?",
+      "options": [
+        "Providing connectivity and name/addressing between containerized workloads",
+        "Storing application data",
+        "Scheduling Pods",
+        "Running Git hooks"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA1-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A1.core",
+      "prompt": "Why are volumes important for stateful containers?",
+      "options": [
+        "They can keep durable data outside a replaceable container instance",
+        "They increase CPU automatically",
+        "They eliminate backups",
+        "They replace databases"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA1-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A1.core",
+      "prompt": "What does a healthcheck tell an orchestrating system or operator?",
+      "options": [
+        "Whether a defined runtime test currently succeeds",
+        "Whether the image is secure",
+        "Whether all dependencies are healthy",
+        "Whether DNS is globally correct"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA1-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A1.core",
+      "prompt": "Why should containers usually run one clear main workload role?",
+      "options": [
+        "It makes lifecycle, failure and resource behavior easier to reason about",
+        "It prevents networking",
+        "It makes images smaller automatically",
+        "It removes the need for logging"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA1-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A1.core",
+      "prompt": "What is the difference between publishing and exposing a port in a container workflow?",
+      "options": [
+        "Publishing makes a container port reachable through a host-facing mapping; exposing documents intended ports",
+        "They are always identical",
+        "Exposing changes DNS",
+        "Publishing stores data"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA1-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A1.core",
+      "prompt": "Why can a container be Running but the application still be unhealthy?",
+      "options": [
+        "The process can exist while its application behavior or dependencies are failing",
+        "Running means the user path is always healthy",
+        "Health checks never matter",
+        "Containers cannot have dependencies"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA1-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A1.core",
+      "prompt": "A containerized service becomes slower after adding replicas. What is a likely system-level explanation?",
+      "expectedElements": [
+        "A shared downstream dependency may now receive more concurrent load",
+        "Replicas always reduce throughput",
+        "Docker serializes every request",
+        "Images cannot be reused"
+      ]
+    },
+    {
+      "id": "IA1-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A1.core",
+      "prompt": "Why can a new image be correct while deployment behavior is wrong?",
+      "expectedElements": [
+        "runtime configuration, mounted data, network setup or startup arguments can still be wrong"
+      ]
+    },
+    {
+      "id": "IA1-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A1.core",
+      "prompt": "What evidence distinguishes image regression from host-runtime difference?",
+      "expectedElements": [
+        "image digest/version",
+        "runtime/container engine version",
+        "environment or filesystem differences",
+        "repeatability on another host"
+      ]
+    },
+    {
+      "id": "IA1-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A1.core",
+      "prompt": "Why does container immutability not mean application data is immutable?",
+      "expectedElements": [
+        "runtime data can live in volumes or external services while the container image remains fixed"
+      ]
+    },
+    {
+      "id": "IA1-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A1.core",
+      "prompt": "Why should container resource limits be treated as part of application behavior?",
+      "expectedElements": [
+        "limits can trigger throttling or termination and change observed latency/availability"
+      ]
+    },
+    {
+      "id": "IA1-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-A1.core",
+      "prompt": "Design a production-safe Docker container baseline.",
+      "expectedElements": [
+        "known image/version",
+        "non-root where practical",
+        "resource bounds",
+        "health check",
+        "structured logs",
+        "network/storage definition"
+      ]
+    },
+    {
+      "id": "IA1-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-A1.core",
+      "prompt": "Explain why a healthcheck should test useful behavior rather than just process existence.",
+      "expectedElements": [
+        "process liveness can hide dependency or application failure",
+        "the check should represent the condition required for traffic or work"
+      ]
+    },
+    {
+      "id": "IA1-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "I-A1.core",
+      "prompt": "A service works inside its container but not from another container. Give two hypotheses and one test for each.",
+      "expectedElements": [
+        "network membership/name/port",
+        "listener binding or port mapping",
+        "container-to-container request evidence"
+      ]
+    },
+    {
+      "id": "IA1-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "I-A1.core",
+      "prompt": "Design a failure-and-recovery test for a stateful Docker service.",
+      "expectedElements": [
+        "baseline data",
+        "controlled failure",
+        "preserve volume",
+        "replace container",
+        "verify data and application behavior"
+      ]
+    },
+    {
+      "id": "IA1-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "I-A1.core",
+      "prompt": "Build a diagnostic tree for 'Docker service is unhealthy after redeploy'.",
+      "expectedElements": [
+        "image identity",
+        "startup/runtime state",
+        "health check",
+        "network/dependency",
+        "storage/configuration",
+        "recovery path"
+      ]
+    },
+    {
+      "id": "IA1-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "health output",
+        "application logs",
+        "dependency state"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "I-A1.diagnostic",
+      "prompt": "Container is Running but health is failing. What should you inspect first?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA1-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "network membership",
+        "container DNS/network configuration"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "I-A1.diagnostic",
+      "prompt": "Two containers cannot resolve each other by name. What should you inspect?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA1-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "runtime configuration",
+        "mounted files/volumes",
+        "host/runtime differences"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A1.diagnostic",
+      "prompt": "Image digest is unchanged but behavior changes after redeploy. What is a useful next comparison?",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA1-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "container-network path",
+        "listener/binding",
+        "service name/port"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A1.diagnostic",
+      "prompt": "A container works from the host but not from a peer container. What does that narrow?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA1-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "shared dependency bottleneck",
+        "increased downstream concurrency"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A1.diagnostic",
+      "prompt": "Adding replicas increases database latency. What does that suggest?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA1-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "environment/configuration difference",
+        "dependency or resource difference"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A1.diagnostic",
+      "prompt": "A container exits only in production. Give two competing hypotheses.",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA1-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "application data path",
+        "permissions",
+        "mount path/configuration"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A1.diagnostic",
+      "prompt": "A volume mounts correctly but application reports missing data. What should be checked?",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA1-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "healthcheck is narrower than user path",
+        "real dependency failure"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A1.diagnostic",
+      "prompt": "Health passes but users see failures. Why can this happen?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA1-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "container/network state",
+        "request timing/failure",
+        "dependency and restart evidence"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A1.diagnostic",
+      "prompt": "Design evidence for an intermittent Docker network incident.",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA1-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "resource limits",
+        "dependency saturation",
+        "runtime configuration",
+        "load-sensitive application behavior"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A1.diagnostic",
+      "prompt": "A new image passes local testing but fails under production load. Design the first investigation.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA1-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "identify known-good image",
+        "preserve data",
+        "switch runtime safely",
+        "verify health and user path"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "I-A1.diagnostic",
+      "prompt": "Design a safe container rollback after a bad release.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA1-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "exit code/logs",
+        "health checks",
+        "resource limits/OOM",
+        "dependency/configuration",
+        "recent image change"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "I-A1.diagnostic",
+      "prompt": "Create a diagnosis tree for repeated container restarts.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA1-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "I-A1.hands-on",
+      "prompt": "Run a known-good image and record its runtime state.",
+      "environment": [
+        "Disposable Docker lab with reset capability"
+      ],
+      "initialState": "Known-good containerized service.",
+      "allowedOperations": [
+        "run image",
+        "inspect container",
+        "record image/config/network",
+        "remove"
+      ],
+      "success": [
+        "image identity",
+        "runtime state",
+        "reset"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes multiple variables without recording them",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the affected request or workload"
+      ],
+      "resetStrategy": "Remove and recreate the disposable containers and networks."
+    },
+    {
+      "id": "IA1-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A1.hands-on",
+      "prompt": "Break a container network path and recover it.",
+      "environment": [
+        "Disposable Docker lab with reset capability"
+      ],
+      "initialState": "Known-good containerized service.",
+      "allowedOperations": [
+        "record network",
+        "make one reversible change",
+        "capture failure",
+        "restore",
+        "verify"
+      ],
+      "success": [
+        "before/after network state",
+        "failure",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes multiple variables without recording them",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the affected request or workload"
+      ],
+      "resetStrategy": "Remove and recreate the disposable containers and networks."
+    },
+    {
+      "id": "IA1-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A1.hands-on",
+      "prompt": "Prove volume persistence across container replacement.",
+      "environment": [
+        "Disposable Docker lab with reset capability"
+      ],
+      "initialState": "Known-good containerized service.",
+      "allowedOperations": [
+        "write disposable data",
+        "replace container",
+        "remount volume",
+        "verify data"
+      ],
+      "success": [
+        "data before/after",
+        "volume identity",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes multiple variables without recording them",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the affected request or workload"
+      ],
+      "resetStrategy": "Remove and recreate the disposable containers and networks."
+    },
+    {
+      "id": "IA1-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A1.hands-on",
+      "prompt": "Create a healthcheck failure and diagnose it.",
+      "environment": [
+        "Disposable Docker lab with reset capability"
+      ],
+      "initialState": "Known-good containerized service.",
+      "allowedOperations": [
+        "baseline health",
+        "break one safe dependency",
+        "observe health/logs",
+        "repair",
+        "verify"
+      ],
+      "success": [
+        "health before/after",
+        "cause evidence",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes multiple variables without recording them",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the affected request or workload"
+      ],
+      "resetStrategy": "Remove and recreate the disposable containers and networks."
+    },
+    {
+      "id": "IA1-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A1.hands-on",
+      "prompt": "Compare two image/runtime versions.",
+      "environment": [
+        "Disposable Docker lab with reset capability"
+      ],
+      "initialState": "Known-good containerized service.",
+      "allowedOperations": [
+        "run baseline",
+        "run changed version",
+        "capture differences",
+        "reset"
+      ],
+      "success": [
+        "versions",
+        "difference evidence",
+        "reset"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes multiple variables without recording them",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the affected request or workload"
+      ],
+      "resetStrategy": "Remove and recreate the disposable containers and networks."
+    },
+    {
+      "id": "IA1-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A1.hands-on",
+      "prompt": "Exercise container resource limits.",
+      "environment": [
+        "Disposable Docker lab with reset capability"
+      ],
+      "initialState": "Known-good containerized service.",
+      "allowedOperations": [
+        "baseline workload",
+        "apply controlled limit",
+        "observe behavior",
+        "restore"
+      ],
+      "success": [
+        "limit state",
+        "impact",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes multiple variables without recording them",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the affected request or workload"
+      ],
+      "resetStrategy": "Remove and recreate the disposable containers and networks."
+    },
+    {
+      "id": "IA1-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A1.hands-on",
+      "prompt": "Run an I1 container incident drill.",
+      "environment": [
+        "Disposable Docker lab with reset capability"
+      ],
+      "initialState": "Known-good containerized service.",
+      "allowedOperations": [
+        "state symptom",
+        "inspect image/runtime/network/dependency evidence",
+        "mitigate",
+        "recover",
+        "record"
+      ],
+      "success": [
+        "ordered evidence",
+        "safe action",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes multiple variables without recording them",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the affected request or workload"
+      ],
+      "resetStrategy": "Remove and recreate the disposable containers and networks."
+    },
+    {
+      "id": "IA1-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "I-A1.hands-on",
+      "prompt": "Lead a production-like Docker failure review.",
+      "environment": [
+        "Disposable Docker lab with reset capability"
+      ],
+      "initialState": "Known-good containerized service.",
+      "allowedOperations": [
+        "inject one failure",
+        "diagnose",
+        "repair",
+        "verify",
+        "write redesign decision"
+      ],
+      "success": [
+        "incident timeline",
+        "diagnosis",
+        "verified recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes multiple variables without recording them",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the affected request or workload"
+      ],
+      "resetStrategy": "Remove and recreate the disposable containers and networks."
+    }
+  ]
+}

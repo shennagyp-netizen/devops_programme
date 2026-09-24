@@ -1,0 +1,523 @@
+EPISODE B1.2 — How Does a Request Find a Service?
+
+Speaker A: Let's say the browser sends a request to api.example.local.
+
+Speaker B: And the obvious question is, where does that request go?
+
+Speaker A: Good. Not "which command do I run?" yet. First, what has to happen?
+
+Speaker B: We need the address.
+
+Speaker A: Usually. The name has to become something the network can use.
+
+Speaker B: DNS.
+
+Speaker A: Right. That makes the diagnosis easier to test.
+
+Speaker A: Let's keep that tied to the actual problem.
+
+Speaker B: Then we need a route.
+
+Speaker A: Right. We can check that without changing everything.
+
+Speaker A: Now say what evidence would confirm that.
+
+Speaker B: Then a connection.
+
+Speaker A: Right. Now we have a concrete prediction.
+
+Speaker A: That gives us a useful next test.
+
+Speaker B: Then the application protocol.
+
+Speaker A: Exactly. Keep the recovery condition in the plan.
+
+Speaker B: So the request is not one thing. It's a chain.
+
+Speaker A: That's the key idea.
+
+Speaker B: And when something fails, the chain tells us where to look.
+
+Speaker A: Yes. That is a safer way to reason about it.
+
+Speaker B: Give me the simplest possible request.
+
+Speaker A: A client wants to reach a web service.
+
+Speaker B: Okay.
+
+Speaker A: The client starts with a name. For example, example.com.
+
+Speaker B: Then DNS.
+
+Speaker A: Right. The client asks a resolver for address information.
+
+Speaker B: The resolver may already know the answer from its cache.
+
+Speaker A: Yes. Or it may ask other DNS servers until it gets the answer.
+
+Speaker B: Then we get an IP address.
+
+Speaker A: Maybe one, maybe several.
+
+Speaker B: Then the client has to decide how to reach that IP.
+
+Speaker A: That is where routing comes in.
+
+Speaker B: The local machine checks its routing table.
+
+Speaker A: Yes. Now compare that with the known-good state.
+
+Speaker B: And if the destination is not local, it uses the default gateway or another route.
+
+Speaker A: Good.
+
+Speaker B: Then TCP or UDP.
+
+Speaker A: Depending on the application.
+
+Speaker B: For a normal HTTPS request, TCP is the common starting point.
+
+Speaker A: In many setups, yes. The exact transport depends on the protocol and version, but let's keep the model simple for now.
+
+Speaker B: Then the port.
+
+Speaker A: Right. The server needs to be listening on the expected port.
+
+Speaker B: Then TLS.
+
+Speaker A: If it is HTTPS, yes.
+
+Speaker B: Then HTTP.
+
+Speaker A: Exactly.
+
+Speaker B: So if DNS fails, we never get to TCP.
+
+Speaker A: Correct.
+
+Speaker B: If DNS works but the port is blocked, we may never get to HTTP.
+
+Speaker A: Correct.
+
+Speaker B: If TLS fails, the server may be there, but the secure session does not start.
+
+Speaker A: Correct.
+
+Speaker B: This is why "the network is broken" is such a weak diagnosis.
+
+Speaker A: Very weak.
+
+Speaker B: It's like saying, "The delivery did not arrive, so the whole city is broken."
+
+Speaker A: That's a nice one.
+
+Speaker B: Maybe the name was wrong. Maybe the driver took the wrong road. Maybe the building was closed. Maybe the package arrived but the desk refused it.
+
+Speaker A: Exactly. Each case gives different evidence.
+
+Speaker B: Let's stay with the delivery example for a minute.
+
+Speaker A: Okay.
+
+Speaker B: The customer knows the shop name. They don't know the street address.
+
+Speaker A: That is similar to DNS.
+
+Speaker B: The system finds an address.
+
+Speaker A: Right.
+
+Speaker B: Then the driver uses roads.
+
+Speaker A: Similar to routing.
+
+Speaker B: Then the driver needs the right building door.
+
+Speaker A: Similar to the service port.
+
+Speaker B: Then someone inside has to answer.
+
+Speaker A: Similar to the application.
+
+Speaker B: And if the door needs a security badge, that's like TLS.
+
+Speaker A: Good.
+
+Speaker B: But we should stop the analogy before it becomes architecture.
+
+Speaker A: Thank you. The actual network does not have tiny delivery drivers living inside your packets.
+
+Speaker B: Shame.
+
+Speaker A: I know.
+
+Speaker B: Let's use commands.
+
+Speaker A: Start with DNS.
+
+Speaker A: dig example.com
+
+Speaker B: That asks the resolver.
+
+Speaker A: Yes. Look at the answer. Look at record types. Look at TTL. Don't just copy the IP.
+
+Speaker B: Why care about TTL?
+
+Speaker A: Because cached DNS data does not live forever. If a record changes, some clients may still use the older answer until the cache expires.
+
+Speaker B: So DNS can be correct in one place and old in another.
+
+Speaker A: Exactly.
+
+Speaker B: That must be fun during a production incident.
+
+Speaker A: People love saying "I changed DNS ten minutes ago."
+
+Speaker B: And then somebody says, "It works for me."
+
+Speaker A: One of the oldest lines in operations.
+
+Speaker B: What do we check next?
+
+Speaker A: We can inspect the route.
+
+Speaker A: On Linux, you might use ip route. On macOS, route tools are different. The point is the same: ask the operating system how it plans to reach the destination.
+
+Speaker B: That fits the platform model. Same concept, different command.
+
+Speaker A: Exactly. The learner's operating system changes the tool, not the mental model.
+
+Speaker B: That's important.
+
+Speaker A: Then we look at the connection.
+
+Speaker A: For HTTPS, we can use curl -v.
+
+Speaker B: The verbose output is useful because it shows more of the steps.
+
+Speaker A: Right. You can see the name, connection, TLS work and HTTP response.
+
+Speaker B: So one command can show several layers.
+
+Speaker A: Yes, but don't let that turn into a wall of text. Read one stage at a time.
+
+Speaker B: Give me a failure.
+
+Speaker A: Okay. The name resolves. The IP address is reachable. But the client gets a timeout while trying to connect.
+
+Speaker B: So DNS is not the first suspect anymore.
+
+Speaker A: Correct.
+
+Speaker B: Maybe the service is not listening. Maybe a firewall drops the traffic. Maybe a route is wrong. Maybe the server is overloaded.
+
+Speaker A: Good.
+
+Speaker B: Now change the failure. Same server, same port, but the client gets connection refused.
+
+Speaker A: What changed?
+
+Speaker B: A refusal means something answered.
+
+Speaker A: Right.
+
+Speaker B: A timeout means we did not get the expected answer in time.
+
+Speaker A: Correct.
+
+Speaker B: So those two errors tell us different things.
+
+Speaker A: Yes. Never flatten them into "can't connect."
+
+Speaker B: Another failure: connection works, TLS fails.
+
+Speaker A: Then we are farther along.
+
+Speaker B: The service exists at the address and transport level. The secure setup is the next place to inspect.
+
+Speaker A: Exactly.
+
+Speaker B: Another one: TLS works, but HTTP returns 401.
+
+Speaker A: Now the network is probably not your main problem.
+
+Speaker B: Authentication.
+
+Speaker A: Right.
+
+Speaker B: And 403 would be authorization.
+
+Speaker A: Yes.
+
+Speaker B: So the error itself tells us where to look next.
+
+Speaker A: Often, yes. It narrows the space.
+
+Speaker B: Pause me for a second.
+
+Speaker A: Your turn.
+
+Speaker B: A client can resolve a name but still fail to reach the service.
+
+Speaker A: Correct.
+
+Speaker B: So make a prediction. What would you inspect next after a successful DNS lookup and a connection timeout?
+
+Speaker A: Don't look it up. Think through the layers.
+
+Speaker B: I would check the route, the destination port, firewall behavior, and whether the server is actually listening.
+
+Speaker A: Good.
+
+Speaker B: And I would want evidence, not a guess.
+
+Speaker A: Exactly.
+
+Speaker B: This is starting to feel like a flow chart.
+
+Speaker A: It is. The flow chart is in your head.
+
+Speaker B: That's less annoying than a giant diagram.
+
+Speaker A: We can still draw the giant diagram later.
+
+Speaker B: Fine.
+
+Speaker A: Now let's connect this to the B1 project.
+
+Speaker B: Frontend calls API. API calls database.
+
+Speaker A: Good.
+
+Speaker B: User sees one error.
+
+Speaker A: Right.
+
+Speaker B: But the actual path can be frontend to DNS to load balancer to API to database DNS to database connection.
+
+Speaker A: Exactly.
+
+Speaker B: A failure anywhere can look like "the page is broken."
+
+Speaker A: This is why we learn the network before we learn the tools that sit on top of it.
+
+Speaker B: Because Docker or Kubernetes does not remove the old rules.
+
+Speaker A: It adds more layers on top of them.
+
+Speaker B: That feels slightly unfair.
+
+Speaker A: It is fair. The computer has always been unfair.
+
+Speaker B: Great.
+
+Speaker A: Let's do a more realistic case.
+
+Speaker B: Go ahead.
+
+Speaker A: The API hostname resolves. Requests from the developer laptop work. Requests from the container fail.
+
+Speaker B: So DNS works on the laptop.
+
+Speaker A: Yes.
+
+Speaker B: But that does not prove DNS works inside the container.
+
+Speaker A: Correct.
+
+Speaker B: The container has its own network setup.
+
+Speaker A: Right.
+
+Speaker B: So I need to ask the same question from the place that fails.
+
+Speaker A: That's a very important habit.
+
+Speaker B: Don't test from my laptop and assume the server agrees.
+
+Speaker A: Exactly.
+
+Speaker B: If the container can resolve the name but still cannot connect, move to the next layer.
+
+Speaker A: Yes.
+
+Speaker B: If the container cannot resolve the name at all, stay at DNS.
+
+Speaker A: Exactly.
+
+Speaker B: So location matters.
+
+Speaker A: Very much.
+
+Speaker B: Same request, different starting point.
+
+Speaker A: And different network path.
+
+Speaker B: That's something application engineers often miss.
+
+Speaker A: Not because they're careless. They just spend more time inside the application. This course is about making the layers visible.
+
+Speaker B: Mac lab?
+
+Speaker A: Open a terminal.
+
+Speaker A: First:
+
+Speaker A: dig example.com
+
+Speaker A: Tell me what address information you get.
+
+Speaker A: Then:
+
+Speaker A: curl -v https://example.com
+
+Speaker A: Watch the stages.
+
+Speaker B: DNS, connect, TLS, HTTP.
+
+Speaker A: Right.
+
+Speaker B: And I should not read every line.
+
+Speaker A: No. Pick the stage you are testing.
+
+Speaker B: Then make one failure on purpose?
+
+Speaker A: Yes, but keep it local and safe. Test a port that is not listening. Compare the result with a normal connection.
+
+Speaker B: So I can train my eyes to see timeout versus refusal.
+
+Speaker A: Exactly.
+
+Speaker B: What should success look like?
+
+Speaker A: You should be able to draw the path from name to response. Then, when I remove one step, you should know which evidence changes.
+
+Speaker B: That's harder than memorizing dig syntax.
+
+Speaker A: Good. Syntax is cheap. The model is what you need.
+
+Speaker B: Let's do the real-life example one more time.
+
+Speaker A: Delivery?
+
+Speaker B: Yes.
+
+Speaker A: You call a restaurant. You know the name, but not the street.
+
+Speaker B: DNS.
+
+Speaker A: You get the address.
+
+Speaker B: Route.
+
+Speaker A: The driver reaches the building.
+
+Speaker B: Network path.
+
+Speaker A: But the front door is locked.
+
+Speaker B: Port or access rule.
+
+Speaker A: The door opens, but the guard does not accept your badge.
+
+Speaker B: TLS or authentication.
+
+Speaker A: The guard lets you in, but the staff says your account has no permission to enter the kitchen.
+
+Speaker B: Authorization.
+
+Speaker A: Exactly.
+
+Speaker B: And if the restaurant is full and nobody answers the door?
+
+Speaker A: That can be overload, queueing, or a service problem. Again, we need evidence.
+
+Speaker B: Nice.
+
+Speaker A: Now remember: the analogy is only there to help your memory. The actual network uses packets, addresses, routes, ports, protocols and state.
+
+Speaker B: Good. I don't want to leave thinking packets are tiny couriers.
+
+Speaker A: Please do not.
+
+Speaker B: Recall time.
+
+Speaker A: Question one. What problem does DNS solve?
+
+Speaker B: It maps names to information such as IP addresses.
+
+Speaker A: Good.
+
+Speaker B: Question two.
+
+Speaker A: What is the difference between timeout and refusal?
+
+Speaker B: A refusal means something answered and rejected the connection. A timeout means the expected response did not arrive in time.
+
+Speaker A: Good.
+
+Speaker B: Question three.
+
+Speaker A: Why should you test from the place that fails?
+
+Speaker B: Because the network path, DNS settings, firewall rules, or environment may be different there.
+
+Speaker A: Good.
+
+Speaker B: Question four.
+
+Speaker A: What does TLS add to an HTTPS request?
+
+Speaker B: It adds a secure session with encryption and identity checks.
+
+Speaker A: Good.
+
+Speaker B: Question five.
+
+Speaker A: Why is "the network is broken" weak information?
+
+Speaker B: Because network failure can happen at different layers. We need evidence to know which layer failed.
+
+Speaker A: Good.
+
+Speaker B: Final challenge.
+
+Speaker A: Your B1 API works from your laptop. It fails from the container.
+
+Speaker B: I would test DNS inside the container first.
+
+Speaker A: Why first?
+
+Speaker B: Because the container has its own network environment. If the name does not resolve there, there is no point debugging HTTP yet.
+
+Speaker A: Good.
+
+Speaker B: Then I move one layer at a time.
+
+Speaker A: Exactly.
+
+Speaker B: Name. Route. Connection. Security. Application.
+
+Speaker A: That's the path.
+
+Speaker B: And if one stage works, I don't keep blaming that stage.
+
+Speaker A: Perfect.
+
+Speaker B: Wait. You just made me say "perfect."
+
+Speaker A: I'll allow it once.
+
+Speaker B: Fine.
+
+Speaker A: Now run the lab. Don't copy the answer from the transcript. Build the path yourself.
+
+Speaker B: And if I get it wrong?
+
+Speaker A: Good. Bring me the evidence.
+
+Speaker B: That's becoming the theme.
+
+Speaker A: It should.

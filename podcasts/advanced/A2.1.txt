@@ -1,0 +1,339 @@
+EPISODE A2.1 — Break One Dependency
+
+Speaker A: Today we are going to do something that feels slightly wrong.
+
+Speaker B: Break the system?
+
+Speaker A: Break one dependency on purpose.
+
+Speaker B: Carefully.
+
+Speaker A: Very carefully.
+
+Speaker B: Because if we just break things randomly, we learn noise.
+
+Speaker A: Exactly. Failure engineering starts with a question.
+
+Speaker B: "What happens if this dependency disappears?"
+
+Speaker A: Good. But do not jump to the fix yet.
+
+Speaker B: And the second question is, "What was supposed to happen?"
+
+Speaker A: Yes.
+
+Speaker A: Let’s keep that as a testable claim.
+
+Speaker B: So this is not chaos.
+
+Speaker A: It is a controlled experiment.
+
+Speaker B: Let's start with a simple service.
+
+Speaker A: Frontend, API, database.
+
+Speaker B: Maybe a cache too.
+
+Speaker A: Good.
+
+Speaker A: That gives us a useful boundary.
+
+Speaker B: The API depends on the database for the main request.
+
+Speaker A: Yes.
+
+Speaker A: Now connect that to the request path.
+
+Speaker B: The cache helps with reads.
+
+Speaker B: But I would not call it optional until we prove that.
+
+Speaker A: Right.
+
+Speaker A: I would measure that before changing anything.
+
+Speaker B: We kill the cache.
+
+Speaker A: First prediction?
+
+Speaker B: I would still expect the API itself to stay alive unless the cache is secretly required.
+
+Speaker A: Good.
+
+Speaker A: That is where the failure becomes useful.
+
+Speaker B: Reads may get slower.
+
+Speaker A: Maybe. I want evidence for that one.
+
+Speaker B: Database load may increase.
+
+Speaker A: Exactly. That is the clue I care about.
+
+Speaker B: So if every API request fails, our model was incomplete.
+
+Speaker A: Or the cache was doing more than we knew.
+
+Speaker B: That is the useful part.
+
+Speaker A: Failure tells us about hidden dependencies.
+
+Speaker B: Human example?
+
+Speaker A: A building with several doors.
+
+Speaker B: You block one door.
+
+Speaker A: People should use another.
+
+Speaker B: But if everyone suddenly stops moving, that door was more important than the sign on the wall said.
+
+Speaker A: Exactly.
+
+Speaker A: Now we can compare it with the real system.
+
+Speaker B: Or all the other doors lead to the same locked corridor.
+
+Speaker A: Good. That is a shared dependency, and it is easy to miss when the diagram looks clean.
+
+Speaker B: So in software, "we have three copies" does not mean we have three independent paths.
+
+Speaker A: Correct.
+
+Speaker A: Keep the user-visible effect in the model.
+
+Speaker B: Let's define dependency.
+
+Speaker A: A dependency is something the service needs from another component to complete some work.
+
+Speaker B: It can be a database.
+
+Speaker A: Queue.
+
+Speaker B: DNS.
+
+Speaker A: Identity service.
+
+Speaker B: Object storage.
+
+Speaker A: External API.
+
+Speaker B: Time source in some systems.
+
+Speaker A: Right.
+
+Speaker B: And that is different from a dependency that only affects one feature.
+
+Speaker A: Some are needed only for one feature.
+
+Speaker B: Some can be bypassed.
+
+Speaker A: Some have fallbacks.
+
+Speaker B: And some have no safe fallback.
+
+Speaker A: Exactly.
+
+Speaker B: So before the failure, map the request.
+
+Speaker A: What does the user ask?
+
+Speaker B: Which service receives it?
+
+Speaker A: What does that service call?
+
+Speaker B: Which call is synchronous?
+
+Speaker A: Which work is asynchronous?
+
+Speaker B: What data is required before a response can be sent?
+
+Speaker A: Good.
+
+Speaker B: Prediction.
+
+Speaker A: Go.
+
+Speaker B: We disable a recommendation service.
+
+Speaker A: What should a product page do?
+
+Speaker B: The page should still load, but recommendations may disappear.
+
+Speaker B: That is the behavior I would expect if the dependency is truly optional.
+
+Speaker A: Good. That gives us a useful baseline.
+
+Speaker B: Unless the page waits for recommendations before returning.
+
+Speaker A: Exactly. The failure becomes part of the feature path.
+
+Speaker B: Then we discover the dependency is synchronous.
+
+Speaker A: And that changes the failure.
+
+Speaker B: So architecture diagrams are useful, but runtime behavior matters more.
+
+Speaker A: Yes.
+
+Speaker B: Next prediction.
+
+Speaker A: A database becomes unreachable.
+
+Speaker B: The API returns errors.
+
+Speaker B: Unless a cache or fallback can still satisfy the request.
+
+Speaker A: Usually.
+
+Speaker B: But maybe reads from cache still work.
+
+Speaker A: Good.
+
+Speaker B: Then some users succeed and some fail.
+
+Speaker A: Which makes the incident harder to see.
+
+Speaker B: Partial availability.
+
+Speaker A: Exactly.
+
+Speaker B: Now imagine the service has a fallback.
+
+Speaker A: It can return a previous value.
+
+Speaker B: That keeps the user moving.
+
+Speaker A: But the value can be stale.
+
+Speaker B: So availability improved.
+
+Speaker A: While freshness got worse.
+
+Speaker B: Trade-off.
+
+Speaker A: Right.
+
+Speaker B: A fallback is not free.
+
+Speaker A: Every fallback creates a behavior you have to understand and test.
+
+Speaker B: What about retries?
+
+Speaker A: We will go deeper in the next lesson, but yes, retries can hide the dependency failure at first.
+
+Speaker B: The API looks slow instead of immediately broken.
+
+Speaker A: Correct.
+
+Speaker B: So the first visible symptom does not always show the first failed component.
+
+Speaker A: One of the most important ideas in distributed systems.
+
+Speaker B: Let's design the experiment.
+
+Speaker A: Start with a known-good system.
+
+Speaker B: Confirm the normal request path.
+
+Speaker A: Record latency and error rate.
+
+Speaker B: Then disable one dependency.
+
+Speaker A: Change one thing only.
+
+Speaker B: Observe.
+
+Speaker A: Which requests fail?
+
+Speaker B: Which requests slow down?
+
+Speaker A: Which requests stay healthy?
+
+Speaker B: Which logs change?
+
+Speaker A: Which metrics change?
+
+Speaker B: Then restore the dependency.
+
+Speaker A: And verify the system recovers.
+
+Speaker B: That's the key.
+
+Speaker A: Recovery is part of the test.
+
+Speaker B: Not just the failure.
+
+Speaker A: Exactly.
+
+Speaker B: Mac lab?
+
+Speaker A: Use a small local stack or a Kubernetes test deployment.
+
+Speaker B: Pick one non-core dependency.
+
+Speaker A: Capture the healthy response first.
+
+Speaker B: Disable the dependency.
+
+Speaker A: Send the same request.
+
+Speaker B: Compare status, latency and logs.
+
+Speaker B: Then restore it and run the same request again.
+
+Speaker A: Restore it.
+
+Speaker B: Then repeat with a core dependency.
+
+Speaker A: And compare the blast radius.
+
+Speaker B: Nice.
+
+Speaker A: The learner should write one sentence after each test.
+
+Speaker B: "This dependency is required for..."
+
+Speaker A: Good.
+
+Speaker B: That forces a precise statement.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: One. What is a dependency?
+
+Speaker B: A component or service another component needs for some work.
+
+Speaker A: Two. Why break one dependency at a time?
+
+Speaker B: So the observed effect can be tied to one controlled change.
+
+Speaker A: Three. What does a fallback trade?
+
+Speaker B: It may improve availability while reducing freshness, correctness guarantees, or feature quality.
+
+Speaker A: Four. Why measure before failure?
+
+Speaker B: Without the normal state, the difference is hard to prove.
+
+Speaker A: Five. Why verify recovery?
+
+Speaker B: Because a system that fails and then appears fixed is not proven healthy until the expected behavior is restored.
+
+Speaker B: Final challenge?
+
+Speaker A: Pick one dependency in A2.
+
+Speaker B: State what the service should do when it disappears.
+
+Speaker A: Then test whether reality matches.
+
+Speaker B: And if it does not?
+
+Speaker A: Do not patch first.
+
+Speaker B: Map the real dependency.
+
+Speaker A: Exactly.

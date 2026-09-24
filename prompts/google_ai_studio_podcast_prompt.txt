@@ -1,85 +1,264 @@
-Create a long-form educational podcast from the supplied DevOps lesson. The final audio should feel like two smart people talking while solving a real problem, not like an AI reading a lesson plan.
+Create a long-form educational podcast from the supplied DevOps lesson.
 
-SPEAKERS
-Speaker A: senior systems/DevOps engineer. Calm, experienced, precise. Speaks like a real engineer thinking aloud.
-Speaker B: strong software engineer rebuilding networking/operations intuition. Curious, skeptical, interrupts naturally, asks the question a competent engineer would actually ask.
+The non-negotiable goal is this:
+**the learner should feel that two real engineers are sitting together, looking at the same broken system, and talking it through.**
+It must not feel like a textbook being read aloud, two AI voices taking turns, or corporate training.
 
-THE FEEL
-- This is a conversation, not a lecture with two labels.
-- Use contractions: "it's", "we're", "you've", "doesn't".
-- Prefer ordinary spoken words over formal textbook phrasing.
-- Vary sentence length. Some sentences should be short. Occasionally let a thought trail, get corrected, or restart naturally.
-- Speaker B can disagree, misunderstand something briefly, or challenge an assumption. Speaker A should respond to the exact misunderstanding instead of giving a canned definition.
-- Use occasional "right", "okay", "wait", "hang on", "so..." and similar natural transitions, but never as filler every sentence.
-- Avoid corporate phrases and AI-sounding transitions such as "today we will explore", "let's dive deep", "in conclusion", "it is important to note", "as an AI", "precisely" repeated over and over.
-- Do not make every answer perfectly shaped. Real speech has small detours, corrections, and reactions.
-- Keep jokes quick and observational. A joke should feel like something an engineer would actually say in conversation.
-- Do not use jokes about protected groups, politics, religion, nationality, disability, illness, or humiliation.
-- Never sacrifice technical accuracy for personality.
+## SPEAKERS
 
-LEARNING / ENTERTAINMENT BALANCE
-- Roughly 75% of the spoken time is technical reasoning, troubleshooting, architecture, or retrieval.
-- Roughly 25% is real-life situations, workplace moments, familiar experiences, and memorable analogies.
-- After every analogy, come back explicitly to the literal technical model.
-- The listener should repeatedly move through: understand -> predict -> operate -> break -> diagnose -> repair -> recall -> design.
+Speaker A: senior systems/DevOps engineer. Experienced, calm, technically sharp, but human. Thinks aloud. Sometimes starts an explanation, notices a better way to say it, and corrects course.
 
-EPISODE SHAPE
-Use this flow, but do not announce it like a training course:
+Speaker B: strong software engineer rebuilding operational intuition. Curious and competent. Asks the question a good engineer would actually ask. Can disagree, challenge assumptions, notice a contradiction, or say "I don't buy that yet."
+
+Neither speaker is a narrator. They are participants in a real conversation.
+
+## HUMAN SPEECH CONTRACT
+
+Write for the ear, not the page.
+
+Required:
+- contractions: "it's", "we're", "you've", "doesn't"
+- ordinary spoken vocabulary
+- varied sentence length
+- short turns mixed with occasional longer explanations
+- natural reactions: "wait", "okay", "hang on", "right", "no, look", "that's weird"
+- occasional self-correction: "Actually, let me rephrase that."
+- occasional overlap in thought: one speaker can start answering before the other has completely finished
+- genuine disagreement when the material supports it
+- occasional uncertainty before evidence resolves it
+- small, believable detours that return quickly to the technical problem
+
+Do NOT:
+- make every turn polished or perfectly structured
+- make speakers alternate in a perfect A/B/A/B rhythm
+- make Speaker B ask a question every time Speaker A finishes
+- make Speaker A give a definition followed by Speaker B saying "exactly"
+- use fake enthusiasm or constant praise
+- use repetitive filler
+- use rhetorical phrases just because they sound conversational
+- use "today we're going to..."
+- use "let's dive in"
+- use "in conclusion"
+- use "it is important to note"
+- use "as we can see"
+- use "precisely" repeatedly
+- use corporate training language
+- use AI/meta language
+- sound like a podcast host introducing segments
+
+A useful test:
+If the dialogue could be pasted into a corporate e-learning narrator script without changing anything, it is too robotic.
+
+Another test:
+Read the dialogue aloud. If the two voices could swap lines without changing the meaning or personality, the characterisation is too weak.
+
+## CONVERSATIONAL DYNAMICS
+
+Give the engineers different conversational jobs.
+
+Speaker A often:
+- forms or revises a systems model
+- notices hidden assumptions
+- asks the listener to predict
+- connects symptoms to mechanisms
+- admits uncertainty when evidence is insufficient
+
+Speaker B often:
+- tests whether the explanation survives a counterexample
+- asks "but why?"
+- catches missing layers
+- proposes an attractive but wrong hypothesis
+- translates the issue into application-engineer language
+
+They should occasionally surprise each other.
+
+Good:
+"Wait. That can't be DNS, because we never got as far as a hostname lookup."
+"Right. Show me the evidence."
+"Okay... yeah. I'm blaming the wrong layer."
+
+Bad:
+"Excellent question."
+"Absolutely."
+"That is a great way to think about it."
+
+Do not turn every exchange into praise.
+
+## TECHNICAL / REAL-LIFE BALANCE
+
+Target roughly:
+- 75% technical reasoning, troubleshooting, architecture, operational decisions and retrieval
+- 25% familiar human situations, workplace moments, maintenance, queues, deliveries, customer support, travel, shops, offices, etc.
+
+Real-life examples are seasoning, not the lesson.
+
+After an analogy, return to the literal technical mechanism:
+"So the analogy helps with X, but the actual system is doing Y."
+
+Never replace technical precision with a cute analogy.
+
+## LEARNING LOOP
+
+The conversation should naturally move through:
+
+problem
+-> first hypothesis
+-> mechanism
+-> prediction
+-> operation
+-> failure
+-> evidence
+-> diagnosis
+-> repair
+-> recall
+-> production transfer
+-> design
+
+Do not announce these as course stages.
+
+## EPISODE SHAPE
+
 1. Cold open: a believable operational problem.
-2. Conversation: what each person initially thinks is happening.
-3. Mental model: build the mechanism from first principles.
-4. Human example: a workplace/daily-life situation that makes the mechanism memorable.
-5. Back to reality: map the analogy directly to the actual system.
-6. Prediction pause: ask the listener to predict what will happen before revealing it.
-7. Failure: create a realistic misconfiguration or partial failure.
-8. Diagnosis: reason from evidence, not guesswork.
-9. Mac lab: explain exactly what the learner should do and what they should expect to observe.
-10. Recall: five questions, spaced naturally through the conversation.
-11. Production transfer: connect the same mechanism to a large system.
-12. Finish with one challenge that requires the listener to act or explain, not just remember.
+2. Initial disagreement or competing hypotheses.
+3. Build the mental model from first principles.
+4. Brief human example.
+5. Return to the literal system.
+6. Ask the learner to predict.
+7. Reveal the outcome.
+8. Introduce a realistic failure or misleading symptom.
+9. Diagnose from observable evidence.
+10. Tell the learner exactly what to run in the lab and what evidence matters.
+11. Pause for retrieval.
+12. Transfer the same mechanism to production-scale systems.
+13. End with one practical challenge.
 
-SPOKEN EXERCISE CUES
-Use natural spoken invitations such as:
+## SPOKEN EXERCISE CUES
+
+Use natural invitations:
 - "Pause me for a second."
 - "Before I tell you, what do you think happens?"
 - "Okay, make a prediction."
-- "Don't look this up yet. Tell me what evidence you'd expect."
-- "Run the command now, then come back."
-- "If your prediction was wrong, that's useful. Let's see why."
+- "Don't look it up yet. What evidence would you expect?"
+- "Run that command now, then come back."
+- "If your prediction was wrong, good. Now let's figure out why."
 
-When these cues appear, leave enough textual space around them for a human speaker or TTS system to make the pause audible. Do not use machine-like countdowns unless the exercise itself genuinely needs one.
+Leave enough space around these moments for an audible pause.
 
-REAL-LIFE EXAMPLES
-Use examples from ordinary life, software teams, clinics, shops, restaurants, deliveries, offices, travel, queues, customer support, maintenance, or other familiar situations. Keep them short and vivid. A real-life example is there to sharpen the technical model, not replace it.
+Do not add theatrical countdowns.
 
-TECHNICAL RULES
-- Preserve technical facts, protocol names, commands, causal relationships, formulas, and numbers from the source.
+## REAL-LIFE EXAMPLES
+
+Use short, concrete examples from ordinary life and engineering work:
+queues, deliveries, clinics, shops, restaurants, offices, travel, customer support, maintenance, teams handing work to one another.
+
+Keep them vivid but brief.
+
+## HUMOUR
+
+Use small observational jokes that sound like engineers joking naturally:
+- deadpan comments
+- mild irony about systems behaviour
+- jokes about maintenance, debugging, documentation, or production habits
+
+Do not force a joke into every episode.
+
+Never joke about protected groups, politics, religion, nationality, disability, illness, humiliation, or personal vulnerability.
+
+## TECHNICAL RULES
+
+- Preserve technical facts, protocol names, commands, causal relationships, formulas and numbers from the source.
 - Never invent tool output.
-- When showing a command, say why it is being run and what evidence matters in its output.
-- Separate layers: hardware/link, IP, transport, application protocol, container runtime, orchestrator, cloud, application.
+- Explain why a command is being run and what evidence matters.
+- Separate layers: hardware/link, IP, transport, application protocol, container runtime, orchestrator, cloud and application.
 - Distinguish symptom from cause.
-- Distinguish timeout, refusal, reset, authentication failure, authorization failure, and application error.
+- Distinguish timeout, refusal, reset, authentication failure, authorization failure and application error.
 - Explain failure domains and recovery actions.
 - Keep networking foundations explicit because the learner knows application development but is rebuilding network intuition.
-- Mention uncertainty honestly when several hypotheses remain.
+- When several hypotheses remain possible, say so and identify the next observation needed.
+- Never pretend a diagnosis is certain without evidence.
 
-VOICE / RECORDING
-Write for a human voice.
-- One idea per spoken paragraph.
-- Use punctuation to create natural breath points.
-- Do not use markdown bullets inside spoken dialogue.
-- Avoid long lists read aloud like documentation.
-- Keep speaker turns short enough to feel conversational, usually 1–5 sentences.
-- Let Speaker B interrupt with practical questions.
-- Let Speaker A occasionally say "wait", "look at this", or "that's the bit people miss".
-- Do not make Speaker B sound foolish.
-- Do not make Speaker A sound omniscient or theatrical.
-- The result should be believable if recorded by two engineers sitting at a desk with coffee.
+## VOICE / RECORDING
 
-OUTPUT
-Return only the finished dialogue, with "Speaker A:" and "Speaker B:" labels.
+Write for a human voice:
+- one main idea per spoken paragraph
+- punctuation should create natural breath points
+- short paragraphs
+- generally 1–5 sentences per turn, with longer turns only when genuinely needed
+- do not use markdown bullets inside dialogue
+- do not read documentation lists aloud
+- occasional sentence fragments are acceptable when natural
+- avoid excessive ellipses and fake stuttering
+- avoid stage directions such as "[laughs]" or "[pause]" unless the generation system specifically requires them
+- do not make either speaker theatrical, childish, sarcastic or omniscient
+- Speaker A should not sound like a professor
+- Speaker B should not sound like a student asking obvious questions
+- both should sound like experienced engineers with different experience
+
+## ANTI-ROBOTIC REVIEW BEFORE OUTPUT
+
+Silently inspect the finished dialogue before returning it.
+
+Reject and rewrite sections that have:
+- repeated sentence patterns
+- repeated "Great question / Exactly / Absolutely"
+- perfect A/B alternation
+- artificial chapter transitions
+- textbook definitions dropped into dialogue without interaction
+- excessive filler
+- obvious AI-style summaries
+- generic motivational lines
+- unnatural jokes
+- characters who always agree
+- characters who never make or correct a mistaken hypothesis
+
+The final result should survive a blind listening test where the listener is not told it was generated.
+
+## OUTPUT
+
+Return only the finished dialogue with "Speaker A:" and "Speaker B:" labels.
+
 Do not include a preface, summary, metadata, or instructions to the audio model.
-End with five natural retrieval questions and one practical challenge, embedded in the dialogue rather than as a formal worksheet.
+
+End naturally with five retrieval questions and one practical challenge, embedded in the conversation rather than as a worksheet.
 
 Source lesson:
 [PASTE LESSON SCRIPT HERE]
+
+
+## VOICE/REACT SYNCHRONIZATION CONTRACT
+
+The spoken script will later be aligned to React using stable turn IDs and timestamp cues.
+
+Do not:
+- insert timing assumptions into the dialogue
+- rely on sentence length for pacing
+- add spoken markers such as "cue one" or "timestamp"
+- change the order of dialogue around prediction/lab/recall moments without updating the exercise semantics
+
+The important spoken moments must remain explicit and naturally audible:
+- prediction invitation
+- lab handoff
+- recall transition
+
+The React application will use an externally generated alignment manifest to pause the audio at those moments.
+
+## PLAIN ENGLISH CONTRACT
+
+Use simple general English.
+
+The target is roughly B1–B2 general English for spoken teaching. The technical level can be advanced, but the English around it must stay easy to follow.
+
+Rules:
+- use short, direct sentences
+- use common words
+- use contractions
+- use "so", "but", "because", "then", and "if" more often than formal connectors
+- keep one main idea per sentence when possible
+- explain a technical term in plain words the first time it appears
+- do not use difficult English to make the lesson sound professional
+
+Avoid words such as "facilitate", "utilize", "commence", "subsequently", "therefore", "nevertheless", "consequently", "approximately", "sufficient", "obtain", "regarding", "comprehensive", and "mitigate" when a simpler word works.
+
+Do not simplify real technical terms just because they sound advanced. Keep exact technical terms such as TCP, DNS, CIDR, reconciliation, idempotency, replication, backpressure, and observability.
+
+The exam must be hard because the engineering problem is hard, not because the English is hard.

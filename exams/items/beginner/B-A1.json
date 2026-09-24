@@ -1,0 +1,872 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "B-A1",
+  "purpose": "Pilot item bank for Service Communication. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "BA1-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-A1.core",
+      "prompt": "What does an HTTP response normally contain?",
+      "options": [
+        "A status, headers, and an optional body",
+        "Only a DNS address",
+        "Only a TCP port",
+        "A CPU allocation"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA1-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-A1.core",
+      "prompt": "What is TLS primarily adding to an HTTPS connection?",
+      "options": [
+        "Routing",
+        "Encryption and authenticated server identity",
+        "A new IP address",
+        "A process ID"
+      ],
+      "correctOption": 1
+    },
+    {
+      "id": "BA1-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-A1.core",
+      "prompt": "Which protocol normally carries the application request after a successful HTTPS connection is established?",
+      "options": [
+        "HTTP",
+        "ARP",
+        "ICMP",
+        "DHCP"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA1-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A1.core",
+      "prompt": "DNS resolves correctly and TCP connects, but the TLS handshake fails. Which layer should be investigated next?",
+      "options": [
+        "TLS configuration or certificate behavior",
+        "Subnet size",
+        "Process ID allocation",
+        "Git history"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA1-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A1.core",
+      "prompt": "A server returns HTTP 401. What does that usually indicate?",
+      "options": [
+        "The server is asking the client to authenticate",
+        "The DNS record is missing",
+        "The TCP route is absent",
+        "The disk is full"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA1-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "constructed-response",
+      "expectedMinutes": 3,
+      "competencyId": "B-A1.core",
+      "prompt": "Explain the request path from a hostname to an HTTPS application response.",
+      "scoring": {
+        "full": [
+          "mentions name resolution",
+          "mentions TCP connection",
+          "mentions TLS handshake",
+          "mentions HTTP request/response"
+        ],
+        "partial": [
+          "describes at least two correct stages"
+        ],
+        "zero": [
+          "treats HTTPS as a single step without separating layers"
+        ]
+      },
+      "expectedElements": [
+        "DNS resolves the hostname to an address",
+        "routing reaches the destination",
+        "TCP establishes the connection",
+        "TLS authenticates/encrypts the connection",
+        "HTTP carries the application request and response"
+      ]
+    },
+    {
+      "id": "BA1-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A1.core",
+      "prompt": "A request gets HTTP 404 after a successful TLS handshake. What has already been proven healthy?",
+      "options": [
+        "At least DNS, TCP, TLS, and an HTTP-speaking endpoint",
+        "The database",
+        "Every downstream dependency",
+        "The whole application"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA1-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A1.core",
+      "prompt": "Why can an HTTP 500 be more useful than a timeout for diagnosis?",
+      "options": [
+        "It proves the request reached application-level handling",
+        "It proves the network is perfect",
+        "It identifies the exact line of code",
+        "It proves the database is healthy"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA1-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "constructed-response",
+      "expectedMinutes": 3,
+      "competencyId": "B-A1.core",
+      "prompt": "What is the difference between authentication and authorization?",
+      "scoring": {
+        "full": [
+          "authentication establishes who the caller is",
+          "authorization determines what the caller is allowed to do"
+        ],
+        "partial": [
+          "distinguishes identity from permission without clear wording"
+        ],
+        "zero": [
+          "treats them as the same check"
+        ]
+      },
+      "expectedElements": [
+        "authentication establishes who the caller is",
+        "authorization determines what that identity is allowed to do"
+      ]
+    },
+    {
+      "id": "BA1-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A1.core",
+      "prompt": "A browser shows a certificate hostname error. Which issue is most directly relevant?",
+      "options": [
+        "The certificate identity does not match the requested hostname",
+        "The subnet mask is too large",
+        "The HTTP body is too small",
+        "The CPU scheduler is slow"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA1-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A1.core",
+      "prompt": "DNS works, TCP connects, TLS succeeds, and HTTP returns 503. Give two plausible causes.",
+      "expectedElements": [
+        "the application or upstream dependency may be unavailable",
+        "a load balancer or service may be intentionally reporting temporary unavailability",
+        "other technically sound application-level hypotheses receive credit"
+      ]
+    },
+    {
+      "id": "BA1-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A1.core",
+      "prompt": "A client times out before TLS starts. What does that rule out, and what remains?",
+      "expectedElements": [
+        "the request has not yet proven a successful TLS handshake",
+        "network reachability, listener state, routing, firewall, or connection establishment remain candidates"
+      ]
+    },
+    {
+      "id": "BA1-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "B-A1.core",
+      "prompt": "Explain why restarting an API after an HTTP 500 does not prove that the database caused the failure.",
+      "scoring": {
+        "full": [
+          "500 is evidence of application-level failure, not a unique root cause",
+          "restart changes state without isolating the failing dependency",
+          "additional request/dependency evidence is required"
+        ],
+        "partial": [
+          "recognizes that 500 does not identify one root cause"
+        ],
+        "zero": [
+          "claims 500 proves the database is broken"
+        ]
+      },
+      "expectedElements": [
+        "restart can remove evidence and change temporary state",
+        "database failure is only one hypothesis among several application dependencies",
+        "evidence from the failed request should be collected before restart"
+      ]
+    },
+    {
+      "id": "BA1-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A1.core",
+      "prompt": "A service returns 200 for health but 500 for one real user operation. What should the learner infer?",
+      "expectedElements": [
+        "the health endpoint is not proving the full dependency path",
+        "the real operation may exercise additional state or dependencies",
+        "next tests should follow the failing user path"
+      ]
+    },
+    {
+      "id": "BA1-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "selected-response",
+      "expectedMinutes": 3,
+      "competencyId": "B-A1.core",
+      "prompt": "An API returns 401 for one client and 403 for another after both reach the same endpoint. Which distinction matters most?",
+      "options": [
+        "401 points to authentication failure or missing credentials; 403 points to authorization denial after identity is known or inferred",
+        "401 always means DNS failure and 403 always means TLS failure",
+        "Both prove the database is down",
+        "Neither is an application-level signal"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA1-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A1.core",
+      "prompt": "Design a first-minute investigation for an HTTPS API returning intermittent 500s. Choose four observations and state what each separates.",
+      "expectedElements": [
+        "request status and latency",
+        "application logs or trace/request identity",
+        "downstream dependency timing or errors",
+        "correlation with recent changes or traffic"
+      ],
+      "scoringNote": "Credit equivalent evidence-driven designs."
+    },
+    {
+      "id": "BA1-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "B-A1.core",
+      "prompt": "Give a decision rule for moving from network checks to HTTP/application checks during a failing request.",
+      "scoring": {
+        "full": [
+          "moves upward once the lower-layer step is proven",
+          "uses the actual observed failure stage",
+          "does not repeat lower-layer tests without a reason"
+        ],
+        "partial": [
+          "states that the request path should drive the next check"
+        ],
+        "zero": [
+          "always runs the same checks regardless of evidence"
+        ]
+      },
+      "expectedElements": [
+        "use the result of each successful lower-layer check to move upward",
+        "once DNS, TCP, and TLS succeed, focus on HTTP/application evidence",
+        "do not keep repeating lower-layer tests without new evidence"
+      ]
+    },
+    {
+      "id": "BA1-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "B-A1.core",
+      "prompt": "An API is fast for GET requests but slow for POST requests only during high traffic. Both use the same TLS path. Propose two competing application-level hypotheses and one observation for each.",
+      "expectedElements": [
+        "write-specific downstream saturation, validation, locking, or queueing hypothesis",
+        "cache/read-path vs write-path difference or equivalent",
+        "a discriminating metric/trace/log observation for each"
+      ]
+    },
+    {
+      "id": "BA1-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "B-A1.core",
+      "prompt": "A client sees fast TLS handshakes but slow HTTP responses. Build a compact evidence chain that separates server processing time from network transfer time.",
+      "expectedElements": [
+        "request timing breakdown",
+        "server-side processing or dependency timing",
+        "response transfer size/network timing",
+        "correlation between client and server timestamps"
+      ]
+    },
+    {
+      "id": "BA1-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "B-A1.core",
+      "prompt": "Write a short diagnostic tree for 'the API is down' that starts with evidence and ends at either a safe mitigation or a targeted next test.",
+      "scoring": {
+        "full": [
+          "separates DNS, connection, TLS, HTTP and application causes",
+          "branches based on evidence",
+          "includes a safe action and a recovery check"
+        ],
+        "partial": [
+          "has several correct layers but weak branching"
+        ],
+        "zero": [
+          "starts with an unexplained restart or scaling action"
+        ]
+      },
+      "expectedElements": [
+        "scope the impact first",
+        "check DNS, then TCP, then TLS, then HTTP/application behavior only as evidence requires",
+        "inspect the relevant dependency when application evidence points there",
+        "choose mitigation only after the failure stage is supported by evidence"
+      ]
+    },
+    {
+      "id": "BA1-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "scenario",
+      "expectedMinutes": 2,
+      "competencyId": "B-A1.diagnostic",
+      "prompt": "HTTPS fails. What is the first useful question about the request path?",
+      "expectedElements": [
+        "which stage failed: DNS, TCP, TLS, or HTTP"
+      ]
+    },
+    {
+      "id": "BA1-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "scenario",
+      "expectedMinutes": 2,
+      "competencyId": "B-A1.diagnostic",
+      "prompt": "The server returns HTTP 404. What should you avoid concluding?",
+      "expectedElements": [
+        "that the network is broken",
+        "that the whole service is down"
+      ]
+    },
+    {
+      "id": "BA1-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A1.diagnostic",
+      "prompt": "TLS succeeds but one API route returns 500. Give two next checks.",
+      "expectedElements": [
+        "application logs or traces for that route",
+        "downstream dependency timing/errors",
+        "recent code/configuration change"
+      ]
+    },
+    {
+      "id": "BA1-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A1.diagnostic",
+      "prompt": "A health endpoint returns 200 while a real operation returns 503. What does the difference tell you?",
+      "expectedElements": [
+        "the health endpoint is a narrower test",
+        "the real operation has an additional dependency or condition"
+      ]
+    },
+    {
+      "id": "BA1-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A1.diagnostic",
+      "prompt": "One client gets 401 and another gets 403 on the same route. What should you compare?",
+      "expectedElements": [
+        "credentials/authentication state",
+        "identity/authorization policy",
+        "request headers or token claims where relevant"
+      ]
+    },
+    {
+      "id": "BA1-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A1.diagnostic",
+      "prompt": "The API is fast from one region but slow from another. DNS and TLS timing look similar. What should you inspect next?",
+      "expectedElements": [
+        "application processing latency by region",
+        "dependency/data locality or regional backend path",
+        "server-side traces or timing"
+      ]
+    },
+    {
+      "id": "BA1-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "incident",
+      "expectedMinutes": 4,
+      "competencyId": "B-A1.diagnostic",
+      "prompt": "500 rate rises only for POST /orders after a deployment. GET /orders stays normal. Give two hypotheses and a discriminating observation for each.",
+      "expectedElements": [
+        "write-path regression or validation hypothesis with logs/traces",
+        "database contention/locking or downstream dependency hypothesis with timing/metrics"
+      ]
+    },
+    {
+      "id": "BA1-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "incident",
+      "expectedMinutes": 4,
+      "competencyId": "B-A1.diagnostic",
+      "prompt": "HTTPS works, but the response takes 6 seconds and the server reports 200. What evidence distinguishes server processing from network transfer?",
+      "expectedElements": [
+        "server-side request duration",
+        "response size",
+        "client timing breakdown",
+        "server-to-client transfer metrics where available"
+      ]
+    },
+    {
+      "id": "BA1-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "incident",
+      "expectedMinutes": 4,
+      "competencyId": "B-A1.diagnostic",
+      "prompt": "A load balancer reports 503 while direct requests to one backend return 200. What should you investigate?",
+      "expectedElements": [
+        "health-check policy or backend selection",
+        "other backend instances that may be unhealthy",
+        "load-balancer routing behavior"
+      ]
+    },
+    {
+      "id": "BA1-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "incident",
+      "expectedMinutes": 5,
+      "competencyId": "B-A1.diagnostic",
+      "prompt": "Design the smallest evidence set that can separate TLS failure, HTTP failure and application failure.",
+      "expectedElements": [
+        "TLS handshake result",
+        "HTTP status/headers",
+        "application logs/traces or server-side request result"
+      ]
+    },
+    {
+      "id": "BA1-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "incident",
+      "expectedMinutes": 5,
+      "competencyId": "B-A1.diagnostic",
+      "prompt": "A request sometimes returns 200 and sometimes 500. Both responses are fast, DNS and TLS are normal. Propose two competing application hypotheses and the evidence that would separate them.",
+      "expectedElements": [
+        "state-dependent application bug or inconsistent backend instance",
+        "data/dependency-specific failure",
+        "request correlation, backend identity, logs or traces to discriminate"
+      ]
+    },
+    {
+      "id": "BA1-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "incident",
+      "expectedMinutes": 5,
+      "competencyId": "B-A1.diagnostic",
+      "prompt": "An engineer wants to restart the API after intermittent 500s. Design a safer first five minutes that preserves useful evidence and still gives a mitigation path.",
+      "expectedElements": [
+        "capture request/error evidence before restart",
+        "compare scope and timing",
+        "identify safe mitigation such as traffic reduction or rollback when supported",
+        "define a recovery check"
+      ]
+    },
+    {
+      "id": "BA1-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 5,
+      "competencyId": "B-A1.hands-on",
+      "prompt": "Use curl to make an HTTPS request and identify the HTTP status.",
+      "environment": [
+        "macOS/Linux curl",
+        "Windows curl or PowerShell adapter"
+      ],
+      "initialState": "Use a known reachable HTTPS endpoint.",
+      "allowedOperations": [
+        "run an HTTPS request",
+        "record the status"
+      ],
+      "success": [
+        "status code is recorded",
+        "learner explains it is an HTTP-layer observation"
+      ],
+      "evidence": [
+        "terminal output",
+        "one-sentence interpretation"
+      ],
+      "failureConditions": [
+        "reports only success/failure without status"
+      ],
+      "recoveryRequirements": [
+        "none"
+      ],
+      "resetStrategy": "not applicable"
+    },
+    {
+      "id": "BA1-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 7,
+      "competencyId": "B-A1.hands-on",
+      "prompt": "Use a verbose HTTPS client to identify the last successful stage of a request.",
+      "environment": [
+        "macOS/Linux curl",
+        "Windows curl or PowerShell adapter"
+      ],
+      "initialState": "Use a reachable HTTPS endpoint.",
+      "allowedOperations": [
+        "run verbose HTTPS request",
+        "identify DNS, TCP, TLS and HTTP stages shown"
+      ],
+      "success": [
+        "learner identifies the last proven stage",
+        "learner records the observed status or failure"
+      ],
+      "evidence": [
+        "verbose request output",
+        "layered interpretation"
+      ],
+      "failureConditions": [
+        "says only 'curl failed'"
+      ],
+      "recoveryRequirements": [
+        "none"
+      ],
+      "resetStrategy": "not applicable"
+    },
+    {
+      "id": "BA1-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 7,
+      "competencyId": "B-A1.hands-on",
+      "prompt": "Compare a healthy endpoint and an endpoint that returns an HTTP error, then explain the difference between transport and application evidence.",
+      "environment": [
+        "terminal"
+      ],
+      "initialState": "Provide one healthy endpoint and one controlled HTTP error endpoint.",
+      "allowedOperations": [
+        "request both endpoints",
+        "record connection and HTTP results"
+      ],
+      "success": [
+        "learner shows that transport can succeed while HTTP reports an error",
+        "learner names the layer of the difference"
+      ],
+      "evidence": [
+        "two request outputs",
+        "comparison table"
+      ],
+      "failureConditions": [
+        "calls both endpoints network failures"
+      ],
+      "recoveryRequirements": [
+        "no environment change"
+      ],
+      "resetStrategy": "not applicable"
+    },
+    {
+      "id": "BA1-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "B-A1.hands-on",
+      "prompt": "Use an intentionally wrong API path to produce a controlled HTTP 404 and diagnose it without changing the server.",
+      "environment": [
+        "local HTTP service or disposable container"
+      ],
+      "initialState": "A known valid API route is available.",
+      "allowedOperations": [
+        "request the valid route",
+        "request a deliberately wrong route",
+        "compare the responses"
+      ],
+      "success": [
+        "learner records the 200-or-equivalent valid response",
+        "learner records the 404 response",
+        "learner explains why this is not a DNS/TCP failure"
+      ],
+      "evidence": [
+        "request outputs",
+        "written diagnosis"
+      ],
+      "failureConditions": [
+        "changes server configuration"
+      ],
+      "recoveryRequirements": [
+        "none"
+      ],
+      "resetStrategy": "not applicable"
+    },
+    {
+      "id": "BA1-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "B-A1.hands-on",
+      "prompt": "Create a controlled application failure after successful HTTP connection and diagnose the failing dependency.",
+      "environment": [
+        "two disposable local services or containers"
+      ],
+      "initialState": "API and dependency both work.",
+      "allowedOperations": [
+        "verify healthy request",
+        "disable the dependency",
+        "repeat the request",
+        "inspect application evidence",
+        "restore dependency"
+      ],
+      "success": [
+        "transport remains reachable",
+        "application failure is reproduced",
+        "dependency is identified as the cause",
+        "system recovers after restoration"
+      ],
+      "evidence": [
+        "baseline request",
+        "failing request",
+        "logs or dependency evidence",
+        "recovery request"
+      ],
+      "failureConditions": [
+        "breaks more than one dependency"
+      ],
+      "recoveryRequirements": [
+        "restore dependency",
+        "verify healthy request"
+      ],
+      "resetStrategy": "restore baseline container state"
+    },
+    {
+      "id": "BA1-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "B-A1.hands-on",
+      "prompt": "Diagnose a controlled intermittent 500 where one backend instance is faulty.",
+      "environment": [
+        "disposable load-balanced local stack"
+      ],
+      "initialState": "At least two equivalent backends serve the same route.",
+      "allowedOperations": [
+        "verify both healthy",
+        "make one backend return 500",
+        "send repeated requests",
+        "record backend identity where available",
+        "restore the backend"
+      ],
+      "success": [
+        "learner proves the failure correlates with one backend",
+        "learner avoids treating the load balancer itself as the root cause without evidence",
+        "all backends return healthy responses after recovery"
+      ],
+      "evidence": [
+        "request results",
+        "backend correlation",
+        "recovery proof"
+      ],
+      "failureConditions": [
+        "changes all backends"
+      ],
+      "recoveryRequirements": [
+        "restore faulty backend",
+        "verify repeated success"
+      ],
+      "resetStrategy": "reset backend container"
+    },
+    {
+      "id": "BA1-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "B-A1.hands-on",
+      "prompt": "Build a request-path evidence table for a controlled HTTPS failure and use it to choose the next diagnostic action.",
+      "environment": [
+        "disposable HTTPS service",
+        "terminal tools"
+      ],
+      "initialState": "A single controlled failure is injected at one layer.",
+      "allowedOperations": [
+        "test DNS",
+        "test TCP",
+        "test TLS",
+        "test HTTP/application response as reachable",
+        "record evidence",
+        "state next action"
+      ],
+      "success": [
+        "learner identifies the highest confirmed layer",
+        "learner identifies the first failing/unproven layer",
+        "next action follows the evidence"
+      ],
+      "evidence": [
+        "completed evidence table",
+        "outputs",
+        "decision statement"
+      ],
+      "failureConditions": [
+        "runs fixes before identifying the failure layer"
+      ],
+      "recoveryRequirements": [
+        "restore baseline"
+      ],
+      "resetStrategy": "revert test configuration"
+    },
+    {
+      "id": "BA1-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 15,
+      "competencyId": "B-A1.hands-on",
+      "prompt": "Run a complete diagnosis of a service that passes DNS and TCP but has an application failure. Preserve evidence, mitigate safely, restore the service, and explain why the final diagnosis is stronger than a restart guess.",
+      "environment": [
+        "disposable multi-service stack"
+      ],
+      "initialState": "The service is healthy and baseline evidence is available.",
+      "allowedOperations": [
+        "capture baseline",
+        "introduce one controlled application failure",
+        "run layered tests",
+        "capture evidence",
+        "perform a safe mitigation",
+        "restore service"
+      ],
+      "success": [
+        "baseline is recorded",
+        "failure is localized above transport",
+        "mitigation is justified",
+        "service recovers",
+        "learner explains the causal evidence"
+      ],
+      "evidence": [
+        "baseline and failure outputs",
+        "logs/traces",
+        "mitigation record",
+        "recovery verification",
+        "final diagnosis"
+      ],
+      "failureConditions": [
+        "uses production or shared infrastructure",
+        "destroys pre-mitigation evidence"
+      ],
+      "recoveryRequirements": [
+        "restore baseline",
+        "verify successful request"
+      ],
+      "resetStrategy": "reset the disposable stack"
+    }
+  ]
+}

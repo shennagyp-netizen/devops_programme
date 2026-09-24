@@ -1,18 +1,657 @@
-import{useState}from"react";
-import type{Lesson}from"../data/curriculum";
-import{MotionIllustration}from"./MotionIllustration";
-import{PodcastCoach}from"./PodcastCoach";
+import { useEffect, useState } from "react";
+import type { CourseLesson } from "../data/courseLessons";
+import type { PlatformId } from "../data/programme";
+import type { DiagnosticRecommendation } from "../data/diagnostics";
+import { diagnosticBySection } from "../data/diagnostics";
+import { recordHandsOnEvidence, recordMachineVerification } from "../data/evidence";
+import {
+  getHandsOnTask,
+  validateHandsOnEvidence,
+  type HandsOnTask
+} from "../data/handsOn";
+import { commandForPlatform } from "../data/platformAdapters";
+import { runtimeTaskForLesson } from "../data/runtimeVerification";
+import {
+  getLocalTerminalToken,
+  localTerminalAgentStatus,
+  runLocalTerminalTask,
+  setLocalTerminalToken
+} from "../data/localTerminalAgent";
+import { MotionIllustration } from "./MotionIllustration";
+import { PodcastCoach } from "./PodcastCoach";
+import { AssessmentPanel } from "./AssessmentPanel";
 
-type Mode="learn"|"listen"|"do"|"recall"|"design";
-export function LessonPanel({lesson,mastered,onMaster}:{lesson:Lesson;mastered:boolean;onMaster:()=>void}){
- const[m,setM]=useState<Mode>("learn");
- return <section className="lesson"><div className="lesson-head"><div><span className="eyebrow">{lesson.id} · {lesson.domain}</span><h2>{lesson.title}</h2><p>{lesson.objective}</p></div><button className={mastered?"mastered":"primary"} onClick={onMaster}>{mastered?"Mastered":"Mark mastered"}</button></div>
- <MotionIllustration lesson={lesson}/>
- <nav className="mode-tabs">{(["learn","listen","do","recall","design"]as Mode[]).map(x=><button key={x} className={m===x?"active":""} onClick={()=>setM(x)}>{x==="listen"?"co-teacher":x}</button>)}</nav>
- {m==="learn"&&<div className="content-card"><h3>Mental model</h3><p>{lesson.objective}</p><p>Connect it to the layer below, the layer above and the failure mode that appears when it is wrong.</p></div>}
- {m==="listen"&&<PodcastCoach lesson={lesson}/>}
- {m==="do"&&<div className="content-card"><h3>Mac lab</h3><p>{lesson.lab.objective}</p><pre><code>{lesson.lab.command}</code></pre><h4>Break/fix</h4><p>{lesson.lab.challenge}</p></div>}
- {m==="recall"&&<div className="content-card"><h3>Retrieval</h3><ol>{lesson.recall.map(q=><li key={q}>{q}</li>)}</ol></div>}
- {m==="design"&&<div className="content-card"><h3>Production design</h3><p>Place this concept in a system serving millions of users. Identify dependency, failure domain, first signal, mitigation and recovery.</p></div>}
- </section>
+type Mode =
+  | "learn"
+  | "listen"
+  | "do"
+  | "recall"
+  | "design"
+  | "assessment";
+
+export function LessonPanel({
+  lesson,
+  mastered,
+  platform,
+  onMaster,
+  diagnosticRecommendation,
+  onSelectLesson,
+  onEvidenceRecorded
+}: {
+  lesson: CourseLesson;
+  mastered: boolean;
+  platform: PlatformId;
+  onMaster: () => void;
+  diagnosticRecommendation?: DiagnosticRecommendation;
+  onSelectLesson?: (lessonId: string) => void;
+  onEvidenceRecorded?: () => void;
+}) {
+  const [mode, setMode] = useState<Mode>("learn");
+  const [showTheory, setShowTheory] = useState(true);
+  const evidenceKey = `devops-programme-hands-on-evidence:${lesson.id}`;
+  const [handsOnEvidence, setHandsOnEvidence] = useState<Record<string, string>>({});
+  const [exerciseRecorded, setExerciseRecorded] = useState(false);
+  const [validationMessage, setValidationMessage] = useState("");
+  const [machineVerificationMessage, setMachineVerificationMessage] = useState("");
+  const [localAgentAvailable, setLocalAgentAvailable] = useState(false);
+  const [localAgentPlatform, setLocalAgentPlatform] = useState<string | null>(null);
+  const [localAgentInfo, setLocalAgentInfo] = useState("Not connected");
+  const [localAgentToken, setLocalAgentTokenState] = useState(getLocalTerminalToken());
+  const [localAgentRunning, setLocalAgentRunning] = useState(false);
+  const [machineResults, setMachineResults] = useState<
+    Array<{
+      stepId: string;
+      stdout: string;
+      stderr: string;
+      exitCode: number;
+      result: string;
+    }>
+  >([]);
+  const command = commandForPlatform(lesson, platform);
+  const handsOnTask: HandsOnTask = getHandsOnTask(lesson);
+  const runtimeTask = runtimeTaskForLesson(lesson.id);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(evidenceKey);
+      if (!stored) {
+        setHandsOnEvidence({});
+        setExerciseRecorded(false);
+        setMachineResults([]);
+        setMachineVerificationMessage("");
+        return;
+      }
+
+      const parsed = JSON.parse(stored) as {
+        evidence?: Record<string, string>;
+        verified?: boolean;
+        machineVerified?: boolean;
+        machineEnvelope?: {
+          stepResults?: Array<{
+            stepId: string;
+            stdout: string;
+            stderr: string;
+            exitCode: number;
+            result: string;
+          }>;
+        };
+      };
+      setHandsOnEvidence(parsed.evidence ?? {});
+      setExerciseRecorded(parsed.verified === true);
+      setMachineResults(parsed.machineEnvelope?.stepResults ?? []);
+    } catch {
+      setHandsOnEvidence({});
+      setExerciseRecorded(false);
+      setMachineResults([]);
+      setMachineVerificationMessage("");
+    }
+  }, [evidenceKey]);
+
+  useEffect(() => {
+    setShowTheory(diagnosticRecommendation !== "skip-theory");
+  }, [diagnosticRecommendation]);
+
+  useEffect(() => {
+    let active = true;
+
+    async function checkAgent() {
+      const status = await localTerminalAgentStatus();
+      if (!active) return;
+      if (status.available) {
+        setLocalAgentAvailable(true);
+        setLocalAgentPlatform(status.platform);
+        setLocalAgentInfo(`Connected · ${status.platform} · agent ${status.version}`);
+      } else {
+        setLocalAgentAvailable(false);
+        setLocalAgentPlatform(null);
+        setLocalAgentInfo(status.reason);
+      }
+    }
+
+    void checkAgent();
+    const interval = window.setInterval(() => {
+      void checkAgent();
+    }, 5000);
+
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+    };
+  }, []);
+
+  async function runOnLaptop() {
+    if (!runtimeTask) return;
+
+    if (!localAgentToken.trim()) {
+      setMachineVerificationMessage(
+        "Start the DevOps terminal agent and enter its pairing token first."
+      );
+      return;
+    }
+
+    setLocalAgentRunning(true);
+    setMachineVerificationMessage("Running the verified exercise on this laptop...");
+
+    try {
+      const envelope = await runLocalTerminalTask({
+        taskId: runtimeTask.taskId,
+        platform,
+        token: localAgentToken
+      });
+
+      const result = recordMachineVerification({
+        course: lesson.course,
+        projectId: lesson.projectId,
+        task: runtimeTask,
+        envelope,
+        summary: `Verified laptop execution for ${lesson.id}`
+      });
+
+      if (!result.recorded) {
+        setExerciseRecorded(false);
+        setMachineResults(envelope.stepResults ?? []);
+        setMachineVerificationMessage(
+          `Laptop execution returned invalid evidence: ${result.failures.join(" ")}`
+        );
+        return;
+      }
+
+      const isFullExerciseVerification = runtimeTask.scope === "exercise";
+      setExerciseRecorded(isFullExerciseVerification);
+      setMachineResults(envelope.stepResults ?? []);
+      try {
+        localStorage.setItem(
+          evidenceKey,
+          JSON.stringify({
+            taskId: runtimeTask.taskId,
+            verified: runtimeTask.scope === "exercise",
+            machineVerified: true,
+            verificationLevel: "machine-verified",
+            machineEnvelope: envelope,
+            savedAt: new Date().toISOString()
+          })
+        );
+      } catch {
+        // Evidence ledger is already updated; local UI persistence is best-effort.
+      }
+
+      setMachineVerificationMessage(
+        runtimeTask.scope === "exercise"
+          ? "Laptop terminal execution verified and saved."
+          : "Laptop probe execution verified and saved. Complete the required hands-on exercise below to unlock the lesson."
+      );
+      onEvidenceRecorded?.();
+    } catch (error) {
+      setExerciseRecorded(false);
+      setMachineVerificationMessage(
+        error instanceof Error
+          ? `Laptop terminal execution failed: ${error.message}`
+          : "Laptop terminal execution failed."
+      );
+    } finally {
+      setLocalAgentRunning(false);
+    }
+  }
+
+  async function importMachineEvidence(file: File | undefined) {
+    if (!file) return;
+
+    if (!runtimeTask) {
+      setMachineVerificationMessage(
+        "No verified execution contract is published for this lesson. Use the manual terminal path."
+      );
+      return;
+    }
+
+    try {
+      const source = await file.text();
+      const envelope = JSON.parse(source);
+      const result = recordMachineVerification({
+        course: lesson.course,
+        projectId: lesson.projectId,
+        task: runtimeTask,
+        envelope,
+        summary: `Verified remote execution for ${lesson.id}`
+      });
+
+      if (!result.recorded) {
+        setExerciseRecorded(false);
+        setMachineVerificationMessage(
+          `Machine evidence rejected: ${result.failures.join(" ")}`
+        );
+        return;
+      }
+
+      const isFullExerciseVerification = runtimeTask.scope === "exercise";
+      setExerciseRecorded(isFullExerciseVerification);
+      setMachineResults(envelope.stepResults ?? []);
+      try {
+        const existing = localStorage.getItem(evidenceKey);
+        const parsedExisting = existing ? JSON.parse(existing) : {};
+        localStorage.setItem(
+          evidenceKey,
+          JSON.stringify({
+            ...parsedExisting,
+            taskId: runtimeTask.taskId,
+            verified: runtimeTask.scope === "exercise",
+            machineVerified: true,
+            verificationLevel: "machine-verified",
+            machineEnvelope: envelope,
+            savedAt: new Date().toISOString()
+          })
+        );
+      } catch {
+        // Machine evidence already entered the ledger; browser persistence is best-effort.
+      }
+      setMachineVerificationMessage(
+        isFullExerciseVerification
+          ? "Verified execution evidence was accepted and saved locally."
+          : "Machine probe evidence was accepted. Complete the required hands-on exercise below to unlock the lesson."
+      );
+    } catch (error) {
+      setExerciseRecorded(false);
+      setMachineVerificationMessage(
+        error instanceof Error
+          ? `Could not read machine evidence: ${error.message}`
+          : "Could not read machine evidence."
+      );
+    }
+  }
+
+  const remediationTarget =
+    diagnosticBySection[lesson.sectionId]?.remediationLessonIds[0];
+
+  return (
+    <section className="lesson">
+      <div className="lesson-head">
+        <div>
+          <span className="eyebrow">
+            {lesson.id} · {lesson.domain} · {lesson.projectId}
+          </span>
+          <h2>{lesson.title}</h2>
+          <p>{lesson.objective}</p>
+        </div>
+        <button
+          className={mastered ? "mastered" : "primary"}
+          onClick={onMaster}
+          disabled={!exerciseRecorded && !mastered}
+        >
+          {mastered
+            ? "Mastered"
+            : exerciseRecorded
+              ? "Mark complete"
+              : "Complete the required exercise first"}
+        </button>
+      </div>
+
+      <div className="content-card">
+        <span className="eyebrow">{lesson.kind.toUpperCase()}</span>
+        <h3>Remember this</h3>
+        <p>{lesson.humanExample}</p>
+        <p className="range">
+          Course section: {lesson.sectionId} · Project: {lesson.projectId}
+        </p>
+      </div>
+
+      <MotionIllustration lesson={lesson} />
+
+      <nav className="mode-tabs">
+        {(
+          ["learn", "listen", "do", "recall", "design", "assessment"] as Mode[]
+        ).map((item) => (
+          <button
+            key={item}
+            className={mode === item ? "active" : ""}
+            onClick={() => setMode(item)}
+          >
+            {item === "listen" ? "co-teacher" : item}
+          </button>
+        ))}
+      </nav>
+
+      {mode === "learn" && (
+        <>
+          <div className="content-card">
+            <span className="eyebrow">THEORY ADAPTATION</span>
+            <h3>
+              {diagnosticRecommendation === "skip-theory"
+                ? "Theory skipped"
+                : diagnosticRecommendation === "condense-theory"
+                  ? "Theory can be condensed"
+                  : diagnosticRecommendation === "remediate"
+                    ? "Remediation first"
+                    : "Mental model"}
+            </h3>
+
+            {diagnosticRecommendation === "skip-theory" && !showTheory ? (
+              <>
+                <p>Your diagnostic shows strong prior knowledge.</p>
+                <button className="secondary" onClick={() => setShowTheory(true)}>
+                  Open theory anyway
+                </button>
+              </>
+            ) : (
+              <>
+                <p>{lesson.objective}</p>
+                <p>
+                  {diagnosticRecommendation === "skip-theory"
+                    ? "Theory was skipped by default. Use the exercise as the proof step, and reopen this model only when you need it."
+                    : diagnosticRecommendation === "condense-theory"
+                      ? "You already have the main idea. Read this once, then prove it in the exercise."
+                      : diagnosticRecommendation === "remediate"
+                        ? "Your prerequisite diagnostic found a knowledge gap. Complete the remediation target before relying on this theory."
+                        : "Start with the smallest question that can separate two possible causes. Then test that question."}
+                </p>
+              </>
+            )}
+          </div>
+          {diagnosticRecommendation === "remediate" ? (
+            <div className="content-card">
+              <h4>Targeted remediation</h4>
+              <p>
+                {diagnosticBySection[lesson.sectionId]?.remediationLessonIds.join(" · ") ??
+                  "A targeted remediation lesson is not yet mapped for this section."}
+              </p>
+              {onSelectLesson && remediationTarget ? (
+                <button
+                  className="primary"
+                  onClick={() => onSelectLesson(remediationTarget)}
+                >
+                  Open remediation
+                </button>
+              ) : null}
+            </div>
+          ) : null}
+        </>
+      )}
+
+      {mode === "listen" &&
+        (lesson.podcastStatus === "script-ready" && lesson.podcast ? (
+          <PodcastCoach lesson={lesson} />
+        ) : (
+          <div className="content-card">
+            <span className="eyebrow">SCRIPT READY · VOICE NOT YET ALIGNED</span>
+            <h3>The spoken lesson is ready for recording</h3>
+            <p>
+              The script, lab, recall and assessment are ready. The voice
+              recording is kept separate and React will use it only after its
+              timing manifest matches this exact script version.
+            </p>
+          </div>
+        ))}
+
+      {mode === "do" && (
+        <div className="content-card">
+          <h3>Operate on {platform}</h3>
+          <p>{lesson.lab.objective}</p>
+          <pre>
+            <code>{command}</code>
+          </pre>
+
+          {runtimeTask ? (
+            <div className="content-card">
+              <span className="eyebrow">VERIFIED LAPTOP TERMINAL</span>
+              <h4>Run this exercise directly from the website</h4>
+              <p>
+                The website can use the DevOps terminal agent installed on this
+                laptop. The browser never receives arbitrary shell access; it
+                sends only this lesson's allowlisted task to the local agent.
+              </p>
+
+              <p className="range">{localAgentInfo}</p>
+              {localAgentAvailable && localAgentPlatform !== platform ? (
+                <p className="range">
+                  Select {localAgentPlatform} as the course environment to run
+                  this lesson directly on this laptop, or use the manual
+                  terminal path.
+                </p>
+              ) : null}
+
+              {!localAgentAvailable ? (
+                <>
+                  <p>
+                    Start the local agent once on this laptop:
+                  </p>
+                  <pre>
+                    <code>npm run terminal-agent</code>
+                  </pre>
+                </>
+              ) : null}
+
+              <label className="evidence-field">
+                <strong>Pair this browser with the local agent</strong>
+                <input
+                  type="password"
+                  value={localAgentToken}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setLocalAgentTokenState(value);
+                    setLocalTerminalToken(value);
+                  }}
+                  placeholder="Paste the pairing token printed by the agent"
+                />
+              </label>
+
+              <button
+                className="primary"
+                disabled={
+                  !localAgentAvailable ||
+                  !localAgentToken.trim() ||
+                  localAgentRunning ||
+                  localAgentPlatform !== platform
+                }
+                onClick={() => {
+                  void runOnLaptop();
+                }}
+              >
+                {localAgentRunning ? "Running on this laptop..." : "Run verified exercise on this laptop"}
+              </button>
+
+              <p className="range">
+                This uses the laptop's real terminal environment. If the agent
+                is not available, use the manual terminal instructions below.
+              </p>
+
+              {machineVerificationMessage ? (
+                <p className="range">{machineVerificationMessage}</p>
+              ) : null}
+
+              {machineResults.length ? (
+                <div className="content-card">
+                  <span className="eyebrow">LAPTOP TERMINAL RESULTS</span>
+                  {machineResults.map((step) => (
+                    <div key={step.stepId}>
+                      <h4>
+                        {step.stepId} · {step.result} · exit {step.exitCode}
+                      </h4>
+                      {step.stdout ? (
+                        <pre><code>{step.stdout}</code></pre>
+                      ) : null}
+                      {step.stderr ? (
+                        <pre><code>{step.stderr}</code></pre>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              {platform !== "windows" ? (
+                <details>
+                  <summary>Optional remote machine</summary>
+                  <p>
+                    SSH remote execution remains available for a real VM or
+                    physical machine.
+                  </p>
+                  <pre>
+                    <code>{`npm run hands-on:remote -- --execute --lesson ${runtimeTask.lessonId} --platform ${platform} --host <host> --user <user>`}</code>
+                  </pre>
+                  <label className="evidence-field">
+                    <strong>Import remote verification JSON</strong>
+                    <input
+                      type="file"
+                      accept="application/json,.json"
+                      onChange={(event) => {
+                        void importMachineEvidence(event.target.files?.[0]);
+                      }}
+                    />
+                  </label>
+                </details>
+              ) : null}
+            </div>
+          ) : null}
+
+          <h4>Break / fix</h4>
+          <p>{lesson.lab.challenge}</p>
+
+          <div className="content-card">
+            <span className="eyebrow">EXERCISE EVIDENCE · {handsOnTask.verificationLevel}</span>
+            <h4>{handsOnTask.title}</h4>
+            <p>{handsOnTask.objective}</p>
+            <ol>
+              {handsOnTask.steps.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+
+            <h4>Evidence required</h4>
+            {handsOnTask.evidenceFields.map((field) => (
+              <label key={field.id} className="evidence-field">
+                <strong>{field.label}</strong>
+                <textarea
+                  value={handsOnEvidence[field.id] ?? ""}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setHandsOnEvidence((current) => ({
+                      ...current,
+                      [field.id]: value
+                    }));
+                    setExerciseRecorded(false);
+                    setValidationMessage("");
+                  }}
+                  placeholder={field.kind}
+                />
+              </label>
+            ))}
+
+            <button
+              className="primary"
+              onClick={() => {
+                const validation = validateHandsOnEvidence(
+                  handsOnTask,
+                  handsOnEvidence
+                );
+                if (!validation.valid) {
+                  setExerciseRecorded(false);
+                  setValidationMessage(validation.failures.join(" "));
+                  return;
+                }
+
+                const summary = handsOnTask.evidenceFields
+                  .map((field) => handsOnEvidence[field.id]?.trim())
+                  .filter(Boolean)
+                  .join(" | ");
+
+                try {
+                  localStorage.setItem(
+                    evidenceKey,
+                    JSON.stringify({
+                      taskId: handsOnTask.id,
+                      evidence: handsOnEvidence,
+                      verified: true,
+                      verificationLevel: handsOnTask.verificationLevel,
+                      savedAt: new Date().toISOString()
+                    })
+                  );
+                } catch {
+                  // Local evidence is best-effort in the MVP.
+                }
+
+                recordHandsOnEvidence({
+                  course: lesson.course,
+                  projectId: lesson.projectId,
+                  lessonId: lesson.id,
+                  taskId: handsOnTask.id,
+                  summary,
+                  verificationLevel: handsOnTask.verificationLevel,
+                  evidencePayload: handsOnEvidence
+                });
+
+                setExerciseRecorded(true);
+                setValidationMessage("Evidence structure validated and saved locally.");
+                onEvidenceRecorded?.();
+              }}
+            >
+              Validate and record evidence
+            </button>
+
+            {validationMessage ? (
+              <p className="range">{validationMessage}</p>
+            ) : null}
+
+            {exerciseRecorded ? (
+              <p className="range">
+                This task is structurally validated. It is not yet machine-verified against the learner's environment.
+              </p>
+            ) : null}
+
+            <p className="range">
+              Success criteria: {handsOnTask.successCriteria.join(" · ")}
+            </p>
+            <p className="range">
+              {handsOnTask.verificationNote}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {mode === "recall" && (
+        <div className="content-card">
+          <h3>Retrieval</h3>
+          <ol>
+            {lesson.recall.map((question) => (
+              <li key={question}>{question}</li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      {mode === "design" && (
+        <div className="content-card">
+          <h3>Production design</h3>
+          <p>
+            Put this concept into a system serving millions of users. Name the
+            dependency, first signal, failure domain, safe action and recovery
+            check.
+          </p>
+        </div>
+      )}
+
+      {mode === "assessment" && (
+        <AssessmentPanel
+          courseId={lesson.course}
+          sectionId={lesson.sectionId}
+        />
+      )}
+    </section>
+  );
 }

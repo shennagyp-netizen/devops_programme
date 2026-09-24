@@ -1,0 +1,484 @@
+EPISODE B3.1 — Why Use a Queue?
+
+Speaker A: We have a new problem.
+
+Speaker B: Of course.
+
+Speaker A: The B3 app receives more work than one API process can finish immediately.
+
+Speaker B: So we need a queue.
+
+Speaker A: Maybe. First tell me what problem a queue would solve.
+
+Speaker B: It separates receiving work from processing work.
+
+Speaker A: Good. That makes the diagnosis easier to test.
+
+Speaker A: Let's keep that tied to the actual problem.
+
+Speaker B: The API can accept the request, put the work somewhere safe, and a worker handles it later.
+
+Speaker A: Exactly. We can check that without changing everything.
+
+Speaker A: Now say what evidence would confirm that.
+
+Speaker B: Why is that useful?
+
+Speaker A: Think about a restaurant.
+
+Speaker B: Okay.
+
+Speaker A: The waiter writes orders down.
+
+Speaker B: The kitchen cooks them.
+
+Speaker A: Does the waiter stand in the kitchen waiting for every meal to finish?
+
+Speaker B: No.
+
+Speaker A: That would be a terrible restaurant.
+
+Speaker B: And a terrible API.
+
+Speaker A: Exactly. Now we have a concrete prediction.
+
+Speaker A: That gives us a useful next test.
+
+Speaker B: So the waiter is the producer.
+
+Speaker A: Roughly.
+
+Speaker B: The order queue holds the work.
+
+Speaker A: Right. Keep the recovery condition in the plan.
+
+Speaker A: I would not change the system before checking that.
+
+Speaker B: The kitchen worker is the consumer.
+
+Speaker A: Exactly. That is a safer way to reason about it.
+
+Speaker A: Keep the user-visible effect in view.
+
+Speaker B: Good. Now compare that with the known-good state.
+
+Speaker B: That is the part I would verify first.
+
+Speaker A: Now let's map it to software.
+
+Speaker B: Client sends request.
+
+Speaker A: API accepts it.
+
+Speaker B: API writes a message to the queue.
+
+Speaker A: Worker reads the message.
+
+Speaker B: Worker does the work.
+
+Speaker A: Worker records success.
+
+Speaker B: And the client does not have to wait for the whole job.
+
+Speaker A: Right, when the business flow allows asynchronous work.
+
+Speaker B: That's the key. Not every operation can be delayed.
+
+Speaker A: Correct. That tells us which layer to inspect next.
+
+Speaker A: Now the assumption is explicit.
+
+Speaker B: A user clicking "pay now" is different from "generate this report."
+
+Speaker A: Exactly. I want the observation before the fix.
+
+Speaker A: That makes the diagnosis easier to test.
+
+Speaker B: Report generation can wait.
+
+Speaker A: Often yes.
+
+Speaker B: Payment may need a different design.
+
+Speaker A: Correct. That is where the real mechanism shows up.
+
+Speaker A: We can check that without changing everything.
+
+Speaker B: So we first ask whether the work can be asynchronous.
+
+Speaker A: Good. Now the failure has a clear boundary.
+
+Speaker A: Now we have a concrete prediction.
+
+Speaker B: What problem appears if the worker is slow?
+
+Speaker A: Queue depth grows.
+
+Speaker B: Meaning work is arriving faster than it is being processed.
+
+Speaker A: Exactly. Let's see whether the evidence supports that.
+
+Speaker A: Keep the recovery condition in the plan.
+
+Speaker B: So queue depth becomes a useful signal.
+
+Speaker A: Yes. That would change my next move.
+
+Speaker A: That is a safer way to reason about it.
+
+Speaker B: If the queue keeps growing, we have a capacity problem.
+
+Speaker A: Good. Keep the incident scoped to one hypothesis.
+
+Speaker B: We may add workers.
+
+Speaker A: Right. Let's keep that tied to the actual problem.
+
+Speaker B: But then the database can become the bottleneck.
+
+Speaker A: Exactly. Now say what evidence would confirm that.
+
+Speaker B: So queues can move the bottleneck.
+
+Speaker A: Very important.
+
+Speaker B: Just like adding checkout lanes.
+
+Speaker A: Yes. That gives us a useful next test.
+
+Speaker B: More workers do not mean infinite capacity.
+
+Speaker A: Nothing means infinite capacity.
+
+Speaker B: Fair.
+
+Speaker A: Another important idea is retry.
+
+Speaker B: If the worker fails, we may put the message back.
+
+Speaker A: Right.
+
+Speaker B: But then we can process the same message more than once.
+
+Speaker A: Exactly.
+
+Speaker B: Which leads to idempotency.
+
+Speaker A: Good.
+
+Speaker B: Explain it simply.
+
+Speaker A: If we perform the same operation twice, the final result should still be correct when the operation is designed to be repeated safely.
+
+Speaker B: So "create order" and "check order status" do not have the same retry risk.
+
+Speaker A: Exactly.
+
+Speaker B: If I retry a status check, fine.
+
+Speaker A: Often.
+
+Speaker B: If I retry a payment blindly, I might charge twice.
+
+Speaker A: Exactly.
+
+Speaker B: That's why retry is not just "try again."
+
+Speaker A: Correct.
+
+Speaker B: There has to be a safe reason to retry.
+
+Speaker A: Yes.
+
+Speaker B: What about a message that always fails?
+
+Speaker A: We don't want it to block the queue forever.
+
+Speaker B: Dead-letter queue?
+
+Speaker A: That's one common pattern.
+
+Speaker B: Failed message goes somewhere else for inspection.
+
+Speaker A: Right.
+
+Speaker B: So the main queue can keep moving.
+
+Speaker A: Exactly.
+
+Speaker B: Human example?
+
+Speaker A: A restaurant order has the wrong table number.
+
+Speaker B: The kitchen should not stop all other orders because one order is bad.
+
+Speaker A: Right.
+
+Speaker B: Put the bad order aside, fix it, and keep cooking.
+
+Speaker A: Exactly.
+
+Speaker B: Nice.
+
+Speaker A: Again, real queue systems have different details. Keep the mechanism clear.
+
+Speaker B: Let's make a failure.
+
+Speaker A: The API accepts orders faster than workers can process them.
+
+Speaker B: Queue grows.
+
+Speaker A: Yes.
+
+Speaker B: The team adds five more workers.
+
+Speaker A: Good.
+
+Speaker B: The database becomes overloaded.
+
+Speaker A: Exactly.
+
+Speaker B: So latency gets worse even though worker count increased.
+
+Speaker A: Right.
+
+Speaker B: The lesson is not "add workers."
+
+Speaker A: It's "find the bottleneck."
+
+Speaker B: Evidence first.
+
+Speaker A: Always.
+
+Speaker B: Another failure.
+
+Speaker A: Worker crashes after charging a customer but before marking the message complete.
+
+Speaker B: Message gets retried.
+
+Speaker A: Yes.
+
+Speaker B: Customer may be charged twice.
+
+Speaker A: Correct if the operation is not designed to be safe to repeat.
+
+Speaker B: So we need an idempotency key or another safe design.
+
+Speaker A: Exactly.
+
+Speaker B: That sounds more advanced.
+
+Speaker A: The concept is simple. The details become deeper later.
+
+Speaker B: Okay.
+
+Speaker A: Now pause.
+
+Speaker B: Prediction time.
+
+Speaker A: The queue has ten thousand messages. We double the number of workers. What do you expect?
+
+Speaker B: I expect the queue to shrink faster, unless another dependency becomes the bottleneck.
+
+Speaker A: Good.
+
+Speaker B: So I would watch queue depth, worker throughput, database latency, error rate, and maybe CPU.
+
+Speaker A: Good.
+
+Speaker B: I would not assume the second set of workers fixed the system.
+
+Speaker A: Exactly.
+
+Speaker B: New prediction. A worker processes a message successfully but crashes before telling the queue it is done. What might happen?
+
+Speaker A: Think about retries.
+
+Speaker B: The message may be delivered again.
+
+Speaker A: Yes.
+
+Speaker B: So the work needs to tolerate duplicate delivery.
+
+Speaker A: Exactly.
+
+Speaker B: Which is where idempotency matters.
+
+Speaker A: Good.
+
+Speaker B: Let's connect B3 to the rest of the course.
+
+Speaker A: What do you already know?
+
+Speaker B: Networking gets the request to the API.
+
+Speaker A: Good.
+
+Speaker B: Containers run the services.
+
+Speaker A: Good.
+
+Speaker B: Observability tells us how the system behaves.
+
+Speaker A: Good.
+
+Speaker B: The queue decouples work.
+
+Speaker A: Exactly.
+
+Speaker B: The database stores state.
+
+Speaker A: Right.
+
+Speaker B: Failure can happen at every layer.
+
+Speaker A: And now you have the tools to ask where.
+
+Speaker B: Nice.
+
+Speaker A: Mac lab.
+
+Speaker B: We need a local queue.
+
+Speaker A: Use the queue system you choose for the B3 project.
+
+Speaker B: Start with one producer and one worker.
+
+Speaker A: Good.
+
+Speaker B: Send one message.
+
+Speaker A: Good.
+
+Speaker B: Watch it get consumed.
+
+Speaker A: Good.
+
+Speaker B: Then stop the worker.
+
+Speaker A: Good.
+
+Speaker B: Send three more messages.
+
+Speaker A: What should happen?
+
+Speaker B: Queue depth grows.
+
+Speaker A: Right.
+
+Speaker B: Start the worker again.
+
+Speaker A: And?
+
+Speaker B: Queue depth falls as messages are processed.
+
+Speaker A: Good.
+
+Speaker B: Then force a worker failure after processing but before acknowledgement.
+
+Speaker A: Safe local test.
+
+Speaker B: Then see whether the message is delivered again.
+
+Speaker A: Exactly.
+
+Speaker B: And now we have to decide whether our operation is safe to repeat.
+
+Speaker A: That's the real lesson.
+
+Speaker B: What should success look like?
+
+Speaker A: You can explain where a message is at each stage.
+
+Speaker B: Produced.
+
+Speaker A: Queued.
+
+Speaker B: Delivered.
+
+Speaker A: Processing.
+
+Speaker B: Acknowledged or failed.
+
+Speaker A: Exactly.
+
+Speaker B: That's a state machine.
+
+Speaker A: Yes.
+
+Speaker B: I like when a messy system becomes a small state machine.
+
+Speaker A: Me too.
+
+Speaker B: Recall.
+
+Speaker A: Question one. Why use a queue?
+
+Speaker B: To separate accepting work from processing it and to handle bursts or slow consumers.
+
+Speaker A: Good.
+
+Speaker B: Question two.
+
+Speaker A: What happens if producers are faster than consumers?
+
+Speaker B: Queue depth grows.
+
+Speaker A: Good.
+
+Speaker B: Question three.
+
+Speaker A: Why can a message be processed twice?
+
+Speaker B: A worker can finish the work but fail before the system knows it finished, so the message may be delivered again.
+
+Speaker A: Good.
+
+Speaker B: Question four.
+
+Speaker A: What is idempotency?
+
+Speaker B: A design where repeating the same operation is safe and does not create a wrong final result.
+
+Speaker A: Good.
+
+Speaker B: Question five.
+
+Speaker A: Why can adding workers fail to solve overload?
+
+Speaker B: Another dependency, such as the database, may become the bottleneck.
+
+Speaker A: Good.
+
+Speaker B: Final challenge.
+
+Speaker A: Draw B3.
+
+Speaker B: Client, API, queue, worker, database.
+
+Speaker A: Good.
+
+Speaker B: Then break the worker.
+
+Speaker A: Good.
+
+Speaker B: Then make the database slow.
+
+Speaker A: Good.
+
+Speaker B: Then explain the different signals.
+
+Speaker A: Exactly.
+
+Speaker B: That's a real distributed-system exercise.
+
+Speaker A: It is.
+
+Speaker B: And now we get to the incident.
+
+Speaker A: Yes.
+
+Speaker B: Great.
+
+Speaker A: I was waiting for that.
+

@@ -1,0 +1,590 @@
+EPISODE B2.2 — When "Everything Is Slow" Is Not Enough
+
+Speaker A: We have a support message.
+
+Speaker B: Please don't say it.
+
+Speaker A: "Everything is slow."
+
+Speaker B: There it is.
+
+Speaker A: What does that tell us?
+
+Speaker B: Someone is unhappy.
+
+Speaker A: Correct. That makes the diagnosis easier to test.
+
+Speaker A: Let's keep that tied to the actual problem.
+
+Speaker B: And almost nothing else.
+
+Speaker A: Exactly. We can check that without changing everything.
+
+Speaker A: Now say what evidence would confirm that.
+
+Speaker B: So we need a way to turn a vague complaint into evidence.
+
+Speaker A: Yes. Now we have a concrete prediction.
+
+Speaker A: That gives us a useful next test.
+
+Speaker B: Logs, metrics, health checks.
+
+Speaker A: Good. Keep the recovery condition in the plan.
+
+Speaker A: I would not change the system before checking that.
+
+Speaker B: Maybe traces later.
+
+Speaker A: Yes. That is a safer way to reason about it.
+
+Speaker A: Keep the user-visible effect in view.
+
+Speaker B: Let's keep the first model simple.
+
+Speaker A: A metric gives us a number over time.
+
+Speaker B: CPU, memory, request rate, latency.
+
+Speaker A: Right. Now compare that with the known-good state.
+
+Speaker A: That is the part I would verify first.
+
+Speaker B: A log gives us an event or message.
+
+Speaker A: Right. That tells us which layer to inspect next.
+
+Speaker A: Now the assumption is explicit.
+
+Speaker B: A health check gives us a focused answer to a focused question.
+
+Speaker A: Exactly. I want the observation before the fix.
+
+Speaker A: That makes the diagnosis easier to test.
+
+Speaker B: So they are different tools.
+
+Speaker A: Different views of the system.
+
+Speaker B: Give me a clinic example.
+
+Speaker A: A lab manager says, "Patients are waiting too long."
+
+Speaker B: That's the human version of "everything is slow."
+
+Speaker A: Yes. Now ask what part is slow.
+
+Speaker B: Registration?
+
+Speaker A: Maybe. That is where the real mechanism shows up.
+
+Speaker A: We can check that without changing everything.
+
+Speaker B: Sample collection?
+
+Speaker A: Maybe. Now the failure has a clear boundary.
+
+Speaker A: Now we have a concrete prediction.
+
+Speaker B: Analyzer?
+
+Speaker A: Maybe. Let's see whether the evidence supports that.
+
+Speaker A: Keep the recovery condition in the plan.
+
+Speaker B: Result review?
+
+Speaker A: Maybe. That would change my next move.
+
+Speaker A: That is a safer way to reason about it.
+
+Speaker B: So the first metric we need could be total wait time by step.
+
+Speaker A: Exactly. Keep the incident scoped to one hypothesis.
+
+Speaker B: Then we can see where the delay grows.
+
+Speaker A: Right. Let's keep that tied to the actual problem.
+
+Speaker B: Same thing for an application.
+
+Speaker A: Yes. One endpoint can be slow while another is fine.
+
+Speaker B: One database query can be slow while the rest are fine.
+
+Speaker A: Exactly. Now say what evidence would confirm that.
+
+Speaker B: So averages can hide problems.
+
+Speaker A: Very important.
+
+Speaker B: Explain.
+
+Speaker A: Suppose 99 requests take 50 milliseconds and one takes 20 seconds.
+
+Speaker B: Average might still look okay.
+
+Speaker A: Right. That gives us a useful next test.
+
+Speaker B: But one user had a terrible experience.
+
+Speaker A: Exactly.
+
+Speaker B: So latency distribution matters.
+
+Speaker A: Yes.
+
+Speaker B: p50, p95, p99.
+
+Speaker A: Those become useful as systems get serious.
+
+Speaker B: Good. We can say them without making the lesson hard.
+
+Speaker A: That's the goal.
+
+Speaker B: What about logs?
+
+Speaker A: Logs tell us what the application says happened.
+
+Speaker B: But logs can lie?
+
+Speaker A: They can be incomplete, wrong, or too noisy.
+
+Speaker B: So logs are evidence, not truth from heaven.
+
+Speaker A: Exactly.
+
+Speaker B: I like that.
+
+Speaker A: Do not use any signal like a magic answer.
+
+Speaker B: Metric says CPU high. People restart.
+
+Speaker A: Classic.
+
+Speaker B: Log says timeout. People blame the network.
+
+Speaker A: Classic.
+
+Speaker B: Health check says green. People say everything is fine.
+
+Speaker A: Also classic.
+
+Speaker B: So we need to connect signals.
+
+Speaker A: Yes.
+
+Speaker B: Let's build a simple incident.
+
+Speaker A: B2 has an API. Users say order creation is slow.
+
+Speaker B: What do we know?
+
+Speaker A: Request latency for /orders went from 300 ms to 4 seconds.
+
+Speaker B: Good. Now we have a real symptom.
+
+Speaker A: Database latency also went from 20 ms to 3 seconds.
+
+Speaker B: Interesting.
+
+Speaker A: CPU on the API stayed normal.
+
+Speaker B: So CPU is probably not the first place to focus.
+
+Speaker A: Right.
+
+Speaker B: The database path looks suspicious.
+
+Speaker A: Good.
+
+Speaker B: Logs might show slow queries.
+
+Speaker A: Yes.
+
+Speaker B: Maybe a new release changed a query.
+
+Speaker A: Maybe.
+
+Speaker B: Or traffic increased.
+
+Speaker A: Right.
+
+Speaker B: Or the database is waiting on storage.
+
+Speaker A: Right.
+
+Speaker B: So we still have several hypotheses.
+
+Speaker A: Good.
+
+Speaker B: This is a proper incident.
+
+Speaker A: Exactly. We have evidence, but not a final diagnosis.
+
+Speaker B: What next?
+
+Speaker A: Pick the next observation that separates the top hypotheses.
+
+Speaker B: Compare query latency before and after the release.
+
+Speaker A: Good.
+
+Speaker B: Check request rate.
+
+Speaker A: Good.
+
+Speaker B: Check database CPU and storage behavior.
+
+Speaker A: Good.
+
+Speaker B: Look at slow-query logs.
+
+Speaker A: Good.
+
+Speaker B: So we are not collecting everything. We are collecting evidence that changes the decision.
+
+Speaker A: Exactly.
+
+Speaker B: That is a big difference.
+
+Speaker A: It is.
+
+Speaker B: Pause.
+
+Speaker A: Go ahead.
+
+Speaker B: Make a prediction. API latency jumps from 300 ms to 4 seconds. API CPU stays low. Database latency jumps at the same time. Where do you look first?
+
+Speaker A: Think before you answer.
+
+Speaker B: Database path.
+
+Speaker A: Good.
+
+Speaker B: Not because the database is proven guilty.
+
+Speaker A: Right.
+
+Speaker B: Because the evidence makes it a useful next place to inspect.
+
+Speaker A: Exactly.
+
+Speaker B: So diagnosis is not "I know the cause."
+
+Speaker A: It is often "I know the next useful observation."
+
+Speaker B: That's a strong rule.
+
+Speaker A: It is one of the best rules in debugging.
+
+Speaker B: What if the database metric is wrong?
+
+Speaker A: Then you compare another signal.
+
+Speaker B: Maybe trace timings.
+
+Speaker A: Yes.
+
+Speaker B: Or logs.
+
+Speaker A: Yes.
+
+Speaker B: So observability is really about being able to answer questions about system behavior.
+
+Speaker A: Exactly.
+
+Speaker B: Not collecting dashboards because dashboards look professional.
+
+Speaker A: Thank you.
+
+Speaker B: Some dashboards have twenty graphs and still don't answer one question.
+
+Speaker A: You have seen this before.
+
+Speaker B: We all have.
+
+Speaker A: A good dashboard begins with a question.
+
+Speaker B: "Are requests failing?"
+
+Speaker A: Good.
+
+Speaker B: "Are they slow?"
+
+Speaker A: Good.
+
+Speaker B: "Which endpoint?"
+
+Speaker A: Good.
+
+Speaker B: "Which dependency?"
+
+Speaker A: Good.
+
+Speaker B: "Which users?"
+
+Speaker A: Good.
+
+Speaker B: Then the signals follow.
+
+Speaker A: Exactly.
+
+Speaker B: Let's talk about health checks.
+
+Speaker A: Okay.
+
+Speaker B: Why not use one health endpoint for everything?
+
+Speaker A: Because different checks answer different questions.
+
+Speaker B: Liveness.
+
+Speaker A: Is the process alive?
+
+Speaker B: Readiness.
+
+Speaker A: Can the service receive traffic?
+
+Speaker B: Maybe dependency checks.
+
+Speaker A: Sometimes. But be careful.
+
+Speaker B: Why?
+
+Speaker A: If every optional dependency turns the health check red, you can make the service look dead when it is actually able to do useful work.
+
+Speaker B: So health checks need a clear purpose.
+
+Speaker A: Exactly.
+
+Speaker B: Another real-life example?
+
+Speaker A: A restaurant.
+
+Speaker B: Okay.
+
+Speaker A: The kitchen has power.
+
+Speaker B: Liveness.
+
+Speaker A: The kitchen is staffed and can take orders.
+
+Speaker B: Readiness.
+
+Speaker A: One freezer has a problem.
+
+Speaker B: That affects part of the menu.
+
+Speaker A: Right. It does not always mean the whole restaurant should close.
+
+Speaker B: Nice.
+
+Speaker A: In software, the same idea matters. A dependency problem may affect one feature without making the whole service useless.
+
+Speaker B: So we need health signals that match actual service decisions.
+
+Speaker A: Exactly.
+
+Speaker B: What about traces?
+
+Speaker A: A trace follows one request across components.
+
+Speaker B: So instead of seeing just total latency, we can see where the time went.
+
+Speaker A: Exactly.
+
+Speaker B: API 50 ms. Database 3 seconds.
+
+Speaker A: Or DNS 10 ms, network 20 ms, service 40 ms. Whatever the system gives you.
+
+Speaker B: Then traces help connect the layers.
+
+Speaker A: Right.
+
+Speaker B: This will matter more in the Intermediate course.
+
+Speaker A: Yes. Beginner should understand the idea, not build a full tracing platform yet.
+
+Speaker B: Good.
+
+Speaker A: Now let's create a misleading signal.
+
+Speaker B: I like those.
+
+Speaker A: API CPU goes from 20% to 80%.
+
+Speaker B: Everyone panics.
+
+Speaker A: Yes.
+
+Speaker B: But request latency did not change.
+
+Speaker A: Good.
+
+Speaker B: So maybe 80% is normal at this traffic level.
+
+Speaker A: Correct.
+
+Speaker B: The metric is not automatically bad.
+
+Speaker A: Exactly.
+
+Speaker B: A number needs context.
+
+Speaker A: Yes.
+
+Speaker B: Another classic.
+
+Speaker A: The error rate is zero.
+
+Speaker B: Great.
+
+Speaker A: But the service returns 200 with an empty order list.
+
+Speaker B: So application correctness is broken while transport looks healthy.
+
+Speaker A: Exactly.
+
+Speaker B: That is nasty.
+
+Speaker A: Production likes that kind.
+
+Speaker B: Very funny.
+
+Speaker A: I was not joking.
+
+Speaker B: Even worse.
+
+Speaker A: Right.
+
+Speaker B: So observability should include business behavior when needed.
+
+Speaker A: Yes. A technically healthy request can still be a bad user experience.
+
+Speaker B: That connects to B2.
+
+Speaker A: It does.
+
+Speaker B: Mac lab?
+
+Speaker A: Start with a small service.
+
+Speaker A: Measure response time for the main endpoint.
+
+Speaker B: Then make the backend slower.
+
+Speaker A: Safe and local.
+
+Speaker B: Then compare request latency and CPU.
+
+Speaker A: Right.
+
+Speaker B: Add one log message around the slow operation.
+
+Speaker A: Good.
+
+Speaker B: Then see if the log and metric tell the same story.
+
+Speaker A: Exactly.
+
+Speaker B: Then remove the slowdown and verify recovery.
+
+Speaker A: Good.
+
+Speaker B: What should I write down?
+
+Speaker A: For each signal:
+what question does it answer?
+
+Speaker B: Metric: "how much and when?"
+
+Speaker A: Good.
+
+Speaker B: Log: "what event happened?"
+
+Speaker A: Good.
+
+Speaker B: Health check: "is this service alive or ready for the decision we care about?"
+
+Speaker A: Good.
+
+Speaker B: Trace: "where did this request spend time?"
+
+Speaker A: Excellent.
+
+Speaker B: Okay, now I want the course to stop making me praise things.
+
+Speaker A: Then I will ask fewer leading questions.
+
+Speaker B: Thank you.
+
+Speaker A: You're welcome.
+
+Speaker B: Recall.
+
+Speaker A: Question one. Why is "everything is slow" a weak starting point?
+
+Speaker B: It is a vague symptom. We need to know which request, user, service, or dependency is slow.
+
+Speaker A: Good.
+
+Speaker B: Question two.
+
+Speaker A: Why can averages hide a problem?
+
+Speaker B: A few very slow requests can be hidden by many fast ones.
+
+Speaker A: Good.
+
+Speaker B: Question three.
+
+Speaker A: What is a metric useful for?
+
+Speaker B: Showing a measured value over time, such as latency, CPU, memory, or request rate.
+
+Speaker A: Good.
+
+Speaker B: Question four.
+
+Speaker A: What is a log useful for?
+
+Speaker B: Showing events or messages produced by the system.
+
+Speaker A: Good.
+
+Speaker B: Question five.
+
+Speaker A: What is the main point of observability?
+
+Speaker B: To get enough useful evidence to understand system behavior and diagnose problems.
+
+Speaker A: Good.
+
+Speaker B: Final challenge.
+
+Speaker A: B2 is slow. You have request latency, API CPU, database latency and logs.
+
+Speaker B: I should not open every dashboard.
+
+Speaker A: Right.
+
+Speaker B: I ask one question at a time. Which evidence best separates the likely causes.
+
+Speaker A: Exactly.
+
+Speaker B: And when I think I know the cause, I still check something that could prove me wrong.
+
+Speaker A: That's a very good habit.
+
+Speaker B: Okay. That is the part I want to keep.
+
+Speaker A: Good. Now go make the service slow on purpose.
+
+Speaker B: Then fix it.
+
+Speaker A: And prove that it is fixed.
+
+Speaker B: Evidence.
+
+Speaker A: Evidence.

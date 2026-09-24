@@ -1,0 +1,219 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(here, "..");
+
+const source = await readFile(
+  path.join(root, "app", "src", "data", "runtimeVerification.ts"),
+  "utf8"
+);
+const catalog = JSON.parse(
+  await readFile(path.join(root, "app", "src", "data", "runtimeTasks.json"), "utf8")
+);
+const remoteCore = await readFile(
+  path.join(root, "scripts", "remote-runtime-core.mjs"),
+  "utf8"
+);
+const remoteRunner = await readFile(
+  path.join(root, "scripts", "run-remote-runtime-task.mjs"),
+  "utf8"
+);
+
+let failed = false;
+
+if (!source.includes("export type MachineVerificationEnvelope")) {
+  failed = true;
+  console.error("Machine verification envelope type is missing.");
+}
+
+if (!source.includes("export function validateMachineVerification")) {
+  failed = true;
+  console.error("Machine verification validator is missing.");
+}
+
+if (!source.includes('from "./runtimeTasks.json"')) {
+  failed = true;
+  console.error("TypeScript verification layer must use the runtime task catalog.");
+}
+
+const tasks = Array.isArray(catalog.runtimeTasks) ? catalog.runtimeTasks : [];
+const taskIds = tasks.map((task) => task.taskId);
+const duplicateTaskIds = taskIds.filter(
+  (id, index) => taskIds.indexOf(id) !== index
+);
+
+if (duplicateTaskIds.length) {
+  failed = true;
+  console.error(
+    "Duplicate runtime task IDs: " + [...new Set(duplicateTaskIds)].join(", ")
+  );
+}
+
+if (!tasks.length) {
+  failed = true;
+  console.error("No runtime tasks are defined.");
+}
+
+for (const task of tasks) {
+  if (!task.contractVersion || task.contractVersion < 1) {
+    failed = true;
+    console.error("Runtime task is missing a valid contractVersion: " + task.taskId);
+  }
+
+  if (!task.lessonId || task.verificationLevel !== "machine-verified") {
+    failed = true;
+    console.error("Runtime task identity/verification level is incomplete: " + task.taskId);
+  }
+
+  if (typeof task.scope !== "string" || !task.scope.trim()) {
+    failed = true;
+    console.error("Runtime task scope is missing: " + task.taskId);
+  }
+
+  if (typeof task.resetRequired !== "boolean") {
+    failed = true;
+    console.error("Runtime task resetRequired must be boolean: " + task.taskId);
+  }
+
+  const stepIds = Array.isArray(task.steps) ? task.steps.map((step) => step.id) : [];
+  const duplicateStepIds = stepIds.filter((id, index) => stepIds.indexOf(id) !== index);
+  if (duplicateStepIds.length) {
+    failed = true;
+    console.error(
+      "Duplicate runtime step IDs in " +
+        task.taskId +
+        ": " +
+        [...new Set(duplicateStepIds)].join(", ")
+    );
+  }
+
+  if (!Array.isArray(task.steps) || task.steps.length === 0) {
+    failed = true;
+    console.error("Runtime task has no steps: " + task.taskId);
+    continue;
+  }
+
+  for (const step of task.steps) {
+    if (!step.id || !step.kind || !step.purpose || !step.commands) {
+      failed = true;
+      console.error("Runtime step is incomplete: " + task.taskId + "/" + step.id);
+    }
+
+    const allowedKinds = new Set(["observe", "change", "failure", "restore", "verify"]);
+    if (!allowedKinds.has(step.kind)) {
+      failed = true;
+      console.error("Runtime step has invalid kind: " + task.taskId + "/" + step.id);
+    }
+
+    if (typeof step.required !== "boolean") {
+      failed = true;
+      console.error("Runtime step required flag is invalid: " + task.taskId + "/" + step.id);
+    }
+
+    for (const platform of ["macos", "linux", "windows"]) {
+      const command = step.commands[platform];
+      if (!command) {
+        failed = true;
+        console.error(
+          "Runtime step lacks " + platform + " mapping: " + task.taskId + "/" + step.id
+        );
+      }
+      if (command?.destructive) {
+        failed = true;
+        console.error(
+          "Default runtime catalog must not expose destructive steps: " +
+            task.taskId +
+            "/" +
+            step.id
+        );
+      }
+      if (command) {
+        if (typeof command.program !== "string" || !command.program.trim()) {
+          failed = true;
+          console.error("Runtime command program is missing: " + task.taskId + "/" + step.id + "/" + platform);
+        }
+        if (!Array.isArray(command.args) || command.args.some((arg) => typeof arg !== "string")) {
+          failed = true;
+          console.error("Runtime command args are invalid: " + task.taskId + "/" + step.id + "/" + platform);
+        }
+        if (!Number.isInteger(command.timeoutMs) || command.timeoutMs <= 0) {
+          failed = true;
+          console.error("Runtime command timeout is invalid: " + task.taskId + "/" + step.id + "/" + platform);
+        }
+      }
+    }
+  }
+}
+
+if (!source.includes("stdout: string") || !source.includes("stderr: string")) {
+  failed = true;
+  console.error("Machine evidence must carry captured stdout and stderr.");
+}
+
+if (!source.includes("stdoutHash") || !source.includes("stderrHash")) {
+  failed = true;
+  console.error("Machine evidence must bind stdout and stderr hashes.");
+}
+
+if (!source.includes("environmentFingerprint")) {
+  failed = true;
+  console.error("Machine evidence must include an environment fingerprint.");
+}
+
+if (!source.includes("completedAt") || !source.includes("startedAt")) {
+  failed = true;
+  console.error("Machine evidence must include timing boundaries.");
+}
+
+if (!source.includes("verificationSource") || !source.includes("local-runner") || !source.includes("ssh-runner")) {
+  failed = true;
+  console.error("Machine evidence must identify local and SSH verification sources.");
+}
+
+if (!source.includes("executionMode") || !source.includes("local-machine") || !source.includes("remote-machine")) {
+  failed = true;
+  console.error("Machine evidence must distinguish local-machine and remote-machine execution.");
+}
+
+if (!remoteCore.includes("StrictHostKeyChecking=yes")) {
+  failed = true;
+  console.error("SSH runner must require strict host-key checking.");
+}
+
+if (!remoteCore.includes("shellQuotePosix") || !remoteRunner.includes("shell: false")) {
+  failed = true;
+  console.error("SSH runtime boundary must use safe command construction without a local shell.");
+}
+
+if (!remoteRunner.includes("sshArguments")) {
+  failed = true;
+  console.error("SSH runner must use the shared SSH argument builder.");
+}
+
+if (!source.includes("strict-known-hosts")) {
+  failed = true;
+  console.error("SSH machine evidence must preserve strict host-key verification.");
+}
+
+if (!source.includes("MachineExecutionTarget")) {
+  failed = true;
+  console.error("Machine evidence must preserve target identity.");
+}
+
+if (!source.includes("resetRequired") || !source.includes("reset verification")) {
+  failed = true;
+  console.error("Runtime validator/runner must preserve the reset-verification boundary.");
+}
+
+
+if (failed) process.exit(1);
+
+console.log(
+  "Runtime verification contract check passed: " +
+    tasks.length +
+    " task(s) and " +
+    tasks.reduce((count, task) => count + task.steps.length, 0) +
+    " runtime step(s) are structurally valid."
+);

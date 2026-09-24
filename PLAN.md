@@ -1,30 +1,93 @@
 # DevOps Programme Mission Plan
 
 ## Mission
-Convert strong application/software knowledge into operational DevOps competence through a five-day, multi-modal learning system.
 
-## Podcast quality contract
-- About 75% technical instruction/reasoning and about 25% real-life examples, familiar stories, social situations, and memorable analogies.
-- Tasteful jokes are used to improve recall without weakening technical accuracy.
-- Dialogue should sound human, warm and intellectually curious rather than like corporate training.
-- Spoken turns are short, conversational and imperfect enough to sound like real engineers talking.
-- Each episode contains prediction pauses, evidence-based failure reasoning, a Mac exercise, retrieval, and production transfer.
+Build a multi-course learning system that converts strong application/software knowledge into demonstrated DevOps competence, then scales the same learning architecture toward large distributed-system operations.
 
-## Co-teacher contract
-- The podcast carries the human spoken lesson.
-- The React app wraps the lesson in active learning instead of replacing it.
-- The learner predicts before listening, pauses to explain, performs the Mac lab, then completes retrieval.
-- Transcript is a recovery aid, not the primary first-pass learning medium.
-- Answers and mastery state stay local in the browser for fast feedback without requiring a database.
+## Course architecture
 
-## Milestones
+The programme is intentionally split into three distinct courses:
+
+- Beginner — DevOps Through Problems
+- Intermediate — DevOps Engineering
+- Advanced — Large-Scale Distributed Systems
+
+Foundations are reusable competency nodes rather than one giant prerequisite block.
+
+## Learner adaptation
+
+The learner chooses an environment profile first:
+- macOS
+- Linux
+- Windows
+
+The target learning architecture uses diagnostics to determine what introductory theory can be skipped. In the current MVP, course and platform selection and prerequisite diagnostics for the authored sections are implemented; full automatic remediation routing across the whole programme remains planned.
+
+Rules:
+- known theory may be skipped when diagnostic evidence supports it
+- exercises may never be skipped
+- failed exercises should trigger targeted remediation
+- projects continuously carry the learner forward
+
+## Continuous projects
+
+Each course has three major projects:
+
+Beginner:
+- B1 containerized application
+- B2 productionized service
+- B3 distributed service
+
+Intermediate:
+- I1 production Kubernetes platform
+- I2 infrastructure + observability
+- I3 integrated production platform
+
+Advanced:
+- A1 global distributed platform
+- A2 failure engineering platform
+- A3 massive-scale service
+
+An external learner project uses the same project-instance architecture.
+
+## Assessment architecture
+
+Every section has:
+- conceptual assessment
+- diagnostic assessment
+- hands-on assessment
+
+Each assessment form varies difficulty while preserving a controlled blueprint.
+
+The assessment engine separates:
+- learning adaptation
+- exam difficulty
+- accessibility accommodation
+- competency standardization
+
+Observed item performance will be recorded once assessment delivery and evidence capture are implemented. The first implementation uses blueprint-controlled forms; computerized adaptive testing is deferred until the item pool is empirically calibrated.
+
+Assessment quality is designed around internationally recognized assessment principles including validity, reliability, fairness and standardization. This repository does not claim certification or formal compliance.
+
+## Product architecture milestones
+
 M0 Foundation
-M1 Curriculum Book
-M2 Podcast Library
-M3 Interactive Learning App
+M1 Curriculum Architecture
+M2 Content / Podcast Library
+M3 Interactive Learning Engine
 M4 Hands-on Engine
 M5 Motion Systems
-M6 Assessment
-M7 Release
+M6 Assessment Engine
+M7 Release / Validation
 
-Each milestone has a corresponding GitHub issue. New content keeps stable lesson IDs and must connect to the existing systems mental model.
+Existing five-day content remains useful as the initial intermediate core while the programme is expanded into the three-course architecture.
+
+## Current implementation boundary
+
+The curriculum model, course-aware lesson routing, prerequisite diagnostics across the current Beginner and Intermediate cores and all six Advanced sections, assessment blueprints, pilot item banks, podcast scripts, safe audio-sync architecture and structured hands-on task contracts are implemented on the clearance branch.
+
+Prerequisite diagnostics are implemented across the full Beginner, Intermediate and Advanced authored cores. Broader diagnostic item-bank depth and full automatic remediation routing remain incomplete. The current lesson set has Windows command coverage through the platform adapter. Structured hands-on evidence is implemented with explicit verification boundaries; machine-verified runtime adapters remain incomplete. Production voice timing manifests and calibrated/operational assessment pools are still incomplete. GitHub Actions is currently blocked at the observable runner layer: even a bare shell probe failed, while connector-exposed workflow steps and artifacts remain unavailable.
+
+## Quality gate
+
+A feature is not considered complete merely because content exists. Acceptance requires the corresponding structure, executable behavior where applicable, and evidence that the learner can demonstrate the intended competency.

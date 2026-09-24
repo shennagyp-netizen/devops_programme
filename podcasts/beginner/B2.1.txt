@@ -1,0 +1,463 @@
+EPISODE B2.1 — From Code Change to Safe Delivery
+
+Speaker A: B1 works on a laptop. Now someone changes the code.
+
+Speaker B: Which means we have to get that change to users.
+
+Speaker A: Yes. That makes the diagnosis easier to test.
+
+Speaker A: Let's keep that tied to the actual problem.
+
+Speaker B: And this is where "just deploy it" stops being a good plan.
+
+Speaker A: Correct. We can check that without changing everything.
+
+Speaker A: Now say what evidence would confirm that.
+
+Speaker B: What do we want?
+
+Speaker A: A clear path from code change to a safe release.
+
+Speaker B: So the change should be reviewable.
+
+Speaker A: Yes. Now we have a concrete prediction.
+
+Speaker A: That gives us a useful next test.
+
+Speaker B: Tested.
+
+Speaker A: Yes. Keep the recovery condition in the plan.
+
+Speaker A: I would not change the system before checking that.
+
+Speaker B: Built into something we can identify.
+
+Speaker A: Yes. That is a safer way to reason about it.
+
+Speaker A: Keep the user-visible effect in view.
+
+Speaker B: And then deployed in a way we can trace.
+
+Speaker A: Exactly. Now compare that with the known-good state.
+
+Speaker A: That is the part I would verify first.
+
+Speaker B: Start with Git.
+
+Speaker A: A change starts as a change in the code.
+
+Speaker B: Branch.
+
+Speaker A: Usually.
+
+Speaker B: Commit.
+
+Speaker A: Yes. That tells us which layer to inspect next.
+
+Speaker A: Now the assumption is explicit.
+
+Speaker B: Review.
+
+Speaker A: Good. I want the observation before the fix.
+
+Speaker A: That makes the diagnosis easier to test.
+
+Speaker B: Then CI.
+
+Speaker A: Exactly. That is where the real mechanism shows up.
+
+Speaker A: We can check that without changing everything.
+
+Speaker B: Then artifact.
+
+Speaker A: Right. Now the failure has a clear boundary.
+
+Speaker B: Then deployment.
+
+Speaker A: Right. Let's see whether the evidence supports that.
+
+Speaker B: That's the path.
+
+Speaker A: Now the important question: why do we need all those steps?
+
+Speaker B: To slow people down?
+
+Speaker A: Sometimes it does slow one change down. It should also make many changes safer and easier to understand.
+
+Speaker B: Fair.
+
+Speaker A: Imagine an incident at 3 p.m. A customer says orders are failing.
+
+Speaker B: We need to know what changed.
+
+Speaker A: Exactly. That would change my next move.
+
+Speaker B: If the answer is "someone edited production directly," we're in trouble.
+
+Speaker A: Very much.
+
+Speaker B: If the answer is "release 2026-09-24.3 came from commit abc123, passed tests, and was deployed at 14:35," that's much better.
+
+Speaker A: Yes. Keep the incident scoped to one hypothesis.
+
+Speaker B: So history is not only for developers.
+
+Speaker A: It becomes part of operations.
+
+Speaker B: Real-life example?
+
+Speaker A: Think about an approved document.
+
+Speaker B: We know which version was approved.
+
+Speaker A: Right. Let's keep that tied to the actual problem.
+
+Speaker B: If someone asks what version was used, we don't say "the latest."
+
+Speaker A: Exactly. "Latest" moves. A release identifier should stay fixed.
+
+Speaker B: That's a simple idea with a big effect.
+
+Speaker A: It helps rollback too.
+
+Speaker B: Because you can point at a known version.
+
+Speaker A: Yes.
+
+Speaker B: Let's define an artifact.
+
+Speaker A: A build output that we can move through the delivery process.
+
+Speaker B: Container image, package, compiled app.
+
+Speaker A: Exactly.
+
+Speaker B: Why not rebuild during deployment?
+
+Speaker A: Because then the thing you tested and the thing you deployed may not be exactly the same.
+
+Speaker B: Same source, different build inputs.
+
+Speaker A: Different dependency version. Different base image. Different tool version. Different environment.
+
+Speaker B: So build once, then promote the built artifact when that model fits.
+
+Speaker A: Right.
+
+Speaker B: This makes the release easier to trust.
+
+Speaker A: And easier to investigate.
+
+Speaker B: Let's make a bad process.
+
+Speaker A: Good.
+
+Speaker B: Developer edits code on Friday.
+
+Speaker A: Fine.
+
+Speaker B: Copies files to production.
+
+Speaker A: Not fine.
+
+Speaker B: Someone else edits a config file there.
+
+Speaker A: Worse.
+
+Speaker B: Then Monday the app breaks.
+
+Speaker A: And nobody knows what is running.
+
+Speaker B: That's the whole problem.
+
+Speaker A: Exactly.
+
+Speaker B: So the system should record the change.
+
+Speaker A: Yes.
+
+Speaker B: Record what was tested.
+
+Speaker A: Yes.
+
+Speaker B: Record which artifact was built.
+
+Speaker A: Yes.
+
+Speaker B: Record what was deployed.
+
+Speaker A: Yes.
+
+Speaker B: And have a safe way back.
+
+Speaker A: Yes.
+
+Speaker B: Rollback.
+
+Speaker A: Right.
+
+Speaker B: Is rollback just "deploy the old code"?
+
+Speaker A: Sometimes. But not always.
+
+Speaker B: Database changes.
+
+Speaker A: Exactly.
+
+Speaker B: If the new release changes the database schema, the old app may not work with the new schema.
+
+Speaker A: Good.
+
+Speaker B: So rollback needs system thinking.
+
+Speaker A: Very important.
+
+Speaker B: The application, database, config and data all matter.
+
+Speaker A: Yes.
+
+Speaker B: So a deployment can be reversible in code but not fully reversible in data.
+
+Speaker A: Correct.
+
+Speaker B: That's a nasty detail.
+
+Speaker A: Production is full of those.
+
+Speaker B: Give me a safe first workflow.
+
+Speaker A: Make a branch.
+
+Speaker B: Commit the change.
+
+Speaker A: Open review.
+
+Speaker B: Run tests.
+
+Speaker A: Build an artifact.
+
+Speaker B: Give the artifact a release identity.
+
+Speaker A: Deploy to a test or staging environment.
+
+Speaker B: Check the important behavior.
+
+Speaker A: Then production.
+
+Speaker B: And monitor it.
+
+Speaker A: Yes.
+
+Speaker B: So deployment does not end when the command finishes.
+
+Speaker A: Exactly.
+
+Speaker B: The system after deployment is the real test.
+
+Speaker A: Right.
+
+Speaker B: That's important.
+
+Speaker A: A command can say "done" while users are still failing.
+
+Speaker B: Pause.
+
+Speaker A: Your turn.
+
+Speaker B: Make a prediction. We deploy a new API version. The deployment command returns success. Does that prove the release is healthy?
+
+Speaker A: No.
+
+Speaker B: What do we need?
+
+Speaker A: What do you think?
+
+Speaker B: Health signal. Real request. Error rate. Maybe latency. Maybe logs.
+
+Speaker A: Good.
+
+Speaker B: So deploy success means the deployment action finished. It does not mean the service is working for users.
+
+Speaker A: Exactly.
+
+Speaker B: Good.
+
+Speaker A: Now let's add a failure.
+
+Speaker B: The tests pass. The artifact builds. Production deploy succeeds. Ten percent of requests return errors.
+
+Speaker A: What happened?
+
+Speaker B: We need evidence.
+
+Speaker A: Good.
+
+Speaker B: Compare the timing with the release.
+
+Speaker A: Good.
+
+Speaker B: Check which users or routes are affected.
+
+Speaker A: Good.
+
+Speaker B: Check logs and metrics.
+
+Speaker A: Good.
+
+Speaker B: Decide whether rollback is the safest action.
+
+Speaker A: Good.
+
+Speaker B: Not just "rollback because the release is suspicious."
+
+Speaker A: Right.
+
+Speaker B: Maybe the problem is unrelated.
+
+Speaker A: Correct.
+
+Speaker B: Or the release is fine and traffic changed at the same time.
+
+Speaker A: Exactly.
+
+Speaker B: So even rollback needs diagnosis.
+
+Speaker A: Yes.
+
+Speaker B: This is different from just using Git.
+
+Speaker A: Much different.
+
+Speaker B: Git tells us history. The delivery process uses that history plus tests, artifacts, environments and runtime evidence.
+
+Speaker A: Exactly.
+
+Speaker B: Mac lab?
+
+Speaker A: Open your B1 repo.
+
+Speaker A: Create a branch.
+
+Speaker A: Make a tiny safe change.
+
+Speaker B: Maybe change a response message.
+
+Speaker A: Good.
+
+Speaker A: Run git status.
+
+Speaker A: Inspect the diff.
+
+Speaker A: Commit the change.
+
+Speaker B: Then tag a test release?
+
+Speaker A: Yes.
+
+Speaker B: Then write the rollout and rollback steps.
+
+Speaker A: Good.
+
+Speaker B: Before I run anything, I should know the old version.
+
+Speaker A: Exactly.
+
+Speaker B: And the exact change.
+
+Speaker A: Exactly.
+
+Speaker B: What should I verify after deployment?
+
+Speaker A: One real user action. One health signal. One error signal.
+
+Speaker B: So not just "container is running."
+
+Speaker A: Correct.
+
+Speaker B: I like that the lab is small.
+
+Speaker A: Small labs help you learn the control model before you add cloud systems.
+
+Speaker B: Human example again?
+
+Speaker A: Imagine a bank has two copies of a contract.
+
+Speaker B: One approved and one edited.
+
+Speaker A: If nobody knows which copy is official, you have a problem.
+
+Speaker B: Production has the same issue if nobody knows which artifact is running.
+
+Speaker A: Exactly.
+
+Speaker B: And a release tag is like saying, "This is the official copy."
+
+Speaker A: Roughly.
+
+Speaker B: Good.
+
+Speaker A: Now recall.
+
+Speaker B: Ready.
+
+Speaker A: Question one. Why is a production release easier to operate when it has a fixed identity?
+
+Speaker B: Because we can point to exactly what was built, tested and deployed.
+
+Speaker A: Good.
+
+Speaker B: Question two.
+
+Speaker A: Why not rebuild during deployment?
+
+Speaker B: The new build might differ from the thing we tested.
+
+Speaker A: Good.
+
+Speaker B: Question three.
+
+Speaker A: What does a successful deployment command prove?
+
+Speaker B: That the deployment action completed. It does not prove the application is healthy for users.
+
+Speaker A: Good.
+
+Speaker B: Question four.
+
+Speaker A: Why can rollback be harder when the database changed?
+
+Speaker B: Because the old application may not work with the new database schema or data.
+
+Speaker A: Good.
+
+Speaker B: Question five.
+
+Speaker A: What evidence should you keep after a production change?
+
+Speaker B: The release identity, change, test results, deployment record, and runtime signals.
+
+Speaker A: Good.
+
+Speaker B: Final challenge.
+
+Speaker A: Write a delivery path for B1.
+
+Speaker B: Commit, review, test, build, identify the artifact, deploy, verify, monitor, and have a rollback plan.
+
+Speaker A: Good.
+
+Speaker B: And the final question is not "did deployment finish?"
+
+Speaker A: Right.
+
+Speaker B: It's "is the service healthy, and can we prove it?"
+
+Speaker A: Exactly.
+
+Speaker B: B2 is starting to feel real.
+
+Speaker A: It should.
+
+Speaker B: Let's break it.
+
+Speaker A: We will.

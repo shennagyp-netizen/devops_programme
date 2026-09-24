@@ -1,0 +1,861 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "I-F1",
+  "purpose": "Pilot item bank for Linux and Operating Systems. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "IF1-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-F1.core",
+      "prompt": "What is a process?",
+      "options": [
+        "A running instance of a program with state and resources",
+        "A CPU core",
+        "A file on disk",
+        "A network route"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF1-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-F1.core",
+      "prompt": "Which layer manages system resources such as memory and CPU scheduling?",
+      "options": [
+        "The kernel",
+        "The browser",
+        "The Git repository",
+        "The HTTP client"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF1-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-F1.core",
+      "prompt": "What is a file descriptor?",
+      "options": [
+        "A process handle for an open resource",
+        "A CPU instruction",
+        "A subnet mask",
+        "A DNS record"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF1-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-F1.core",
+      "prompt": "A process is alive but waiting on a database socket. What does that explain?",
+      "options": [
+        "The process can exist without making useful progress",
+        "The CPU is necessarily saturated",
+        "The filesystem is corrupted",
+        "The DNS server is down"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF1-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-F1.core",
+      "prompt": "Why is high CPU not a diagnosis by itself?",
+      "options": [
+        "You still need process identity, workload and behavior evidence",
+        "CPU is never relevant",
+        "High CPU always means memory pressure",
+        "Only logs can diagnose CPU"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF1-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "constructed-response",
+      "expectedMinutes": 3,
+      "competencyId": "I-F1.core",
+      "prompt": "Explain why a shell and the kernel are different parts of the operating system model.",
+      "scoring": {
+        "full": [
+          "identifies the shell as a user-space program/interface",
+          "identifies the kernel as the resource-management authority",
+          "explains that the shell requests operations from the kernel"
+        ],
+        "partial": [
+          "distinguishes them but misses the request relationship"
+        ],
+        "zero": [
+          "treats them as the same component"
+        ]
+      }
+    },
+    {
+      "id": "IF1-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-F1.core",
+      "prompt": "Why can memory usage be high without a memory leak?",
+      "options": [
+        "The OS can use memory for caches and normal workloads",
+        "High memory always means a leak",
+        "Processes do not share memory",
+        "Only swap uses memory"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF1-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-F1.core",
+      "prompt": "What evidence most directly connects a slow request to a process dependency?",
+      "options": [
+        "Request timing correlated with dependency/socket timing",
+        "A Git branch name",
+        "A desktop screenshot",
+        "The host's timezone"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF1-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "constructed-response",
+      "expectedMinutes": 3,
+      "competencyId": "I-F1.core",
+      "prompt": "Give two observations that help distinguish host-wide pressure from one-process pressure.",
+      "scoring": {
+        "full": [
+          "one host-level resource observation",
+          "one process-level observation",
+          "explains how the two scopes differ"
+        ],
+        "partial": [
+          "names one useful observation"
+        ],
+        "zero": [
+          "gives only a restart action"
+        ]
+      }
+    },
+    {
+      "id": "IF1-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-F1.core",
+      "prompt": "Why inspect logs together with process state during an incident?",
+      "options": [
+        "Logs can explain events while process state shows what is happening now",
+        "Logs replace all runtime evidence",
+        "Process state replaces historical evidence",
+        "They always contain the same information"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF1-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-F1.core",
+      "prompt": "CPU is 10%, memory is normal, but one endpoint takes 4 seconds. What should be tested early?",
+      "expectedElements": [
+        "downstream dependency timing",
+        "I/O or blocking state",
+        "request-specific evidence"
+      ]
+    },
+    {
+      "id": "IF1-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-F1.core",
+      "prompt": "All services on one host become slow together. Give two broader hypotheses.",
+      "expectedElements": [
+        "host resource or I/O pressure",
+        "host network/filesystem problem",
+        "shared dependency may also receive credit if distinguished from host-wide cause"
+      ]
+    },
+    {
+      "id": "IF1-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-F1.core",
+      "prompt": "Explain why restarting a service can remove evidence without proving the root cause.",
+      "scoring": {
+        "full": [
+          "restart changes transient state",
+          "pre-restart evidence is lost",
+          "the same symptom can recur without the mechanism being understood"
+        ],
+        "partial": [
+          "recognizes evidence loss"
+        ],
+        "zero": [
+          "says restart proves the cause"
+        ]
+      }
+    },
+    {
+      "id": "IF1-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "I-F1.core",
+      "prompt": "A process has thousands of open sockets, normal CPU, and rising latency. Propose two competing causes.",
+      "expectedElements": [
+        "slow downstream dependency",
+        "connection/resource exhaustion or leak",
+        "a concrete discriminating observation for each"
+      ]
+    },
+    {
+      "id": "IF1-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "selected-response",
+      "expectedMinutes": 3,
+      "competencyId": "I-F1.core",
+      "prompt": "One user is slow while other users are normal. What should change in your investigation?",
+      "options": [
+        "Look for user-specific path, data, session or region differences",
+        "Restart every service",
+        "Increase all CPU limits",
+        "Delete the user's logs"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IF1-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "I-F1.core",
+      "prompt": "Design three first observations for a slow API process and state what each observation separates.",
+      "expectedElements": [
+        "process state/resource behavior",
+        "open socket/file or I/O evidence",
+        "request/dependency timing"
+      ]
+    },
+    {
+      "id": "IF1-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-F1.core",
+      "prompt": "Write a rule for choosing whether to investigate the host or a dependency next.",
+      "scoring": {
+        "full": [
+          "uses current evidence and scope",
+          "chooses the layer that can explain the observed behavior",
+          "avoids fixed command ordering without evidence"
+        ],
+        "partial": [
+          "states that investigation should follow evidence"
+        ],
+        "zero": [
+          "always checks the same component first"
+        ]
+      }
+    },
+    {
+      "id": "IF1-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "I-F1.core",
+      "prompt": "A service is slow only after traffic doubles. CPU is normal, open connections rise sharply, and one downstream call becomes slower. Give two hypotheses and one discriminating observation for each.",
+      "expectedElements": [
+        "downstream saturation hypothesis",
+        "connection/resource contention hypothesis",
+        "specific separating evidence for both"
+      ]
+    },
+    {
+      "id": "IF1-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "I-F1.core",
+      "prompt": "Design an evidence tree for 'the host is slow' that separates host pressure from one bad process and from a shared dependency.",
+      "expectedElements": [
+        "host-wide evidence",
+        "process-local evidence",
+        "dependency evidence",
+        "branching based on observations"
+      ]
+    },
+    {
+      "id": "IF1-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "I-F1.core",
+      "prompt": "A restart temporarily fixes a production process, but the same latency returns under load. Write the investigation path you would use next.",
+      "scoring": {
+        "full": [
+          "preserves evidence before another restart",
+          "correlates recurrence with workload",
+          "checks process/dependency state",
+          "produces a discriminating hypothesis",
+          "includes a recovery check"
+        ],
+        "partial": [
+          "has useful checks without a clear causal path"
+        ],
+        "zero": [
+          "recommends repeated restarts only"
+        ]
+      }
+    },
+    {
+      "id": "IF1-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "scenario",
+      "expectedMinutes": 2,
+      "competencyId": "I-F1.diagnostic",
+      "prompt": "A process exists. What does that prove?",
+      "expectedElements": [
+        "the process exists at that moment",
+        "it does not prove healthy progress"
+      ]
+    },
+    {
+      "id": "IF1-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "scenario",
+      "expectedMinutes": 2,
+      "competencyId": "I-F1.diagnostic",
+      "prompt": "CPU is high on one process. What is the next useful question?",
+      "expectedElements": [
+        "whether that process is the expected workload and whether it is making progress"
+      ]
+    },
+    {
+      "id": "IF1-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-F1.diagnostic",
+      "prompt": "CPU is low, memory is normal, and latency is high. What evidence should be compared next?",
+      "expectedElements": [
+        "blocking or I/O state",
+        "dependency request timing",
+        "socket/file activity"
+      ]
+    },
+    {
+      "id": "IF1-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-F1.diagnostic",
+      "prompt": "One host has high load while peer instances are normal. What should you compare?",
+      "expectedElements": [
+        "host-local process/resource state",
+        "host-local disk/network behavior",
+        "instance-specific changes"
+      ]
+    },
+    {
+      "id": "IF1-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-F1.diagnostic",
+      "prompt": "The service waits on a socket for 3 seconds. What does that not tell you?",
+      "expectedElements": [
+        "it does not prove whether the dependency is slow, unreachable, overloaded or wrong",
+        "socket waiting is evidence, not root cause"
+      ]
+    },
+    {
+      "id": "IF1-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-F1.diagnostic",
+      "prompt": "A restart fixes an incident for ten minutes. What evidence should be captured before the next restart?",
+      "expectedElements": [
+        "process state",
+        "resource state",
+        "open sockets/files",
+        "logs/request timing",
+        "recent changes"
+      ]
+    },
+    {
+      "id": "IF1-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "incident",
+      "expectedMinutes": 4,
+      "competencyId": "I-F1.diagnostic",
+      "prompt": "Thousands of sockets and high latency appear after a traffic increase. Give two competing causes and separating evidence.",
+      "expectedElements": [
+        "dependency slowdown with request timing",
+        "connection/resource pressure with socket/connection-pool evidence",
+        "traffic correlation"
+      ]
+    },
+    {
+      "id": "IF1-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "incident",
+      "expectedMinutes": 4,
+      "competencyId": "I-F1.diagnostic",
+      "prompt": "All services on one machine degrade together. Design the smallest evidence set that separates host failure from a shared downstream failure.",
+      "expectedElements": [
+        "host resource/I/O evidence",
+        "system-level logs or network evidence",
+        "shared dependency timing from multiple services"
+      ]
+    },
+    {
+      "id": "IF1-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "incident",
+      "expectedMinutes": 4,
+      "competencyId": "I-F1.diagnostic",
+      "prompt": "Only one customer has high latency while CPU, memory and other users are normal. Propose two scoped hypotheses.",
+      "expectedElements": [
+        "user/data-specific dependency or session state",
+        "path/region-specific issue",
+        "evidence tied to that customer's request path"
+      ]
+    },
+    {
+      "id": "IF1-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "incident",
+      "expectedMinutes": 5,
+      "competencyId": "I-F1.diagnostic",
+      "prompt": "Design a five-minute process investigation that minimizes destructive actions.",
+      "expectedElements": [
+        "scope",
+        "process state",
+        "resource evidence",
+        "dependency/socket evidence",
+        "preserve logs and avoid restart until evidence is captured"
+      ]
+    },
+    {
+      "id": "IF1-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "incident",
+      "expectedMinutes": 5,
+      "competencyId": "I-F1.diagnostic",
+      "prompt": "A service is slow only during traffic peaks. CPU remains normal, memory remains normal, socket count rises, and a database call becomes slow. Which two causes compete most directly and what separates them?",
+      "expectedElements": [
+        "database saturation/slow query hypothesis",
+        "connection pool/socket contention hypothesis",
+        "database timing/query evidence",
+        "connection utilization/queue evidence"
+      ]
+    },
+    {
+      "id": "IF1-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "incident",
+      "expectedMinutes": 5,
+      "competencyId": "I-F1.diagnostic",
+      "prompt": "Write the first ten minutes of a production investigation where the service may be stuck on a downstream dependency. Include observation, hypothesis, safe action, evidence and recovery check.",
+      "expectedElements": [
+        "initial scope observation",
+        "explicit dependency hypothesis",
+        "safe mitigation",
+        "evidence gathering",
+        "verification after recovery"
+      ]
+    },
+    {
+      "id": "IF1-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 5,
+      "competencyId": "I-F1.hands-on",
+      "prompt": "Inspect a running process and record its identity and basic resource state.",
+      "environment": [
+        "macOS/Linux process tools",
+        "Windows adapter for equivalent process inspection"
+      ],
+      "initialState": "A disposable process or service is running.",
+      "allowedOperations": [
+        "list processes",
+        "identify one target process",
+        "record basic CPU/memory state"
+      ],
+      "success": [
+        "process identity is recorded",
+        "resource observation is recorded",
+        "learner explains what the observation proves"
+      ],
+      "evidence": [
+        "command output",
+        "short interpretation"
+      ],
+      "failureConditions": [
+        "records only the application name without process state"
+      ],
+      "recoveryRequirements": [
+        "none"
+      ],
+      "resetStrategy": "not applicable"
+    },
+    {
+      "id": "IF1-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 7,
+      "competencyId": "I-F1.hands-on",
+      "prompt": "Identify open network sockets for a disposable service process.",
+      "environment": [
+        "macOS/Linux socket inspection",
+        "Windows adapter for equivalent observation"
+      ],
+      "initialState": "A test service is listening.",
+      "allowedOperations": [
+        "inspect process and socket state",
+        "record local/remote endpoints",
+        "correlate socket with process"
+      ],
+      "success": [
+        "socket is linked to the target process",
+        "learner distinguishes listening from established connections"
+      ],
+      "evidence": [
+        "process/socket output",
+        "written interpretation"
+      ],
+      "failureConditions": [
+        "uses a random unrelated process"
+      ],
+      "recoveryRequirements": [
+        "none"
+      ],
+      "resetStrategy": "not applicable"
+    },
+    {
+      "id": "IF1-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 7,
+      "competencyId": "I-F1.hands-on",
+      "prompt": "Create a controlled blocking operation and prove that the process remains alive while making no useful progress.",
+      "environment": [
+        "disposable local process",
+        "shell"
+      ],
+      "initialState": "A small test process can be told to wait on input or a dependency.",
+      "allowedOperations": [
+        "start the test",
+        "observe process state",
+        "cause the controlled wait",
+        "observe again"
+      ],
+      "success": [
+        "process remains alive",
+        "blocked/waiting behavior is visible",
+        "learner explains why process existence is not progress"
+      ],
+      "evidence": [
+        "before/after process state",
+        "short diagnosis"
+      ],
+      "failureConditions": [
+        "uses production process"
+      ],
+      "recoveryRequirements": [
+        "terminate or restore test process"
+      ],
+      "resetStrategy": "restart disposable test process"
+    },
+    {
+      "id": "IF1-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-F1.hands-on",
+      "prompt": "Compare a healthy request with a request blocked by a controlled dependency delay.",
+      "environment": [
+        "disposable API and dependency"
+      ],
+      "initialState": "Both services are healthy.",
+      "allowedOperations": [
+        "record baseline latency",
+        "inject one controlled dependency delay",
+        "repeat request",
+        "inspect process/socket evidence",
+        "remove delay"
+      ],
+      "success": [
+        "latency increase is recorded",
+        "dependency delay is visible",
+        "process remains alive"
+      ],
+      "evidence": [
+        "baseline and failure timing",
+        "process/socket evidence",
+        "recovery result"
+      ],
+      "failureConditions": [
+        "changes more than one dependency"
+      ],
+      "recoveryRequirements": [
+        "remove delay",
+        "verify baseline behavior"
+      ],
+      "resetStrategy": "reset dependency configuration"
+    },
+    {
+      "id": "IF1-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-F1.hands-on",
+      "prompt": "Inject CPU pressure in a disposable environment and determine whether a selected service process is actually responsible for the observed latency.",
+      "environment": [
+        "disposable VM/container or local test environment"
+      ],
+      "initialState": "Target service is healthy.",
+      "allowedOperations": [
+        "record baseline",
+        "introduce controlled CPU load",
+        "observe host and process metrics",
+        "stop load"
+      ],
+      "success": [
+        "learner separates host CPU pressure from target-process CPU usage",
+        "service recovery is verified"
+      ],
+      "evidence": [
+        "baseline metrics",
+        "during-load metrics",
+        "recovery evidence"
+      ],
+      "failureConditions": [
+        "uses production host"
+      ],
+      "recoveryRequirements": [
+        "stop load process",
+        "verify service returns to baseline"
+      ],
+      "resetStrategy": "terminate load generator"
+    },
+    {
+      "id": "IF1-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "I-F1.hands-on",
+      "prompt": "Break one disposable downstream dependency and diagnose the process behavior from evidence rather than restarting first.",
+      "environment": [
+        "disposable API plus dependency"
+      ],
+      "initialState": "Request path is healthy.",
+      "allowedOperations": [
+        "capture baseline",
+        "disable or delay dependency",
+        "capture process/socket/request evidence",
+        "restore dependency"
+      ],
+      "success": [
+        "failure is reproduced",
+        "process state remains observable",
+        "dependency is identified",
+        "recovery is verified"
+      ],
+      "evidence": [
+        "baseline",
+        "failure evidence",
+        "diagnosis",
+        "recovery proof"
+      ],
+      "failureConditions": [
+        "restart before capturing initial evidence"
+      ],
+      "recoveryRequirements": [
+        "restore dependency",
+        "verify request success"
+      ],
+      "resetStrategy": "restore disposable stack"
+    },
+    {
+      "id": "IF1-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "I-F1.hands-on",
+      "prompt": "Build a three-layer evidence table for a slow service: host, process and dependency.",
+      "environment": [
+        "disposable service stack",
+        "terminal tools"
+      ],
+      "initialState": "Service is healthy before the controlled fault.",
+      "allowedOperations": [
+        "capture host evidence",
+        "capture process evidence",
+        "capture dependency/request evidence",
+        "inject one fault",
+        "compare before/after"
+      ],
+      "success": [
+        "each layer has a concrete observation",
+        "learner identifies the smallest supported failure area",
+        "recovery is verified"
+      ],
+      "evidence": [
+        "evidence table",
+        "command outputs",
+        "diagnosis",
+        "recovery"
+      ],
+      "failureConditions": [
+        "lists commands without interpreting them"
+      ],
+      "recoveryRequirements": [
+        "restore baseline"
+      ],
+      "resetStrategy": "reset disposable environment"
+    },
+    {
+      "id": "IF1-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 15,
+      "competencyId": "I-F1.hands-on",
+      "prompt": "Run a complete Linux/process diagnosis of a controlled service failure, preserve pre-mitigation evidence, choose a safe mitigation, recover the service and defend the diagnosis.",
+      "environment": [
+        "disposable service environment"
+      ],
+      "initialState": "Known-good baseline is established.",
+      "allowedOperations": [
+        "capture baseline",
+        "inject one controlled failure",
+        "inspect host/process/dependency evidence",
+        "state competing hypotheses",
+        "apply safe mitigation",
+        "restore and verify"
+      ],
+      "success": [
+        "baseline is preserved",
+        "failure is localized",
+        "mitigation is justified",
+        "service recovers",
+        "final explanation is supported by evidence"
+      ],
+      "evidence": [
+        "baseline",
+        "failure timeline",
+        "observations",
+        "mitigation",
+        "recovery proof",
+        "final diagnosis"
+      ],
+      "failureConditions": [
+        "destroys evidence before capture",
+        "changes production infrastructure"
+      ],
+      "recoveryRequirements": [
+        "restore original state",
+        "verify request success"
+      ],
+      "resetStrategy": "recreate disposable environment"
+    }
+  ]
+}

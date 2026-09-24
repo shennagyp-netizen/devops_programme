@@ -1,0 +1,539 @@
+EPISODE A1.1 — Capacity Is a System Problem
+
+Speaker A: Traffic is going up.
+
+Speaker B: How much?
+
+Speaker A: Three times normal in the last ten minutes.
+
+Speaker B: So we scale the web servers.
+
+Speaker A: Maybe. That gives us a useful boundary.
+
+Speaker A: Let’s keep that as a testable claim.
+
+Speaker B: That's the obvious answer.
+
+Speaker A: Which is why I want to slow down before we use it.
+
+Speaker B: Okay.
+
+Speaker A: What does scaling mean?
+
+Speaker B: Adding capacity.
+
+Speaker A: Good. Capacity for what?
+
+Speaker B: The work the system has to do.
+
+Speaker A: Exactly. Not every limit is CPU.
+
+Speaker B: Database. Network. Memory. Connections. Queue.
+
+Speaker A: Yes. Disk. Locks. External APIs. Rate limits. Even people.
+
+Speaker B: People?
+
+Speaker A: Someone still has to deal with alerts.
+
+Speaker B: Fair.
+
+Speaker A: A system can be able to handle ten times the traffic in one part and only handle one times the traffic in another.
+
+Speaker B: So the real question is where the first limit appears.
+
+Speaker A: Exactly. Now connect that to the request path.
+
+Speaker A: That gives us a useful boundary.
+
+Speaker B: Let's make a simple model.
+
+Speaker A: Suppose one API instance can handle 100 requests per second at our target latency.
+
+Speaker B: Ten instances could handle 1,000 in a perfect world.
+
+Speaker A: Right. I would measure that before changing anything.
+
+Speaker A: Now connect that to the request path.
+
+Speaker B: But no real system is perfect.
+
+Speaker A: Correct. That is where the failure becomes useful.
+
+Speaker A: I would measure that before changing anything.
+
+Speaker B: Maybe the database can handle only 600 requests per second.
+
+Speaker A: Then adding the sixth, seventh, and eighth API server does not solve the database limit.
+
+Speaker B: The API looks less busy while the database is dying.
+
+Speaker A: Exactly. Now we can compare it with the real system.
+
+Speaker A: That is where the failure becomes useful.
+
+Speaker B: So we moved the problem.
+
+Speaker A: Yes. Keep the user-visible effect in the model.
+
+Speaker A: Now we can compare it with the real system.
+
+Speaker B: Human example?
+
+Speaker A: Supermarket checkout.
+
+Speaker B: More lanes.
+
+Speaker A: Right. You open ten lanes. Now the checkout area is faster.
+
+Speaker B: Until everyone reaches the payment terminal.
+
+Speaker A: Exactly. That is the part I would verify first.
+
+Speaker A: Keep the user-visible effect in the model.
+
+Speaker B: Or there is one person checking IDs for every lane.
+
+Speaker A: Right. Now the assumption is explicit.
+
+Speaker A: That is the part I would verify first.
+
+Speaker B: So opening more lanes can move the queue.
+
+Speaker A: That's the point.
+
+Speaker B: And the same thing happens in distributed systems.
+
+Speaker A: All the time.
+
+Speaker B: What do we measure?
+
+Speaker A: Start with traffic and latency.
+
+Speaker B: Throughput and response time.
+
+Speaker A: Yes. That gives us a cleaner diagnosis.
+
+Speaker A: Now the assumption is explicit.
+
+Speaker B: Then resource use.
+
+Speaker A: Yes. We can test that without changing the whole system.
+
+Speaker A: That gives us a cleaner diagnosis.
+
+Speaker B: Then queues and dependency capacity.
+
+Speaker A: Exactly.
+
+Speaker A: We can test that without changing the whole system.
+
+Speaker B: What is saturation?
+
+Speaker A: A resource is close to its useful limit.
+
+Speaker B: CPU at 100%.
+
+Speaker A: One example.
+
+Speaker B: Database connections at their limit.
+
+Speaker A: Another.
+
+Speaker B: Queue storage full.
+
+Speaker A: Another.
+
+Speaker B: External provider rate limit.
+
+Speaker A: Another.
+
+Speaker B: So saturation is about a limit, not just a CPU graph.
+
+Speaker A: Correct.
+
+Speaker A: That is a better reason to make the change.
+
+Speaker B: What about latency?
+
+Speaker A: Latency tells you how long work takes.
+
+Speaker B: And throughput tells you how much work the system handles over time.
+
+Speaker A: Right.
+
+Speaker B: They can move together or not.
+
+Speaker A: Exactly.
+
+Speaker B: For example, we can keep throughput flat while latency rises.
+
+Speaker A: Yes.
+
+Speaker B: Which might mean we are getting close to a limit.
+
+Speaker A: Good.
+
+Speaker B: Or latency can be high with low traffic because one dependency is slow.
+
+Speaker A: Correct.
+
+Speaker B: So traffic alone does not explain performance.
+
+Speaker A: Right.
+
+Speaker B: This is already harder than "add servers."
+
+Speaker A: That's why we're here.
+
+Speaker B: Let's make a simple capacity equation.
+
+Speaker A: Suppose one worker can process 50 jobs per second.
+
+Speaker B: We have 10 workers.
+
+Speaker A: Rough upper bound?
+
+Speaker B: 500 jobs per second.
+
+Speaker A: And if work arrives at 700 per second?
+
+Speaker B: Queue grows by roughly 200 per second, assuming the simple model holds.
+
+Speaker A: Good.
+
+Speaker B: So the queue becomes the difference between arrival rate and service rate.
+
+Speaker A: Exactly.
+
+Speaker B: But the real service rate can fall as the system gets loaded.
+
+Speaker A: Very important.
+
+Speaker B: Because more work can create more contention.
+
+Speaker A: Yes.
+
+Speaker B: More connections. More locks. More cache misses. More queueing.
+
+Speaker A: Right.
+
+Speaker B: So a simple linear model can fail at high load.
+
+Speaker A: Exactly.
+
+Speaker B: Which means capacity tests need real measurements.
+
+Speaker A: Yes.
+
+Speaker B: Prediction.
+
+Speaker A: Go.
+
+Speaker B: Traffic doubles. API CPU stays at 40%, but database latency doubles and queue depth grows.
+
+Speaker A: What would you scale?
+
+Speaker B: Not the API first.
+
+Speaker A: Good.
+
+Speaker B: I would inspect the database and the queue.
+
+Speaker A: Exactly.
+
+Speaker B: Maybe the API is waiting most of the time.
+
+Speaker A: Right.
+
+Speaker B: So low API CPU is not proof that we have spare system capacity.
+
+Speaker A: Correct.
+
+Speaker B: That's an easy mistake.
+
+Speaker A: Very easy.
+
+Speaker B: Another prediction. We add two database replicas. Read latency improves, but writes slow down.
+
+Speaker A: Why might that happen?
+
+Speaker B: Replication creates more work. Or the write path is limited elsewhere.
+
+Speaker A: Good.
+
+Speaker B: So scaling one side can add cost to another.
+
+Speaker A: Exactly.
+
+Speaker B: Every capacity change changes the system.
+
+Speaker A: That's the mature view.
+
+Speaker B: What is headroom?
+
+Speaker A: Spare capacity kept so the system can handle normal bursts and failures without reaching a hard limit.
+
+Speaker B: So if normal traffic uses 95% of capacity, one small traffic spike can hurt.
+
+Speaker A: Right.
+
+Speaker B: Or one failed machine can push the rest past the limit.
+
+Speaker A: Exactly.
+
+Speaker B: Which means capacity planning has to include failures.
+
+Speaker A: Yes.
+
+Speaker B: Not just average traffic.
+
+Speaker A: Correct.
+
+Speaker B: This connects to resilience.
+
+Speaker A: Very closely.
+
+Speaker B: If I run ten servers and one fails, the remaining nine need enough headroom.
+
+Speaker A: Exactly.
+
+Speaker B: So the system's safe capacity is lower than the total raw capacity.
+
+Speaker A: Good.
+
+Speaker B: That's an important idea.
+
+Speaker A: It is.
+
+Speaker B: What about autoscaling?
+
+Speaker A: Autoscaling is a control loop. It watches signals and changes capacity.
+
+Speaker B: Like Kubernetes HPA.
+
+Speaker A: One example.
+
+Speaker B: But autoscaling can react too slowly.
+
+Speaker A: Yes.
+
+Speaker B: Or scale on the wrong signal.
+
+Speaker A: Yes.
+
+Speaker B: Or make a database problem worse by adding more API workers.
+
+Speaker A: Exactly.
+
+Speaker B: So autoscaling is not magic either.
+
+Speaker A: Nothing is magic.
+
+Speaker B: You said that in the Kubernetes lesson too.
+
+Speaker A: It keeps being true.
+
+Speaker B: Real-life example again.
+
+Speaker A: A call center gets busy. Management adds more agents.
+
+Speaker B: Good.
+
+Speaker A: But all agents need approval from one specialist.
+
+Speaker B: Then the specialist becomes the bottleneck.
+
+Speaker A: Exactly.
+
+Speaker B: Adding agents can even make the specialist busier.
+
+Speaker A: That's the same pattern.
+
+Speaker B: Nice.
+
+Speaker A: Now bring it back to a large system.
+
+Speaker B: User request.
+
+Speaker A: Frontend.
+
+Speaker B: API.
+
+Speaker A: Cache.
+
+Speaker B: Database.
+
+Speaker A: External provider.
+
+Speaker B: Each has a capacity limit.
+
+Speaker A: Exactly.
+
+Speaker B: And the request can only move as fast as its slowest required part.
+
+Speaker A: For a serial dependency chain, yes.
+
+Speaker B: Good correction.
+
+Speaker A: Technical language should be precise, even when the English is simple.
+
+Speaker B: I like that rule.
+
+Speaker A: Keep it.
+
+Speaker B: What should an A1 capacity review contain?
+
+Speaker A: Traffic rate.
+
+Speaker B: Latency target.
+
+Speaker A: Resource limits.
+
+Speaker B: Dependency limits.
+
+Speaker A: Failure headroom.
+
+Speaker B: Queue behavior.
+
+Speaker A: Scale-up time.
+
+Speaker B: And cost.
+
+Speaker A: Exactly.
+
+Speaker B: Cost?
+
+Speaker A: Ten times traffic at ten times cost may be fine for one product and impossible for another.
+
+Speaker B: So technical capacity and business cost have to meet.
+
+Speaker A: Yes.
+
+Speaker B: Pause.
+
+Speaker A: Go.
+
+Speaker B: The service handles 10,000 requests per second today. Tomorrow we expect 30,000. The web tier scales easily, but the database handles only 18,000. What is the real problem?
+
+Speaker A: Your answer?
+
+Speaker B: The database capacity.
+
+Speaker A: Yes, but go one step deeper.
+
+Speaker B: We need to change the request path or the database design. Maybe caching. Maybe reads move to replicas. Maybe partitioning. Maybe the traffic model changes.
+
+Speaker A: Good.
+
+Speaker B: So "add web servers" is not a solution.
+
+Speaker A: Correct.
+
+Speaker B: It's only adding capacity where capacity is not the first limit.
+
+Speaker A: Exactly.
+
+Speaker B: Mac exercise?
+
+Speaker A: Draw the full A1 request path.
+
+Speaker A: Put an estimated throughput limit beside each component.
+
+Speaker B: Even if the numbers are rough.
+
+Speaker A: Yes. This is a learning model, not a production forecast.
+
+Speaker B: Then double the traffic.
+
+Speaker A: Ask which limit appears first.
+
+Speaker B: Then remove one server.
+
+Speaker A: Ask whether the remaining system still has safe headroom.
+
+Speaker B: So we are doing paper load testing.
+
+Speaker A: Exactly.
+
+Speaker B: Then maybe run a small local load test.
+
+Speaker A: Yes, when the project environment supports it.
+
+Speaker B: What should success look like?
+
+Speaker A: You should be able to say:
+"This is our first bottleneck. This is the signal that shows it. This is what happens if traffic doubles. This is what happens if one unit fails. And this is the cheapest safe way to add capacity."
+
+Speaker B: That's a much stronger answer than "use autoscaling."
+
+Speaker A: Much stronger.
+
+Speaker B: Recall.
+
+Speaker A: Question one. Throughput?
+
+Speaker B: How much work the system completes in a period of time.
+
+Speaker A: Good.
+
+Speaker B: Question two.
+
+Speaker A: Latency?
+
+Speaker B: How long a request or job takes.
+
+Speaker A: Good.
+
+Speaker B: Question three.
+
+Speaker A: Why can adding servers make a system worse?
+
+Speaker B: More traffic or connections can hit a shared bottleneck like the database.
+
+Speaker A: Good.
+
+Speaker B: Question four.
+
+Speaker A: Why keep headroom?
+
+Speaker B: To handle normal bursts and failures without reaching a hard limit.
+
+Speaker A: Good.
+
+Speaker B: Question five.
+
+Speaker A: What should autoscaling watch?
+
+Speaker B: A signal that really matches the resource or work limit we need to control.
+
+Speaker A: Good.
+
+Speaker B: Final challenge.
+
+Speaker A: Design capacity for A1.
+
+Speaker B: Pick a traffic target.
+
+Speaker A: Yes.
+
+Speaker B: Find the first bottleneck.
+
+Speaker A: Yes.
+
+Speaker B: Add enough headroom for one expected failure.
+
+Speaker A: Yes.
+
+Speaker B: Then explain the cost.
+
+Speaker A: Exactly.
+
+Speaker B: So capacity is not "how many servers can I buy?"
+
+Speaker A: It is "how much useful work can this system safely handle, and what limits it?"
+
+Speaker B: Much better question.
+
+Speaker A: That's the whole lesson.
+
