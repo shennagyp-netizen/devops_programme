@@ -1,3 +1,4 @@
+import runtimeTaskCatalog from "./runtimeTasks.json";
 import type { PlatformId } from "./programme";
 import type { VerificationLevel } from "./handsOn";
 
@@ -63,46 +64,10 @@ export type RuntimeVerificationResult =
 const SAFE_DEFAULT_TIMEOUT_MS = 30_000;
 
 export function command(program: string, args: string[], destructive = false): RuntimeCommand {
-  return {
-    program,
-    args,
-    timeoutMs: SAFE_DEFAULT_TIMEOUT_MS,
-    destructive
-  };
+  return { program, args, timeoutMs: SAFE_DEFAULT_TIMEOUT_MS, destructive };
 }
 
-export const runtimeTasks: RuntimeTask[] = [
-  {
-    taskId: "hands-on-B1.2",
-    lessonId: "B1.2",
-    verificationLevel: "machine-verified",
-    resetRequired: false,
-    steps: [
-      {
-        id: "resolve-name",
-        kind: "observe",
-        purpose: "Resolve the service name before testing the connection path.",
-        commands: {
-          macos: command("dig", ["example.com"]),
-          linux: command("dig", ["example.com"]),
-          windows: command("powershell.exe", ["-NoProfile", "-Command", "Resolve-DnsName example.com"])
-        },
-        required: true
-      },
-      {
-        id: "test-https-port",
-        kind: "verify",
-        purpose: "Test whether the target HTTPS port is reachable.",
-        commands: {
-          macos: command("nc", ["-z", "example.com", "443"]),
-          linux: command("nc", ["-z", "example.com", "443"]),
-          windows: command("powershell.exe", ["-NoProfile", "-Command", "Test-NetConnection example.com -Port 443"])
-        },
-        required: true
-      }
-    ]
-  }
-];
+export const runtimeTasks: RuntimeTask[] = runtimeTaskCatalog.runtimeTasks as RuntimeTask[];
 
 export function runtimeTaskForLesson(lessonId: string) {
   return runtimeTasks.find((task) => task.lessonId === lessonId);
