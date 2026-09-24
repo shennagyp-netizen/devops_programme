@@ -5,6 +5,8 @@ import {
   type DiagnosticRecommendation
 } from "../data/diagnostics";
 import type { CourseLevel } from "../data/programme";
+import { addEvidence } from "../data/evidence";
+import { lessonsByCourse } from "../data/courseLessons";
 
 const STORAGE_KEY = "devops-programme-diagnostic-results";
 
@@ -104,6 +106,21 @@ export function DiagnosticPanel({
     };
     setResults(nextResults);
     saveResults(nextResults);
+
+    const projectId =
+      lessonsByCourse[definition.course].find(
+        (lesson) => lesson.sectionId === definition.sectionId
+      )?.projectId;
+
+    if (projectId) {
+      addEvidence({
+        course: definition.course,
+        projectId,
+        kind: "diagnostic",
+        summary: `${definition.sectionId}: ${score}/${definition.questions.length} · ${recommendation}`
+      });
+    }
+
     onRecommendation(definition.sectionId, recommendation);
   }
 
