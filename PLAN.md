@@ -21,12 +21,12 @@ The learner chooses an environment profile first:
 - Linux
 - Windows
 
-The system then uses diagnostics to determine what introductory theory can be skipped.
+The target learning architecture uses diagnostics to determine what introductory theory can be skipped. In the current MVP, course and platform selection are implemented, while prerequisite diagnostics and automatic remediation routing remain planned.
 
 Rules:
-- known theory may be skipped
+- known theory may be skipped when diagnostic evidence supports it
 - exercises may never be skipped
-- failed exercises trigger targeted remediation
+- failed exercises should trigger targeted remediation
 - projects continuously carry the learner forward
 
 ## Continuous projects
@@ -81,6 +81,12 @@ M6 Assessment Engine
 M7 Release / Validation
 
 Existing five-day content remains useful as the initial intermediate core while the programme is expanded into the three-course architecture.
+
+## Current implementation boundary
+
+The curriculum model, course-aware lesson routing, assessment blueprints, pilot item banks, podcast scripts and safe audio-sync architecture are implemented on the clearance branch.
+
+Prerequisite diagnostics, automatic remediation routing, a complete Windows command adapter, production voice timing manifests, and calibrated/operational assessment pools are not yet complete.
 
 ## Quality gate
 
