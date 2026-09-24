@@ -1,0 +1,1 @@
+export function Progress({total,completed}:{total:number;completed:number}){const p=total?Math.round(completed/total*100):0;return <div className="progress-card"><div className="progress-row"><strong>{completed}/{total} mastered</strong><span>{p}%</span></div><div className="progress-track"><div className="progress-fill" style={{width:p+"%"}}/></div></div>}
