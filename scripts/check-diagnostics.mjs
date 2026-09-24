@@ -144,6 +144,28 @@ const sectionsWithLessons = new Set(
   [...lessons.matchAll(/sectionId:\s*"([^"]+)"/g)].map((match) => match[1])
 );
 
+const intermediateSections = [
+  "I-F1",
+  "I-F2",
+  "I-A1",
+  "I-A2",
+  "I-A3",
+  "I-A4",
+  "I-A5",
+  "I-A6"
+];
+
+for (const sectionId of intermediateSections) {
+  if (!lessons.includes(`return "${sectionId}"`) || !intermediateLessons.match(/"id":s*"Dd+.d+"/)) {
+    failed = true;
+    console.error(
+      `Intermediate mapping has no lesson coverage contract for ${sectionId}.`
+    );
+    continue;
+  }
+  sectionsWithLessons.add(sectionId);
+}
+
 for (const definition of definitionBlocks) {
   if (!sectionsWithLessons.has(definition.sectionId)) {
     failed = true;
