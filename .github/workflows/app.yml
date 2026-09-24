@@ -67,39 +67,3 @@ jobs:
           path: |
             app/ci-report
             app/build.log
-
-  runner_probe:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Runner probe
-        shell: bash
-        run: |
-          set -euo pipefail
-          printf 'runner-ok\\n' > runner-probe.txt
-          node --version
-          npm --version
-          test -f package.json
-
-      - name: Upload runner probe
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: devops-runner-probe
-          path: runner-probe.txt
-
-  bare_runner_probe:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Bare runner shell probe
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo "bare-runner-ok"
-          uname -a
-          command -v bash
