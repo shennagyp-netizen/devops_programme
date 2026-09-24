@@ -1,139 +1,151 @@
-DAY 2
+DAY 2 — NETWORKING PROTOCOLS + DOCKER
 
 EPISODE D2.1 — TCP and UDP
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: Yesterday we reached IP. Today we ask how two endpoints actually communicate.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: This is where TCP, ports, sockets, and the mysterious handshake enter the room.
 
-Speaker A: Build networking from the link layer upward. Keep frame, MAC, IP, route, port, socket, DNS, TCP, TLS and HTTP distinct. A failure at each layer produces a different symptom.
+Speaker A: Think of a phone call. An IP address is roughly the phone number; a port identifies the service; a socket represents an endpoint of communication. TCP establishes a connection and provides ordered, reliable delivery.
 
-Speaker B: Give me the failure-oriented version.
+Speaker B: So TCP is the person who keeps saying, 'I did send that message, please stop sending it again.'
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: Fair. TCP has mechanisms for acknowledgement, retransmission, ordering, flow control, and congestion control.
 
-Hands-on: Use the Mac to perform an experiment related to TCP and UDP. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: UDP is different: it gives you datagrams without TCP's connection and reliability machinery. That can be useful when the application prefers timeliness or implements its own reliability.
 
-Production: Place TCP and UDP in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker A: Real-life example: a live sports commentator may prefer the latest score to arrive quickly rather than replaying every missed sentence. Other applications absolutely need every byte in order.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker A: Mac lab: inspect listening TCP ports and make a simple localhost connection. Then compare the behavior with a UDP experiment.
 
-==============================
+Speaker B: What failure should I learn to recognize?
+
+Speaker A: Connection refused, timeout, connection reset, and application-level error are different observations. Do not collapse them into 'the network is broken.'
+
+
 
 EPISODE D2.2 — DNS
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: DNS maps names to information. It is a distributed naming system, not a magical Internet phonebook stored in one server.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: People usually remember DNS only when a website stops working.
 
-Speaker A: Build networking from the link layer upward. Keep frame, MAC, IP, route, port, socket, DNS, TCP, TLS and HTTP distinct. A failure at each layer produces a different symptom.
+Speaker A: Which is unfortunate because DNS is everywhere.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Think of a hotel reservation system. You remember the hotel name; a backend system resolves that name into a concrete destination. DNS does something analogous for network names.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: Learn recursive resolvers, authoritative servers, A and AAAA records, CNAME, TTL, caching, and negative answers.
 
-Hands-on: Use the Mac to perform an experiment related to DNS. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker B: Joke: DNS is proof that humans invented names because remembering eight groups of numbers was emotionally unacceptable.
 
-Production: Place DNS in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker A: Technically accurate enough to be dangerous.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker A: Real-life example: changing a DNS record is not always instantly visible everywhere because cached information can live according to TTL.
 
-==============================
+Speaker A: Lab: use dig to inspect a real domain. Ask the resolver different questions and observe record types and TTL.
+
+
 
 EPISODE D2.3 — HTTP
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: HTTP gives applications a common language over a transport. Requests, responses, headers, status codes, bodies, cookies, and connection behavior all matter.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: So HTTP is not the network itself.
 
-Speaker A: Build networking from the link layer upward. Keep frame, MAC, IP, route, port, socket, DNS, TCP, TLS and HTTP distinct. A failure at each layer produces a different symptom.
+Speaker A: Correct. It rides over transport and the underlying network path.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Think of a courier package. The network gets the package from city to city. HTTP is the information inside the package describing what the application wants.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: A 404 is not the same thing as a TCP timeout. A 500 means something different from a DNS failure. Layer separation is your diagnostic superpower.
 
-Hands-on: Use the Mac to perform an experiment related to HTTP. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Real-life example: ordering food online. DNS finds the restaurant system, TCP/TLS establishes communication, HTTP carries 'I want this order,' and the application responds with a result.
 
-Production: Place HTTP in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker B: That is much easier to remember than forty slides of status codes.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker A: We still need the status codes. We just gave them a job.
 
-==============================
+Speaker A: Lab: use curl to inspect headers, status codes, redirects, and a JSON API.
+
+
 
 EPISODE D2.4 — TLS and HTTPS
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: HTTPS combines HTTP with TLS. TLS provides cryptographic protection and server identity mechanisms.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: Real-life analogy?
 
-Speaker A: Build networking from the link layer upward. Keep frame, MAC, IP, route, port, socket, DNS, TCP, TLS and HTTP distinct. A failure at each layer produces a different symptom.
+Speaker A: Imagine speaking to a person through a secure room with an identity badge at the door. The badge helps establish who you are talking to; the room protects the conversation from casual listeners.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Certificates, certificate authorities, public/private keys, and the handshake make that possible.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker B: So encryption is not the same as authentication.
 
-Hands-on: Use the Mac to perform an experiment related to TLS and HTTPS. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Exactly. You can encrypt data without correctly authenticating the endpoint. Secure systems care about both.
 
-Production: Place TLS and HTTPS in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker A: Real-life example: entering banking credentials into a fake website with a convincing logo. TLS is not a magic guarantee that the business itself is trustworthy; certificate validation is part of authenticating the endpoint.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker A: Lab: inspect the certificate chain of a real HTTPS site with browser tools and command-line tools.
 
-==============================
+
 
 EPISODE D2.5 — Why Containers Exist
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: A container is an isolated process environment, not a virtual machine.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: So the container is the apartment, and the process is the person living inside it?
 
-Speaker A: A container is an isolated process environment, not a virtual machine. Image, layer, container, network, port publishing, volume and health are separate debugging dimensions.
+Speaker A: A reasonable analogy. The important technical difference is that containers share the host kernel rather than emulating a full guest kernel.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Images package filesystem layers and metadata. Containers are running instances created from those images.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: Real-life example: a food-delivery kitchen may have standardized stations and ingredients. You do not redesign the entire building every time a new order arrives. You create a repeatable working environment.
 
-Hands-on: Use the Mac to perform an experiment related to Why Containers Exist. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker B: And that is why 'works on my machine' starts becoming less persuasive.
 
-Production: Place Why Containers Exist in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker A: Exactly.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker A: Lab: build an image, run it, inspect its filesystem and process, and compare the image definition with the live container.
 
-==============================
+
 
 EPISODE D2.6 — Docker Networking and Storage
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: Now connect the networking theory to containers.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: So all those IPs and ports were secretly preparing us for this.
 
-Speaker A: A container is an isolated process environment, not a virtual machine. Image, layer, container, network, port publishing, volume and health are separate debugging dimensions.
+Speaker A: Precisely. A container can have a network namespace and an address inside a Docker network. Port publishing connects host-side access to a container service.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Think of an apartment complex. Internal apartment numbers work inside the complex. Visitors enter through the building entrance. Docker network addressing and published ports are different paths.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: Volumes solve another problem: data that must outlive a container process.
 
-Hands-on: Use the Mac to perform an experiment related to Docker Networking and Storage. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Real-life example: throwing away a restaurant kitchen staff should not destroy the restaurant's inventory database.
 
-Production: Place Docker Networking and Storage in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker B: That's a slightly dramatic way to explain a volume.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker A: You remembered it, though.
 
-==============================
+Speaker A: Lab: run a frontend, API, and database. Break the database hostname, then break the published port, and identify why the symptoms differ.
+
+
 
 EPISODE D2.7 — Break Docker
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: The fastest way to learn containers is to break them deliberately.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: So today the syllabus is failure.
 
-Speaker A: A container is an isolated process environment, not a virtual machine. Image, layer, container, network, port publishing, volume and health are separate debugging dimensions.
+Speaker A: Correct. Wrong port. Wrong hostname. Wrong environment variable. Permission failure. Unhealthy dependency. Resource exhaustion.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Real-life example: debugging a restaurant that is 'closed' could mean no chef, locked door, missing electricity, broken refrigerator, or a failed payment terminal. The symptom is the same; the cause is not.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker B: So we need evidence that separates hypotheses.
 
-Hands-on: Use the Mac to perform an experiment related to Break Docker. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Exactly. Check process, logs, network, configuration, health, and resource state in a deliberate order.
 
-Production: Place Break Docker in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker A: Lab: introduce one failure at a time and predict the visible symptom before observing it.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker B: And if my prediction is wrong?
+
+Speaker A: Excellent. That is where learning begins.
