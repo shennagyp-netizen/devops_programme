@@ -12,29 +12,48 @@ jobs:
   beginner_gate:
     name: beginner-gate
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: app
     steps:
-      - uses: actions/checkout@v4
+      - name: Runner diagnostics
+        shell: bash
+        run: |
+          set -euxo pipefail
+          uname -a
+          command -v git
+          git --version
+          command -v node
+          node --version
+          command -v npm
+          npm --version
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install
-        run: npm install
+      - name: Checkout repository without marketplace actions
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euxo pipefail
+          rm -rf repo
+          git init repo
+          cd repo
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach "${GITHUB_SHA}"
 
       - name: Beginner structural contract
+        working-directory: repo/app
         run: node ../scripts/check-beginner-gate.mjs
 
       - name: Beginner unit tests
-        run: npm exec vitest run tests/unit/beginner-course.test.mjs
+        working-directory: repo/app
+        run: |
+          npm install
+          npm exec vitest run tests/unit/beginner-course.test.mjs
 
       - name: Beginner integration tests
+        working-directory: repo/app
         run: npm exec vitest run tests/integration/beginner-course.integration.test.mjs
 
       - name: Beginner completeness validator
+        working-directory: repo/app
         run: npm run check:beginner
 
   build:
