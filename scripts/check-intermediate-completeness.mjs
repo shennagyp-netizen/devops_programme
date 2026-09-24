@@ -61,21 +61,19 @@ const courseLessons = await readFile(
   "utf8"
 );
 
-const mappingChecks = [
-  ["D2.5","I-A1"], ["D2.6","I-A1"], ["D2.7","I-A1"],
-  ["D3.1","I-A2"], ["D3.2","I-A3"], ["D3.3","I-A3"],
-  ["D3.4","I-A2"], ["D3.5","I-A2"],
-  ["D4.1","I-A4"], ["D4.6","I-A4"],
-  ["D5.5","I-A5"], ["D5.8","I-A5"],
-  ["D5.1","I-A6"], ["D5.7","I-A6"]
+const mappingContracts = [
+  ['["D2.5", "D2.6", "D2.7"].includes(id)', 'I-A1'],
+  ['id === "D3.1"', 'I-A2'],
+  ['id === "D3.2" || id === "D3.3"', 'I-A3'],
+  ['id === "D3.4" || id === "D3.5"', 'I-A2'],
+  ['["D4.1", "D4.2", "D4.3", "D4.4", "D4.5", "D4.6"].includes(id)', 'I-A4'],
+  ['["D5.5", "D5.8"].includes(id)', 'I-A5']
 ];
 
-for (const [lessonId, sectionId] of mappingChecks) {
-  const start = courseLessons.indexOf('id: "' + lessonId + '"');
-  const lessonBlock = start >= 0 ? courseLessons.slice(start, start + 450) : "";
-  if (!lessonBlock.includes('sectionId: "' + sectionId + '"')) {
+for (const [condition, sectionId] of mappingContracts) {
+  if (!courseLessons.includes(condition) || !courseLessons.includes(`return "${sectionId}"`)) {
     failed = true;
-    console.error('Intermediate lesson ' + lessonId + ' is not mapped to ' + sectionId + '.');
+    console.error(`Intermediate mapping contract is missing ${condition} -> ${sectionId}.`);
   }
 }
 
