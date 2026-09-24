@@ -4,6 +4,7 @@ import {
   recommendationForScore,
   type DiagnosticRecommendation
 } from "../data/diagnostics";
+import type { CourseLevel } from "../data/programme";
 
 const STORAGE_KEY = "devops-programme-diagnostic-results";
 
@@ -41,7 +42,7 @@ export function DiagnosticPanel({
   sectionId,
   onRecommendation
 }: {
-  course: "beginner";
+  course: CourseLevel;
   sectionId?: string;
   onRecommendation: (sectionId: string, recommendation: DiagnosticRecommendation) => void;
 }) {
