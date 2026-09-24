@@ -59,7 +59,7 @@ Speaker A: First find listening TCP ports on your machine. Then make a local con
 
 Speaker B: And UDP?
 
-Speaker A: Use a tiny local experiment. Observe that a UDP send can succeed without the same connection semantics as TCP. The lesson is not “UDP is faster.” That's too vague. The lesson is that the transport contract is different.
+Speaker A: Use a tiny local experiment. Observe that a UDP send can succeed without the same connection behavior as TCP. The lesson is not “UDP is faster.” That's too vague. The lesson is that the transport contract is different.
 
 
 EPISODE D2.2 — DNS
@@ -145,7 +145,7 @@ Speaker B: HTTP is where application engineers feel at home.
 
 Speaker A: Which is exactly why I want you not to skip the layers underneath it.
 
-Speaker B: Right. A browser request starts with naming, transport, security, then application semantics.
+Speaker B: Right. A browser request starts with naming, transport, security, then application behavior.
 
 Speaker A: Usually. And each layer can fail independently.
 
