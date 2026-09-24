@@ -148,6 +148,8 @@ Speaker B: We pass it as configuration.
 
 Speaker A: Right.
 
+Speaker A: Let's keep that tied to the actual startup and recovery path.
+
 Speaker B: But the value should not be in Git if it is a secret.
 
 Speaker A: Correct.
