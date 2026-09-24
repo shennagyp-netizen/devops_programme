@@ -58,7 +58,7 @@ if (new Set(questionIds).size !== questionIds.length) {
 }
 
 const questionBodies = [...diagnostics.matchAll(
-  /id:\s*"([A-Z0-9.-]+)",\s*prompt:\s*"[^"]+",\s*options:\s*\[([\\s\\S]*?)\],\s*correctOption:\s*\d+/g
+  /id:\s*"([A-Z0-9.-]+)",\s*prompt:\s*"[^"]+",\s*options:\s*\[([\s\S]*?)\],\s*correctOption:\s*\d+/g
 )];
 
 if (questionBodies.length !== questionBlocks.length) {
