@@ -334,172 +334,184 @@
       "family": "diagnostic",
       "difficulty": "foundation",
       "cognitiveLevel": "application",
-      "itemType": [
-        "release/artifact identity"
-      ],
+      "itemType": "scenario",
       "expectedMinutes": 2,
       "competencyId": "B-A3.diagnostic",
-      "prompt": "A build passed but no artifact can be identified. What is missing?"
+      "prompt": "A build passed but no artifact can be identified. What is missing?",
+      "expectedElements": [
+        "release/artifact identity"
+      ]
     },
     {
       "id": "BA3-D-002",
       "family": "diagnostic",
       "difficulty": "foundation",
       "cognitiveLevel": "application",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 2,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "A deployment failed immediately after a configuration change. What should you compare first?",
+      "expectedElements": [
         "deployment change",
         "known-good configuration",
         "runtime error"
-      ],
-      "expectedMinutes": 2,
-      "competencyId": "B-A3.diagnostic",
-      "prompt": "A deployment failed immediately after a configuration change. What should you compare first?"
+      ]
     },
     {
       "id": "BA3-D-003",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "Rollback completed but errors remain. What should you inspect?",
+      "expectedElements": [
         "all components affected by the request path",
         "dependency/data state",
         "rollback coverage"
-      ],
-      "expectedMinutes": 3,
-      "competencyId": "B-A3.diagnostic",
-      "prompt": "Rollback completed but errors remain. What should you inspect?"
+      ]
     },
     {
       "id": "BA3-D-004",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "CI fails while local build passes. Name two useful comparisons.",
+      "expectedElements": [
         "dependency versions or environment",
         "exact commands/inputs",
         "runtime or architecture differences"
-      ],
-      "expectedMinutes": 3,
-      "competencyId": "B-A3.diagnostic",
-      "prompt": "CI fails while local build passes. Name two useful comparisons."
+      ]
     },
     {
       "id": "BA3-D-005",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "Two deployments of the same commit behave differently. What evidence matters?",
+      "expectedElements": [
         "artifact identity",
         "runtime configuration",
         "target environment"
-      ],
-      "expectedMinutes": 3,
-      "competencyId": "B-A3.diagnostic",
-      "prompt": "Two deployments of the same commit behave differently. What evidence matters?"
+      ]
     },
     {
       "id": "BA3-D-006",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "A pipeline is green but users see errors. Give two reasons.",
+      "expectedElements": [
         "tests did not cover runtime path",
         "production dependency/configuration differs",
         "post-deploy checks are insufficient"
-      ],
-      "expectedMinutes": 3,
-      "competencyId": "B-A3.diagnostic",
-      "prompt": "A pipeline is green but users see errors. Give two reasons."
+      ]
     },
     {
       "id": "BA3-D-007",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "A failed release has no rollback record. Why is that an operational problem?",
+      "expectedElements": [
         "recovery path is ambiguous",
         "incident reconstruction is harder",
         "known-good version may be unclear"
-      ],
-      "expectedMinutes": 4,
-      "competencyId": "B-A3.diagnostic",
-      "prompt": "A failed release has no rollback record. Why is that an operational problem?"
+      ]
     },
     {
       "id": "BA3-D-008",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "A deployment failure appears only under real traffic. What should you measure?",
+      "expectedElements": [
         "request rate/latency/errors",
         "dependency saturation",
         "capacity or load-specific behavior"
-      ],
-      "expectedMinutes": 4,
-      "competencyId": "B-A3.diagnostic",
-      "prompt": "A deployment failure appears only under real traffic. What should you measure?"
+      ]
     },
     {
       "id": "BA3-D-009",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "A new dependency version causes flaky builds. Design the smallest evidence set.",
+      "expectedElements": [
         "exact dependency version",
         "build logs",
         "repeatability across runs"
-      ],
-      "expectedMinutes": 4,
-      "competencyId": "B-A3.diagnostic",
-      "prompt": "A new dependency version causes flaky builds. Design the smallest evidence set."
+      ]
     },
     {
       "id": "BA3-D-010",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "Design an investigation for 'works in staging, fails in production'.",
+      "expectedElements": [
         "config/secrets",
         "traffic and data shape",
         "dependency access",
         "artifact identity",
         "environment differences"
-      ],
-      "expectedMinutes": 4,
-      "competencyId": "B-A3.diagnostic",
-      "prompt": "Design an investigation for 'works in staging, fails in production'."
+      ]
     },
     {
       "id": "BA3-D-011",
       "family": "diagnostic",
       "difficulty": "challenge",
       "cognitiveLevel": "design",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "A rollout is partially complete when errors rise. What is a safer decision process?",
+      "expectedElements": [
         "stop or pause promotion",
         "identify affected version scope",
         "choose rollback/forward fix based on evidence",
         "verify recovery"
-      ],
-      "expectedMinutes": 5,
-      "competencyId": "B-A3.diagnostic",
-      "prompt": "A rollout is partially complete when errors rise. What is a safer decision process?"
+      ]
     },
     {
       "id": "BA3-D-012",
       "family": "diagnostic",
       "difficulty": "challenge",
       "cognitiveLevel": "design",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "Design the first ten minutes of a release incident.",
+      "expectedElements": [
         "establish impact",
         "identify release",
         "collect evidence",
         "mitigate safely",
         "verify recovery",
         "preserve timeline"
-      ],
-      "expectedMinutes": 5,
-      "competencyId": "B-A3.diagnostic",
-      "prompt": "Design the first ten minutes of a release incident."
+      ]
     },
     {
       "id": "BA3-H-001",
