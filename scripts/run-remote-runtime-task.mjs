@@ -18,6 +18,13 @@ import {
 
 const execFileAsync = promisify(execFile);
 
+const MAX_CAPTURED_OUTPUT = 64 * 1024;
+
+function capture(value) {
+  const text = String(value ?? "");
+  return text.length <= MAX_CAPTURED_OUTPUT ? text : text.slice(0, MAX_CAPTURED_OUTPUT);
+}
+
 function sha256(value) {
   return createHash("sha256").update(value).digest("hex");
 }
@@ -52,18 +59,25 @@ async function runStep({ task, step, options }) {
       maxBuffer: 4 * 1024 * 1024
     });
 
+    const stdout = capture(result.stdout ?? "");
+    const stderr = capture(result.stderr ?? "");
+
     return {
       stepId: step.id,
       startedAt,
       completedAt: new Date().toISOString(),
       exitCode: 0,
-      stdoutHash: sha256(result.stdout ?? ""),
-      stderrHash: sha256(result.stderr ?? ""),
+      stdout,
+      stderr,
+      stdout,
+      stderr,
+      stdoutHash: sha256(stdout),
+      stderrHash: sha256(stderr),
       result: "passed"
     };
   } catch (error) {
-    const stdout = typeof error.stdout === "string" ? error.stdout : "";
-    const stderr =
+    const stdout = capture(typeof error.stdout === "string" ? error.stdout : "");
+    const stderr = capture(
       typeof error.stderr === "string"
         ? error.stderr
         : String(error.message ?? error);
@@ -143,6 +157,8 @@ async function main() {
           startedAt: timestamp,
           completedAt: timestamp,
           exitCode: -1,
+          stdout: "",
+          stderr: "",
           stdoutHash: sha256(""),
           stderrHash: sha256(""),
           result: "not-run"
