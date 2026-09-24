@@ -1,6 +1,14 @@
 import type { ProjectDefinition } from "../data/projects";
+import { listEvidence } from "../data/evidence";
 
-export function ProjectPanel({ projects }: { projects: ProjectDefinition[] }) {
+export function ProjectPanel({
+  projects,
+  refreshToken
+}: {
+  projects: ProjectDefinition[];
+  refreshToken: number;
+}) {
+  void refreshToken;
   return (
     <div className="content-card">
       <div className="course-path-head">
@@ -15,7 +23,9 @@ export function ProjectPanel({ projects }: { projects: ProjectDefinition[] }) {
         </div>
       </div>
 
-      {projects.map((project) => (
+      {projects.map((project) => {
+        const evidence = listEvidence(project.id);
+        return (
         <article className="content-card" key={project.id}>
           <div className="course-path-head">
             <div>
@@ -79,8 +89,16 @@ export function ProjectPanel({ projects }: { projects: ProjectDefinition[] }) {
           <p className="range">
             Competency gates: {project.competencyGates.join(" · ")}
           </p>
+          <p className="range">
+            <strong>Evidence ledger:</strong> {evidence.length} recorded item
+            {evidence.length === 1 ? "" : "s"}
+            {evidence.length
+              ? " · " + evidence.map((item) => item.kind).join(" · ")
+              : " · no evidence recorded yet"}
+          </p>
         </article>
-      ))}
+        );
+      })}
     </div>
   );
 }
