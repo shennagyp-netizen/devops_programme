@@ -12,7 +12,27 @@ const HOST = "127.0.0.1";
 const PORT = Number(process.env.DEVOPS_TERMINAL_PORT ?? "4317");
 const RUNNER_VERSION = "0.2.0-local-agent";
 const MAX_OUTPUT = 64 * 1024;
-const TOKEN = process.env.DEVOPS_TERMINAL_TOKEN ?? randomBytes(24).toString("base64url");
+const MAX_REQUEST_BODY = 256 * 1024;
+const MAX_COMMAND_TIMEOUT = 120_000;
+const configuredToken = process.env.DEVOPS_TERMINAL_TOKEN?.trim();
+
+if (configuredToken && configuredToken.length < 24) {
+  throw new Error("DEVOPS_TERMINAL_TOKEN must contain at least 24 characters.");
+}
+
+const TOKEN = configuredToken || randomBytes(24).toString("base64url");
+const DEFAULT_ALLOWED_ORIGINS = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000"
+];
+const ALLOWED_ORIGINS = new Set(
+  (process.env.DEVOPS_TERMINAL_ALLOWED_ORIGINS
+    ? process.env.DEVOPS_TERMINAL_ALLOWED_ORIGINS.split(",")
+    : DEFAULT_ALLOWED_ORIGINS
+  )
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+);
 
 function hash(value) {
   return createHash("sha256").update(value).digest("hex");
@@ -20,7 +40,7 @@ function hash(value) {
 
 function capture(value) {
   const text = String(value ?? "");
-  return text.length <= MAX_OUTPUT ? text : text.slice(0, MAX_OUTPUT);
+  return text.length <= MAX_OUTPUT ? text : text.slice(0, MAX_OUTPUT) + "\n[output truncated]";
 }
 
 function platformId() {
@@ -41,19 +61,33 @@ function fingerprint(platform) {
   );
 }
 
-async function loadCatalog() {
-  const file = path.resolve(
-    new URL("../app/src/data/runtimeTasks.json", import.meta.url).pathname
-  );
-  return JSON.parse(await readFile(file, "utf8"));
+function isAllowedOrigin(origin) {
+  return !origin || ALLOWED_ORIGINS.has(origin);
+}
+
+function setCorsHeaders(res, origin) {
+  if (!origin) return true;
+  if (!isAllowedOrigin(origin)) return false;
+
+  res.setHeader("Access-Control-Allow-Origin", origin);
+  res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Private-Network", "true");
+  res.setHeader("Vary", "Origin");
+  return true;
 }
 
 function send(res, status, body, origin) {
+  if (!setCorsHeaders(res, origin)) {
+    res.statusCode = 403;
+    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    res.end(JSON.stringify({ error: "Origin is not allowed." }));
+    return;
+  }
+
   res.statusCode = status;
   res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.setHeader("Access-Control-Allow-Origin", origin || "*");
-  res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Cache-Control", "no-store");
   res.end(JSON.stringify(body));
 }
@@ -67,13 +101,15 @@ function readJson(req) {
   return new Promise((resolve, reject) => {
     let body = "";
     req.setEncoding("utf8");
+
     req.on("data", (chunk) => {
       body += chunk;
-      if (body.length > 256 * 1024) {
+      if (body.length > MAX_REQUEST_BODY) {
         reject(new Error("Request body is too large."));
         req.destroy();
       }
     });
+
     req.on("end", () => {
       try {
         resolve(JSON.parse(body || "{}"));
@@ -81,12 +117,18 @@ function readJson(req) {
         reject(new Error("Request body must be valid JSON."));
       }
     });
+
     req.on("error", reject);
   });
 }
 
 function runCommand(command) {
   return new Promise((resolve) => {
+    const timeoutMs = Math.min(
+      MAX_COMMAND_TIMEOUT,
+      Math.max(1_000, Number.isInteger(command.timeoutMs) ? command.timeoutMs : 30_000)
+    );
+
     const child = spawn(command.program, command.args, {
       cwd: process.cwd(),
       shell: false,
@@ -95,7 +137,16 @@ function runCommand(command) {
 
     let stdout = "";
     let stderr = "";
+    let stdoutTruncated = false;
+    let stderrTruncated = false;
     let settled = false;
+
+    const appendBounded = (current, chunk, markTruncated) => {
+      if (current.length >= MAX_OUTPUT) return [current, true];
+      const next = current + chunk.toString();
+      if (next.length <= MAX_OUTPUT) return [next, markTruncated];
+      return [next.slice(0, MAX_OUTPUT), true];
+    };
 
     const finish = (result) => {
       if (settled) return;
@@ -108,15 +159,16 @@ function runCommand(command) {
       finish({
         exitCode: 124,
         stdout,
-        stderr: stderr + `\nCommand timed out after ${command.timeoutMs} ms.`
+        stderr: stderr + `\nCommand timed out after ${timeoutMs} ms.`
       });
-    }, command.timeoutMs);
+    }, timeoutMs);
 
     child.stdout.on("data", (chunk) => {
-      stdout += chunk.toString();
+      [stdout, stdoutTruncated] = appendBounded(stdout, chunk, stdoutTruncated);
     });
+
     child.stderr.on("data", (chunk) => {
-      stderr += chunk.toString();
+      [stderr, stderrTruncated] = appendBounded(stderr, chunk, stderrTruncated);
     });
 
     child.on("error", (error) => {
@@ -132,11 +184,18 @@ function runCommand(command) {
       clearTimeout(timeout);
       finish({
         exitCode: code ?? 1,
-        stdout,
-        stderr
+        stdout: stdoutTruncated ? capture(stdout) : stdout,
+        stderr: stderrTruncated ? capture(stderr) : stderr
       });
     });
   });
+}
+
+async function loadCatalog() {
+  const file = path.resolve(
+    new URL("../app/src/data/runtimeTasks.json", import.meta.url).pathname
+  );
+  return JSON.parse(await readFile(file, "utf8"));
 }
 
 async function executeTask(task, platform) {
@@ -159,18 +218,16 @@ async function executeTask(task, platform) {
 
     const stepStarted = new Date().toISOString();
     const result = await runCommand(command);
-    const stdout = capture(result.stdout);
-    const stderr = capture(result.stderr);
 
     stepResults.push({
       stepId: step.id,
       startedAt: stepStarted,
       completedAt: new Date().toISOString(),
       exitCode: result.exitCode,
-      stdout,
-      stderr,
-      stdoutHash: hash(stdout),
-      stderrHash: hash(stderr),
+      stdout: result.stdout,
+      stderr: result.stderr,
+      stdoutHash: hash(result.stdout),
+      stderrHash: hash(result.stderr),
       result: result.exitCode === 0 ? "passed" : "failed"
     });
 
@@ -214,25 +271,35 @@ async function executeTask(task, platform) {
 
 async function main() {
   const catalog = await loadCatalog();
+  let executing = false;
+
   const server = http.createServer(async (req, res) => {
-    const origin = req.headers.origin ?? "*";
+    const origin = req.headers.origin ?? "";
+
+    if (!isAllowedOrigin(origin)) {
+      send(res, 403, { error: "Origin is not allowed." }, origin);
+      return;
+    }
 
     if (req.method === "OPTIONS") {
       res.statusCode = 204;
-      res.setHeader("Access-Control-Allow-Origin", origin);
-      res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
-      res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+      setCorsHeaders(res, origin);
       res.end();
       return;
     }
 
     if (req.method === "GET" && req.url === "/health") {
-      send(res, 200, {
-        service: "devops-terminal-agent",
-        version: RUNNER_VERSION,
-        platform: platformId(),
-        authenticatedExecution: true
-      }, origin);
+      send(
+        res,
+        200,
+        {
+          service: "devops-terminal-agent",
+          version: RUNNER_VERSION,
+          platform: platformId(),
+          authenticatedExecution: true
+        },
+        origin
+      );
       return;
     }
 
@@ -242,9 +309,28 @@ async function main() {
         return;
       }
 
+      if (executing) {
+        send(res, 429, { error: "A terminal task is already running." }, origin);
+        return;
+      }
+
+      executing = true;
+
       try {
         const body = await readJson(req);
-        const task = catalog.runtimeTasks.find((item) => item.taskId === body.taskId);
+        if (
+          !body ||
+          typeof body !== "object" ||
+          Array.isArray(body) ||
+          typeof body.taskId !== "string"
+        ) {
+          send(res, 400, { error: "taskId is required." }, origin);
+          return;
+        }
+
+        const task = catalog.runtimeTasks.find(
+          (item) => item.taskId === body.taskId
+        );
         if (!task) {
           send(res, 404, { error: "Unknown runtime task." }, origin);
           return;
@@ -269,7 +355,10 @@ async function main() {
         send(res, 400, {
           error: error instanceof Error ? error.message : String(error)
         }, origin);
+      } finally {
+        executing = false;
       }
+
       return;
     }
 
