@@ -40,7 +40,7 @@ for (const projectId of projectIds) {
 
 const intermediateProjectIds = ["I1", "I2", "I3"];
 const allIntermediateLessonIds = [
-  ...intermediateLessons.matchAll(/"id":s*"(Dd+.d+)"/g)
+  ...intermediateLessons.matchAll(/"id":\s*"(D\d+\.\d+)"/g)
 ].map((match) => match[1]);
 
 if (allIntermediateLessonIds.length !== 32) {
