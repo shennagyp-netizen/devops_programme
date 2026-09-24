@@ -31,7 +31,7 @@ const overrideIds = [
 for (const id of overrideIds) {
   if (!lessonIds.has(id)) {
     failed = true;
-    console.error(\`Hands-on override targets unknown lesson \${id}.\`);
+    console.error(`Hands-on override targets unknown lesson ${id}.`);
   }
 }
 
@@ -42,7 +42,7 @@ const duplicateIds = overrideIds.filter(
 if (duplicateIds.length) {
   failed = true;
   console.error(
-    \`Duplicate hands-on override IDs: \${[...new Set(duplicateIds)].join(", ")}\`
+    `Duplicate hands-on override IDs: ${[...new Set(duplicateIds)].join(", ")}`
   );
 }
 
@@ -57,7 +57,7 @@ const defaultFieldCount =
 if (defaultFieldCount !== 4) {
   failed = true;
   console.error(
-    \`Default hands-on evidence contract must define four fields; found \${defaultFieldCount}.\`
+    `Default hands-on evidence contract must define four fields; found ${defaultFieldCount}.`
   );
 }
 
@@ -74,5 +74,5 @@ if (!handsOn.includes("Default task coverage uses structured evidence validation
 if (failed) process.exit(1);
 
 console.log(
-  \`Hands-on contract check passed: \${lessonIds.size} lessons covered by the default/override task resolver; \${overrideIds.length} authored overrides.\`
+  `Hands-on contract check passed: ${lessonIds.size} lessons covered by the default/override task resolver; ${overrideIds.length} authored overrides.`
 );
