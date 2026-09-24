@@ -1003,3 +1003,54 @@ Important:
 - the local agent currently covers the same B1.2 non-destructive runtime task already present in the catalogue.
 - Windows is supported by the local agent when the browser's selected environment matches the Windows host; SSH remote execution remains limited to Linux/macOS.
 - local-network/loopback browser permission behavior varies by browser, so agent unavailability must never block the manual path.
+
+============================================================
+26. FULL PROGRAMME CLEARANCE AUDIT — 2026-09-24
+============================================================
+
+Repository-level structural clearance is complete for the active branch.
+
+Authoritative counts:
+- Beginner: 7 sections, 10 lessons, 3 projects, 7 diagnostics, 7 banks, 280 items.
+- Intermediate: 8 sections, 32 lessons, 3 projects, 8 diagnostics, 8 banks, 320 items.
+- Advanced: 6 sections, 11 lessons, 3 projects, 6 diagnostics, 6 banks, 240 items.
+- Global: 21 sections, 53 lessons, 9 projects, 21 diagnostics, 21 banks, 840 pilot items.
+
+Bank contract audit:
+- Every authored bank is valid JSON and contains 40 items.
+- Every bank contains 20 conceptual / 12 diagnostic / 8 hands-on items.
+- Existing difficulty and hands-on schema contracts remain intact.
+
+Intermediate mapping audit:
+- All 32 authored Intermediate lessons resolve explicitly.
+- Section distribution: I-F1=3, I-F2=7, I-A1=3, I-A2=3, I-A3=2, I-A4=6, I-A5=2, I-A6=6.
+- Project distribution: I1=18, I2=6, I3=8.
+- Unknown section/project mappings now fail closed instead of falling through to a default.
+
+Validator repairs:
+- Intermediate/Advanced/Programme completeness scripts no longer contain malformed escaped template literals.
+- Curriculum lesson parsing uses the actual quoted id source shape.
+- Diagnostics mapping validation uses the actual curriculum source shape.
+- Project contract validation understands generated Intermediate project mappings.
+- CourseLesson now supplies the required humanExample field for authored Beginner/Advanced lessons.
+
+Local terminal execution:
+- Local website-to-laptop terminal agent is implemented.
+- Agent is loopback-only, token-authenticated, allowlist-driven, shell-free and platform-bound.
+- Website detects the agent, sends an exact runtime task ID and displays returned stdout/stderr/results.
+- Manual terminal execution remains the fallback.
+- Probe runtime evidence cannot unlock a lesson; only a full exercise-scoped machine task can satisfy machine-verification completion.
+- Current machine task coverage remains B1.2 probe only.
+
+CI evidence:
+- GitHub Actions run #834 on the Ubuntu gate failed before exposing any workflow step.
+- Ubuntu/latest also failed with the same zero-step job behavior.
+- macOS-latest also failed before exposing any workflow step.
+- The remaining hosted-CI problem is therefore runner provisioning/availability, not an observed application test failure.
+- The intended workflow runner is restored to ubuntu-24.04.
+- Hosted CI is not claimed green.
+- Tests are not weakened to manufacture a green result.
+
+Merge status at handoff:
+- Source/contracts are structurally cleared by repository audit.
+- Hosted CI remains infrastructure-blocked and therefore there is no honest hosted-green evidence.
