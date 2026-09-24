@@ -116,4 +116,57 @@ describe("runtime runner integration", () => {
       "No machine-verification task is defined for lesson A3.2."
     );
   });
+  it("plans verified SSH execution without contacting a machine in dry-run mode", async () => {
+    const result = await runNode([
+      "scripts/run-remote-runtime-task.mjs",
+      "--lesson",
+      "B1.2",
+      "--platform",
+      "linux",
+      "--dry-run"
+    ]);
+
+    expect(result.code).toBe(0);
+    expect(result.stderr).toBe("");
+
+    const output = JSON.parse(result.stdout);
+    expect(output.mode).toBe("dry-run");
+    expect(output.executionMode).toBe("remote-machine");
+    expect(output.transport).toBe("ssh");
+    expect(output.hostKeyPolicy).toBe("strict-known-hosts");
+    expect(output.steps).toHaveLength(2);
+  });
+
+  it("requires an explicit remote target before SSH execution", async () => {
+    const result = await runNode([
+      "scripts/run-remote-runtime-task.mjs",
+      "--lesson",
+      "B1.2",
+      "--platform",
+      "linux",
+      "--execute"
+    ]);
+
+    expect(result.code).toBe(1);
+    expect(result.stderr).toContain(
+      "--host and --user are required with --execute."
+    );
+  });
+
+  it("rejects Windows remote execution until a safe Windows SSH adapter exists", async () => {
+    const result = await runNode([
+      "scripts/run-remote-runtime-task.mjs",
+      "--lesson",
+      "B1.2",
+      "--platform",
+      "windows",
+      "--dry-run"
+    ]);
+
+    expect(result.code).toBe(1);
+    expect(result.stderr).toContain(
+      "SSH runner currently supports linux and macos targets only"
+    );
+  });
+
 });
