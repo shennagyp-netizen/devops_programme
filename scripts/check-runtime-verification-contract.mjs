@@ -154,9 +154,24 @@ if (!source.includes("completedAt") || !source.includes("startedAt")) {
   console.error("Machine evidence must include timing boundaries.");
 }
 
-if (!source.includes("verificationSource") || !source.includes("local-runner")) {
+if (!source.includes("verificationSource") || !source.includes("local-runner") || !source.includes("ssh-runner")) {
   failed = true;
-  console.error("Machine evidence must identify its verification source.");
+  console.error("Machine evidence must identify local and SSH verification sources.");
+}
+
+if (!source.includes("executionMode") || !source.includes("local-machine") || !source.includes("remote-machine")) {
+  failed = true;
+  console.error("Machine evidence must distinguish local-machine and remote-machine execution.");
+}
+
+if (!source.includes("strict-known-hosts")) {
+  failed = true;
+  console.error("SSH machine evidence must preserve strict host-key verification.");
+}
+
+if (!source.includes("MachineExecutionTarget")) {
+  failed = true;
+  console.error("Machine evidence must preserve target identity.");
 }
 
 if (!source.includes("resetRequired") || !source.includes("reset verification")) {
