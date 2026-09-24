@@ -126,7 +126,10 @@ function runCommand(command) {
   return new Promise((resolve) => {
     const timeoutMs = Math.min(
       MAX_COMMAND_TIMEOUT,
-      Math.max(1_000, Number.isInteger(command.timeoutMs) ? command.timeoutMs : 30_000)
+      Math.max(
+        1_000,
+        Number.isInteger(command.timeoutMs) ? command.timeoutMs : 30_000
+      )
     );
 
     const child = spawn(command.program, command.args, {
@@ -139,14 +142,25 @@ function runCommand(command) {
     let stderr = "";
     let stdoutTruncated = false;
     let stderrTruncated = false;
+    let timedOut = false;
     let settled = false;
+    let timeoutHandle;
+    let forceKillHandle;
 
     const appendBounded = (current, chunk, markTruncated) => {
       if (current.length >= MAX_OUTPUT) return [current, true];
+
       const next = current + chunk.toString();
-      if (next.length <= MAX_OUTPUT) return [next, markTruncated];
+
+      if (next.length <= MAX_OUTPUT) {
+        return [next, markTruncated];
+      }
+
       return [next.slice(0, MAX_OUTPUT), true];
     };
+
+    const withTruncationMarker = (value, truncated) =>
+      truncated ? value + "\n[output truncated]" : value;
 
     const finish = (result) => {
       if (settled) return;
@@ -154,38 +168,62 @@ function runCommand(command) {
       resolve(result);
     };
 
-    const timeout = setTimeout(() => {
+    timeoutHandle = setTimeout(() => {
+      timedOut = true;
       child.kill("SIGTERM");
-      finish({
-        exitCode: 124,
-        stdout,
-        stderr: stderr + `\nCommand timed out after ${timeoutMs} ms.`
-      });
+
+      forceKillHandle = setTimeout(() => {
+        child.kill("SIGKILL");
+        finish({
+          exitCode: 124,
+          stdout: withTruncationMarker(stdout, stdoutTruncated),
+          stderr:
+            withTruncationMarker(stderr, stderrTruncated) +
+            `\nCommand timed out after ${timeoutMs} ms.`
+        });
+      }, 2_000);
     }, timeoutMs);
 
     child.stdout.on("data", (chunk) => {
-      [stdout, stdoutTruncated] = appendBounded(stdout, chunk, stdoutTruncated);
+      [stdout, stdoutTruncated] = appendBounded(
+        stdout,
+        chunk,
+        stdoutTruncated
+      );
     });
 
     child.stderr.on("data", (chunk) => {
-      [stderr, stderrTruncated] = appendBounded(stderr, chunk, stderrTruncated);
+      [stderr, stderrTruncated] = appendBounded(
+        stderr,
+        chunk,
+        stderrTruncated
+      );
     });
 
     child.on("error", (error) => {
-      clearTimeout(timeout);
+      clearTimeout(timeoutHandle);
+      if (forceKillHandle) clearTimeout(forceKillHandle);
       finish({
         exitCode: 127,
-        stdout,
-        stderr: stderr + "\n" + error.message
+        stdout: withTruncationMarker(stdout, stdoutTruncated),
+        stderr:
+          withTruncationMarker(stderr, stderrTruncated) +
+          "\n" +
+          error.message
       });
     });
 
     child.on("close", (code) => {
-      clearTimeout(timeout);
+      clearTimeout(timeoutHandle);
+      if (forceKillHandle) clearTimeout(forceKillHandle);
+
       finish({
-        exitCode: code ?? 1,
-        stdout: stdoutTruncated ? capture(stdout) : stdout,
-        stderr: stderrTruncated ? capture(stderr) : stderr
+        exitCode: timedOut ? 124 : (code ?? 1),
+        stdout: withTruncationMarker(stdout, stdoutTruncated),
+        stderr: timedOut
+          ? withTruncationMarker(stderr, stderrTruncated) +
+            `\nCommand timed out after ${timeoutMs} ms.`
+          : withTruncationMarker(stderr, stderrTruncated)
       });
     });
   });
