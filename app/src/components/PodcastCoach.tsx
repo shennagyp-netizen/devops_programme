@@ -3,8 +3,9 @@ import type { Lesson } from "../data/curriculum";
 import {
   findActiveCue,
   findCurrentTurnId,
-  getPodcastAudioManifest,
-  type PodcastCueKind
+  loadPodcastAudioManifest,
+  type PodcastCueKind,
+  type PodcastAudioManifest
 } from "../data/podcastSync";
 import {
   getEpisodeText,
@@ -38,11 +39,12 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   const [audioTimeMs, setAudioTimeMs] = useState(0);
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [scriptVersions, setScriptVersions] = useState<Record<string, string>>({});
+  const [audioManifests, setAudioManifests] = useState<Record<string, PodcastAudioManifest>>({});
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const lastCueIdRef = useRef<string | null>(null);
   const lastAudioTimeMsRef = useRef(0);
 
-  const rawAudioManifest = getPodcastAudioManifest(lesson.id);
+  const rawAudioManifest = audioManifests[lesson.id];
   const scriptVersion = scriptVersions[lesson.id];
   const audioManifest =
     rawAudioManifest && scriptVersion === rawAudioManifest.scriptVersion
@@ -94,6 +96,13 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
         if (!cancelled) {
           setEpisodeSource(text);
           setScriptVersions(manifest.episodes ?? {});
+        }
+
+        return loadPodcastAudioManifest();
+      })
+      .then((audioManifests) => {
+        if (!cancelled) {
+          setAudioManifests(audioManifests);
         }
       })
       .catch(() => {
