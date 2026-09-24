@@ -17,34 +17,50 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install
-        run: npm install
+      - name: Build and validation diagnostic
+        shell: bash
+        run: |
+          set +e
+          mkdir -p ci-report
+          : > ci-report/summary.txt
+          failed=0
 
-      - name: Sync podcast assets
-        run: npm run sync:podcasts
+          run_stage() {
+            name="$1"
+            safe_name="$(printf '%s' "$name" | tr ' ' '_')"
+            shift
+            echo "===== $name =====" | tee -a ci-report/summary.txt
+            "$@" > "ci-report/$safe_name.log" 2>&1
+            code=$?
+            echo "exit=$code" | tee -a ci-report/summary.txt
+            cat "ci-report/$safe_name.log"
+            if [ "$code" -ne 0 ]; then
+              failed=1
+            fi
+          }
 
-      - name: Check podcast language
-        run: npm run check:content
+          run_stage "install" npm install
+          run_stage "sync_podcasts" npm run sync:podcasts
+          run_stage "check_content" npm run check:content
+          run_stage "check_assessment" npm run check:assessment
+          run_stage "check_diagnostics" npm run check:diagnostics
+          run_stage "typescript" tsc -b
+          run_stage "vite_build" vite build
 
-      - name: Check assessment item banks
-        run: npm run check:assessment
+          echo "===== podcast_review =====" | tee -a ci-report/summary.txt
+          npm run review:podcast > ci-report/podcast_review.log 2>&1
+          review_code=$?
+          echo "exit=$review_code (warning-only)" | tee -a ci-report/summary.txt
+          cat ci-report/podcast_review.log
 
-      - name: Check prerequisite diagnostics
-        run: npm run check:diagnostics
+          cp ci-report/summary.txt build.log
+          exit "$failed"
 
-      - name: TypeScript
-        run: tsc -b
-
-      - name: Vite build
-        run: vite build 2>&1 | tee build.log
-
-      - name: Review podcast conversation quality
-        continue-on-error: true
-        run: npm run review:podcast
-
-      - name: Upload build log
+      - name: Upload CI diagnostic report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: devops-app-build-log
-          path: app/build.log
+          name: devops-app-ci-report
+          path: |
+            app/ci-report
+            app/build.log
