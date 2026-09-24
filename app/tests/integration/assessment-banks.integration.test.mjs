@@ -115,11 +115,13 @@ describe("assessment bank integration", () => {
             expect(item.correctOption).toBeGreaterThanOrEqual(0);
             expect(item.correctOption).toBeLessThan(item.options.length);
           } else if (item.family !== "hands-on") {
-            expect(
-              item.expectedElements?.length ||
-              item.scoring?.full?.length ||
-              item.scoringNote
-            ).toBeTruthy();
+            const validExpectedContract =
+              (Array.isArray(item.expectedElements) &&
+                item.expectedElements.length > 0) ||
+              (Number.isInteger(item.expectedElements) && item.expectedElements > 0) ||
+              item.scoring?.full?.length > 0 ||
+              Boolean(item.scoringNote);
+            expect(validExpectedContract).toBe(true);
           }
         }
       }
