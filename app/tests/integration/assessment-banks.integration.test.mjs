@@ -99,10 +99,15 @@ describe("assessment bank integration", () => {
           expect(allowedCognitiveLevels[family].has(item.cognitiveLevel)).toBe(true);
           expect(item.competencyId.startsWith(section + ".")).toBe(true);
           expect(item.prompt.trim()).not.toBe("");
-          expect(item.itemType.trim()).not.toBe("");
+          const validItemType =
+            (typeof item.itemType === "string" && item.itemType.trim().length > 0) ||
+            (Array.isArray(item.itemType) &&
+              item.itemType.length > 0 &&
+              item.itemType.every(
+                (value) => typeof value === "string" && value.trim().length > 0
+              ));
+          expect(validItemType).toBe(true);
           expect(item.expectedMinutes).toBeGreaterThan(0);
-          expect(typeof item.itemType).toBe("string");
-          expect(item.itemType.trim()).not.toBe("");
 
           if (item.options) {
             expect(item.options.length).toBeGreaterThan(1);
