@@ -1,0 +1,824 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "I-A5",
+  "purpose": "Pilot item bank for Observability and SRE. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "IA5-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A5.core",
+      "prompt": "What does an SLI measure?",
+      "options": [
+        "A defined aspect of service behavior or user experience",
+        "A team's org chart",
+        "A deployment artifact",
+        "A DNS record"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA5-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A5.core",
+      "prompt": "What is an SLO?",
+      "options": [
+        "A target value or range for an SLI over a stated period",
+        "A log format",
+        "A Kubernetes object",
+        "A database schema"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA5-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A5.core",
+      "prompt": "What is an error budget used for?",
+      "options": [
+        "Reasoning about how much unreliability is acceptable relative to the SLO",
+        "Counting developer mistakes",
+        "Choosing container images",
+        "Replacing alerts"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA5-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A5.core",
+      "prompt": "Why use percentiles for latency?",
+      "options": [
+        "They expose tail behavior that averages can hide",
+        "They remove all noise",
+        "They always equal the mean",
+        "They measure CPU"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA5-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A5.core",
+      "prompt": "What does tracing add to observability?",
+      "options": [
+        "A request path across service boundaries with timing/context",
+        "A new deployment",
+        "A database backup",
+        "A replacement for metrics"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA5-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A5.core",
+      "prompt": "Why correlate logs, metrics and traces?",
+      "options": [
+        "They provide complementary views of the same behavior",
+        "They are identical signals",
+        "One can replace all others",
+        "It prevents failure"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA5-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A5.core",
+      "prompt": "What makes an alert actionable?",
+      "options": [
+        "A clear condition, enough context and a useful next action",
+        "It fires for all normal traffic",
+        "It hides dependencies",
+        "It never needs tuning"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA5-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A5.core",
+      "prompt": "Why distinguish symptom from cause in an incident?",
+      "options": [
+        "The first visible signal may be downstream of the real failure",
+        "Symptoms are irrelevant",
+        "Causes can always be guessed",
+        "The alert already proves root cause"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA5-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A5.core",
+      "prompt": "What is burn rate?",
+      "options": [
+        "The rate at which error budget is being consumed",
+        "CPU utilization",
+        "Log volume",
+        "Deployment frequency"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA5-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A5.core",
+      "prompt": "Why should SLOs be tied to user-visible behavior?",
+      "options": [
+        "Reliability targets should represent the service outcome that matters",
+        "Users do not generate data",
+        "Infrastructure metrics are always better",
+        "SLOs only apply to servers"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA5-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A5.core",
+      "prompt": "Why can high availability infrastructure still produce a bad SLO?",
+      "expectedElements": [
+        "the user path can fail in dependencies, application behavior or latency even when instances remain running"
+      ]
+    },
+    {
+      "id": "IA5-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A5.core",
+      "prompt": "Why can a low error rate still violate a latency SLO?",
+      "expectedElements": [
+        "reliability includes more than success/failure; latency target can be breached separately"
+      ]
+    },
+    {
+      "id": "IA5-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A5.core",
+      "prompt": "What should happen when error budget is nearly exhausted?",
+      "expectedElements": [
+        "the team should reconsider risky changes and focus on reliability work according to policy"
+      ]
+    },
+    {
+      "id": "IA5-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A5.core",
+      "prompt": "Why can a dashboard with hundreds of panels be worse than a small one?",
+      "expectedElements": [
+        "operators need relevant signals and decision context during incidents"
+      ]
+    },
+    {
+      "id": "IA5-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A5.core",
+      "prompt": "What is the difference between availability and latency SLOs?",
+      "expectedElements": [
+        "availability concerns successful service outcomes; latency concerns how quickly they occur"
+      ]
+    },
+    {
+      "id": "IA5-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-A5.core",
+      "prompt": "Design SLIs and SLOs for a checkout API.",
+      "expectedElements": [
+        "successful request ratio",
+        "latency percentile",
+        "window/target",
+        "user relevance"
+      ]
+    },
+    {
+      "id": "IA5-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-A5.core",
+      "prompt": "Explain how error budget affects change decisions.",
+      "expectedElements": [
+        "budget represents tolerated unreliability",
+        "high burn reduces appetite for risky change",
+        "policy links budget to action"
+      ]
+    },
+    {
+      "id": "IA5-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "I-A5.core",
+      "prompt": "A service has good availability but poor p99 latency. Give two hypotheses and measurements.",
+      "expectedElements": [
+        "resource/queueing tail with saturation evidence",
+        "downstream or network tail with trace timings"
+      ]
+    },
+    {
+      "id": "IA5-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "I-A5.core",
+      "prompt": "Design an incident dashboard for a customer API.",
+      "expectedElements": [
+        "traffic",
+        "errors",
+        "latency percentiles",
+        "saturation",
+        "dependency signals",
+        "deployment identity"
+      ]
+    },
+    {
+      "id": "IA5-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "I-A5.core",
+      "prompt": "Build a diagnosis tree for 'SLO is failing'.",
+      "expectedElements": [
+        "identify breached SLI",
+        "scope/window",
+        "endpoint/region/dependency",
+        "recent change",
+        "mitigation and verification"
+      ]
+    },
+    {
+      "id": "IA5-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "success rate is acceptable while latency target is not"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "I-A5.diagnostic",
+      "prompt": "Availability SLO is healthy but p99 latency is failing. What does that prove?",
+      "expectedElements": 2
+    },
+    {
+      "id": "IA5-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "deployment timing",
+        "SLI behavior before/after",
+        "affected paths"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "I-A5.diagnostic",
+      "prompt": "Error budget burn rises after a deployment. What should you compare?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA5-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "tail percentiles and distribution"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A5.diagnostic",
+      "prompt": "A dashboard shows average latency only. What is missing?",
+      "expectedElements": 2
+    },
+    {
+      "id": "IA5-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "downstream saturation/errors",
+        "request pattern",
+        "recent changes"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A5.diagnostic",
+      "prompt": "Trace shows most time in a downstream service. What next?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA5-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "alert threshold/window",
+        "SLI/user impact",
+        "noise sources"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A5.diagnostic",
+      "prompt": "Alerts are constantly firing but users are fine. What should you review?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA5-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "regional dependency/data path",
+        "traffic distribution/capacity",
+        "region-specific deployment"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A5.diagnostic",
+      "prompt": "Two regions show different SLO results. Give two hypotheses.",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA5-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "queueing/I/O/network/dependency latency",
+        "application-level bottleneck"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A5.diagnostic",
+      "prompt": "SLO is breached but no component is at 100% CPU. What remains plausible?",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA5-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "reduce risk or delay nonessential change",
+        "stabilize reliability and reassess"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A5.diagnostic",
+      "prompt": "Error budget is nearly exhausted before a major release. What is a safer engineering response?",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA5-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "client timing",
+        "gateway timing",
+        "service tracing",
+        "correlation IDs"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A5.diagnostic",
+      "prompt": "Design telemetry to distinguish client, gateway, and service latency.",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA5-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "endpoint-specific metrics",
+        "traces/logs",
+        "dependency/resource comparison",
+        "version correlation"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A5.diagnostic",
+      "prompt": "A release increases p99 only for one endpoint. Build an evidence plan.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA5-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "user-impact SLI",
+        "sustained threshold/burn rate",
+        "context",
+        "clear response action"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "I-A5.diagnostic",
+      "prompt": "Design an alert policy for a critical API with low noise.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA5-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "timeline",
+        "signals",
+        "actions",
+        "outcomes",
+        "follow-up changes"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "I-A5.diagnostic",
+      "prompt": "Create an SLO incident review that separates detection, mitigation, recovery and prevention.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA5-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "I-A5.hands-on",
+      "prompt": "Instrument and baseline a disposable service.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "generate traffic",
+        "collect logs/metrics/traces",
+        "define baseline",
+        "reset"
+      ],
+      "success": [
+        "three signal types",
+        "baseline"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA5-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A5.hands-on",
+      "prompt": "Create a p99 latency incident.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "inject controlled tail latency",
+        "observe p99/average",
+        "trace cause",
+        "remove delay",
+        "verify"
+      ],
+      "success": [
+        "tail evidence",
+        "cause evidence",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA5-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A5.hands-on",
+      "prompt": "Build an SLO and measure a controlled failure.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "define SLI/SLO",
+        "run baseline",
+        "inject failure",
+        "measure budget impact",
+        "recover"
+      ],
+      "success": [
+        "SLO definition",
+        "breach evidence",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA5-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A5.hands-on",
+      "prompt": "Trace one request across two services.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "generate request",
+        "capture correlation",
+        "inspect trace",
+        "find downstream timing",
+        "reset"
+      ],
+      "success": [
+        "end-to-end trace",
+        "dependency timing"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA5-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A5.hands-on",
+      "prompt": "Tune a noisy alert.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "create noisy condition",
+        "inspect false positives",
+        "adjust window/threshold",
+        "retest"
+      ],
+      "success": [
+        "before/after alert behavior",
+        "user-impact relevance"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA5-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A5.hands-on",
+      "prompt": "Run a release/error-budget decision drill.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "record budget state",
+        "simulate release burn",
+        "apply policy",
+        "choose action",
+        "verify"
+      ],
+      "success": [
+        "policy decision",
+        "evidence"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA5-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A5.hands-on",
+      "prompt": "Lead an I2 reliability incident.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "state impact",
+        "triage SLIs",
+        "use traces/logs",
+        "mitigate",
+        "verify SLO recovery",
+        "record timeline"
+      ],
+      "success": [
+        "evidence chain",
+        "mitigation",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA5-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "I-A5.hands-on",
+      "prompt": "Run an SRE review after recovery.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "collect SLO data",
+        "identify detection gap",
+        "identify mitigation gap",
+        "define prevention",
+        "record owners/evidence"
+      ],
+      "success": [
+        "review evidence",
+        "actions",
+        "verification plan"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    }
+  ]
+}
