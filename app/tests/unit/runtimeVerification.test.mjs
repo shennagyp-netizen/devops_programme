@@ -47,6 +47,7 @@ describe("machine verification contract", () => {
       lessonId: task.lessonId,
       platform: "linux",
       verificationLevel: "machine-verified",
+      verificationSource: "local-runner",
       runnerVersion: "0.1.0",
       environmentFingerprint: "fingerprint",
       startedAt: "2026-09-24T10:00:00.000Z",
@@ -78,6 +79,7 @@ describe("machine verification contract", () => {
       lessonId: task.lessonId,
       platform: "linux",
       verificationLevel: "machine-verified",
+      verificationSource: "local-runner",
       runnerVersion: "0.1.0",
       environmentFingerprint: "fingerprint",
       startedAt: "2026-09-24T10:00:00.000Z",
@@ -102,6 +104,7 @@ describe("machine verification contract", () => {
       lessonId: task.lessonId,
       platform: "linux",
       verificationLevel: "machine-verified",
+      verificationSource: "local-runner",
       runnerVersion: "0.1.0",
       environmentFingerprint: "fingerprint",
       startedAt: "2026-09-24T10:00:00.000Z",
@@ -152,6 +155,7 @@ describe("machine verification contract", () => {
       lessonId: task.lessonId,
       platform: "linux",
       verificationLevel: "machine-verified",
+      verificationSource: "local-runner",
       runnerVersion: "0.1.0",
       environmentFingerprint: "fingerprint",
       startedAt: "2026-09-24T10:00:00.000Z",
@@ -162,8 +166,8 @@ describe("machine verification contract", () => {
           startedAt: "2026-09-24T10:00:02.000Z",
           completedAt: "2026-09-24T10:00:01.000Z",
           exitCode: 1,
-          stdoutHash: "bad",
-          stderrHash: "bad",
+          stdoutHash: "",
+          stderrHash: "",
           result: "passed"
         },
         {
@@ -184,7 +188,7 @@ describe("machine verification contract", () => {
       "Runtime step resolve-name completedAt precedes startedAt."
     );
     expect(invalid.failures).toContain(
-      "Output hashes are not valid SHA-256 values for runtime step resolve-name."
+      "Output hashes are missing for runtime step resolve-name."
     );
     expect(invalid.failures).toContain(
       "Runtime step resolve-name is marked passed with a non-zero exit code."
@@ -199,6 +203,7 @@ describe("machine verification contract", () => {
       lessonId: "missing",
       platform: "linux",
       verificationLevel: "machine-verified",
+      verificationSource: "local-runner",
       runnerVersion: "0.1.0",
       environmentFingerprint: "fingerprint",
       startedAt: "2026-09-24T10:00:00.000Z",
@@ -223,6 +228,7 @@ describe("machine verification contract", () => {
       lessonId: task.lessonId,
       platform: "linux",
       verificationLevel: "machine-verified",
+      verificationSource: "local-runner",
       runnerVersion: "0.1.0",
       environmentFingerprint: "fingerprint",
       startedAt: "2026-09-24T10:00:00.000Z",
@@ -263,6 +269,7 @@ describe("machine verification contract", () => {
       lessonId: task.lessonId,
       platform: "linux",
       verificationLevel: "machine-verified",
+      verificationSource: "local-runner",
       runnerVersion: "0.1.0",
       environmentFingerprint: "fingerprint",
       startedAt: "2026-09-24T10:00:00.000Z",
