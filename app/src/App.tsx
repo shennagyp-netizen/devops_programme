@@ -9,7 +9,7 @@ import { projectsByCourse } from "./data/projects";
 import { ProjectPanel } from "./components/ProjectPanel";
 import {
   completeLearningItem,
-  listCompletedItems
+  listCompletionHistory
 } from "./data/learnerProgress";
 
 export default function App() {
@@ -27,7 +27,7 @@ export default function App() {
   useEffect(() => {
     let active = true;
 
-    void listCompletedItems()
+    void listCompletionHistory()
       .then((items) => {
         if (!active) return;
         setM(items.filter((item) => item.itemType === "lesson").map((item) => item.itemId));
