@@ -14,6 +14,16 @@ const handsOn = await readFile(path.join(root, "app", "src", "data", "handsOn.ts
 const expectedSections = ["I-F1","I-F2","I-A1","I-A2","I-A3","I-A4","I-A5","I-A6"];
 const expectedProjects = ["I1","I2","I3"];
 const expectedLessons = 32;
+const expectedLessonSections = {
+  "I-F1": ["D1.1","D1.2","D1.3"],
+  "I-F2": ["D1.4","D1.5","D1.6","D2.1","D2.2","D2.3","D2.4"],
+  "I-A1": ["D2.5","D2.6","D2.7"],
+  "I-A2": ["D3.1","D3.4","D3.5"],
+  "I-A3": ["D3.2","D3.3"],
+  "I-A4": ["D4.1","D4.2","D4.3","D4.4","D4.5","D4.6"],
+  "I-A5": ["D5.5","D5.8"],
+  "I-A6": ["D5.1","D5.2","D5.3","D5.4","D5.6","D5.7"]
+};
 let failed = false;
 
 for (const sectionId of expectedSections) {
@@ -44,6 +54,29 @@ const lessonIds = [...lessons.matchAll(/"id":\s*"(D[1-5]\.\d+)"/g)].map((match) 
 if (lessonIds.length !== expectedLessons) {
   failed = true;
   console.error(\`Intermediate lesson count is \${lessonIds.length}; expected \${expectedLessons}.\`);
+}
+
+const courseLessons = await readFile(
+  path.join(root, "app", "src", "data", "courseLessons.ts"),
+  "utf8"
+);
+
+const mappingChecks = [
+  ["D2.5","I-A1"], ["D2.6","I-A1"], ["D2.7","I-A1"],
+  ["D3.1","I-A2"], ["D3.2","I-A3"], ["D3.3","I-A3"],
+  ["D3.4","I-A2"], ["D3.5","I-A2"],
+  ["D4.1","I-A4"], ["D4.6","I-A4"],
+  ["D5.5","I-A5"], ["D5.8","I-A5"],
+  ["D5.1","I-A6"], ["D5.7","I-A6"]
+];
+
+for (const [lessonId, sectionId] of mappingChecks) {
+  const start = courseLessons.indexOf('id: "' + lessonId + '"');
+  const lessonBlock = start >= 0 ? courseLessons.slice(start, start + 450) : "";
+  if (!lessonBlock.includes('sectionId: "' + sectionId + '"')) {
+    failed = true;
+    console.error('Intermediate lesson ' + lessonId + ' is not mapped to ' + sectionId + '.');
+  }
 }
 
 for (const projectId of expectedProjects) {
