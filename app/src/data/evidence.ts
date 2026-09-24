@@ -1,5 +1,10 @@
 import type { CourseLevel } from "./programme";
 import type { VerificationLevel } from "./handsOn";
+import {
+  validateMachineVerification,
+  type MachineVerificationEnvelope,
+  type RuntimeTask
+} from "./runtimeVerification";
 
 export type EvidenceKind =
   | "diagnostic"
@@ -70,6 +75,44 @@ export function addEvidence(entry: Omit<EvidenceEntry, "id" | "createdAt">) {
 
 export function clearEvidence() {
   writeLedger([]);
+}
+
+export function recordMachineVerification(input: {
+  course: CourseLevel;
+  projectId: string;
+  task: RuntimeTask;
+  envelope: MachineVerificationEnvelope;
+  summary: string;
+}) {
+  const validation = validateMachineVerification(input.task, input.envelope);
+
+  if (!validation.valid) {
+    return {
+      recorded: false as const,
+      failures: validation.failures
+    };
+  }
+
+  const entry = addEvidence({
+    course: input.course,
+    projectId: input.projectId,
+    lessonId: input.task.lessonId,
+    kind: "exercise",
+    summary: input.summary,
+    taskId: input.task.taskId,
+    verificationLevel: "machine-verified",
+    evidencePayload: {
+      verificationSource: input.envelope.verificationSource,
+      runnerVersion: input.envelope.runnerVersion,
+      environmentFingerprint: input.envelope.environmentFingerprint,
+      envelope: JSON.stringify(input.envelope)
+    }
+  });
+
+  return {
+    recorded: true as const,
+    entry
+  };
 }
 
 export function recordHandsOnEvidence(input: {
