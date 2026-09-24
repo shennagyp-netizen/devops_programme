@@ -10,6 +10,7 @@ Each project instance contains:
 - competency gates
 - failure scenarios
 - evidence requirements
+- verification level for each evidence record
 - change history
 - incident history
 - completion criteria
