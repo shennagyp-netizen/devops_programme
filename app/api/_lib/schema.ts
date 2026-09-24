@@ -21,5 +21,5 @@ export const learnerProgressHistory = pgTable(
   })
 );
 
-export type LearnerCompletion = typeof learnerCompletions.$inferSelect;
-export type NewLearnerCompletion = typeof learnerCompletions.$inferInsert;
+export type LearnerProgressHistory = typeof learnerProgressHistory.$inferSelect;
+export type NewLearnerProgressHistory = typeof learnerProgressHistory.$inferInsert;
