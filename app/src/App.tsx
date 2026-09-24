@@ -26,7 +26,7 @@ export default function App() {
   const l = useMemo(
     () =>
       selectedLessons.find((item) => item.id === s) ??
-      selectedLessons[0],
+      selectedLessons[0]!,
     [selectedLessons, s]
   );
 
