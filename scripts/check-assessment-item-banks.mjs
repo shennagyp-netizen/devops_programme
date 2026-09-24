@@ -126,6 +126,21 @@ for (const file of files) {
       continue;
     }
 
+    const validItemType =
+      (typeof item.itemType === "string" && item.itemType.trim().length > 0) ||
+      (Array.isArray(item.itemType) &&
+        item.itemType.length > 0 &&
+        item.itemType.every(
+          (value) => typeof value === "string" && value.trim().length > 0
+        ));
+
+    if (!validItemType) {
+      failed = true;
+      console.error(
+        `${file.rel}: item ${item.id} has invalid itemType; expected a non-empty string or non-empty string array`
+      );
+    }
+
     if (item.expectedMinutes <= 0) {
       failed = true;
       console.error(`${file.rel}: item ${item.id} has non-positive expectedMinutes`);
