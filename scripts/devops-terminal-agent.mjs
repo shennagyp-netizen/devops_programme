@@ -250,9 +250,16 @@ async function main() {
           return;
         }
 
-        const platform = body.platform || platformId();
+        const actualPlatform = platformId();
+        const platform = body.platform || actualPlatform;
         if (!["macos", "linux", "windows"].includes(platform)) {
           send(res, 400, { error: "Unsupported platform." }, origin);
+          return;
+        }
+        if (platform !== actualPlatform) {
+          send(res, 409, {
+            error: `Selected platform ${platform} does not match this laptop's platform ${actualPlatform}.`
+          }, origin);
           return;
         }
 
