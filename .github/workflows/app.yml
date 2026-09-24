@@ -31,17 +31,9 @@ jobs:
           git --version
 
       - name: Checkout repository
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          rm -rf repo
-          git init repo
-          cd repo
-          git -c "http.extraheader=AUTHORIZATION: bearer ${GH_TOKEN}" \
-            fetch --depth=1 "https://github.com/${GITHUB_REPOSITORY}.git" "${GITHUB_SHA}"
-          git checkout --detach FETCH_HEAD
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          path: repo
 
       - name: Install dependencies
         working-directory: repo/app
