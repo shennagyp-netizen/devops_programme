@@ -4,9 +4,15 @@
 
 **Repository:** `shennagyp-netizen/devops_programme`
 
-**Current branch:** `main`
+**Current branch:** `security/redteam-post-auth-review`
+
+**Merge target:** `main`
+
+**Current red-team PR:** #18
 
 **Latest architecture merge:** PR #16, merge commit `655d66925bd9ccb081efc808ffd9c83c51a0e5e8`
+
+**Red-team branch head:** current PR #18 head. The branch is intentionally not described as CI-green until an actual hosted workflow run is observed.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + Clerk 7.9.4 + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative.
 
