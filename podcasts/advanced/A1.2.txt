@@ -14,6 +14,8 @@ Speaker B: So the queue grows.
 
 Speaker A: Exactly.
 
+Speaker A: Let’s keep that as a testable claim.
+
 Speaker B: Which sounds simple.
 
 Speaker A: It is simple.
@@ -22,13 +24,19 @@ Speaker B: Until someone says, "Just make the queue bigger."
 
 Speaker A: Right.
 
+Speaker A: That gives us a useful boundary.
+
 Speaker B: That only gives us more storage for the problem.
 
 Speaker A: Exactly.
 
+Speaker A: Now connect that to the request path.
+
 Speaker B: So the real issue is service rate.
 
 Speaker A: Good.
+
+Speaker A: I would measure that before changing anything.
 
 Speaker B: Explain backpressure.
 
@@ -37,6 +45,8 @@ Speaker A: When the downstream system cannot safely take more work, the upstream
 Speaker B: So backpressure protects the system from overload moving upstream.
 
 Speaker A: Exactly.
+
+Speaker A: That is where the failure becomes useful.
 
 Speaker B: Human example.
 
@@ -50,9 +60,13 @@ Speaker B: Making the waiting room larger does not make the lab faster.
 
 Speaker A: Right.
 
+Speaker A: Now we can compare it with the real system.
+
 Speaker B: So at some point reception has to control how fast new work enters.
 
 Speaker A: Exactly.
+
+Speaker A: Keep the user-visible effect in the model.
 
 Speaker B: Maybe schedule patients, limit walk-ins, or redirect work.
 
@@ -66,6 +80,8 @@ Speaker B: Producer, queue, consumer.
 
 Speaker A: Yes.
 
+Speaker A: That is the part I would verify first.
+
 Speaker B: Producer sends faster than consumer processes.
 
 Speaker A: Queue depth grows.
@@ -73,6 +89,8 @@ Speaker A: Queue depth grows.
 Speaker B: Age of the oldest message also grows.
 
 Speaker A: Good.
+
+Speaker A: Now the assumption is explicit.
 
 Speaker B: That means users may wait longer even if the API itself looks healthy.
 
@@ -82,6 +100,8 @@ Speaker B: So queue depth and queue age are both useful signals.
 
 Speaker A: Yes.
 
+Speaker A: That gives us a cleaner diagnosis.
+
 Speaker B: What if we just add consumers?
 
 Speaker A: Good idea sometimes.
@@ -90,9 +110,13 @@ Speaker B: But it depends on what the consumers need.
 
 Speaker A: Exactly.
 
+Speaker A: We can test that without changing the whole system.
+
 Speaker B: If the worker is CPU-bound, more workers may help.
 
 Speaker A: Yes.
+
+Speaker A: That is a better reason to make the change.
 
 Speaker B: If the worker waits on a database, the database may become the limit.
 
