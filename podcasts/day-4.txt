@@ -1,119 +1,101 @@
-DAY 4
+DAY 4 — CI/CD + TERRAFORM + CLOUD
 
 EPISODE D4.1 — Git as a Production Workflow
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: Git becomes a DevOps tool when history, review, artifacts, and rollback matter.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: I already use Git. What changes?
 
-Speaker A: CI/CD turns source change into a deterministic process. Separate source, tests, artifact, promotion, deployment and rollback so production does not depend on a workstation.
+Speaker A: The change is operational accountability. A production deployment should be traceable to a reviewed change and a reproducible artifact.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Think of a legal document. You care about versions, approvals, and exactly which version was signed. Production software needs the same discipline.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: Real-life example: if a bank asks which contract version was applied yesterday, 'I think it was the latest one' is not a satisfactory answer.
 
-Hands-on: Use the Mac to perform an experiment related to Git as a Production Workflow. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Lab: create a branch, commit a change, inspect the diff, tag a release, and practice reverting to a known-good version.
 
-Production: Place Git as a Production Workflow in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
-
-==============================
 
 EPISODE D4.2 — CI/CD Mental Model
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: CI/CD is a controlled path from source code to running software.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: The path is more important than the YAML.
 
-Speaker A: CI/CD turns source change into a deterministic process. Separate source, tests, artifact, promotion, deployment and rollback so production does not depend on a workstation.
+Speaker A: Exactly. Source enters, tests run, an artifact is built, security and policy checks run, and deployment is promoted through environments.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Real-life analogy: an airport. You do not let every passenger directly onto the runway. There are identity checks, screening, gates, and controlled movement.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker B: So production is the runway.
 
-Hands-on: Use the Mac to perform an experiment related to CI/CD Mental Model. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Correct. You want fewer surprises there.
 
-Production: Place CI/CD Mental Model in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker A: Lab: design the pipeline on paper first, then implement a minimal GitHub Actions workflow.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
 
-==============================
 
 EPISODE D4.3 — GitHub Actions
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: Now turn the pipeline into executable automation.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: Workflow, job, step, runner.
 
-Speaker A: CI/CD turns source change into a deterministic process. Separate source, tests, artifact, promotion, deployment and rollback so production does not depend on a workstation.
+Speaker A: Think of a factory. The workflow is the production order, jobs are workstations, steps are operations, and runners are machines executing them.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Artifacts are the packaged outputs that move between stages.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: Real-life example: a bakery does not ask a different employee to guess the recipe every morning. The process is written down and reproducible.
 
-Hands-on: Use the Mac to perform an experiment related to GitHub Actions. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Lab: test, build, package, and publish a container artifact.
 
-Production: Place GitHub Actions in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker B: And secrets?
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker A: Credentials should enter securely at the boundary, not be baked into source or artifacts.
 
-==============================
+
 
 EPISODE D4.4 — Infrastructure as Code
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: Infrastructure becomes code when the intended environment is described declaratively and changes become reviewable.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: Like architecture diagrams, but executable.
 
-Speaker A: Infrastructure as Code makes desired state, dependency graph, state and drift explicit. Plan is a reviewable proposal; apply is the transition.
+Speaker A: Exactly, with the important addition that state and lifecycle matter.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Real-life analogy: building permits and construction plans. The document describes what should exist; construction changes reality.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: Real-life example: if a cloud environment can only be recreated by clicking through someone's memory, your infrastructure is a story, not a system.
 
-Hands-on: Use the Mac to perform an experiment related to Infrastructure as Code. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Lab: define a small network or service in Terraform and inspect the plan before applying.
 
-Production: Place Infrastructure as Code in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
-
-==============================
 
 EPISODE D4.5 — Terraform Lifecycle
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: Terraform's important loop is init, plan, review, apply, observe.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: And state?
 
-Speaker A: Infrastructure as Code makes desired state, dependency graph, state and drift explicit. Plan is a reviewable proposal; apply is the transition.
+Speaker A: State is part of Terraform's knowledge about what it manages. Drift means reality changed outside that expected path.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Think of inventory management. If the spreadsheet says ten devices exist and the warehouse actually contains eight, the discrepancy is operationally important.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: Real-life example: manual cloud console changes create exactly this kind of drift.
 
-Hands-on: Use the Mac to perform an experiment related to Terraform Lifecycle. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Lab: apply an environment, change one property manually, then use plan to discover the difference.
 
-Production: Place Terraform Lifecycle in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
-
-==============================
 
 EPISODE D4.6 — Cloud Primitives
 
-Speaker A: We build an operational mental model, not a vocabulary list.
+Speaker A: Cloud vendors package familiar primitives into managed services: compute, networking, storage, identity, load balancing, databases, queues and caches.
 
-Speaker B: I understand application development. What changes when I operate the system?
+Speaker B: So I should learn the concepts before memorizing service names.
 
-Speaker A: Learn cloud as primitives and failure domains: compute, network, storage, identity, load balancing, databases, queues and cache. Map provider names only after concepts are clear.
+Speaker A: Absolutely. Otherwise you become excellent at flash cards and mediocre at architecture.
 
-Speaker B: Give me the failure-oriented version.
+Speaker A: Real-life example: every city needs roads, warehouses, electricity, addresses, security and public transport. Different cities give them different names and implementations. Cloud providers do the same with infrastructure primitives.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: We will map concepts to AWS examples only after the mental model is clear.
 
-Hands-on: Use the Mac to perform an experiment related to Cloud Primitives. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
-
-Production: Place Cloud Primitives in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
-
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker A: Lab: take one reference application and identify every primitive it requires, what owns it, what can fail, and what it costs operationally.
