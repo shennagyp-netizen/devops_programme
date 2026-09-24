@@ -5,7 +5,7 @@ const files = {
   package: "../app/package.json",
   env: "../app/.env.example",
   schema: "../app/src/lib/server/schema.ts",
-  migration: "../app/drizzle/migrations/0001_authenticated_user_identity.sql",
+  migration: "../app/drizzle/migrations/0000_learner_completions.sql",
   progress: "../app/src/lib/server/progress.ts",
   action: "../app/src/app/actions/progress.ts",
   contract: "../app/src/lib/progress-contract.ts",
@@ -44,6 +44,7 @@ const packageJson = JSON.parse(content.package);
 assert.equal(packageJson.scripts.dev, "npm run sync:podcasts && next dev");
 assert.equal(packageJson.scripts.start, "next start");
 assert.equal(packageJson.scripts.typecheck, "tsc -b");
+assert.equal(packageJson.engines.node, ">=20.9.0");
 assert.ok(packageJson.dependencies.next);
 assert.ok(packageJson.dependencies["@clerk/nextjs"]);
 assert.equal(packageJson.dependencies.react, "19.2.8");
@@ -63,7 +64,7 @@ assert.match(content.schema, /learner_progress_history_user_item_uq/);
 assert.match(content.schema, /item_type IN/);
 assert.doesNotMatch(content.schema, /learnerId/);
 
-assert.match(content.migration, /RENAME COLUMN "learner_id" TO "user_id"/);
+assert.match(content.migration, /"user_id" text NOT NULL/);
 assert.match(content.migration, /learner_progress_history_user_item_uq/);
 assert.match(content.migration, /learner_progress_history_item_type_ck/);
 
