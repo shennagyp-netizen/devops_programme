@@ -119,6 +119,31 @@ describe("progress persistence service", () => {
     expect(getDbMock).not.toHaveBeenCalled();
   });
 
+  it("rejects client metadata that contradicts the published item", async () => {
+    await expect(
+      completeLearningItemForUser("user_123", {
+        itemType: "lesson",
+        itemId: "B1.2",
+        course: "advanced",
+        projectId: "A1"
+      })
+    ).rejects.toThrow("Completion course does not match the published item.");
+
+    expect(getDbMock).not.toHaveBeenCalled();
+  });
+
+  it("rejects a stronger verification claim than the current completion boundary supports", async () => {
+    await expect(
+      completeLearningItemForUser("user_123", {
+        itemType: "lesson",
+        itemId: "B1.2",
+        verificationLevel: "machine-verified"
+      })
+    ).rejects.toThrow("Unsupported completion verification level.");
+
+    expect(getDbMock).not.toHaveBeenCalled();
+  });
+
   it("fails closed for a missing authenticated user", async () => {
     await expect(
       completeLearningItemForUser("", {
