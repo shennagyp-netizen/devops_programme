@@ -15,6 +15,10 @@ Terraform, CI/CD, logging, metrics, traces, alerting, SLOs and controlled change
 I3 — Integrated production platform:
 application, Kubernetes, infrastructure, observability, database, recovery and incident response as one operating system.
 
+## Prerequisite diagnostics
+
+The current adaptive pilot includes I-F1 and I-F2. A diagnostic recommendation may compress introductory theory, but the associated exercises remain mandatory.
+
 ## Teaching model
 
 Theory is deep but distributed through:
