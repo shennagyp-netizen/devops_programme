@@ -58,9 +58,26 @@ if (!source.includes("environmentFingerprint")) {
   console.error("Machine evidence must include an environment fingerprint.");
 }
 
+const runner = await readFile(
+  path.join(root, "scripts", "hands-on-runtime-runner.mjs"),
+  "utf8"
+);
+
+for (const required of ["--execute", "mode: "dry-run"", "execFileAsync", "createHash", "30_000"]) {
+  if (!runner.includes(required)) {
+    failed = true;
+    console.error("Runtime runner is missing required safety/verification behavior: " + required);
+  }
+}
+
 if (!source.includes("completedAt") || !source.includes("startedAt")) {
   failed = true;
   console.error("Machine evidence must include timing boundaries.");
+}
+
+if (!source.includes("stdoutHash") || !source.includes("stderrHash")) {
+  failed = true;
+  console.error("Machine evidence must bind stdout and stderr hashes.");
 }
 
 if (failed) process.exit(1);
