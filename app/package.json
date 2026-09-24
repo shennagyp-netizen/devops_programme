@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "sync:podcasts": "node ../scripts/sync-podcast-assets.mjs",
     "check:content": "node ../scripts/check-podcast-language.mjs",
-    "check:assessment": "node ../scripts/check-assessment-item-banks.mjs"
+    "check:assessment": "node ../scripts/check-assessment-item-banks.mjs",
+    "review:podcast": "node ../scripts/review-podcast-conversation.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",
