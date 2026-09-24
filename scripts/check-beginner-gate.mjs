@@ -65,7 +65,15 @@ for (const sectionId of sections) {
 }
 
 for (const projectId of projectsExpected) {
-  if (!projects.includes('id: "' + projectId + '"')) fail("Missing project " + projectId);
+  if (!projects.includes('id: "' + projectId + '"')) {
+    fail("Missing project " + projectId);
+    continue;
+  }
+  const start = projects.indexOf('id: "' + projectId + '"');
+  const end = projects.indexOf("\n  },", start);
+  const block = start >= 0 && end >= 0 ? projects.slice(start, end) : "";
+  if (!block.includes("changeHistory: [")) fail("Missing change history for " + projectId);
+  if (!block.includes("incidentHistory: [")) fail("Missing incident history for " + projectId);
 }
 
 for (let i = 0; i < lessons.length; i += 1) {
