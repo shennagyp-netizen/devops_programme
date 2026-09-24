@@ -8,7 +8,7 @@ Speaker A: Not this time. Too many users reading at once.
 
 Speaker B: So we add replicas.
 
-Speaker A: Maybe.
+Speaker A: Maybe. That gives us a useful boundary.
 
 Speaker A: Let’s keep that as a testable claim.
 
@@ -26,19 +26,19 @@ Speaker A: Good. What problem can that help with?
 
 Speaker B: Read traffic.
 
-Speaker A: Right.
+Speaker A: Right. Now connect that to the request path.
 
 Speaker A: That gives us a useful boundary.
 
 Speaker B: If reads can go to more than one copy, one database does not have to answer every read.
 
-Speaker A: Exactly.
+Speaker A: Exactly. I would measure that before changing anything.
 
 Speaker A: Now connect that to the request path.
 
 Speaker B: So we can spread read work.
 
-Speaker A: Yes.
+Speaker A: Yes. That is where the failure becomes useful.
 
 Speaker A: I would measure that before changing anything.
 
