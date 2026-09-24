@@ -226,6 +226,106 @@ const overrides: Record<string, Omit<HandsOnTask, "id" | "lessonId">> = {
     verificationLevel: "structured",
     verificationNote: "Incident evidence is currently learner-entered but schema-validated; later runtime telemetry can provide machine verification."
   },
+  "B1.5": {
+    title: "Prove the application is repeatable",
+    objective: "Start the same local service from a known configuration, create one controlled configuration failure, and restore the known-good state.",
+    steps: [
+      "Start the service from the documented known-good configuration.",
+      "Record the configuration and health evidence that proves the baseline.",
+      "Change one disposable configuration value that the service depends on.",
+      "Capture the failure without changing anything else.",
+      "Restore the original configuration and verify the service is healthy again."
+    ],
+    evidenceFields: defaultFields,
+    successCriteria: [
+      "The baseline configuration and health state are recorded.",
+      "The failure is caused by one explicit configuration change.",
+      "Restoration returns the service to the documented baseline."
+    ],
+    verificationLevel: "structured",
+    verificationNote: "The current app validates the learner evidence; direct service execution verification is not yet implemented."
+  },
+
+  "B2.1": {
+    title: "Prove a safe delivery path",
+    objective: "Trace one change from commit through a repeatable check and define the rollback identity before any deployment.",
+    steps: [
+      "Create one small, reversible repository change.",
+      "Record the commit or release identity.",
+      "Run the required automated checks and record their result.",
+      "Identify the exact artifact or build output that would be promoted.",
+      "Write the rollback target and verify that the known-good identity is unambiguous."
+    ],
+    evidenceFields: defaultFields,
+    successCriteria: [
+      "The change, checks, artifact identity and rollback target are all explicit.",
+      "The learner can explain how the same change would be promoted safely.",
+      "No production change is claimed without evidence of the delivery stage reached."
+    ],
+    verificationLevel: "structured",
+    verificationNote: "The current app validates delivery evidence structure; it does not independently deploy the learner's artifact."
+  },
+
+  "B2.2": {
+    title: "Prove observability can reduce uncertainty",
+    objective: "Turn a vague performance report into a bounded investigation using a small set of useful signals.",
+    steps: [
+      "State the exact symptom, affected scope and time window.",
+      "Choose three observations that can separate the top competing causes.",
+      "Collect the observations without changing the system.",
+      "State which hypothesis is now best supported and what evidence would falsify it.",
+      "Choose one safe next action and define the recovery check."
+    ],
+    evidenceFields: defaultFields,
+    successCriteria: [
+      "The investigation starts from a precise symptom rather than a vague label.",
+      "Each observation has a reason tied to a competing hypothesis.",
+      "The next action and recovery check are explicit."
+    ],
+    verificationLevel: "structured",
+    verificationNote: "The current stage verifies the investigation evidence; it does not automatically collect production telemetry."
+  },
+
+  "B3.1": {
+    title: "Prove queue protection",
+    objective: "Model a producer, queue and consumer, then observe how a slow consumer changes backlog and retry behavior.",
+    steps: [
+      "Draw the producer, queue and consumer path.",
+      "Record the normal arrival and processing behavior.",
+      "Make the consumer slower in a disposable scenario.",
+      "Record queue depth or queue age and explain the change.",
+      "Restore the consumer rate and verify the backlog begins to recover."
+    ],
+    evidenceFields: defaultFields,
+    successCriteria: [
+      "The queue's protective role is explained using observed or modeled behavior.",
+      "Slow consumption is distinguished from producer failure.",
+      "Recovery shows the backlog moving toward the known-good state."
+    ],
+    verificationLevel: "structured",
+    verificationNote: "The current app validates queue reasoning evidence; a machine queue adapter is still required for execution verification."
+  },
+
+  "B3.2": {
+    title: "Run the first incident",
+    objective: "Lead a small distributed-service incident from detection through safe mitigation, repair and verification.",
+    steps: [
+      "State the incident symptom and affected scope.",
+      "Record the first observations before changing anything.",
+      "Write two competing hypotheses and one discriminating test.",
+      "Choose the safest mitigation supported by the evidence.",
+      "Repair the failure, verify recovery and write the incident timeline."
+    ],
+    evidenceFields: defaultFields,
+    successCriteria: [
+      "The incident timeline separates observation, hypothesis, action and verification.",
+      "The mitigation is justified by evidence.",
+      "Recovery is verified and the next prevention step is recorded."
+    ],
+    verificationLevel: "structured",
+    verificationNote: "The current app validates incident evidence structure; direct fault-injection and recovery adapters are not yet implemented."
+  },
+
   "A1.1": {
     title: "Prove the first bottleneck",
     objective: "Model a workload and show which resource saturates first as demand increases.",
