@@ -1,3 +1,5 @@
+"use client";
+
 import { UserButton } from "@clerk/nextjs";
 import { useCallback, useMemo, useState } from "react";
 import { courses, platformProfiles, type CourseLevel, type PlatformId } from "./data/programme";
