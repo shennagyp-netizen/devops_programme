@@ -54,7 +54,6 @@ export async function completeLearningItemForUser(
   const safeUserId = requireUserId(userId);
   const input: CompletionInput = parseCompletionInput(rawInput);
   const published = resolvePublishedLearningItem(input);
-  const db = getDb();
 
   if (input.course !== undefined && input.course !== published.course) {
     throw new Error("Completion course does not match the published item.");
@@ -67,14 +66,11 @@ export async function completeLearningItemForUser(
     throw new Error("Completion project does not match the published item.");
   }
 
-  if (
-    input.verificationLevel !== undefined &&
-    input.verificationLevel !== "exercise-validated"
-  ) {
-    throw new Error(
-      "Unsupported completion verification level."
-    );
+  if (input.verificationLevel !== "exercise-validated") {
+    throw new Error("Completion requires exercise validation.");
   }
+
+  const db = getDb();
 
   await db
     .insert(learnerProgressHistory)
