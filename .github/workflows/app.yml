@@ -1,4 +1,4 @@
-name: devops-programme-app
+name: devops-programme-app-green-validation
 on:
   push:
     paths: ["app/**","podcasts/**","scripts/**",".github/workflows/app.yml"]
