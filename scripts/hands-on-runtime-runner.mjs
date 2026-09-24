@@ -137,6 +137,7 @@ const envelope = {
   lessonId: task.lessonId,
   platform: currentPlatform,
   verificationLevel: "machine-verified",
+  verificationSource: "local-runner",
   runnerVersion: "0.1.0",
   environmentFingerprint: environmentFingerprint(),
   startedAt,
