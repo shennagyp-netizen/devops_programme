@@ -218,7 +218,11 @@ async function main() {
     const origin = req.headers.origin ?? "*";
 
     if (req.method === "OPTIONS") {
-      send(res, 204, {}, origin);
+      res.statusCode = 204;
+      res.setHeader("Access-Control-Allow-Origin", origin);
+      res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+      res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+      res.end();
       return;
     }
 
