@@ -218,6 +218,6 @@ The generator fails closed when:
 - a required competency is missing
 - the selected form is too long
 
-The current implementation is a deterministic form generator and pilot assessment architecture, not a completed certification system. Pilot banks now exist for B-F1, B-F2, B-A1 and I-F1. Item calibration, standard setting, secure delivery and operational item exposure controls still require further implementation and validation.
+The current implementation is a deterministic form generator and pilot assessment architecture, not a completed certification system. Pilot banks now exist for B-F1, B-F2, B-A1, I-F1 and I-F2. Item calibration, standard setting, secure delivery and operational item exposure controls still require further implementation and validation.
 
 Form generation also requires the selected items to cover the blueprint's declared competencies and cognitive levels while remaining inside the difficulty distribution and time allowance.
