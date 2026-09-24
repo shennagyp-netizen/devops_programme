@@ -12,23 +12,33 @@ Speaker A: What does that tell us?
 
 Speaker B: Someone is unhappy.
 
-Speaker A: Correct.
+Speaker A: Correct. That makes the diagnosis easier to test.
+
+Speaker A: Let's keep that tied to the actual problem.
 
 Speaker B: And almost nothing else.
 
-Speaker A: Exactly.
+Speaker A: Exactly. We can check that without changing everything.
+
+Speaker A: Now say what evidence would confirm that.
 
 Speaker B: So we need a way to turn a vague complaint into evidence.
 
-Speaker A: Yes.
+Speaker A: Yes. Now we have a concrete prediction.
+
+Speaker A: That gives us a useful next test.
 
 Speaker B: Logs, metrics, health checks.
 
-Speaker A: Good.
+Speaker A: Good. Keep the recovery condition in the plan.
+
+Speaker A: I would not change the system before checking that.
 
 Speaker B: Maybe traces later.
 
-Speaker A: Yes.
+Speaker A: Yes. That is a safer way to reason about it.
+
+Speaker A: Keep the user-visible effect in view.
 
 Speaker B: Let's keep the first model simple.
 
@@ -36,15 +46,21 @@ Speaker A: A metric gives us a number over time.
 
 Speaker B: CPU, memory, request rate, latency.
 
-Speaker A: Right.
+Speaker A: Right. Now compare that with the known-good state.
+
+Speaker A: That is the part I would verify first.
 
 Speaker B: A log gives us an event or message.
 
-Speaker A: Right.
+Speaker A: Right. That tells us which layer to inspect next.
+
+Speaker A: Now the assumption is explicit.
 
 Speaker B: A health check gives us a focused answer to a focused question.
 
-Speaker A: Exactly.
+Speaker A: Exactly. I want the observation before the fix.
+
+Speaker A: That makes the diagnosis easier to test.
 
 Speaker B: So they are different tools.
 
@@ -60,27 +76,35 @@ Speaker A: Yes. Now ask what part is slow.
 
 Speaker B: Registration?
 
-Speaker A: Maybe.
+Speaker A: Maybe. That is where the real mechanism shows up.
+
+Speaker A: We can check that without changing everything.
 
 Speaker B: Sample collection?
 
-Speaker A: Maybe.
+Speaker A: Maybe. Now the failure has a clear boundary.
+
+Speaker A: Now we have a concrete prediction.
 
 Speaker B: Analyzer?
 
-Speaker A: Maybe.
+Speaker A: Maybe. Let's see whether the evidence supports that.
+
+Speaker A: Keep the recovery condition in the plan.
 
 Speaker B: Result review?
 
-Speaker A: Maybe.
+Speaker A: Maybe. That would change my next move.
+
+Speaker A: That is a safer way to reason about it.
 
 Speaker B: So the first metric we need could be total wait time by step.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Keep the incident scoped to one hypothesis.
 
 Speaker B: Then we can see where the delay grows.
 
-Speaker A: Right.
+Speaker A: Right. Let's keep that tied to the actual problem.
 
 Speaker B: Same thing for an application.
 
@@ -88,7 +112,7 @@ Speaker A: Yes. One endpoint can be slow while another is fine.
 
 Speaker B: One database query can be slow while the rest are fine.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now say what evidence would confirm that.
 
 Speaker B: So averages can hide problems.
 
@@ -100,7 +124,7 @@ Speaker A: Suppose 99 requests take 50 milliseconds and one takes 20 seconds.
 
 Speaker B: Average might still look okay.
 
-Speaker A: Right.
+Speaker A: Right. That gives us a useful next test.
 
 Speaker B: But one user had a terrible experience.
 
