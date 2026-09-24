@@ -54,9 +54,31 @@ for (const task of tasks) {
     console.error("Runtime task is missing a valid contractVersion: " + task.taskId);
   }
 
-  if (!task.lessonId || !task.verificationLevel) {
+  if (!task.lessonId || task.verificationLevel !== "machine-verified") {
     failed = true;
     console.error("Runtime task identity/verification level is incomplete: " + task.taskId);
+  }
+
+  if (typeof task.scope !== "string" || !task.scope.trim()) {
+    failed = true;
+    console.error("Runtime task scope is missing: " + task.taskId);
+  }
+
+  if (typeof task.resetRequired !== "boolean") {
+    failed = true;
+    console.error("Runtime task resetRequired must be boolean: " + task.taskId);
+  }
+
+  const stepIds = Array.isArray(task.steps) ? task.steps.map((step) => step.id) : [];
+  const duplicateStepIds = stepIds.filter((id, index) => stepIds.indexOf(id) !== index);
+  if (duplicateStepIds.length) {
+    failed = true;
+    console.error(
+      "Duplicate runtime step IDs in " +
+        task.taskId +
+        ": " +
+        [...new Set(duplicateStepIds)].join(", ")
+    );
   }
 
   if (!Array.isArray(task.steps) || task.steps.length === 0) {
@@ -69,6 +91,17 @@ for (const task of tasks) {
     if (!step.id || !step.kind || !step.purpose || !step.commands) {
       failed = true;
       console.error("Runtime step is incomplete: " + task.taskId + "/" + step.id);
+    }
+
+    const allowedKinds = new Set(["observe", "change", "failure", "restore", "verify"]);
+    if (!allowedKinds.has(step.kind)) {
+      failed = true;
+      console.error("Runtime step has invalid kind: " + task.taskId + "/" + step.id);
+    }
+
+    if (typeof step.required !== "boolean") {
+      failed = true;
+      console.error("Runtime step required flag is invalid: " + task.taskId + "/" + step.id);
     }
 
     for (const platform of ["macos", "linux", "windows"]) {
@@ -87,6 +120,20 @@ for (const task of tasks) {
             "/" +
             step.id
         );
+      }
+      if (command) {
+        if (typeof command.program !== "string" || !command.program.trim()) {
+          failed = true;
+          console.error("Runtime command program is missing: " + task.taskId + "/" + step.id + "/" + platform);
+        }
+        if (!Array.isArray(command.args) || command.args.some((arg) => typeof arg !== "string")) {
+          failed = true;
+          console.error("Runtime command args are invalid: " + task.taskId + "/" + step.id + "/" + platform);
+        }
+        if (!Number.isInteger(command.timeoutMs) || command.timeoutMs <= 0) {
+          failed = true;
+          console.error("Runtime command timeout is invalid: " + task.taskId + "/" + step.id + "/" + platform);
+        }
       }
     }
   }
