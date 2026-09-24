@@ -16,7 +16,7 @@ The envelope contains:
 - stdout and stderr hashes
 - reset completion when the task requires it
 
-The application accepts machine-verified evidence only when the envelope is structurally valid for the exact task contract.
+The application accepts machine-verified evidence only when the envelope is structurally valid for the exact task contract. Verification source is explicit: local-runner means the learner-controlled local runner executed the task; managed-runner is reserved for a separately controlled execution service.
 
 ## Current state
 
@@ -33,7 +33,7 @@ npm run hands-on:run -- --execute --task=hands-on-B1.2
 
 The B1.2 task is intentionally non-destructive: DNS resolution and an HTTPS connectivity check.
 
-Running the command on a learner machine can produce machine-verification evidence for those two observations. The repository does not claim that a learner has already run it merely because the runner exists.
+Running the command on a learner machine can produce machine-verification evidence for those two observations. The repository does not claim that a learner has already run it merely because the runner exists. A local-runner envelope is execution evidence, not independent remote attestation.
 
 ## Safety
 
