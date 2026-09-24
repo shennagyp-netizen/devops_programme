@@ -34,6 +34,25 @@ describe("completeLearningItemAction", () => {
     expect(completeForUserMock).not.toHaveBeenCalled();
   });
 
+  it("does not allow direct completion without the server-required exercise level", async () => {
+    authMock.mockResolvedValue({ userId: "user_123" });
+    completeForUserMock.mockRejectedValue(
+      new Error("Completion requires exercise validation.")
+    );
+
+    await expect(
+      completeLearningItemAction({
+        itemType: "lesson",
+        itemId: "B1.2"
+      })
+    ).rejects.toThrow("Completion requires exercise validation.");
+
+    expect(completeForUserMock).toHaveBeenCalledWith("user_123", {
+      itemType: "lesson",
+      itemId: "B1.2"
+    });
+  });
+
   it("uses the authenticated Clerk user and never accepts a browser learner id", async () => {
     authMock.mockResolvedValue({ userId: "user_123" });
     completeForUserMock.mockResolvedValue({
