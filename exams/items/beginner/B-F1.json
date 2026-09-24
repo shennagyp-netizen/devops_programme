@@ -1,0 +1,739 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "B-F1",
+  "purpose": "Pilot item bank for Linux and Process Foundations. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "BF1-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-F1.core",
+      "prompt": "Which statement best describes a process?",
+      "options": [
+        "A file stored on disk",
+        "A running instance of a program with state and resources",
+        "A CPU core",
+        "A network cable"
+      ],
+      "correctOption": 1
+    },
+    {
+      "id": "BF1-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-F1.core",
+      "prompt": "Which part of the system manages access to CPU, memory, files and other system resources?",
+      "options": [
+        "The browser",
+        "The shell",
+        "The kernel",
+        "The application log"
+      ],
+      "correctOption": 2
+    },
+    {
+      "id": "BF1-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-F1.core",
+      "prompt": "What is a file descriptor most like?",
+      "options": [
+        "A CPU core",
+        "A handle a process uses to work with a resource",
+        "A firewall rule",
+        "A user account"
+      ],
+      "correctOption": 1
+    },
+    {
+      "id": "BF1-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-F1.core",
+      "prompt": "An application has low CPU use but requests take five seconds. Which explanation is still plausible?",
+      "options": [
+        "The process may be waiting on a dependency",
+        "Low CPU proves the system is healthy",
+        "The kernel cannot schedule the process",
+        "The application cannot use memory"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BF1-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-F1.core",
+      "prompt": "Why is 'CPU is high' not a complete diagnosis?",
+      "options": [
+        "CPU is never useful",
+        "The CPU graph can never be trusted",
+        "You still need to know which process is using it and why",
+        "High CPU always means a memory leak"
+      ],
+      "correctOption": 2
+    },
+    {
+      "id": "BF1-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "constructed-response",
+      "expectedMinutes": 3,
+      "competencyId": "B-F1.core",
+      "prompt": "In plain English, explain why a process can be alive but not making progress.",
+      "scoring": {
+        "full": [
+          "states that a process can be waiting on I/O, a lock, memory, or another dependency",
+          "distinguishes process existence from useful progress"
+        ],
+        "partial": [
+          "mentions waiting but gives no clear example"
+        ],
+        "zero": [
+          "says an alive process must always be doing useful work"
+        ]
+      }
+    },
+    {
+      "id": "BF1-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-F1.core",
+      "prompt": "You want to know which network sockets a process has open. Which evidence is most directly useful?",
+      "options": [
+        "A screenshot of the desktop",
+        "Process and open-file/socket inspection",
+        "A Git commit",
+        "The application title"
+      ],
+      "correctOption": 1
+    },
+    {
+      "id": "BF1-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-F1.core",
+      "prompt": "Why can a memory graph look high while the machine is still operating normally?",
+      "options": [
+        "The graph is always wrong",
+        "The system can use memory for caches and other normal purposes",
+        "Processes do not use memory",
+        "High memory always means a crash"
+      ],
+      "correctOption": 1
+    },
+    {
+      "id": "BF1-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "constructed-response",
+      "expectedMinutes": 3,
+      "competencyId": "B-F1.core",
+      "prompt": "A user says, 'The app is slow.' Give two questions that would reduce the set of possible causes.",
+      "scoring": {
+        "full": [
+          "asks a scope question such as one user vs all users",
+          "asks a time/change/dependency/component question that separates causes"
+        ],
+        "partial": [
+          "asks only one useful question"
+        ],
+        "zero": [
+          "immediately proposes a fix without gathering evidence"
+        ]
+      }
+    },
+    {
+      "id": "BF1-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-F1.core",
+      "prompt": "What is the main reason a shell is not the same thing as the kernel?",
+      "options": [
+        "The shell cannot start processes",
+        "The shell is a user-space program that asks the kernel to perform system operations",
+        "The kernel only handles networking",
+        "The shell is a hardware device"
+      ],
+      "correctOption": 1
+    },
+    {
+      "id": "BF1-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-F1.core",
+      "prompt": "A service shows 95% CPU on one process. Before changing anything, what evidence should you collect?",
+      "expectedElements": [
+        "process identity",
+        "whether the CPU use is expected",
+        "recent traffic/change history",
+        "whether the process is progressing or spinning"
+      ]
+    },
+    {
+      "id": "BF1-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-F1.core",
+      "prompt": "A service is slow, CPU is 10%, memory is normal, and one downstream call takes 4 seconds. What should the learner conclude?",
+      "expectedElements": [
+        "the service may be waiting on the downstream dependency",
+        "CPU and memory do not explain the latency",
+        "next evidence should focus on the dependency/request path"
+      ]
+    },
+    {
+      "id": "BF1-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "B-F1.core",
+      "prompt": "Explain why restarting a slow service can hide the cause without proving the cause.",
+      "scoring": {
+        "full": [
+          "restart may change temporary state",
+          "restart does not identify the failing mechanism",
+          "evidence before restart is needed for diagnosis"
+        ],
+        "partial": [
+          "says restart can hide the issue but gives little reason"
+        ],
+        "zero": [
+          "claims restart proves the cause"
+        ]
+      }
+    },
+    {
+      "id": "BF1-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-F1.core",
+      "prompt": "Design a first-minute investigation for a slow API process. You may inspect only three things. Choose them and explain what each can separate.",
+      "expectedElements": [
+        "process state/resource use",
+        "open network/file activity",
+        "request/dependency evidence"
+      ],
+      "scoringNote": "Credit choices that are clearly tied to separating plausible causes."
+    },
+    {
+      "id": "BF1-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-F1.core",
+      "prompt": "A process has low CPU, many open sockets, and long request latency. Which hypothesis deserves early testing?",
+      "options": [
+        "The process has no network activity",
+        "The process may be waiting on network dependencies",
+        "The kernel cannot see the process",
+        "The filesystem must be corrupt"
+      ],
+      "correctOption": 1
+    },
+    {
+      "id": "BF1-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-F1.core",
+      "prompt": "Only one customer reports a slow request. Most other users are fast. What should change in your investigation?",
+      "expectedElements": [
+        "treat the problem as scoped rather than global",
+        "look for user-specific data/path/region/session differences",
+        "avoid host-wide fixes until evidence supports them"
+      ]
+    },
+    {
+      "id": "BF1-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "B-F1.core",
+      "prompt": "Give a simple rule for deciding whether to move down a system layer or up toward a dependency.",
+      "scoring": {
+        "full": [
+          "moves toward the layer that can explain the current evidence",
+          "uses observations to choose the next layer rather than a fixed command list"
+        ],
+        "partial": [
+          "mentions following evidence but gives no decision rule"
+        ],
+        "zero": [
+          "always starts at the same layer regardless of evidence"
+        ]
+      }
+    },
+    {
+      "id": "BF1-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "B-F1.core",
+      "prompt": "An API has normal CPU and memory. One request type is slow only during high traffic. The process has many open connections. Propose two competing hypotheses and one observation that would separate them.",
+      "expectedElements": [
+        "two plausible hypotheses, such as downstream saturation vs connection contention",
+        "one discriminating observation rather than a general dashboard request"
+      ],
+      "scoringNote": "Do not require one specific pair if the hypotheses are technically sound."
+    },
+    {
+      "id": "BF1-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "B-F1.core",
+      "prompt": "A service is slow only after a terminal session is closed. Explain what process-lifecycle questions you would ask before changing the service.",
+      "expectedElements": [
+        "process/session relationship",
+        "signals or session behavior",
+        "process ownership or supervisor relationship"
+      ]
+    },
+    {
+      "id": "BF1-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "B-F1.core",
+      "prompt": "Write a small evidence-based diagnostic tree for the statement 'the application is slow'.",
+      "scoring": {
+        "full": [
+          "starts with scope",
+          "separates local process vs host vs dependency causes",
+          "uses observable evidence at each branch",
+          "does not jump directly to a fix"
+        ],
+        "partial": [
+          "has useful checks but no clear branching logic"
+        ],
+        "zero": [
+          "lists commands without explaining what each result would mean"
+        ]
+      }
+    },
+    {
+      "id": "BF1-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "scenario",
+      "expectedMinutes": 2,
+      "competencyId": "B-F1.diagnostic",
+      "prompt": "You are told a service is slow. What is the first useful question?",
+      "expectedElements": [
+        "what is actually slow and who is affected"
+      ]
+    },
+    {
+      "id": "BF1-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "scenario",
+      "expectedMinutes": 2,
+      "competencyId": "B-F1.diagnostic",
+      "prompt": "A process exists in the process list. What does that prove?",
+      "expectedElements": [
+        "the process exists at that moment",
+        "it does not prove useful progress or healthy dependencies"
+      ]
+    },
+    {
+      "id": "BF1-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-F1.diagnostic",
+      "prompt": "CPU is 99% on one process, but request latency is normal. Give the next two checks.",
+      "expectedElements": [
+        "whether CPU use is expected",
+        "recent traffic/code/workload change or process behavior"
+      ]
+    },
+    {
+      "id": "BF1-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-F1.diagnostic",
+      "prompt": "CPU is 15%, memory is normal, and the service waits 3 seconds on a database call. What do you inspect next?",
+      "expectedElements": [
+        "database/request dependency",
+        "timing and connection evidence"
+      ]
+    },
+    {
+      "id": "BF1-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-F1.diagnostic",
+      "prompt": "Only one machine has high load while other service instances are normal. What does that change?",
+      "expectedElements": [
+        "scope points toward host or instance-local causes",
+        "check instance-specific process/resource/dependency state"
+      ]
+    },
+    {
+      "id": "BF1-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-F1.diagnostic",
+      "prompt": "An API is waiting on a socket. What does that tell you, and what does it not tell you?",
+      "expectedElements": [
+        "socket activity exists",
+        "does not prove whether the dependency is slow, unreachable, overloaded, or behaving incorrectly"
+      ]
+    },
+    {
+      "id": "BF1-D-007",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-F1.diagnostic",
+      "prompt": "A service became slow immediately after traffic doubled. Give two plausible causes and one check for each.",
+      "expectedElements": [
+        "capacity/CPU/connection or downstream saturation hypothesis",
+        "evidence check tied to each hypothesis"
+      ]
+    },
+    {
+      "id": "BF1-D-008",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-F1.diagnostic",
+      "prompt": "A restart fixes the problem for ten minutes. What should you record before the next restart?",
+      "expectedElements": [
+        "process state",
+        "resource use",
+        "open connections/files",
+        "recent changes",
+        "logs or request evidence"
+      ]
+    },
+    {
+      "id": "BF1-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "incident",
+      "expectedMinutes": 4,
+      "competencyId": "B-F1.diagnostic",
+      "prompt": "A process uses normal CPU but has thousands of open sockets and rising latency. Give two competing causes and the evidence that separates them.",
+      "expectedElements": [
+        "slow dependency vs connection/resource problem or equivalent",
+        "specific discriminating observations"
+      ]
+    },
+    {
+      "id": "BF1-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "incident",
+      "expectedMinutes": 4,
+      "competencyId": "B-F1.diagnostic",
+      "prompt": "All services on one host become slow at the same time. One process is not enough to explain the incident. What broader evidence do you collect?",
+      "expectedElements": [
+        "host resource pressure",
+        "disk/network behavior",
+        "system logs",
+        "whether the issue is local to host or shared dependency"
+      ]
+    },
+    {
+      "id": "BF1-D-011",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "incident",
+      "expectedMinutes": 5,
+      "competencyId": "B-F1.diagnostic",
+      "prompt": "A production engineer wants to restart first and investigate later. Explain the risk and give a safer first step.",
+      "expectedElements": [
+        "restart may remove evidence or change state",
+        "collect a minimal safe observation first",
+        "then act based on evidence"
+      ]
+    },
+    {
+      "id": "BF1-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "incident",
+      "expectedMinutes": 5,
+      "competencyId": "B-F1.diagnostic",
+      "prompt": "A service is slow only for one user group, only on one endpoint, and only during a daily 15-minute window. Build a short hypothesis tree.",
+      "expectedElements": [
+        "scope narrows user/endpoint/time",
+        "candidate causes such as data shape, scheduled work, dependency load",
+        "discriminating evidence for each branch"
+      ]
+    },
+    {
+      "id": "BF1-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 5,
+      "competencyId": "B-F1.hands-on",
+      "prompt": "Inspect running processes and identify one process you can safely observe without changing system state.",
+      "environment": {
+        "initialState": "Normal learner workstation",
+        "actions": [
+          "run a process-list command",
+          "identify one known process"
+        ],
+        "evidence": [
+          "command output",
+          "process identity"
+        ],
+        "success": "Learner identifies a running process and explains what the process listing proves."
+      }
+    },
+    {
+      "id": "BF1-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 5,
+      "competencyId": "B-F1.hands-on",
+      "prompt": "Inspect open network sockets and relate one open socket to a running process.",
+      "environment": {
+        "initialState": "Normal learner workstation",
+        "actions": [
+          "inspect open network endpoints",
+          "match one endpoint to a process"
+        ],
+        "evidence": [
+          "socket output",
+          "process mapping"
+        ],
+        "success": "Learner correctly explains the observed connection or listening socket."
+      }
+    },
+    {
+      "id": "BF1-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "B-F1.hands-on",
+      "prompt": "Create a safe local CPU load, observe the process that uses the CPU, then remove the load.",
+      "environment": {
+        "initialState": "Local machine with no production workload",
+        "actions": [
+          "start a bounded CPU load",
+          "inspect process state",
+          "stop the load"
+        ],
+        "evidence": [
+          "before/after resource observation",
+          "identified process",
+          "safe cleanup"
+        ],
+        "success": "Learner explains which process created the load and verifies recovery."
+      }
+    },
+    {
+      "id": "BF1-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "B-F1.hands-on",
+      "prompt": "Create a local process that waits on a known resource, inspect it, and explain why low CPU does not prove that it is healthy.",
+      "environment": {
+        "initialState": "Local disposable process",
+        "actions": [
+          "start a controlled wait",
+          "observe process state/resource use",
+          "explain the wait"
+        ],
+        "evidence": [
+          "process state",
+          "resource observation",
+          "diagnosis"
+        ],
+        "success": "Learner identifies waiting behavior and explains the difference between alive and making progress."
+      }
+    },
+    {
+      "id": "BF1-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 7,
+      "competencyId": "B-F1.hands-on",
+      "prompt": "Given a local service with normal CPU but a slow dependency, identify the dependency path and show the evidence that the process is waiting on it.",
+      "environment": {
+        "initialState": "Prepared local service and slow test dependency",
+        "actions": [
+          "inspect process",
+          "inspect open connections",
+          "measure request timing"
+        ],
+        "evidence": [
+          "process evidence",
+          "socket/dependency evidence",
+          "timing"
+        ],
+        "success": "Learner names the dependency and supports the diagnosis with observations."
+      }
+    },
+    {
+      "id": "BF1-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "B-F1.hands-on",
+      "prompt": "Investigate a local service that becomes slow after a controlled configuration change. Do not restart it until you have captured the first useful evidence.",
+      "environment": {
+        "initialState": "Disposable service with a known-good baseline and one prepared failure",
+        "actions": [
+          "observe symptom",
+          "capture evidence",
+          "state hypothesis",
+          "make safe repair",
+          "verify recovery"
+        ],
+        "evidence": [
+          "before-change evidence",
+          "hypothesis",
+          "repair",
+          "after-change verification"
+        ],
+        "success": "Learner preserves useful evidence and shows why the repair fixed the failure."
+      }
+    },
+    {
+      "id": "BF1-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 9,
+      "competencyId": "B-F1.hands-on",
+      "prompt": "Given three possible causes of a slow local service, choose and run observations that separate the causes with the fewest changes.",
+      "environment": {
+        "initialState": "Prepared local diagnostic scenario with three plausible causes",
+        "actions": [
+          "choose evidence",
+          "run observations",
+          "rank hypotheses",
+          "choose safe action"
+        ],
+        "evidence": [
+          "reason for each observation",
+          "results",
+          "ranked hypotheses",
+          "action"
+        ],
+        "success": "Learner chooses evidence that reduces uncertainty without random changes."
+      }
+    },
+    {
+      "id": "BF1-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "B-F1.hands-on",
+      "prompt": "Run a complete small incident drill: a local service becomes slow, one dependency is unhealthy, and the learner must diagnose and recover it without a blind restart.",
+      "environment": {
+        "initialState": "Disposable multi-process local service with one hidden dependency failure",
+        "actions": [
+          "detect",
+          "scope",
+          "inspect",
+          "form hypothesis",
+          "mitigate",
+          "repair",
+          "verify",
+          "write evidence log"
+        ],
+        "evidence": [
+          "timeline",
+          "commands/observations",
+          "hypothesis",
+          "mitigation",
+          "recovery proof"
+        ],
+        "success": "Learner reaches a correct diagnosis with evidence, performs a safe recovery, and proves the system is healthy again."
+      }
+    }
+  ]
+}
