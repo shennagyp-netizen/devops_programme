@@ -81,7 +81,7 @@ function competenciesFor(section: CourseSection, family: AssessmentFamily) {
   return [`${section.id}.${family}`];
 }
 
-const pilotSections = new Set(["B-F1", "B-F2", "B-A1"]);
+const pilotSections = new Set(["B-F1", "B-F2", "B-A1", "I-F1"]);
 
 export const assessmentBlueprints: AssessmentBlueprint[] = courses.flatMap(
   (course) =>
