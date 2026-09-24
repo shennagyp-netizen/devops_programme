@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "learner_completions" (
+CREATE TABLE IF NOT EXISTS "learner_progress_history" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   "learner_id" text NOT NULL,
   "item_type" text NOT NULL,
@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS "learner_completions" (
   "completed_at" timestamptz DEFAULT now() NOT NULL
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS "learner_completions_learner_item_uq"
-  ON "learner_completions" ("learner_id", "item_type", "item_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "learner_progress_history_learner_item_uq"
+  ON "learner_progress_history" ("learner_id", "item_type", "item_id");
