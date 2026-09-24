@@ -73,11 +73,12 @@ The course does not reproduce proprietary architecture from any company. "Amazon
 
 ## Advanced assessment
 
-Challenge-level items should involve:
-- conflicting evidence
-- multiple plausible failure causes
-- interacting bottlenecks
-- failure-domain changes
-- explicit trade-offs
+Each of the six sections has:
+- a 40-item pilot bank
+- conceptual, diagnostic and hands-on families
+- the controlled 15% foundation / 35% applied / 35% difficult / 15% challenge difficulty mix
+- a prerequisite diagnostic
+
+Challenge-level items involve conflicting evidence, multiple plausible failure causes, interacting bottlenecks, failure-domain changes and explicit trade-offs. The authored Advanced core contains 11 lessons across A1-A3.
 
 The hands-on exam must require evidence capture and recovery verification, not merely a working final state.
