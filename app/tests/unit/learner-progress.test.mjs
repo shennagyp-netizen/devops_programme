@@ -108,7 +108,7 @@ describe("learner progress client", () => {
       )
     );
 
-    const result = await listCompletedItems();
+    const result = await listCompletionHistory();
 
     expect(result).toHaveLength(1);
     expect(result[0].itemId).toBe("B1.2");
