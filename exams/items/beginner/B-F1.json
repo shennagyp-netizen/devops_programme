@@ -544,18 +544,28 @@
       "expectedMinutes": 5,
       "competencyId": "B-F1.hands-on",
       "prompt": "Inspect running processes and identify one process you can safely observe without changing system state.",
-      "environment": {
-        "initialState": "Normal learner workstation",
-        "actions": [
-          "run a process-list command",
-          "identify one known process"
-        ],
-        "evidence": [
-          "command output",
-          "process identity"
-        ],
-        "success": "Learner identifies a running process and explains what the process listing proves."
-      }
+      "environment": [
+        "Normal learner workstation"
+      ],
+      "initialState": "Normal learner workstation",
+      "allowedOperations": [
+        "run a process-list command",
+        "identify one known process"
+      ],
+      "success": [
+        "Learner identifies a running process and explains what the process listing proves."
+      ],
+      "evidence": [
+        "command output",
+        "process identity"
+      ],
+      "failureConditions": [
+        "Changing or terminating a system process instead of observing it."
+      ],
+      "recoveryRequirements": [
+        "No system change is required; close inspection tools and verify the selected process remains unchanged."
+      ],
+      "resetStrategy": "Use the prepared local/disposable scenario only. End or undo all controlled actions and verify the documented baseline before leaving the task."
     },
     {
       "id": "BF1-H-002",
@@ -566,18 +576,28 @@
       "expectedMinutes": 5,
       "competencyId": "B-F1.hands-on",
       "prompt": "Inspect open network sockets and relate one open socket to a running process.",
-      "environment": {
-        "initialState": "Normal learner workstation",
-        "actions": [
-          "inspect open network endpoints",
-          "match one endpoint to a process"
-        ],
-        "evidence": [
-          "socket output",
-          "process mapping"
-        ],
-        "success": "Learner correctly explains the observed connection or listening socket."
-      }
+      "environment": [
+        "Normal learner workstation"
+      ],
+      "initialState": "Normal learner workstation",
+      "allowedOperations": [
+        "inspect open network endpoints",
+        "match one endpoint to a process"
+      ],
+      "success": [
+        "Learner correctly explains the observed connection or listening socket."
+      ],
+      "evidence": [
+        "socket output",
+        "process mapping"
+      ],
+      "failureConditions": [
+        "Changing socket or process state instead of collecting evidence."
+      ],
+      "recoveryRequirements": [
+        "End the inspection only; do not modify the process or socket. Verify the workstation remains unchanged."
+      ],
+      "resetStrategy": "Use the prepared local/disposable scenario only. End or undo all controlled actions and verify the documented baseline before leaving the task."
     },
     {
       "id": "BF1-H-003",
@@ -588,20 +608,30 @@
       "expectedMinutes": 6,
       "competencyId": "B-F1.hands-on",
       "prompt": "Create a safe local CPU load, observe the process that uses the CPU, then remove the load.",
-      "environment": {
-        "initialState": "Local machine with no production workload",
-        "actions": [
-          "start a bounded CPU load",
-          "inspect process state",
-          "stop the load"
-        ],
-        "evidence": [
-          "before/after resource observation",
-          "identified process",
-          "safe cleanup"
-        ],
-        "success": "Learner explains which process created the load and verifies recovery."
-      }
+      "environment": [
+        "Local machine with no production workload"
+      ],
+      "initialState": "Local machine with no production workload",
+      "allowedOperations": [
+        "start a bounded CPU load",
+        "inspect process state",
+        "stop the load"
+      ],
+      "success": [
+        "Learner explains which process created the load and verifies recovery."
+      ],
+      "evidence": [
+        "before/after resource observation",
+        "identified process",
+        "safe cleanup"
+      ],
+      "failureConditions": [
+        "Starting an unbounded CPU load or affecting unrelated workloads."
+      ],
+      "recoveryRequirements": [
+        "Stop the bounded CPU-load process and verify CPU returns to the normal baseline."
+      ],
+      "resetStrategy": "Use the prepared local/disposable scenario only. End or undo all controlled actions and verify the documented baseline before leaving the task."
     },
     {
       "id": "BF1-H-004",
@@ -612,20 +642,30 @@
       "expectedMinutes": 6,
       "competencyId": "B-F1.hands-on",
       "prompt": "Create a local process that waits on a known resource, inspect it, and explain why low CPU does not prove that it is healthy.",
-      "environment": {
-        "initialState": "Local disposable process",
-        "actions": [
-          "start a controlled wait",
-          "observe process state/resource use",
-          "explain the wait"
-        ],
-        "evidence": [
-          "process state",
-          "resource observation",
-          "diagnosis"
-        ],
-        "success": "Learner identifies waiting behavior and explains the difference between alive and making progress."
-      }
+      "environment": [
+        "Local disposable process"
+      ],
+      "initialState": "Local disposable process",
+      "allowedOperations": [
+        "start a controlled wait",
+        "observe process state/resource use",
+        "explain the wait"
+      ],
+      "success": [
+        "Learner identifies waiting behavior and explains the difference between alive and making progress."
+      ],
+      "evidence": [
+        "process state",
+        "resource observation",
+        "diagnosis"
+      ],
+      "failureConditions": [
+        "Leaving the controlled waiting process running or modifying unrelated processes."
+      ],
+      "recoveryRequirements": [
+        "Terminate the controlled waiting process and verify no test process remains."
+      ],
+      "resetStrategy": "Use the prepared local/disposable scenario only. End or undo all controlled actions and verify the documented baseline before leaving the task."
     },
     {
       "id": "BF1-H-005",
@@ -636,20 +676,30 @@
       "expectedMinutes": 7,
       "competencyId": "B-F1.hands-on",
       "prompt": "Given a local service with normal CPU but a slow dependency, identify the dependency path and show the evidence that the process is waiting on it.",
-      "environment": {
-        "initialState": "Prepared local service and slow test dependency",
-        "actions": [
-          "inspect process",
-          "inspect open connections",
-          "measure request timing"
-        ],
-        "evidence": [
-          "process evidence",
-          "socket/dependency evidence",
-          "timing"
-        ],
-        "success": "Learner names the dependency and supports the diagnosis with observations."
-      }
+      "environment": [
+        "Prepared local service and slow test dependency"
+      ],
+      "initialState": "Prepared local service and slow test dependency",
+      "allowedOperations": [
+        "inspect process",
+        "inspect open connections",
+        "measure request timing"
+      ],
+      "success": [
+        "Learner names the dependency and supports the diagnosis with observations."
+      ],
+      "evidence": [
+        "process evidence",
+        "socket/dependency evidence",
+        "timing"
+      ],
+      "failureConditions": [
+        "Making unrelated system changes instead of testing the prepared dependency path."
+      ],
+      "recoveryRequirements": [
+        "Return the prepared dependency to its known-good state and verify request timing returns to baseline."
+      ],
+      "resetStrategy": "Use the prepared local/disposable scenario only. End or undo all controlled actions and verify the documented baseline before leaving the task."
     },
     {
       "id": "BF1-H-006",
@@ -660,23 +710,33 @@
       "expectedMinutes": 8,
       "competencyId": "B-F1.hands-on",
       "prompt": "Investigate a local service that becomes slow after a controlled configuration change. Do not restart it until you have captured the first useful evidence.",
-      "environment": {
-        "initialState": "Disposable service with a known-good baseline and one prepared failure",
-        "actions": [
-          "observe symptom",
-          "capture evidence",
-          "state hypothesis",
-          "make safe repair",
-          "verify recovery"
-        ],
-        "evidence": [
-          "before-change evidence",
-          "hypothesis",
-          "repair",
-          "after-change verification"
-        ],
-        "success": "Learner preserves useful evidence and shows why the repair fixed the failure."
-      }
+      "environment": [
+        "Disposable service with a known-good baseline and one prepared failure"
+      ],
+      "initialState": "Disposable service with a known-good baseline and one prepared failure",
+      "allowedOperations": [
+        "observe symptom",
+        "capture evidence",
+        "state hypothesis",
+        "make safe repair",
+        "verify recovery"
+      ],
+      "success": [
+        "Learner preserves useful evidence and shows why the repair fixed the failure."
+      ],
+      "evidence": [
+        "before-change evidence",
+        "hypothesis",
+        "repair",
+        "after-change verification"
+      ],
+      "failureConditions": [
+        "Restarting before evidence is captured or applying a repair not supported by the evidence."
+      ],
+      "recoveryRequirements": [
+        "Restore the known-good configuration, start or reload the service using the documented safe method, and verify recovery."
+      ],
+      "resetStrategy": "Use the prepared local/disposable scenario only. End or undo all controlled actions and verify the documented baseline before leaving the task."
     },
     {
       "id": "BF1-H-007",
@@ -687,22 +747,32 @@
       "expectedMinutes": 9,
       "competencyId": "B-F1.hands-on",
       "prompt": "Given three possible causes of a slow local service, choose and run observations that separate the causes with the fewest changes.",
-      "environment": {
-        "initialState": "Prepared local diagnostic scenario with three plausible causes",
-        "actions": [
-          "choose evidence",
-          "run observations",
-          "rank hypotheses",
-          "choose safe action"
-        ],
-        "evidence": [
-          "reason for each observation",
-          "results",
-          "ranked hypotheses",
-          "action"
-        ],
-        "success": "Learner chooses evidence that reduces uncertainty without random changes."
-      }
+      "environment": [
+        "Prepared local diagnostic scenario with three plausible causes"
+      ],
+      "initialState": "Prepared local diagnostic scenario with three plausible causes",
+      "allowedOperations": [
+        "choose evidence",
+        "run observations",
+        "rank hypotheses",
+        "choose safe action"
+      ],
+      "success": [
+        "Learner chooses evidence that reduces uncertainty without random changes."
+      ],
+      "evidence": [
+        "reason for each observation",
+        "results",
+        "ranked hypotheses",
+        "action"
+      ],
+      "failureConditions": [
+        "Changing the system randomly instead of selecting observations that discriminate between hypotheses."
+      ],
+      "recoveryRequirements": [
+        "Undo any diagnostic change and restore the prepared scenario to its original baseline."
+      ],
+      "resetStrategy": "Use the prepared local/disposable scenario only. End or undo all controlled actions and verify the documented baseline before leaving the task."
     },
     {
       "id": "BF1-H-008",
@@ -713,27 +783,37 @@
       "expectedMinutes": 12,
       "competencyId": "B-F1.hands-on",
       "prompt": "Run a complete small incident drill: a local service becomes slow, one dependency is unhealthy, and the learner must diagnose and recover it without a blind restart.",
-      "environment": {
-        "initialState": "Disposable multi-process local service with one hidden dependency failure",
-        "actions": [
-          "detect",
-          "scope",
-          "inspect",
-          "form hypothesis",
-          "mitigate",
-          "repair",
-          "verify",
-          "write evidence log"
-        ],
-        "evidence": [
-          "timeline",
-          "commands/observations",
-          "hypothesis",
-          "mitigation",
-          "recovery proof"
-        ],
-        "success": "Learner reaches a correct diagnosis with evidence, performs a safe recovery, and proves the system is healthy again."
-      }
+      "environment": [
+        "Disposable multi-process local service with one hidden dependency failure"
+      ],
+      "initialState": "Disposable multi-process local service with one hidden dependency failure",
+      "allowedOperations": [
+        "detect",
+        "scope",
+        "inspect",
+        "form hypothesis",
+        "mitigate",
+        "repair",
+        "verify",
+        "write evidence log"
+      ],
+      "success": [
+        "Learner reaches a correct diagnosis with evidence, performs a safe recovery, and proves the system is healthy again."
+      ],
+      "evidence": [
+        "timeline",
+        "commands/observations",
+        "hypothesis",
+        "mitigation",
+        "recovery proof"
+      ],
+      "failureConditions": [
+        "Using a blind restart, unsafe mitigation, or failing to verify the dependency after repair."
+      ],
+      "recoveryRequirements": [
+        "Complete the repair, restore the disposable environment, and verify both the service and dependency are healthy."
+      ],
+      "resetStrategy": "Use the prepared local/disposable scenario only. End or undo all controlled actions and verify the documented baseline before leaving the task."
     }
   ]
 }
