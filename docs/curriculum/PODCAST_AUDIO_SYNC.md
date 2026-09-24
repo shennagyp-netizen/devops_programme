@@ -104,3 +104,17 @@ It must not fake synchronization by estimating timing.
 ## Current status
 
 The synchronization engine and manifest schema are implemented in React. Production audio manifests are not committed yet, so current episodes intentionally use the safe guided-transcript fallback.
+
+## Stale-audio protection
+
+The app also loads the generated podcast source manifest.
+
+A voice manifest contains a `scriptVersion` hash. React compares that hash with the exact episode text hash generated from the current source scripts.
+
+If they differ:
+- the recording is treated as stale
+- voice synchronization is disabled
+- guided transcript mode remains available
+- the user is never shown a false claim that the voice is synchronized
+
+This is deliberately fail-closed.
