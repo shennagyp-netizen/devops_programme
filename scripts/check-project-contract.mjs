@@ -22,6 +22,10 @@ const lessonProjectIds = new Set(
   [...lessons.matchAll(/projectId:\s*"([^"]+)"/g)].map((match) => match[1])
 );
 
+for (const projectId of [...intermediateLessons.matchAll(/return\s+"(I[1-3])"/g)].map((match) => match[1])) {
+  lessonProjectIds.add(projectId);
+}
+
 for (const lessonProjectId of lessonProjectIds) {
   if (!projectIds.has(lessonProjectId)) {
     failed = true;
