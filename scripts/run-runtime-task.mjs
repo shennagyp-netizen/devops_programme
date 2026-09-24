@@ -32,20 +32,27 @@ function environmentFingerprint(platform) {
 
 function parseArgs(argv) {
   const args = new Map();
+  const valueOptions = new Set(["lesson", "output"]);
+  const flagOptions = new Set(["dry-run", "execute"]);
 
   for (let index = 2; index < argv.length; index += 1) {
     const token = argv[index];
-
-    if (token === "--dry-run") {
-      args.set("dry-run", "true");
-      continue;
-    }
 
     if (!token.startsWith("--")) {
       throw new Error("Unexpected argument: " + token);
     }
 
     const key = token.slice(2);
+
+    if (flagOptions.has(key)) {
+      args.set(key, "true");
+      continue;
+    }
+
+    if (!valueOptions.has(key)) {
+      throw new Error("Unknown option: --" + key);
+    }
+
     const value = argv[index + 1];
 
     if (!value || value.startsWith("--")) {
@@ -56,17 +63,21 @@ function parseArgs(argv) {
     index += 1;
   }
 
+  if (args.has("dry-run") && args.has("execute")) {
+    throw new Error("Use either --dry-run or --execute, not both.");
+  }
+
   const lessonId = args.get("lesson");
 
   if (!lessonId) {
     throw new Error(
-      "Usage: node scripts/run-runtime-task.mjs --lesson B1.2 [--dry-run] [--output path]"
+      "Usage: node scripts/run-runtime-task.mjs --lesson B1.2 [--dry-run|--execute] [--output path]"
     );
   }
 
   return {
     lessonId,
-    dryRun: args.get("dry-run") === "true",
+    dryRun: !args.has("execute"),
     output: args.get("output")
   };
 }
