@@ -47,6 +47,7 @@ jobs:
           run_stage "check_projects" npm run check:projects
           run_stage "check_platforms" npm run check:platforms
           run_stage "check_hands_on" npm run check:hands-on
+          run_stage "check_beginner" npm run check:beginner
           run_stage "typescript" tsc -b
           run_stage "vite_build" vite build
 
