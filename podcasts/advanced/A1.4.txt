@@ -20,7 +20,7 @@ Speaker A: Much bigger.
 
 Speaker B: So we need failure domains.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That gives us a useful boundary.
 
 Speaker A: Let’s keep that as a testable claim.
 
@@ -46,7 +46,7 @@ Speaker A: Potentially bigger still.
 
 Speaker B: So the goal is to stop one failure from taking out everything.
 
-Speaker A: Yes.
+Speaker A: Yes. Now connect that to the request path.
 
 Speaker A: That gives us a useful boundary.
 
@@ -76,25 +76,25 @@ Speaker A: The mistake is designing as if those failures are the same.
 
 Speaker B: In software, one process dying is not the same as one host dying.
 
-Speaker A: Exactly.
+Speaker A: Exactly. I would measure that before changing anything.
 
 Speaker A: Now connect that to the request path.
 
 Speaker B: If we run three services on one host, we have three processes but one failure domain.
 
-Speaker A: Good.
+Speaker A: Good. That is where the failure becomes useful.
 
 Speaker A: I would measure that before changing anything.
 
 Speaker B: If the host dies, all three disappear.
 
-Speaker A: Right.
+Speaker A: Right. Now we can compare it with the real system.
 
 Speaker A: That is where the failure becomes useful.
 
 Speaker B: So process count is not the same as failure isolation.
 
-Speaker A: Correct.
+Speaker A: Correct. Keep the user-visible effect in the model.
 
 Speaker A: Now we can compare it with the real system.
 
@@ -104,13 +104,13 @@ Speaker A: Better, but not independent of a zone failure.
 
 Speaker B: So they can fail together.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That is the part I would verify first.
 
 Speaker A: Keep the user-visible effect in the model.
 
 Speaker B: This is why topology matters.
 
-Speaker A: Yes.
+Speaker A: Yes. Now the assumption is explicit.
 
 Speaker A: That is the part I would verify first.
 
@@ -118,7 +118,7 @@ Speaker B: Let's make a common mistake.
 
 Speaker A: Two copies.
 
-Speaker B: Good.
+Speaker B: Good. That gives us a cleaner diagnosis.
 
 Speaker B: I would still want evidence before calling it done.
 
@@ -130,13 +130,13 @@ Speaker A: Is it?
 
 Speaker B: Not against a rack problem.
 
-Speaker A: Good.
+Speaker A: Good. We can test that without changing the whole system.
 
 Speaker A: Now the assumption is explicit.
 
 Speaker B: So redundancy only protects against failures that the copies do not share.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That is a better reason to make the change.
 
 Speaker A: That gives us a cleaner diagnosis.
 
@@ -146,25 +146,25 @@ Speaker A: It is.
 
 Speaker B: Shared failure is the key.
 
-Speaker A: Right.
+Speaker A: Right. Now we have a concrete test.
 
 Speaker A: We can test that without changing the whole system.
 
 Speaker B: If both replicas use the same storage system, a storage failure can hit both.
 
-Speaker A: Yes.
+Speaker A: Yes. Keep that distinction visible in the incident.
 
 Speaker B: If both regions depend on the same external provider, provider failure can hit both.
 
-Speaker A: Yes.
+Speaker A: Yes. That is the behavior I would expect to observe.
 
 Speaker B: So physical separation is not enough.
 
-Speaker A: Correct.
+Speaker A: Correct. Now the trade-off is much easier to see.
 
 Speaker B: Dependency separation matters too.
 
-Speaker A: Exactly.
+Speaker A: Exactly. The next step should follow the evidence.
 
 Speaker B: Let's talk about blast radius.
 
@@ -176,11 +176,11 @@ Speaker A: Often.
 
 Speaker B: A bad deployment to one service can still have a large blast radius if every request depends on it.
 
-Speaker A: Good.
+Speaker A: Good. That is where the operational cost appears.
 
 Speaker B: So blast radius is about impact, not only location.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now we can state the failure boundary clearly.
 
 Speaker B: Another human example.
 
@@ -200,7 +200,7 @@ Speaker A: And if every emergency system uses the same electrical line?
 
 Speaker B: Then the supposed backups share the failure.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That gives us something we can measure.
 
 Speaker B: Nice.
 
@@ -208,7 +208,7 @@ Speaker A: Now let's build A1.
 
 Speaker B: Three regions.
 
-Speaker A: Maybe.
+Speaker A: Maybe. Keep the recovery condition explicit.
 
 Speaker B: Multiple zones inside each region.
 
