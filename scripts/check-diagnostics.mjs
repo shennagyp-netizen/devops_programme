@@ -6,21 +6,60 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
 const diagnosticsPath = path.join(root, "app", "src", "data", "diagnostics.ts");
 const lessonsPath = path.join(root, "app", "src", "data", "courseLessons.ts");
+const programmePath = path.join(root, "app", "src", "data", "programme.ts");
 
 const diagnostics = await readFile(diagnosticsPath, "utf8");
 const lessons = await readFile(lessonsPath, "utf8");
+const programme = await readFile(programmePath, "utf8");
 
 let failed = false;
 
-const questionBlocks = [...diagnostics.matchAll(/id:s*"([A-Z0-9.-]+)",s*prompt:/g)];
+const definitionBlocks = [...diagnostics.matchAll(
+  /sectionId:\s*"([^"]+)",\s*course:\s*"([^"]+)",\s*title:\s*"([^"]+)"/g
+)].map((match) => ({
+  sectionId: match[1],
+  course: match[2],
+  title: match[3]
+}));
+
+if (!definitionBlocks.length) {
+  failed = true;
+  console.error("No diagnostic definitions found.");
+}
+
+const sectionIds = new Set(
+  [...programme.matchAll(/id:\s*"([^"]+)",\s*title:/g)].map((match) => match[1])
+);
+
+for (const definition of definitionBlocks) {
+  if (!sectionIds.has(definition.sectionId)) {
+    failed = true;
+    console.error(
+      `Diagnostic ${definition.sectionId} does not exist in programme.ts.`
+    );
+  }
+
+  if (!["beginner", "intermediate", "advanced"].includes(definition.course)) {
+    failed = true;
+    console.error(
+      `Diagnostic ${definition.sectionId} has unknown course ${definition.course}.`
+    );
+  }
+}
+
+const questionBlocks = [...diagnostics.matchAll(
+  /id:\s*"([A-Z0-9.-]+)",\s*prompt:/g
+)];
+
+const correctOptions = [...diagnostics.matchAll(
+  /correctOption:\s*(\d+)/g
+)].map((match) => Number(match[1]));
+
 if (questionBlocks.length === 0) {
   failed = true;
   console.error("No diagnostic questions found.");
 }
 
-const correctOptions = [...diagnostics.matchAll(/correctOption:s*(d+)/g)].map((m) =>
-  Number(m[1])
-);
 if (correctOptions.length !== questionBlocks.length) {
   failed = true;
   console.error(
@@ -33,21 +72,31 @@ if (correctOptions.some((index) => index < 0 || index > 3)) {
   console.error("A diagnostic correctOption is outside the supported option range.");
 }
 
-const sectionIds = [...diagnostics.matchAll(/sectionId:s*"([^"]+)"/g)].map((m) => m[1]);
-for (const sectionId of new Set(sectionIds)) {
-  if (!diagnostics.includes(`sectionId: "${sectionId}"`)) {
-    failed = true;
-    console.error(`Diagnostic section ${sectionId} has no definition block.`);
-  }
-}
-
-const remediationIds = [...diagnostics.matchAll(/remediationLessonIds:s*[([sS]*?)]/g)]
-  .flatMap((m) => [...m[1].matchAll(/"([^"]+)"/g)].map((x) => x[1]));
+const remediationIds = [...diagnostics.matchAll(
+  /remediationLessonIds:\s*\[([\s\S]*?)\]/g
+)].flatMap((match) =>
+  [...match[1].matchAll(/"([^"]+)"/g)].map((item) => item[1])
+);
 
 for (const lessonId of remediationIds) {
   if (!lessons.includes(`id: "${lessonId}"`)) {
     failed = true;
-    console.error(`Diagnostic remediation lesson ${lessonId} does not exist in courseLessons.ts`);
+    console.error(
+      `Diagnostic remediation lesson ${lessonId} does not exist in courseLessons.ts`
+    );
+  }
+}
+
+const sectionsWithLessons = new Set(
+  [...lessons.matchAll(/sectionId:\s*"([^"]+)"/g)].map((match) => match[1])
+);
+
+for (const definition of definitionBlocks) {
+  if (!sectionsWithLessons.has(definition.sectionId)) {
+    failed = true;
+    console.error(
+      `Diagnostic ${definition.sectionId} has no lesson coverage.`
+    );
   }
 }
 
@@ -55,6 +104,7 @@ if (!diagnostics.includes('if (ratio >= 0.9) return "skip-theory"')) {
   failed = true;
   console.error("Skip-theory threshold is missing or changed.");
 }
+
 if (!diagnostics.includes('if (ratio >= 0.7) return "condense-theory"')) {
   failed = true;
   console.error("Condense-theory threshold is missing or changed.");
@@ -63,5 +113,5 @@ if (!diagnostics.includes('if (ratio >= 0.7) return "condense-theory"')) {
 if (failed) process.exit(1);
 
 console.log(
-  `Diagnostic contract check passed: ${questionBlocks.length} questions and ${new Set(remediationIds).size} remediation lessons.`
+  `Diagnostic contract check passed: ${definitionBlocks.length} sections, ${questionBlocks.length} questions, and ${new Set(remediationIds).size} remediation lessons.`
 );
