@@ -8,7 +8,7 @@ export type CourseLesson = Lesson & {
   projectId: string;
   kind: "foundation" | "application";
   humanExample: string;
-  podcastStatus: "ready" | "authoring";
+  podcastStatus: "script-ready" | "authoring";
   platformCommands: Partial<Record<PlatformId, string>>;
 };
 
@@ -19,7 +19,7 @@ const withIntermediateMetadata = (lesson: Lesson): CourseLesson => ({
   projectId: projectForIntermediate(lesson.id),
   kind: foundationIntermediate(lesson.id) ? "foundation" : "application",
   humanExample: exampleForIntermediate(lesson.id),
-  podcastStatus: "ready",
+  podcastStatus: "script-ready",
   platformCommands: {
     macos: lesson.lab.command,
     linux: lesson.lab.command,
@@ -388,7 +388,7 @@ function lesson(input: LessonAuthoringInput): CourseLesson {
     podcast: input.id.startsWith("B")
       ? `podcasts/beginner/${input.id}.txt`
       : `podcasts/advanced/${input.id}.txt`,
-    podcastStatus: ["B1.1", "B1.2"].includes(input.id) ? "ready" : "authoring",
+    podcastStatus: ["B1.1", "B1.2"].includes(input.id) ? "script-ready" : "authoring",
     platformCommands: {
       macos: input.command,
       linux: input.command,
