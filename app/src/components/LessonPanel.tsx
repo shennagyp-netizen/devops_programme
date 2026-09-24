@@ -82,16 +82,16 @@ export function LessonPanel({
       )}
 
       {mode === "listen" &&
-        (lesson.podcastStatus === "ready" && lesson.podcast ? (
+        (lesson.podcastStatus === "script-ready" && lesson.podcast ? (
           <PodcastCoach lesson={lesson} />
         ) : (
           <div className="content-card">
-            <span className="eyebrow">VOICE AUTHORING</span>
-            <h3>This episode is being written</h3>
+            <span className="eyebrow">SCRIPT READY · VOICE NOT YET ALIGNED</span>
+            <h3>The spoken lesson is ready for recording</h3>
             <p>
-              The lesson is already usable as text, lab, recall and assessment.
-              The human spoken episode will be added only after its script
-              passes the human-speech and plain-English checks.
+              The script, lab, recall and assessment are ready. The voice
+              recording is kept separate and React will use it only after its
+              timing manifest matches this exact script version.
             </p>
           </div>
         ))}
