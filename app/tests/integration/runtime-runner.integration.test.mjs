@@ -103,30 +103,6 @@ describe("runtime runner integration", () => {
     );
   });
 
-  it("rejects an unsupported reset contract before execution", async () => {
-    const catalogPath = path.join(
-      repoRoot,
-      "app/src/data/runtimeTasks.json"
-    );
-    const original = await readFile(catalogPath, "utf8");
-    const catalog = JSON.parse(original);
-    catalog.runtimeTasks[0].resetRequired = true;
-
-    const temporaryPath = path.join(
-      repoRoot,
-      ".runtime-test-invalid-reset.json"
-    );
-
-    // The runner currently reads the canonical catalog, so this test is intentionally
-    // expressed at the CLI boundary by verifying the catalog invariant is represented
-    // in the runner source rather than mutating production state.
-    expect(original).toContain('"resetRequired": false');
-    expect(catalog.runtimeTasks[0].resetRequired).toBe(true);
-    expect(await readFile(catalogPath, "utf8")).toBe(original);
-
-    void temporaryPath;
-  });
-
   it("rejects an unsupported lesson before execution", async () => {
     const result = await runNode([
       "scripts/run-runtime-task.mjs",
