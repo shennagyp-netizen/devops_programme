@@ -4,13 +4,13 @@ Speaker A: We have users in Cairo, London and Singapore.
 
 Speaker B: Three regions.
 
-Speaker A: Yes.
+Speaker A: Yes. That gives us a useful boundary.
 
 Speaker A: Let’s keep that as a testable claim.
 
 Speaker B: So we send each user to the nearest region.
 
-Speaker A: Maybe.
+Speaker A: Maybe. Now connect that to the request path.
 
 Speaker A: That gives us a useful boundary.
 
@@ -24,7 +24,7 @@ Speaker A: Capacity. Health. Data location. Current failures. Sometimes cost.
 
 Speaker B: So "nearest region" is not enough.
 
-Speaker A: Correct.
+Speaker A: Correct. I would measure that before changing anything.
 
 Speaker A: Now connect that to the request path.
 
