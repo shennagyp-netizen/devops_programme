@@ -332,164 +332,176 @@
       "family": "diagnostic",
       "difficulty": "foundation",
       "cognitiveLevel": "application",
-      "itemType": [
-        "arrival rate versus effective service rate"
-      ],
+      "itemType": "scenario",
       "expectedMinutes": 2,
       "competencyId": "B-A5.diagnostic",
-      "prompt": "Queue depth rises continuously. What basic relationship should you test?"
+      "prompt": "Queue depth rises continuously. What basic relationship should you test?",
+      "expectedElements": [
+        "arrival rate versus effective service rate"
+      ]
     },
     {
       "id": "BA5-D-002",
       "family": "diagnostic",
       "difficulty": "foundation",
       "cognitiveLevel": "application",
-      "itemType": [
-        "retry amplification"
-      ],
+      "itemType": "scenario",
       "expectedMinutes": 2,
       "competencyId": "B-A5.diagnostic",
-      "prompt": "Retries increase while the dependency remains slow. What is the main risk?"
+      "prompt": "Retries increase while the dependency remains slow. What is the main risk?",
+      "expectedElements": [
+        "retry amplification"
+      ]
     },
     {
       "id": "BA5-D-003",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "Workers are healthy but messages remain old. What should you inspect?",
+      "expectedElements": [
         "consumer throughput",
         "dependency latency",
         "queue partition or routing issues"
-      ],
-      "expectedMinutes": 3,
-      "competencyId": "B-A5.diagnostic",
-      "prompt": "Workers are healthy but messages remain old. What should you inspect?"
+      ]
     },
     {
       "id": "BA5-D-004",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
-        "whether the operation is idempotent or deduplicated"
-      ],
+      "itemType": "scenario",
       "expectedMinutes": 3,
       "competencyId": "B-A5.diagnostic",
-      "prompt": "A job runs twice. What question should you ask?"
+      "prompt": "A job runs twice. What question should you ask?",
+      "expectedElements": [
+        "whether the operation is idempotent or deduplicated"
+      ]
     },
     {
       "id": "BA5-D-005",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
-        "database is downstream bottleneck",
-        "worker concurrency is too high"
-      ],
+      "itemType": "scenario",
       "expectedMinutes": 3,
       "competencyId": "B-A5.diagnostic",
-      "prompt": "Adding workers makes database latency worse. What does that suggest?"
+      "prompt": "Adding workers makes database latency worse. What does that suggest?",
+      "expectedElements": [
+        "database is downstream bottleneck",
+        "worker concurrency is too high"
+      ]
     },
     {
       "id": "BA5-D-006",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
-        "work is turning over too slowly or arrivals/services are changing in a way depth hides",
-        "older messages are not being drained"
-      ],
+      "itemType": "scenario",
       "expectedMinutes": 3,
       "competencyId": "B-A5.diagnostic",
-      "prompt": "Queue depth is flat but queue age rises. What does that suggest?"
+      "prompt": "Queue depth is flat but queue age rises. What does that suggest?",
+      "expectedElements": [
+        "work is turning over too slowly or arrivals/services are changing in a way depth hides",
+        "older messages are not being drained"
+      ]
     },
     {
       "id": "BA5-D-007",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
-        "jitter or coordinated backoff"
-      ],
+      "itemType": "scenario",
       "expectedMinutes": 4,
       "competencyId": "B-A5.diagnostic",
-      "prompt": "Retries are concentrated at the same second across many clients. What pattern is missing?"
+      "prompt": "Retries are concentrated at the same second across many clients. What pattern is missing?",
+      "expectedElements": [
+        "jitter or coordinated backoff"
+      ]
     },
     {
       "id": "BA5-D-008",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "A worker times out, retries, then succeeds. Why might this still be dangerous at scale?",
+      "expectedElements": [
         "each timeout consumes resources",
         "many retries can amplify load",
         "latency tail can multiply work"
-      ],
-      "expectedMinutes": 4,
-      "competencyId": "B-A5.diagnostic",
-      "prompt": "A worker times out, retries, then succeeds. Why might this still be dangerous at scale?"
+      ]
     },
     {
       "id": "BA5-D-009",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "Design evidence to distinguish a slow consumer from a slow dependency.",
+      "expectedElements": [
         "consumer processing rate",
         "dependency timing/errors",
         "worker resource state",
         "queue age"
-      ],
-      "expectedMinutes": 4,
-      "competencyId": "B-A5.diagnostic",
-      "prompt": "Design evidence to distinguish a slow consumer from a slow dependency."
+      ]
     },
     {
       "id": "BA5-D-010",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "A queue protects the API but database saturation keeps growing. Design the safest next move.",
+      "expectedElements": [
         "limit consumer concurrency",
         "bound retries",
         "protect DB",
         "verify queue/user impact"
-      ],
-      "expectedMinutes": 4,
-      "competencyId": "B-A5.diagnostic",
-      "prompt": "A queue protects the API but database saturation keeps growing. Design the safest next move."
+      ]
     },
     {
       "id": "BA5-D-011",
       "family": "diagnostic",
       "difficulty": "challenge",
       "cognitiveLevel": "design",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "Design an incident response for a retry storm with partial dependency recovery.",
+      "expectedElements": [
         "stop amplification",
         "stabilize dependency",
         "recover gradually",
         "watch queue age/error/retry metrics"
-      ],
-      "expectedMinutes": 5,
-      "competencyId": "B-A5.diagnostic",
-      "prompt": "Design an incident response for a retry storm with partial dependency recovery."
+      ]
     },
     {
       "id": "BA5-D-012",
       "family": "diagnostic",
       "difficulty": "challenge",
       "cognitiveLevel": "design",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "B-A5.diagnostic",
+      "prompt": "Build a decision tree for a missing order in an asynchronous system.",
+      "expectedElements": [
         "accepted by API",
         "queued",
         "consumed",
         "DB/business effect",
         "duplicate handling",
         "user-visible completion"
-      ],
-      "expectedMinutes": 5,
-      "competencyId": "B-A5.diagnostic",
-      "prompt": "Build a decision tree for a missing order in an asynchronous system."
+      ]
     },
     {
       "id": "BA5-H-001",
