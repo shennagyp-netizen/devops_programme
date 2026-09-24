@@ -4,9 +4,15 @@
 
 **Repository:** `shennagyp-netizen/devops_programme`
 
-**Current branch:** `main`
+**Current branch:** `security/redteam-post-auth-review`
+
+**Merge target:** `main`
+
+**Current red-team PR:** #18
 
 **Latest architecture merge:** PR #16, merge commit `655d66925bd9ccb081efc808ffd9c83c51a0e5e8`
+
+**Red-team branch head:** current PR #18 head. The branch is intentionally not described as CI-green until an actual hosted workflow run is observed.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + Clerk 7.9.4 + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative.
 
@@ -1323,3 +1329,78 @@ TDD:
 - PostgreSQL enforces the supported item-type invariant and unique user/item identity.
 
 The branch is intended to be merged to `main` only as this single architecture. A hosted CI failure caused by runner infrastructure must remain visible rather than being bypassed or reclassified as a source-code pass.
+
+
+============================================================
+33. POST-AUTH MIGRATION RED-TEAM AUDIT — 2026-09-24
+============================================================
+
+Security/TDD pass after the authenticated Next.js + Clerk migration:
+
+Fixed:
+- completion persistence now resolves item identity through the server-side published curriculum catalog;
+- fabricated lesson/project IDs are rejected before database access;
+- client course/project metadata must match the server-authoritative item;
+- stronger unsupported completion claims such as machine-verified are rejected;
+- the broken literal \\n environment ignore entry was replaced with real .env ignore rules;
+- the Vitest runner no longer imports the removed @vitejs/plugin-react dependency;
+- the Node runtime floor and CI runner were moved from EOL Node 20 to maintained Node 22;
+- local terminal-agent CORS is origin-allowlisted rather than reflecting arbitrary origins;
+- terminal pairing tokens are browser-session scoped instead of persistent localStorage;
+- local terminal execution is serialized and output/request sizes are bounded.
+
+Current published completion registry:
+- lessons
+- projects
+- assignments/questions remain forward-compatible in the input type but are rejected until a server-side published registry exists.
+
+Important boundary:
+verificationLevel is completion metadata, not proof of machine execution. The current learner-completion path does not promote browser claims to machine authority.
+
+Tests added:
+- published learning-item registry unit tests
+- fabricated progress red-team test
+- metadata consistency test
+- verification-claim red-team test
+- repository/security boundary tests.
+
+CI truth for PR #18:
+The connector has not returned an executed GitHub Actions run for the security branch snapshot, so the branch is not described as CI-green. The implementation should not be called fully validated until an actual runner result is observed.
+
+Operational security follow-up:
+- the repository still has no committed npm lockfile, so npm install can resolve ranged transitive dependencies differently across runs;
+- Next.js 16.3.6 is the currently pinned patched release for the September 22, 2026 critical next/og advisory, but the scheduled September 30 security release should be reviewed before production promotion.
+
+============================================================
+34. HOSTED CI VALIDATION STATUS — 2026-09-24 20:xx UTC
+============================================================
+
+PR #18 remains the active red-team branch.
+
+The latest repository security fixes are present, including the server-side exercise completion gate: a lesson cannot be persisted unless the submitted completion uses the supported `exercise-validated` level. The database connection is acquired only after curriculum, metadata, and verification validation succeeds.
+
+GitHub Actions was tested directly through the Actions API.
+
+Observed runs for this workflow repeatedly fail before any workflow step starts. A representative run has:
+- workflow: `devops-programme-app`
+- job: `full-programme-gate`
+- runner label: tested with both `ubuntu-24.04` and `ubuntu-latest`
+- status: completed/failure
+- steps: empty
+- runner ID: 0
+- workflow runtime: a few seconds.
+
+Rerunning the failed job changes the run attempt but still produces a job with no steps before failure. This means the application test suite has not yet been reached by GitHub-hosted CI.
+
+The repository workflow itself has been hardened during this investigation:
+- Node pinned to 22.23.3 LTS in CI
+- immutable setup-node v7.0.0 pin
+- immutable checkout v6.0.0 pin
+- custom token-bearing git checkout removed
+- workflow concurrency enabled
+- current runner label is `ubuntu-latest`.
+
+Do not mark the repository CI-green until GitHub executes the first workflow step and the complete unit/integration/typecheck/build gate passes.
+
+Current external limitation:
+The connected GitHub API exposes workflow/run metadata and confirms the pre-step failure, but it does not expose repository Actions settings/billing controls through the available connector. No repository code change can manufacture a successful hosted runner when the runner is not being allocated.

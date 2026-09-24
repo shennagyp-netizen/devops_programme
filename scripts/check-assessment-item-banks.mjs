@@ -16,13 +16,13 @@ const familyRules = {
   conceptual: {
     targetItems: 20,
     targetMinutes: 60,
-    cognitiveLevels: ["mechanism", "application", "design"],
+    cognitiveLevels: ["mechanism", "application", "diagnosis", "design"],
     competencySuffix: "core"
   },
   diagnostic: {
     targetItems: 12,
     targetMinutes: 45,
-    cognitiveLevels: ["application", "diagnosis"],
+    cognitiveLevels: ["application", "diagnosis", "design"],
     competencySuffix: "diagnostic"
   },
   "hands-on": {
@@ -124,6 +124,37 @@ for (const file of files) {
       failed = true;
       console.error(`${file.rel}: item ${item.id} has unknown family ${item.family}`);
       continue;
+    }
+
+    const validItemType =
+      (typeof item.itemType === "string" && item.itemType.trim().length > 0) ||
+      (Array.isArray(item.itemType) &&
+        item.itemType.length > 0 &&
+        item.itemType.every(
+          (value) => typeof value === "string" && value.trim().length > 0
+        ));
+
+    if (!validItemType) {
+      failed = true;
+      console.error(
+        `${file.rel}: item ${item.id} has invalid itemType; expected a non-empty string or non-empty string array`
+      );
+    }
+
+    const validExpectedElements =
+      item.expectedElements === undefined ||
+      (Array.isArray(item.expectedElements) &&
+        item.expectedElements.length > 0 &&
+        item.expectedElements.every(
+          (value) => typeof value === "string" && value.trim().length > 0
+        )) ||
+      (Number.isInteger(item.expectedElements) && item.expectedElements > 0);
+
+    if (!validExpectedElements) {
+      failed = true;
+      console.error(
+        `${file.rel}: item ${item.id} has invalid expectedElements; expected a non-empty string array or positive integer`
+      );
     }
 
     if (item.expectedMinutes <= 0) {

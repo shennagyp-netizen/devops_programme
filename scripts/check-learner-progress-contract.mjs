@@ -7,6 +7,7 @@ const files = {
   schema: "../app/src/lib/server/schema.ts",
   migration: "../app/drizzle/migrations/0000_learner_completions.sql",
   progress: "../app/src/lib/server/progress.ts",
+  catalog: "../app/src/lib/server/learning-catalog.ts",
   action: "../app/src/app/actions/progress.ts",
   contract: "../app/src/lib/progress-contract.ts",
   app: "../app/src/App.tsx",
@@ -15,7 +16,10 @@ const files = {
   proxy: "../app/src/proxy.ts",
   signIn: "../app/src/app/sign-in/[[...sign-in]]/page.tsx",
   signUp: "../app/src/app/sign-up/[[...sign-up]]/page.tsx",
-  gitignore: "../.gitignore"
+  gitignore: "../.gitignore",
+  vitest: "../app/vitest.config.ts",
+  terminalAgent: "../scripts/devops-terminal-agent.mjs",
+  browserTerminalAgent: "../app/src/data/localTerminalAgent.ts"
 };
 
 async function read(relativePath) {
@@ -44,7 +48,7 @@ const packageJson = JSON.parse(content.package);
 assert.equal(packageJson.scripts.dev, "npm run sync:podcasts && next dev");
 assert.equal(packageJson.scripts.start, "next start");
 assert.equal(packageJson.scripts.typecheck, "tsc -b");
-assert.equal(packageJson.engines.node, ">=20.9.0");
+assert.equal(packageJson.engines.node, ">=22.23.3");
 assert.ok(packageJson.dependencies.next);
 assert.ok(packageJson.dependencies["@clerk/nextjs"]);
 assert.equal(packageJson.dependencies.react, "19.2.8");
@@ -57,9 +61,11 @@ assert.equal(packageJson.devDependencies["@vitejs/plugin-react"], undefined);
 assert.match(content.env, /DATABASE_URL=/);
 assert.match(content.env, /NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=/);
 assert.match(content.env, /CLERK_SECRET_KEY=/);
-assert.match(content.gitignore, /\.env\*\.local/);
+assert.match(content.gitignore, /^\.env$/m);
+assert.match(content.gitignore, /^\.env\.\*$/m);
+assert.doesNotMatch(content.gitignore, /\\n/);
 
-assert.match(content.schema, /userId\("user_id"\)/);
+assert.match(content.schema, /userId:\s*text\("user_id"\)/);
 assert.match(content.schema, /learner_progress_history_user_item_uq/);
 assert.match(content.schema, /item_type IN/);
 assert.doesNotMatch(content.schema, /learnerId/);
@@ -69,6 +75,8 @@ assert.match(content.migration, /learner_progress_history_user_item_uq/);
 assert.match(content.migration, /learner_progress_history_item_type_ck/);
 
 assert.match(content.progress, /onConflictDoNothing/);
+assert.match(content.progress, /resolvePublishedLearningItem/);
+assert.match(content.catalog, /export function resolvePublishedLearningItem/);
 assert.match(content.progress, /orderBy\([\s\S]*completedAt/);
 assert.doesNotMatch(content.progress, /stdout|stderr|attempt|machineEnvelope/);
 
@@ -97,6 +105,15 @@ assert.match(content.layout, /<ClerkProvider>/);
 assert.ok(content.layout.indexOf("<body>") < content.layout.indexOf("<ClerkProvider>"));
 
 assert.match(content.proxy, /clerkMiddleware/);
+
+assert.equal(content.vitest.includes("@vitejs/plugin-react"), false);
+assert.match(content.terminalAgent, /DEVOPS_TERMINAL_ALLOWED_ORIGINS/);
+assert.match(content.terminalAgent, /MAX_COMMAND_TIMEOUT/);
+assert.match(content.terminalAgent, /SIGKILL/);
+assert.match(content.terminalAgent, /isAllowedOrigin/);
+assert.match(content.terminalAgent, /429/);
+assert.match(content.browserTerminalAgent, /sessionStorage/);
+assert.doesNotMatch(content.browserTerminalAgent, /localStorage\.setItem\(TOKEN_KEY/);
 assert.match(content.signIn, /<SignIn/);
 assert.match(content.signUp, /<SignUp/);
 

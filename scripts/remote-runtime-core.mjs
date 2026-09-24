@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 
 export const REMOTE_RUNNER_VERSION = "0.1.0";
-export const SUPPORTED_REMOTE_PLATFORMS = ["linux", "macos"] as const;
+export const SUPPORTED_REMOTE_PLATFORMS = ["linux", "macos"];
 
 export function shellQuotePosix(value) {
   return "'" + String(value).replaceAll("'", "'\\''") + "'";

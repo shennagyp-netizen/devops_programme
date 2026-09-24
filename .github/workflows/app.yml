@@ -10,11 +10,20 @@ permissions:
   contents: read
   pull-requests: read
 
+concurrency:
+  group: devops-programme-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   full_programme_gate:
     name: full-programme-gate
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     steps:
+      - name: Setup maintained Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22.23.3
+
       - name: Runner diagnostics
         shell: bash
         run: |
@@ -25,17 +34,9 @@ jobs:
           git --version
 
       - name: Checkout repository
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euxo pipefail
-          rm -rf repo
-          git init repo
-          cd repo
-          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git fetch --depth=1 origin "${GITHUB_SHA}"
-          git checkout --detach "${GITHUB_SHA}"
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          path: repo
 
       - name: Install dependencies
         working-directory: repo/app
@@ -89,9 +90,41 @@ jobs:
         working-directory: repo/app
         run: npm run check:progress
 
-      - name: Full unit and integration tests
+      - name: Unit tests
         working-directory: repo/app
-        run: npm test
+        run: npm run test:unit
+
+      - name: Integration assessment banks
+        working-directory: repo/app
+        run: npx vitest run tests/integration/assessment-banks.integration.test.mjs
+
+      - name: Integration beginner course
+        working-directory: repo/app
+        run: npx vitest run tests/integration/beginner-course.integration.test.mjs
+
+      - name: Integration contract validators
+        working-directory: repo/app
+        run: npx vitest run tests/integration/contract-validators.integration.test.mjs
+
+      - name: Integration local terminal agent
+        working-directory: repo/app
+        run: npx vitest run tests/integration/local-terminal-agent.integration.test.mjs
+
+      - name: Integration platform and content
+        working-directory: repo/app
+        run: npx vitest run tests/integration/platform-and-content.integration.test.mjs
+
+      - name: Integration programme
+        working-directory: repo/app
+        run: npx vitest run tests/integration/programme.integration.test.mjs
+
+      - name: Integration progress action
+        working-directory: repo/app
+        run: npx vitest run tests/integration/progress-action.test.mjs
+
+      - name: Integration runtime runner
+        working-directory: repo/app
+        run: npx vitest run tests/integration/runtime-runner.integration.test.mjs
 
       - name: TypeScript typecheck
         working-directory: repo/app

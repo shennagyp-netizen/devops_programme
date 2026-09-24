@@ -6,6 +6,7 @@ import {
   type CompletionInput,
   type CompletionRecord
 } from "../progress-contract";
+import { resolvePublishedLearningItem } from "./learning-catalog";
 
 function requireUserId(userId: string) {
   if (typeof userId !== "string" || userId.trim().length === 0) {
@@ -52,16 +53,40 @@ export async function completeLearningItemForUser(
 ): Promise<CompletionRecord> {
   const safeUserId = requireUserId(userId);
   const input: CompletionInput = parseCompletionInput(rawInput);
+  const published = resolvePublishedLearningItem(input);
+
+  if (input.course !== undefined && input.course !== published.course) {
+    throw new Error("Completion course does not match the published item.");
+  }
+
+  if (
+    input.projectId !== undefined &&
+    input.projectId !== published.projectId
+  ) {
+    throw new Error("Completion project does not match the published item.");
+  }
+
+  if (
+    input.verificationLevel !== undefined &&
+    input.verificationLevel !== "exercise-validated"
+  ) {
+    throw new Error("Unsupported completion verification level.");
+  }
+
+  if (input.verificationLevel !== "exercise-validated") {
+    throw new Error("Completion requires exercise validation.");
+  }
+
   const db = getDb();
 
   await db
     .insert(learnerProgressHistory)
     .values({
       userId: safeUserId,
-      itemType: input.itemType,
-      itemId: input.itemId,
-      course: input.course ?? null,
-      projectId: input.projectId ?? null,
+      itemType: published.itemType,
+      itemId: published.itemId,
+      course: published.course,
+      projectId: published.projectId,
       verificationLevel: input.verificationLevel ?? null
     })
     .onConflictDoNothing({
@@ -78,8 +103,8 @@ export async function completeLearningItemForUser(
     .where(
       and(
         eq(learnerProgressHistory.userId, safeUserId),
-        eq(learnerProgressHistory.itemType, input.itemType),
-        eq(learnerProgressHistory.itemId, input.itemId)
+        eq(learnerProgressHistory.itemType, published.itemType),
+        eq(learnerProgressHistory.itemId, published.itemId)
       )
     )
     .limit(1);

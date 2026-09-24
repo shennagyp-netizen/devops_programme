@@ -211,3 +211,59 @@ Integration tests cover the Server Action boundary:
 The repository architecture contract also verifies that the old Vite bootstrap, anonymous learner storage, and progress REST API are absent.
 
 Hosted CI remains a separate verification boundary and must not be called green without an executed runner result.
+
+
+## Server-authoritative curriculum boundary
+
+The parser only validates shape. It is not the authority for which learning items exist.
+
+Before a completion reaches PostgreSQL, the server resolves the submitted identity through:
+
+`app/src/lib/server/learning-catalog.ts`
+
+The current published registry contains authored:
+
+- lessons
+- projects
+
+Assignment and question completion types remain accepted by the input type contract for forward compatibility, but the server rejects them until a published server-side registry exists.
+
+The server also verifies that optional client metadata matches the canonical published course/project mapping. A fabricated item ID therefore cannot create unbounded progress rows.
+
+`verificationLevel` is treated as completion metadata, not proof of machine execution. The current completion boundary accepts the existing `exercise-validated` value and rejects stronger unsupported claims such as `machine-verified`.
+
+## Security red-team changes
+
+The post-authentication red-team pass added tests for:
+
+- fabricated lesson/project IDs
+- contradictory course/project metadata
+- forged machine-verification claims
+- broken environment-file ignore semantics
+- stale Vitest plugin configuration
+- unsupported Node 20 runtime floor
+- arbitrary local-terminal CORS origins
+- persistent local-terminal token storage
+- overlapping local terminal executions
+- unbounded local terminal command output.
+
+The local terminal agent now:
+
+- accepts browser origins only from `DEVOPS_TERMINAL_ALLOWED_ORIGINS` (defaulting to local development origins)
+- stores the pairing token only in browser `sessionStorage`
+- rejects overlapping executions with HTTP 429
+- bounds request size and command output
+- keeps `shell: false`
+- rejects configured pairing tokens shorter than 24 characters.
+
+The repository environment ignore rules are now:
+
+```
+.env
+.env.*
+!.env.example
+```
+
+Node CI uses the maintained Node 22 line rather than the EOL Node 20 line.
+
+Security tests are part of the normal Vitest run and the architecture contract.
