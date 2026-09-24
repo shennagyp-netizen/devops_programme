@@ -31,7 +31,7 @@ export type RuntimeTask = {
   verificationLevel: VerificationLevel;
   steps: RuntimeStep[];
   resetRequired: boolean;
-  scope: string;
+  scope: RuntimeVerificationScope;
 };
 
 export type RuntimeVerificationScope = "probe" | "exercise";
