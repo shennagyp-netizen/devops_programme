@@ -108,7 +108,12 @@
         "zero": [
           "treats them as interchangeable"
         ]
-      }
+      },
+      "expectedElements": [
+        "an IP address identifies a network endpoint/address",
+        "a port identifies a service endpoint on a host",
+        "the two work together to identify where a network connection should go"
+      ]
     },
     {
       "id": "IF2-C-007",
@@ -164,7 +169,12 @@
         "zero": [
           "claims one successful test proves every source path"
         ]
-      }
+      },
+      "expectedElements": [
+        "network paths can differ by source host or location",
+        "DNS, routes, firewalls and policies can differ by source",
+        "the test should reproduce the path the affected client actually uses"
+      ]
     },
     {
       "id": "IF2-C-010",
@@ -234,7 +244,12 @@
         "zero": [
           "claims ping proves application health"
         ]
-      }
+      },
+      "expectedElements": [
+        "ping tests ICMP reachability, when ICMP is allowed",
+        "HTTPS depends on DNS, routing, TCP, TLS and HTTP/application behavior",
+        "a successful ping does not prove the HTTPS service or its port/TLS/application path is healthy"
+      ]
     },
     {
       "id": "IF2-C-014",
@@ -306,7 +321,14 @@
         "zero": [
           "uses a fixed command list regardless of evidence"
         ]
-      }
+      },
+      "expectedElements": [
+        "DNS check when name resolution is uncertain",
+        "routing/path check when the destination is not reachable",
+        "TCP/port check when transport reachability is uncertain",
+        "TLS check when secure-session negotiation is failing",
+        "HTTP/application check when transport and TLS succeed but the service response is wrong"
+      ]
     },
     {
       "id": "IF2-C-018",
