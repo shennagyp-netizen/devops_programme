@@ -9,8 +9,7 @@ import { projectsByCourse } from "./data/projects";
 import { ProjectPanel } from "./components/ProjectPanel";
 import {
   completeLearningItem,
-  listCompletedItems,
-  uncompleteLearningItem
+  listCompletedItems
 } from "./data/learnerProgress";
 
 export default function App() {
@@ -83,32 +82,24 @@ export default function App() {
     if (first) setS(first.id);
   }
 
-  async function toggle(id: string) {
-    if (progressBusyId === id) return;
+  async function completeLesson(id: string) {
+    if (progressBusyId === id || m.includes(id)) return;
 
     setProgressBusyId(id);
     setProgressError("");
 
     try {
-      if (m.includes(id)) {
-        await uncompleteLearningItem({
-          itemType: "lesson",
-          itemId: id
-        });
-        setM((current) => current.filter((item) => item !== id));
-      } else {
-        const selected = selectedLessons.find((item) => item.id === id);
-        if (!selected) throw new Error("Selected lesson no longer exists.");
+      const selected = selectedLessons.find((item) => item.id === id);
+      if (!selected) throw new Error("Selected lesson no longer exists.");
 
-        await completeLearningItem({
-          itemType: "lesson",
-          itemId: id,
-          course: selected.course,
-          projectId: selected.projectId,
-          verificationLevel: "exercise-validated"
-        });
-        setM((current) => [...current, id]);
-      }
+      await completeLearningItem({
+        itemType: "lesson",
+        itemId: id,
+        course: selected.course,
+        projectId: selected.projectId,
+        verificationLevel: "exercise-validated"
+      });
+      setM((current) => (current.includes(id) ? current : [...current, id]));
     } catch (error) {
       setProgressError(
         error instanceof Error
@@ -260,7 +251,7 @@ export default function App() {
           onEvidenceRecorded={() => setEvidenceVersion((value) => value + 1)}
           progressReady={!progressLoading}
           progressSaving={progressBusyId === l.id}
-          onMaster={() => void toggle(l.id)}
+          onMaster={() => void completeLesson(l.id)}
         />
       </main>
     </div>
