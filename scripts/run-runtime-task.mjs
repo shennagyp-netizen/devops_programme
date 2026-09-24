@@ -16,6 +16,13 @@ function platformId() {
   throw new Error("Unsupported host platform: " + process.platform);
 }
 
+const MAX_CAPTURED_OUTPUT = 64 * 1024;
+
+function capture(value) {
+  const text = String(value ?? "");
+  return text.length <= MAX_CAPTURED_OUTPUT ? text : text.slice(0, MAX_CAPTURED_OUTPUT);
+}
+
 function hash(value) {
   return createHash("sha256").update(value).digest("hex");
 }
@@ -228,8 +235,10 @@ async function main() {
       startedAt: stepStarted,
       completedAt: stepCompleted,
       exitCode: result.exitCode,
-      stdoutHash: hash(result.stdout),
-      stderrHash: hash(result.stderr),
+      stdout: capture(result.stdout),
+      stderr: capture(result.stderr),
+      stdoutHash: hash(capture(result.stdout)),
+      stderrHash: hash(capture(result.stderr)),
       result: result.exitCode === 0 ? "passed" : "failed"
     });
 
@@ -241,6 +250,8 @@ async function main() {
           startedAt: timestamp,
           completedAt: timestamp,
           exitCode: -1,
+          stdout: "",
+          stderr: "",
           stdoutHash: hash(""),
           stderrHash: hash(""),
           result: "not-run"
