@@ -15,6 +15,12 @@ jobs:
     name: full-programme-gate
     runs-on: ubuntu-24.04
     steps:
+      - name: Setup maintained Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          check-latest: true
+
       - name: Runner diagnostics
         shell: bash
         run: |
