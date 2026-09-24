@@ -10,10 +10,15 @@ permissions:
   contents: read
   pull-requests: read
 
+concurrency:
+  group: devops-programme-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   full_programme_gate:
     name: full-programme-gate
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     steps:
       - name: Runner diagnostics
         shell: bash
@@ -39,7 +44,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: repo/app
-        run: npm install
+        run: npm install --no-audit --no-fund
 
       - name: Content contract
         working-directory: repo/app
