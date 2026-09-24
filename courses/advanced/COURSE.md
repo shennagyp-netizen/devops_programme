@@ -17,7 +17,7 @@ architecture for very large populations with explicit consistency, cost, latency
 
 ## Prerequisite diagnostics
 
-The current adaptive pilot includes A-F1. A diagnostic recommendation may compress introductory theory, but the capacity and queueing exercises remain mandatory.
+The current adaptive pilot includes A-F1 and A-F2. A diagnostic recommendation may compress introductory theory, but the capacity and queueing exercises remain mandatory.
 
 ## Teaching model
 
