@@ -2,50 +2,149 @@
 
 ## Boundary
 
-The browser application does not execute learner shell commands directly.
+The browser application never executes arbitrary learner shell commands.
 
-A separate local or managed runner is responsible for executing an allowlisted task protocol and returning a machine-verification envelope.
+Every hands-on lesson has a manual execution path. The learner can open their own terminal, run the platform-specific command shown by the lesson, observe the result, and submit structured evidence.
 
-The envelope contains:
-- stable task and lesson identity
+An optional verified execution path can execute an allowlisted runtime task on a real remote machine. The remote target may be a virtual machine or a physical machine. The current verified transport is SSH.
+
+The two paths are independent:
+
+- **Manual execution** is always available and is the fallback when no verified machine is available.
+- **Verified execution** is optional and produces machine-backed evidence when the learner has an SSH-accessible target.
+
+The course must never become blocked because the verified execution service or machine is unavailable.
+
+## Manual path
+
+The lesson resolves a platform command from the authoritative course data.
+
+The browser displays the command but does not execute it.
+
+The learner:
+
+1. opens their own terminal
+2. runs the command
+3. performs the exercise
+4. records observation, controlled change, failure and recovery evidence
+5. submits the evidence through the lesson UI.
+
+The current application validates evidence structure and stores it in the local evidence ledger. Structured evidence is not presented as machine verification.
+
+## Verified SSH path
+
+The repository provides an optional SSH runner:
+
+```bash
+cd app
+npm install
+npm run hands-on:remote -- --execute --lesson B1.2 --platform linux --host <host> --user <user>
+```
+
+A dry-run is available before connection:
+
+```bash
+npm run hands-on:remote -- --lesson B1.2 --platform linux --dry-run
+```
+
+The runner:
+
+1. loads the same `app/src/data/runtimeTasks.json` catalogue used by the TypeScript verifier
+2. resolves the exact task and contract version
+3. selects the target platform command
+4. rejects destructive steps
+5. requires explicit `--execute` before any connection
+6. connects with SSH using `shell=false` in the local process
+7. requires `StrictHostKeyChecking=yes`
+8. optionally uses an explicit `known_hosts` file and SSH identity
+9. executes only the task's allowlisted command
+10. records exit state and hashed stdout/stderr
+11. writes a machine-verification envelope.
+
+The remote target is identified in the envelope as an SSH target with host, user, port and strict known-hosts policy.
+
+The runner currently supports verified remote execution for Linux and macOS targets. Windows remains fully supported through the manual path until a safe Windows SSH command adapter is implemented.
+
+## Evidence import
+
+The browser cannot open SSH itself.
+
+After the SSH runner completes, the learner imports the generated JSON evidence file in the lesson's **Optional Verified Execution** panel.
+
+The browser validates:
+
+- task identity
+- contract version
+- lesson identity
 - platform
-- runner version
-- environment fingerprint
-- start/end timestamps
-- per-step exit/result state
-- stdout and stderr hashes
-- reset completion when the task requires it
+- verification level
+- verification source
+- local vs remote execution mode
+- SSH target identity
+- strict host-key policy
+- runner identity
+- timestamps
+- required step coverage
+- output hashes
+- pass/fail state
+- reset state.
 
-The application accepts machine-verified evidence only when the envelope is structurally valid for the exact task contract. Probe evidence must not be presented as proof that the full exercise failure/recovery sequence was completed. Verification source is explicit: local-runner means the learner-controlled local runner executed the task; managed-runner is reserved for a separately controlled execution service.
+Only a structurally valid machine envelope enters the evidence ledger.
 
-## Current state
+A verified envelope from the SSH runner is recorded as:
 
-The repository contains:
-- the transport-neutral runtime task contract
-- the fail-closed machine-verification envelope validator
-- a local runner for B1.2
+```text
+verificationSource = ssh-runner
+executionMode      = remote-machine
+target.kind        = ssh
+hostKeyPolicy      = strict-known-hosts
+```
 
-The local runner defaults to dry-run. Actual execution requires explicit --execute.
+## Trust boundary
 
-From the app directory, the runner can be invoked as:
+SSH connectivity is not treated as proof by itself.
 
-npm run hands-on:run -- --execute --task=hands-on-B1.2
+The runner must use strict host-key checking, and the target must already be trusted by the learner's SSH `known_hosts` configuration.
 
-The B1.2 task is intentionally non-destructive: DNS resolution and an HTTPS connectivity check.
+The browser validates the returned envelope against the exact task contract, but the current MVP does not provide cryptographic remote attestation or a managed central gateway.
 
-Running the command on a learner machine can produce machine-verification evidence for those two observations. The repository does not claim that a learner has already run it merely because the runner exists. A local-runner envelope is execution evidence, not independent remote attestation.
+Therefore:
 
-## Safety
+- `ssh-runner` means the repository runner executed the allowlisted task through a verified SSH connection.
+- `managed-runner` remains reserved for a future centrally controlled execution service.
+- an imported JSON file is not independent cryptographic attestation.
 
-Runtime tasks use an explicit command allowlist. Destructive operations are represented explicitly in the task model rather than accepting arbitrary shell text.
+## Fallback rule
 
-A future runner must:
-1. resolve the exact task ID
-2. select the platform command definition
-3. enforce timeout and scope
-4. execute only the allowlisted operation
-5. hash captured output
-6. return a signed or otherwise authenticated envelope
-7. perform and report required reset operations
+The manual path is normative for course availability.
 
-No browser-side feature should bypass this boundary and execute arbitrary commands.
+If:
+
+- no remote machine is available
+- SSH access fails
+- the target is not trusted
+- the SSH runner is not installed
+- the target platform has no verified adapter
+- the returned envelope fails validation
+
+the learner can continue using the normal terminal instructions and structured evidence flow.
+
+The application must never disable manual exercise completion merely because verified execution is unavailable.
+
+## Safety boundary
+
+The runtime catalogue is the single source of truth for executable task steps.
+
+Do not accept arbitrary shell text from the browser and send it to a remote machine.
+
+A future managed runner must preserve the same contract:
+
+- resolve exact task identity
+- select an allowlisted platform command
+- enforce timeout and scope
+- execute only the catalogued operation
+- capture results
+- authenticate the returned evidence
+- perform and report required reset operations.
+
+Future expansion should proceed from observation-only tasks to reversible changes, controlled failures, recovery and finally reset verification.
