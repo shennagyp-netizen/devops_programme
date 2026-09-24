@@ -53,5 +53,7 @@ describe("red-team repository boundaries", () => {
     expect(source).toContain("MAX_OUTPUT");
     expect(source).toContain("executing");
     expect(source).toContain("429");
+    expect(source).toContain("SIGKILL");
+    expect(source).toContain("MAX_COMMAND_TIMEOUT");
   });
 });
