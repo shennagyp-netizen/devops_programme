@@ -34,6 +34,7 @@ export function LessonPanel({
   onEvidenceRecorded?: () => void;
 }) {
   const [mode, setMode] = useState<Mode>("learn");
+  const [showTheory, setShowTheory] = useState(true);
   const evidenceKey = `devops-programme-exercise-evidence:${lesson.id}`;
   const [exerciseEvidence, setExerciseEvidence] = useState(() => {
     try {
@@ -61,6 +62,11 @@ export function LessonPanel({
       setExerciseRecorded(false);
     }
   }, [evidenceKey]);
+
+  useEffect(() => {
+    setShowTheory(diagnosticRecommendation !== "skip-theory");
+  }, [diagnosticRecommendation]);
+
   const remediationTarget =
     diagnosticBySection[lesson.sectionId]?.remediationLessonIds[0];
 
@@ -118,23 +124,35 @@ export function LessonPanel({
             <span className="eyebrow">THEORY ADAPTATION</span>
             <h3>
               {diagnosticRecommendation === "skip-theory"
-                ? "Theory can be skipped"
+                ? "Theory skipped"
                 : diagnosticRecommendation === "condense-theory"
                   ? "Theory can be condensed"
                   : diagnosticRecommendation === "remediate"
                     ? "Remediation first"
                     : "Mental model"}
             </h3>
-            <p>{lesson.objective}</p>
-            <p>
-              {diagnosticRecommendation === "skip-theory"
-                ? "Your prerequisite diagnostic shows strong prior knowledge. Go straight to the exercise, and return to this model only when you need it."
-                : diagnosticRecommendation === "condense-theory"
-                  ? "You already have the main idea. Read this once, then prove it in the exercise."
-                  : diagnosticRecommendation === "remediate"
-                    ? "Your prerequisite diagnostic found a knowledge gap. Complete the remediation target before relying on this theory."
-                    : "Start with the smallest question that can separate two possible causes. Then test that question."}
-            </p>
+
+            {diagnosticRecommendation === "skip-theory" && !showTheory ? (
+              <>
+                <p>Your diagnostic shows strong prior knowledge.</p>
+                <button className="secondary" onClick={() => setShowTheory(true)}>
+                  Open theory anyway
+                </button>
+              </>
+            ) : (
+              <>
+                <p>{lesson.objective}</p>
+                <p>
+                  {diagnosticRecommendation === "skip-theory"
+                    ? "Theory was skipped by default. Use the exercise as the proof step, and reopen this model only when you need it."
+                    : diagnosticRecommendation === "condense-theory"
+                      ? "You already have the main idea. Read this once, then prove it in the exercise."
+                      : diagnosticRecommendation === "remediate"
+                        ? "Your prerequisite diagnostic found a knowledge gap. Complete the remediation target before relying on this theory."
+                        : "Start with the smallest question that can separate two possible causes. Then test that question."}
+                </p>
+              </>
+            )}
           </div>
           {diagnosticRecommendation === "remediate" ? (
             <div className="content-card">
