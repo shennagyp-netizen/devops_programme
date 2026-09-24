@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -8,23 +8,47 @@ const root = path.resolve(here, "..");
 const sourceDir = path.join(root, "podcasts");
 const targetDir = path.join(root, "app", "public", "podcasts");
 
-const dayFiles = ["day-1.txt", "day-2.txt", "day-3.txt", "day-4.txt", "day-5.txt"];
-
 function sha256(text) {
   return createHash("sha256").update(text, "utf8").digest("hex");
 }
 
+async function collectTextFiles(directory, relative = "") {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    if (entry.name.startsWith(".") || entry.name === "README.md") continue;
+
+    const relativePath = path.join(relative, entry.name);
+    const absolutePath = path.join(directory, entry.name);
+
+    if (entry.isDirectory()) {
+      files.push(...(await collectTextFiles(absolutePath, relativePath)));
+      continue;
+    }
+
+    if (entry.isFile() && entry.name.endsWith(".txt")) {
+      files.push({ absolutePath, relativePath });
+    }
+  }
+
+  return files.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
+}
+
 function episodeHashes(source) {
   const hashes = {};
-  const matcher = /\nEPISODE (D\d+\.\d+) —[^\n]*\n/g;
+  const matcher = /(?:^|\n)EPISODE ([A-Z0-9]+\.[0-9]+) —[^\n]*\n/g;
   const matches = [...source.matchAll(matcher)];
 
   for (let i = 0; i < matches.length; i += 1) {
     const match = matches[i];
     const start = (match.index ?? 0) + match[0].length;
-    const end = i + 1 < matches.length ? (matches[i + 1].index ?? source.length) : source.length;
-    const episodeText = source.slice(start, end).trim();
-    hashes[match[1]] = sha256(episodeText);
+    const end =
+      i + 1 < matches.length
+        ? (matches[i + 1].index ?? source.length)
+        : source.length;
+
+    hashes[match[1]] = sha256(source.slice(start, end).trim());
   }
 
   return hashes;
@@ -32,20 +56,21 @@ function episodeHashes(source) {
 
 await mkdir(targetDir, { recursive: true });
 
+const files = await collectTextFiles(sourceDir);
 const episodes = {};
 
-for (const file of dayFiles) {
-  const sourcePath = path.join(sourceDir, file);
-  const targetPath = path.join(targetDir, file);
-  const source = await readFile(sourcePath, "utf8");
+for (const file of files) {
+  const source = await readFile(file.absolutePath, "utf8");
+  const targetPath = path.join(targetDir, file.relativePath);
 
+  await mkdir(path.dirname(targetPath), { recursive: true });
   await writeFile(targetPath, source, "utf8");
 
   Object.assign(episodes, episodeHashes(source));
 }
 
 const manifest = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   source: "podcasts/",
   episodes
 };
@@ -57,5 +82,5 @@ await writeFile(
 );
 
 console.log(
-  `Synchronized ${dayFiles.length} podcast source files and ${Object.keys(episodes).length} episode hashes.`
+  `Synchronized ${files.length} podcast files and ${Object.keys(episodes).length} episode hashes.`
 );
