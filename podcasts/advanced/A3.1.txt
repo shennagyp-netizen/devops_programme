@@ -12,25 +12,15 @@ Speaker A: What breaks first?
 
 Speaker B: CPU.
 
-Speaker A: Maybe.
+Speaker A: Maybe. I would treat that as a hypothesis, not a conclusion.\n\nSpeaker B: Database.
 
-Speaker B: Database.
+Speaker A: Maybe. I would treat that as a hypothesis, not a conclusion.\n\nSpeaker B: Network.
 
-Speaker A: Maybe.
+Speaker A: Maybe. I would treat that as a hypothesis, not a conclusion.\n\nSpeaker B: Cache.
 
-Speaker B: Network.
+Speaker A: Maybe. I would treat that as a hypothesis, not a conclusion.\n\nSpeaker B: So we need a model.
 
-Speaker A: Maybe.
-
-Speaker B: Cache.
-
-Speaker A: Maybe.
-
-Speaker B: So we need a model.
-
-Speaker A: Exactly.
-
-Speaker B: Large scale starts with numbers.
+Speaker A: Exactly. That is the key step.\n\nSpeaker B: Large scale starts with numbers.
 
 Speaker A: Not with "let's add Kubernetes."
 
@@ -40,21 +30,13 @@ Speaker A: First number: traffic.
 
 Speaker B: Requests per second.
 
-Speaker A: Good.
+Speaker A: Exactly. That changes the diagnosis.\n\nWe need the workload before we pick a scaling move.\n\nSpeaker B: Then request size.
 
-Speaker B: Then request size.
+Speaker A: Good. Request rate alone hides a lot of work.\n\nSpeaker B: Then concurrency.
 
-Speaker A: Good.
+Speaker A: Yes. The important part is what happens next.\n\nEvery stage has its own limit.\n\nSpeaker B: Then work per request.
 
-Speaker B: Then concurrency.
-
-Speaker A: Good.
-
-Speaker B: Then work per request.
-
-Speaker A: Exactly.
-
-Speaker B: Human example?
+Speaker A: Exactly. That is why the failure is useful.\n\nSpeaker B: Human example?
 
 Speaker A: A small shop gets 50 customers a day.
 
@@ -80,25 +62,19 @@ Speaker A: Every step has a rate.
 
 Speaker B: So software is similar.
 
-Speaker A: Yes.
-
-Speaker B: The request path is a pipeline.
+Speaker A: Yes. Keep following the request path.\n\nSpeaker B: The request path is a pipeline.
 
 Speaker A: Each stage has capacity.
 
 Speaker B: The end-to-end rate is limited by the bottleneck.
 
-Speaker A: Good.
-
-Speaker B: If the API can do 20,000 requests per second but the database can do 2,000?
+Speaker A: Correct. And there is another part to watch.\n\nIt still gets missed during a busy incident.\n\nSpeaker B: If the API can do 20,000 requests per second but the database can do 2,000?
 
 Speaker A: The database sets the real limit for database-heavy requests.
 
 Speaker B: So adding API replicas does not solve that bottleneck.
 
-Speaker A: Correct.
-
-Speaker B: This sounds obvious when we say it slowly.
+Speaker A: Correct. That is an important distinction.\n\nSpeaker B: This sounds obvious when we say it slowly.
 
 Speaker A: Production has a way of making obvious ideas expensive.
 
@@ -128,13 +104,9 @@ Speaker A: And failures happen.
 
 Speaker B: So we do not run at the exact limit.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now we have a real boundary.\n\nSpeaker B: Headroom is spare capacity kept for bursts, failures and growth.
 
-Speaker B: Headroom is spare capacity kept for bursts, failures and growth.
-
-Speaker A: Good.
-
-Speaker B: What about caching?
+Speaker A: Good. A cache changes the workload; it does not remove capacity planning.\n\nSpeaker B: What about caching?
 
 Speaker A: Caching can reduce work.
 
@@ -144,13 +116,9 @@ Speaker A: Then only 20% reach the database.
 
 Speaker B: That can change the whole capacity model.
 
-Speaker A: Yes.
+Speaker A: Yes. That can change the load pattern.\n\nSpeaker B: But now cache hit rate becomes a critical metric.
 
-Speaker B: But now cache hit rate becomes a critical metric.
-
-Speaker A: Exactly.
-
-Speaker B: A cache is not magic capacity.
+Speaker A: Exactly. That is the key step.\n\nSpeaker B: A cache is not magic capacity.
 
 Speaker A: It is another component with its own limits.
 
@@ -176,9 +144,7 @@ Speaker A: What changes?
 
 Speaker B: Database work roughly doubles too.
 
-Speaker A: Correct.
-
-Speaker B: Traffic doubles but cache hit rate drops from 90% to 50%.
+Speaker A: Correct. But we still need evidence.\n\nSpeaker B: Traffic doubles but cache hit rate drops from 90% to 50%.
 
 Speaker A: Then the database load can increase far more than two times.
 
@@ -188,9 +154,7 @@ Speaker A: This is why a single traffic number is not enough.
 
 Speaker B: The shape of traffic matters.
 
-Speaker A: Yes.
-
-Speaker B: Read/write mix.
+Speaker A: Yes. The important part is what happens next.\n\nSpeaker B: Read/write mix.
 
 Speaker A: Payload size.
 
@@ -216,17 +180,13 @@ Speaker A: Large exports.
 
 Speaker B: Some analytics.
 
-Speaker A: Yes.
-
-Speaker B: A queue can protect the front door.
+Speaker A: Yes. Keep following the request path.\n\nSpeaker B: A queue can protect the front door.
 
 Speaker A: But it changes the user experience.
 
 Speaker B: The work becomes eventually complete.
 
-Speaker A: Exactly.
-
-Speaker B: So capacity design is tied to product behavior.
+Speaker A: Exactly. That changes the diagnosis.\n\nSpeaker B: So capacity design is tied to product behavior.
 
 Speaker A: Always.
 
@@ -236,33 +196,21 @@ Speaker A: At very large traffic, a tiny per-request cost matters.
 
 Speaker B: One extra database query.
 
-Speaker A: Maybe.
+Speaker A: Maybe. I would treat that as a hypothesis, not a conclusion.\n\nSpeaker B: One extra network hop.
 
-Speaker B: One extra network hop.
+Speaker A: Maybe. I would treat that as a hypothesis, not a conclusion.\n\nSpeaker B: One extra kilobyte.
 
-Speaker A: Maybe.
-
-Speaker B: One extra kilobyte.
-
-Speaker A: Maybe.
-
-Speaker B: Multiply that by billions of requests.
+Speaker A: Maybe. I would treat that as a hypothesis, not a conclusion.\n\nSpeaker B: Multiply that by billions of requests.
 
 Speaker A: And small inefficiencies become large system costs.
 
 Speaker B: So optimization is not only about CPU.
 
-Speaker A: Correct.
+Speaker A: Correct. And there is another part to watch.\n\nSpeaker B: Network transfer, storage, database operations and third-party calls can all dominate.
 
-Speaker B: Network transfer, storage, database operations and third-party calls can all dominate.
+Speaker A: Correct. That is an important distinction.\n\nThe same request rate can create very different pressure.\n\nSpeaker B: We also need rate limits.
 
-Speaker A: Good.
-
-Speaker B: We also need rate limits.
-
-Speaker A: Yes.
-
-Speaker B: Otherwise one client can consume shared capacity.
+Speaker A: Yes. That can change the load pattern.\n\nSpeaker B: Otherwise one client can consume shared capacity.
 
 Speaker A: Rate limiting protects the service.
 
@@ -304,9 +252,7 @@ Speaker A: That's the important question.
 
 Speaker B: Scaling one layer can simply move the queue to another layer.
 
-Speaker A: Exactly.
-
-Speaker B: Recall.
+Speaker A: Exactly. That is why the failure is useful.\n\nSpeaker B: Recall.
 
 Speaker A: One. What is the bottleneck?
 
@@ -346,8 +292,6 @@ Speaker A: And show where the next bottleneck appears.
 
 Speaker B: That's large-scale engineering.
 
-Speaker A: Exactly.
-
-Speaker B: Not just more machines.
+Speaker A: Exactly. Now we have a real boundary.\n\nSpeaker B: Not just more machines.
 
 Speaker A: A better model.
