@@ -9,6 +9,70 @@ permissions:
   pull-requests: write
 
 jobs:
+  beginner_diagnostic:
+    name: beginner-diagnostic
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run Beginner diagnostic and persist result
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.run_id }}
+          REPOSITORY: ${{ github.repository }}
+          HEAD_BRANCH: ${{ github.head_ref }}
+        run: |
+          set +e
+          mkdir -p ../ci-debug
+          report="../ci-debug/beginner-${RUN_ID}.txt"
+          : > "${report}"
+
+          run_stage() {
+            name="$1"
+            shift
+            echo "===== ${name} =====" >> "${report}"
+            echo "COMMAND: $*" >> "${report}"
+            "$@" > /tmp/beginner-stage.out 2>&1
+            code=$?
+            echo "EXIT: ${code}" >> "${report}"
+            tail -n 200 /tmp/beginner-stage.out >> "${report}"
+            echo >> "${report}"
+            return 0
+          }
+
+          run_stage "npm-install" npm install
+          run_stage "beginner-structural" node ../scripts/check-beginner-gate.mjs
+          run_stage "beginner-unit" npm exec vitest run tests/unit/beginner-course.test.mjs
+          run_stage "beginner-integration" npm exec vitest run tests/integration/beginner-course.integration.test.mjs
+          run_stage "beginner-completeness" npm run check:beginner
+
+          {
+            echo "REPOSITORY: ${REPOSITORY}"
+            echo "RUN_ID: ${RUN_ID}"
+            echo "HEAD_BRANCH: ${HEAD_BRANCH}"
+            echo "COMMIT: ${GITHUB_SHA}"
+            echo "NODE: $(node --version 2>&1)"
+            echo
+            cat "${report}"
+          } > /tmp/beginner-report.txt
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ../ci-debug/beginner-${RUN_ID}.txt
+          git commit -m "ci: record Beginner diagnostic ${RUN_ID}"
+          git push origin HEAD:"${HEAD_BRANCH}"
+
   beginner_gate:
     name: beginner-gate
     runs-on: ubuntu-latest
