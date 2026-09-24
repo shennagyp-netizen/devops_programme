@@ -383,6 +383,7 @@ type LessonAuthoringInput = {
 function lesson(input: LessonAuthoringInput): CourseLesson {
   return {
     ...input,
+    humanExample: input.example,
     course: input.id.startsWith("B") ? "beginner" : "advanced",
     podcast: input.id.startsWith("B")
       ? `podcasts/beginner/${input.id}.txt`
