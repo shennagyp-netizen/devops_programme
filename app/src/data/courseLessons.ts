@@ -31,18 +31,20 @@ function sectionForIntermediate(id: string) {
   if (id === "D1.1" || id === "D1.2" || id === "D1.3") return "I-F1";
   if (["D1.4", "D1.5", "D1.6", "D2.1", "D2.2", "D2.3", "D2.4"].includes(id)) return "I-F2";
   if (["D2.5", "D2.6", "D2.7"].includes(id)) return "I-A1";
-  if (id === "D3.1") return "I-A2";
+  if (id === "D3.1" || id === "D3.4" || id === "D3.5") return "I-A2";
   if (id === "D3.2" || id === "D3.3") return "I-A3";
-  if (id === "D3.4" || id === "D3.5") return "I-A2";
   if (["D4.1", "D4.2", "D4.3", "D4.4", "D4.5", "D4.6"].includes(id)) return "I-A4";
   if (["D5.5", "D5.8"].includes(id)) return "I-A5";
-  return "I-A6";
+  if (["D5.1", "D5.2", "D5.3", "D5.4", "D5.6", "D5.7"].includes(id)) return "I-A6";
+  throw new Error(`Unknown Intermediate lesson mapping: ${id}`);
 }
 
 function projectForIntermediate(id: string) {
   if (id.startsWith("D1.") || ["D2.1", "D2.2", "D2.3", "D2.4", "D2.5", "D2.6", "D2.7"].includes(id)) return "I1";
-  if (id.startsWith("D3.") || id.startsWith("D4.")) return id.startsWith("D3.") ? "I1" : "I2";
-  return "I3";
+  if (id.startsWith("D3.")) return "I1";
+  if (id.startsWith("D4.")) return "I2";
+  if (["D5.1", "D5.2", "D5.3", "D5.4", "D5.5", "D5.6", "D5.7", "D5.8"].includes(id)) return "I3";
+  throw new Error(`Unknown Intermediate project mapping: ${id}`);
 }
 
 function foundationIntermediate(id: string) {
