@@ -31,8 +31,7 @@ globalThis.fetch = fetchMock;
 const {
   completeLearningItem,
   getLearnerId,
-  listCompletedItems,
-  uncompleteLearningItem
+  listCompletionHistory
 } = await import("../../src/data/learnerProgress.ts");
 
 describe("learner progress client", () => {
@@ -87,13 +86,13 @@ describe("learner progress client", () => {
         )
       );
 
-    const result = await listCompletedItems();
+    const result = await listCompletionHistory();
 
     expect(result[0].itemId).toBe("B1.2");
     expect(storage.getItem("devops-programme-mastered")).toBeNull();
   });
 
-  it("loads only completion state from the server", async () => {
+  it("returns completion history in the order supplied by the server", async () => {
     fetchMock.mockResolvedValue(
       new Response(
         JSON.stringify({
@@ -151,22 +150,34 @@ describe("learner progress client", () => {
     expect(body.stderr).toBeUndefined();
   });
 
-  it("can mark a question incomplete", async () => {
+  it("records an item without storing attempt details", async () => {
     fetchMock.mockResolvedValue(
-      new Response(JSON.stringify({ completed: false }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" }
-      })
+      new Response(
+        JSON.stringify({
+          completed: true,
+          item: {
+            itemType: "question",
+            itemId: "IF1-C-006",
+            completedAt: "2026-09-24T10:00:00.000Z"
+          }
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      )
     );
 
-    await uncompleteLearningItem({
+    await completeLearningItem({
       itemType: "question",
-      itemId: "IF1-C-006"
+      itemId: "IF1-C-006",
+      course: "intermediate"
     });
 
-    const url = String(fetchMock.mock.calls[0][0]);
-    expect(url).toContain("itemType=question");
-    expect(url).toContain("itemId=IF1-C-006");
+    const body = JSON.parse(String(fetchMock.mock.calls[0][1].body));
+    expect(body.itemType).toBe("question");
+    expect(body.itemId).toBe("IF1-C-006");
+    expect(body.completedAt).toBeUndefined();
+    expect(body.stdout).toBeUndefined();
+    expect(body.stderr).toBeUndefined();
+    expect(body.attempt).toBeUndefined();
   });
 
   it("fails closed when the progress API rejects a write", async () => {
