@@ -27,33 +27,33 @@ const expectedLessonSections = {
 let failed = false;
 
 for (const sectionId of expectedSections) {
-  if (!programme.includes(\`id: "\${sectionId}"\`)) {
+  if (!programme.includes(`id: "${sectionId}"`)) {
     failed = true;
-    console.error(\`Intermediate section \${sectionId} is missing from programme.ts.\`);
+    console.error(`Intermediate section ${sectionId} is missing from programme.ts.`);
   }
 
-  const bankPath = path.join(root, "exams", "items", "intermediate", \`\${sectionId}.json\`);
+  const bankPath = path.join(root, "exams", "items", "intermediate", `${sectionId}.json`);
   try {
     const bank = JSON.parse(await readFile(bankPath, "utf8"));
     if (bank.items.length !== 40) {
       failed = true;
-      console.error(\`Intermediate \${sectionId} bank has \${bank.items.length} items; expected 40.\`);
+      console.error(`Intermediate ${sectionId} bank has ${bank.items.length} items; expected 40.`);
     }
   } catch (error) {
     failed = true;
-    console.error(\`Intermediate \${sectionId} assessment bank is missing or invalid: \${error.message}\`);
+    console.error(`Intermediate ${sectionId} assessment bank is missing or invalid: ${error.message}`);
   }
 
-  if (!diagnostics.includes(\`sectionId: "\${sectionId}"\`)) {
+  if (!diagnostics.includes(`sectionId: "${sectionId}"`)) {
     failed = true;
-    console.error(\`Intermediate section \${sectionId} has no prerequisite diagnostic.\`);
+    console.error(`Intermediate section ${sectionId} has no prerequisite diagnostic.`);
   }
 }
 
-const lessonIds = [...lessons.matchAll(/"id":\s*"(D[1-5]\.\d+)"/g)].map((match) => match[1]);
+const lessonIds = [...lessons.matchAll(/id:\s*"(D[1-5]\.\d+)"/g)].map((match) => match[1]);
 if (lessonIds.length !== expectedLessons) {
   failed = true;
-  console.error(\`Intermediate lesson count is \${lessonIds.length}; expected \${expectedLessons}.\`);
+  console.error(`Intermediate lesson count is ${lessonIds.length}; expected ${expectedLessons}.`);
 }
 
 const courseLessons = await readFile(
@@ -78,9 +78,9 @@ for (const [condition, sectionId] of mappingContracts) {
 }
 
 for (const projectId of expectedProjects) {
-  if (!projects.includes(\`id: "\${projectId}"\`)) {
+  if (!projects.includes(`id: "${projectId}"`)) {
     failed = true;
-    console.error(\`Intermediate project \${projectId} is missing.\`);
+    console.error(`Intermediate project ${projectId} is missing.`);
   }
 }
 
@@ -89,7 +89,7 @@ for (const script of ["day-1.txt","day-2.txt","day-3.txt","day-4.txt","day-5.txt
     await access(path.join(root, "podcasts", script));
   } catch {
     failed = true;
-    console.error(\`Intermediate podcast source \${script} is missing.\`);
+    console.error(`Intermediate podcast source ${script} is missing.`);
   }
 }
 
@@ -101,5 +101,5 @@ if (!handsOn.includes("export function getHandsOnTask")) {
 if (failed) process.exit(1);
 
 console.log(
-  \`Intermediate completeness check passed: \${lessonIds.length} lessons, \${expectedSections.length} sections, \${expectedProjects.length} projects, \${expectedSections.length} diagnostics and \${expectedSections.length} pilot banks.\`
+  `Intermediate completeness check passed: ${lessonIds.length} lessons, ${expectedSections.length} sections, ${expectedProjects.length} projects, ${expectedSections.length} diagnostics and ${expectedSections.length} pilot banks.`
 );
