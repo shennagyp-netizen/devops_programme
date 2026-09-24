@@ -146,11 +146,11 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
       }
 
       const activeCue = findActiveCue(audioManifest, timeMs);
-      if (!activeCue || activeCue.turnId === lastCueIdRef.current) {
+      if (!activeCue || activeCue.id === lastCueIdRef.current) {
         return;
       }
 
-      lastCueIdRef.current = activeCue.turnId;
+      lastCueIdRef.current = activeCue.id;
 
       const nextPhase = cueToPhase[activeCue.kind];
       if (nextPhase) {
