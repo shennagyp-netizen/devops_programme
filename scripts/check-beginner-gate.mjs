@@ -49,17 +49,15 @@ for (const sectionId of sections) {
     if (!item.competencyId || !item.competencyId.startsWith(sectionId + ".")) fail("Wrong competency: " + sectionId + "/" + item.id);
     if (!Number.isFinite(item.expectedMinutes) || item.expectedMinutes <= 0) fail("Bad time: " + sectionId + "/" + item.id);
 
-    if (item.options) {
-      if (item.options.length < 2) fail("Too few options: " + sectionId + "/" + item.id);
-      if (!Number.isInteger(item.correctOption) || item.correctOption < 0 || item.correctOption >= item.options.length) fail("Invalid correct option: " + sectionId + "/" + item.id);
-    } else if (!(item.expectedElements?.length || item.scoring?.full?.length || item.scoringNote)) {
-      fail("Missing scoring contract: " + sectionId + "/" + item.id);
-    }
-
     if (item.family === "hands-on") {
       for (const key of ["environment","initialState","allowedOperations","success","evidence","failureConditions","recoveryRequirements","resetStrategy"]) {
         if (!item[key] || (Array.isArray(item[key]) && item[key].length === 0)) fail("Missing hands-on " + key + ": " + sectionId + "/" + item.id);
       }
+    } else if (item.options) {
+      if (item.options.length < 2) fail("Too few options: " + sectionId + "/" + item.id);
+      if (!Number.isInteger(item.correctOption) || item.correctOption < 0 || item.correctOption >= item.options.length) fail("Invalid correct option: " + sectionId + "/" + item.id);
+    } else if (!(item.expectedElements?.length || item.scoring?.full?.length || item.scoringNote)) {
+      fail("Missing scoring contract: " + sectionId + "/" + item.id);
     }
   }
 }
