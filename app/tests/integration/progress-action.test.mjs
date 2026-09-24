@@ -46,7 +46,7 @@ describe("completeLearningItemAction", () => {
       itemType: "lesson",
       itemId: "B1.2",
       learnerId: "attacker-chosen-id"
-    } as never);
+    });
 
     expect(completeForUserMock).toHaveBeenCalledWith("user_123", {
       itemType: "lesson",
@@ -69,7 +69,7 @@ describe("completeLearningItemAction", () => {
       projectId: "I1",
       verificationLevel: "exercise-validated",
       stdout: "secret terminal output"
-    } as never);
+    });
 
     expect(completeForUserMock).toHaveBeenCalledWith("user_456", {
       itemType: "assignment",
