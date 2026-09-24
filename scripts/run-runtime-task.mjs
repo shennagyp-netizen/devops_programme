@@ -252,6 +252,7 @@ async function main() {
     lessonId: task.lessonId,
     platform,
     verificationLevel: "machine-verified",
+    verificationSource: "local-runner",
     runnerVersion: RUNNER_VERSION,
     environmentFingerprint: environmentFingerprint(platform),
     startedAt,
