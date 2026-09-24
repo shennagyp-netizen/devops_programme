@@ -308,6 +308,41 @@ describe("machine verification contract", () => {
     });
   });
 
+  it("fails closed when captured stdout/stderr are missing", () => {
+    const task = runtimeTaskForLesson("B1.2");
+    const validHash = "7".repeat(64);
+    const result = validateMachineVerification(task, {
+      schemaVersion: 1,
+      taskId: task.taskId,
+      contractVersion: task.contractVersion,
+      lessonId: task.lessonId,
+      platform: "linux",
+      verificationLevel: "machine-verified",
+      verificationSource: "local-runner",
+      executionMode: "local-machine",
+      target: { kind: "local" },
+      runnerVersion: "0.1.0",
+      environmentFingerprint: "fingerprint",
+      startedAt: "2026-09-24T10:00:00.000Z",
+      completedAt: "2026-09-24T10:02:00.000Z",
+      stepResults: task.steps.map((step) => ({
+        stepId: step.id,
+        startedAt: "2026-09-24T10:00:01.000Z",
+        completedAt: "2026-09-24T10:00:02.000Z",
+        exitCode: 0,
+        stdoutHash: validHash,
+        stderrHash: validHash,
+        result: "passed"
+      })),
+      resetPerformed: true
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.failures).toContain(
+      "Captured command output is missing for runtime step resolve-name."
+    );
+  });
+
   it("fails closed when a completed step uses a nonzero exit code", () => {
     const task = runtimeTaskForLesson("B1.2");
     const validHash = "e".repeat(64);
