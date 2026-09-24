@@ -7,4 +7,6 @@ dist/
 *.toc
 *.pdf
 .runtime-evidence/
-.env*.local\n
+.env
+.env.*
+!.env.example
