@@ -104,13 +104,15 @@ Repeated completion does not create another row and does not rewrite the origina
 
 ## Input contract
 
-The browser may submit only:
+The Server Action input uses these application field names:
 
-- `item_type`
-- `item_id`
+- `itemType`
+- `itemId`
 - optional `course`
-- optional `project_id`
-- optional `verification_level`
+- optional `projectId`
+- optional `verificationLevel`
+
+These are mapped to the database columns `item_type`, `item_id`, `project_id`, and `verification_level`.
 
 The browser may not submit the user identity as an authority.
 
