@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { and, asc, eq } from "drizzle-orm";
 import { getDb } from "./_lib/db";
-import { learnerCompletions } from "./_lib/schema";
+import { learnerProgressHistory } from "./_lib/schema";
 
 type ApiRequest = IncomingMessage & {
   method?: string;
@@ -78,16 +78,16 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
       const db = getDb();
       const items = await db
         .select({
-          itemType: learnerCompletions.itemType,
-          itemId: learnerCompletions.itemId,
-          completedAt: learnerCompletions.completedAt,
-          verificationLevel: learnerCompletions.verificationLevel,
-          course: learnerCompletions.course,
-          projectId: learnerCompletions.projectId
+          itemType: learnerProgressHistory.itemType,
+          itemId: learnerProgressHistory.itemId,
+          completedAt: learnerProgressHistory.completedAt,
+          verificationLevel: learnerProgressHistory.verificationLevel,
+          course: learnerProgressHistory.course,
+          projectId: learnerProgressHistory.projectId
         })
-        .from(learnerCompletions)
-        .where(eq(learnerCompletions.learnerId, learnerId.trim()))
-        .orderBy(asc(learnerCompletions.completedAt));
+        .from(learnerProgressHistory)
+        .where(eq(learnerProgressHistory.learnerId, learnerId.trim()))
+        .orderBy(asc(learnerProgressHistory.completedAt), asc(learnerProgressHistory.id));
 
       send(res, 200, { items });
       return;
@@ -107,7 +107,7 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
       const itemId = String(body.itemId).trim();
 
       const inserted = await db
-        .insert(learnerCompletions)
+        .insert(learnerProgressHistory)
         .values({
           learnerId,
           itemType,
@@ -120,9 +120,9 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
         })
         .onConflictDoUpdate({
           target: [
-            learnerCompletions.learnerId,
-            learnerCompletions.itemType,
-            learnerCompletions.itemId
+            learnerProgressHistory.learnerId,
+            learnerProgressHistory.itemType,
+            learnerProgressHistory.itemId
           ],
           set: {
             verificationLevel: isString(body.verificationLevel, 64)
@@ -133,46 +133,16 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
           }
         })
         .returning({
-          itemType: learnerCompletions.itemType,
-          itemId: learnerCompletions.itemId,
-          completedAt: learnerCompletions.completedAt
+          itemType: learnerProgressHistory.itemType,
+          itemId: learnerProgressHistory.itemId,
+          completedAt: learnerProgressHistory.completedAt
         });
 
       send(res, 200, { completed: true, item: inserted[0] });
       return;
     }
 
-    if (req.method === "DELETE") {
-      const learnerId = readQuery(req, "learnerId");
-      const itemType = readQuery(req, "itemType");
-      const itemId = readQuery(req, "itemId");
-
-      if (!isString(learnerId) || !isString(itemType) || !isString(itemId)) {
-        send(res, 400, { error: "learnerId, itemType and itemId are required." });
-        return;
-      }
-
-      if (!ITEM_TYPES.has(itemType.trim())) {
-        send(res, 400, { error: "Invalid itemType." });
-        return;
-      }
-
-      const db = getDb();
-      await db
-        .delete(learnerCompletions)
-        .where(
-          and(
-            eq(learnerCompletions.learnerId, learnerId.trim()),
-            eq(learnerCompletions.itemType, itemType.trim()),
-            eq(learnerCompletions.itemId, itemId.trim())
-          )
-        );
-
-      send(res, 200, { completed: false });
-      return;
-    }
-
-    res.setHeader("Allow", "GET, POST, PUT, DELETE");
+    res.setHeader("Allow", "GET, POST, PUT");
     send(res, 405, { error: "Method not allowed." });
   } catch (error) {
     console.error("Learner progress API error", error);
