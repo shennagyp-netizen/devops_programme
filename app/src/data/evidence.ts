@@ -107,8 +107,7 @@ export function recordMachineVerification(input: {
     evidencePayload: {
       verificationSource: input.envelope.verificationSource,
       runnerVersion: input.envelope.runnerVersion,
-      environmentFingerprint: input.envelope.environmentFingerprint,
-      envelope: JSON.stringify(input.envelope)
+      environmentFingerprint: input.envelope.environmentFingerprint
     }
   });
 
