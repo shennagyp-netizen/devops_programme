@@ -13,6 +13,10 @@ class MemoryStorage {
     this.values.set(key, String(value));
   }
 
+  removeItem(key) {
+    this.values.delete(key);
+  }
+
   clear() {
     this.values.clear();
   }
@@ -43,6 +47,50 @@ describe("learner progress client", () => {
 
     expect(first).toBeTruthy();
     expect(second).toBe(first);
+  });
+
+  it("migrates legacy local lesson completion into the database", async () => {
+    storage.setItem("devops-programme-mastered", JSON.stringify(["B1.2"]));
+
+    fetchMock
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ items: [] }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" }
+        })
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            completed: true,
+            item: {
+              itemType: "lesson",
+              itemId: "B1.2",
+              completedAt: "2026-09-24T10:00:00.000Z"
+            }
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } }
+        )
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            items: [
+              {
+                itemType: "lesson",
+                itemId: "B1.2",
+                completedAt: "2026-09-24T10:00:00.000Z"
+              }
+            ]
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } }
+        )
+      );
+
+    const result = await listCompletedItems();
+
+    expect(result[0].itemId).toBe("B1.2");
+    expect(storage.getItem("devops-programme-mastered")).toBeNull();
   });
 
   it("loads only completion state from the server", async () => {
