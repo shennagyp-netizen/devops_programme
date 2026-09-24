@@ -13,7 +13,7 @@ permissions:
 jobs:
   full_programme_gate:
     name: full-programme-gate
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Runner diagnostics
         shell: bash
