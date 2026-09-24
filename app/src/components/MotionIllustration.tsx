@@ -1,0 +1,5 @@
+import type{Lesson}from"../data/curriculum";
+export function MotionIllustration({lesson}:{lesson:Lesson}){
+ const n=lesson.domain==="network"?["Mac","DNS","Router","Server"]:lesson.domain==="docker"?["Image","Container","Process"]:lesson.domain==="kubernetes"?["Desired","Controller","Pods","Service"]:lesson.domain==="cicd"?["Commit","CI","Artifact","Deploy"]:lesson.domain==="terraform"?["Code","Plan","State","Apply"]:lesson.domain==="sre"?["Signal","Observe","Diagnose","Recover"]:["Command","Process","Resource","System"];
+ return <div className="motion-card"><div className="flow-line"/><div className="flow-nodes">{n.map((x,i)=><div className="motion-node" style={{animationDelay:i*.22+"s"}} key={x}><span className="pulse-dot"/><span>{x}</span></div>)}</div><p>Motion illustrates causality and state transition.</p></div>
+}
