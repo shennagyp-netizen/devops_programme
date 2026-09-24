@@ -445,6 +445,7 @@ describe("machine verification contract", () => {
     const result = validateMachineVerification(task, {
       schemaVersion: 1,
       taskId: task.taskId,
+      contractVersion: task.contractVersion,
       lessonId: task.lessonId,
       platform: "linux",
       verificationLevel: "machine-verified",
