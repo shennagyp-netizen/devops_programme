@@ -308,10 +308,10 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
               {audioSyncState === "voice-synced"
                 ? "The audio clock drives the transcript and exercise cues. React never guesses timing from sentence length."
                 : audioSyncState === "stale-audio"
-                  ? "This recording was generated from an older script revision. React is refusing to use it until the recording is realigned."
+                  ? "This recording was made from an older script. React will not use it until the voice is matched to the current script."
                   : audioSyncState === "checking"
-                    ? "Checking that the recording and the current episode script are the same revision."
-                    : "The current repository has text scripts but no aligned audio manifest for this episode yet. The guided transcript is the safe fallback."
+                    ? "Checking that the recording matches the current episode script."
+                    : "There is no matched voice recording for this episode yet. The guided transcript is the safe fallback."
               }
             </p>
           </div>
@@ -433,7 +433,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
       {phase === "lab" && (
         <div className="content-card">
           <span className="eyebrow">OPERATE → BREAK → DIAGNOSE</span>
-          <h4>Now leave the podcast and touch the system</h4>
+          <h4>Now stop listening and work on the system</h4>
           <p>{lesson.lab.objective}</p>
           <pre>
             <code>{lesson.lab.command}</code>
