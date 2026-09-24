@@ -37,7 +37,9 @@ Every section has:
 - objective
 - foundation dependencies
 - teaching assets
+- prerequisite diagnostic when authored
 - mandatory exercise
+- exercise-evidence record
 - deliberate failure
 - project connection
 - retrieval
@@ -45,6 +47,8 @@ Every section has:
 - conceptual assessment
 - diagnostic assessment
 - hands-on assessment
+
+Diagnostic results may compress or skip introductory theory when the learner demonstrates prior knowledge. They never remove the associated exercise. Failed diagnostics route to a mapped remediation target when one exists.
 
 ## Assessment rule
 
