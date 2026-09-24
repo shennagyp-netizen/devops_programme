@@ -956,3 +956,12 @@ Current verified-task coverage remains intentionally narrow:
 Manual execution remains the course fallback for every lesson, including lessons without a verified runtime task and Windows lessons not yet supported by the SSH runner.
 
 This change does NOT claim complete machine verification of the hands-on catalogue and does NOT claim a deployed managed execution service.
+
+
+Runtime result output clarification:
+- Verified runners now return bounded stdout/stderr as well as stdout/stderr hashes and exit state.
+- The browser displays the returned machine results after successful envelope import.
+- Captured stdout/stderr are capped at 64 KiB per stream.
+- The manual path remains independent and does not require remote execution.
+- The remote runner currently supports Linux/macOS SSH targets; Windows continues through the manual path.
+- No cryptographic remote attestation is claimed; SSH verification relies on strict known-host checking and the fail-closed application envelope validator.
