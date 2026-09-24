@@ -2,118 +2,118 @@ DAY 4
 
 EPISODE D4.1 — Git as a Production Workflow
 
-Speaker A: We will build the operational mental model, not memorize vocabulary.
+Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I already understand application development. What changes when I operate the system?
+Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Turn source change into deterministic CI/CD. Separate source, tests, artifacts, promotion and rollback.
+Speaker A: CI/CD turns source change into a deterministic process. Separate source, tests, artifact, promotion, deployment and rollback so production does not depend on a workstation.
 
-Speaker B: What must I be able to do afterward?
+Speaker B: Give me the failure-oriented version.
 
-Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
 
-Hands-on: Use the Mac to run an experiment related to Git as a Production Workflow. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+Hands-on: Use the Mac to perform an experiment related to Git as a Production Workflow. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
 
-Production: Place Git as a Production Workflow in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+Production: Place Git as a Production Workflow in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
 
 ==============================
 
 EPISODE D4.2 — CI/CD Mental Model
 
-Speaker A: We will build the operational mental model, not memorize vocabulary.
+Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I already understand application development. What changes when I operate the system?
+Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Turn source change into deterministic CI/CD. Separate source, tests, artifacts, promotion and rollback.
+Speaker A: CI/CD turns source change into a deterministic process. Separate source, tests, artifact, promotion, deployment and rollback so production does not depend on a workstation.
 
-Speaker B: What must I be able to do afterward?
+Speaker B: Give me the failure-oriented version.
 
-Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
 
-Hands-on: Use the Mac to run an experiment related to CI/CD Mental Model. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+Hands-on: Use the Mac to perform an experiment related to CI/CD Mental Model. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
 
-Production: Place CI/CD Mental Model in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+Production: Place CI/CD Mental Model in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
 
 ==============================
 
 EPISODE D4.3 — GitHub Actions
 
-Speaker A: We will build the operational mental model, not memorize vocabulary.
+Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I already understand application development. What changes when I operate the system?
+Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Turn source change into deterministic CI/CD. Separate source, tests, artifacts, promotion and rollback.
+Speaker A: CI/CD turns source change into a deterministic process. Separate source, tests, artifact, promotion, deployment and rollback so production does not depend on a workstation.
 
-Speaker B: What must I be able to do afterward?
+Speaker B: Give me the failure-oriented version.
 
-Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
 
-Hands-on: Use the Mac to run an experiment related to GitHub Actions. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+Hands-on: Use the Mac to perform an experiment related to GitHub Actions. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
 
-Production: Place GitHub Actions in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+Production: Place GitHub Actions in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
 
 ==============================
 
 EPISODE D4.4 — Infrastructure as Code
 
-Speaker A: We will build the operational mental model, not memorize vocabulary.
+Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I already understand application development. What changes when I operate the system?
+Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Infrastructure as code makes desired state, dependency graph, state and drift explicit.
+Speaker A: Infrastructure as Code makes desired state, dependency graph, state and drift explicit. Plan is a reviewable proposal; apply is the transition.
 
-Speaker B: What must I be able to do afterward?
+Speaker B: Give me the failure-oriented version.
 
-Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
 
-Hands-on: Use the Mac to run an experiment related to Infrastructure as Code. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+Hands-on: Use the Mac to perform an experiment related to Infrastructure as Code. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
 
-Production: Place Infrastructure as Code in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+Production: Place Infrastructure as Code in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
 
 ==============================
 
 EPISODE D4.5 — Terraform Lifecycle
 
-Speaker A: We will build the operational mental model, not memorize vocabulary.
+Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I already understand application development. What changes when I operate the system?
+Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Infrastructure as code makes desired state, dependency graph, state and drift explicit.
+Speaker A: Infrastructure as Code makes desired state, dependency graph, state and drift explicit. Plan is a reviewable proposal; apply is the transition.
 
-Speaker B: What must I be able to do afterward?
+Speaker B: Give me the failure-oriented version.
 
-Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
 
-Hands-on: Use the Mac to run an experiment related to Terraform Lifecycle. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+Hands-on: Use the Mac to perform an experiment related to Terraform Lifecycle. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
 
-Production: Place Terraform Lifecycle in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+Production: Place Terraform Lifecycle in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
 
 ==============================
 
 EPISODE D4.6 — Cloud Primitives
 
-Speaker A: We will build the operational mental model, not memorize vocabulary.
+Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I already understand application development. What changes when I operate the system?
+Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Learn cloud primitives and failure domains before memorizing provider services.
+Speaker A: Learn cloud as primitives and failure domains: compute, network, storage, identity, load balancing, databases, queues and cache. Map provider names only after concepts are clear.
 
-Speaker B: What must I be able to do afterward?
+Speaker B: Give me the failure-oriented version.
 
-Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
 
-Hands-on: Use the Mac to run an experiment related to Cloud Primitives. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+Hands-on: Use the Mac to perform an experiment related to Cloud Primitives. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
 
-Production: Place Cloud Primitives in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+Production: Place Cloud Primitives in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
