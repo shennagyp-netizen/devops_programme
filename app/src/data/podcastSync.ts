@@ -67,3 +67,9 @@ export function findCurrentTurnId(
     (turn) => timeMs >= turn.startMs && timeMs < turn.endMs
   )?.turnId;
 }
+
+export type PodcastScriptManifest = {
+  schemaVersion: number;
+  source: string;
+  episodes: Record<string, string>;
+};
