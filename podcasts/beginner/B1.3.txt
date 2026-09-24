@@ -1,0 +1,499 @@
+EPISODE B1.3 — Why the Application Needs HTTP, TLS and DNS
+
+Speaker A: We have a small API. The frontend calls it. The team says the API is down.
+
+Speaker B: And we already know that phrase usually means almost nothing.
+
+Speaker A: Good. So let's not repeat it.
+
+Speaker B: What do we know?
+
+Speaker A: The browser shows an error.
+
+Speaker B: Better.
+
+Speaker A: Now we ask what happened before that screen appeared.
+
+Speaker B: Name lookup. Connection. TLS. HTTP. Then the application response.
+
+Speaker A: Exactly.
+
+Speaker B: So this is the lesson where all those pieces finally join together.
+
+Speaker A: Yes. We have learned pieces. Now we follow one real request.
+
+Speaker B: Start at the browser?
+
+Speaker A: Start before the browser sends anything useful. Suppose the user types:
+
+Speaker A: https://api.example.com/orders
+
+Speaker B: First the name has to be resolved.
+
+Speaker A: Right.
+
+Speaker B: DNS gives us address information.
+
+Speaker A: Yes.
+
+Speaker B: Then the client connects to the server.
+
+Speaker A: Right.
+
+Speaker B: Then TLS creates the secure session.
+
+Speaker A: Yes.
+
+Speaker B: Then HTTP carries the application request.
+
+Speaker A: Exactly.
+
+Speaker B: And then the API can say 200, 401, 403, 404, 500, or something else.
+
+Speaker A: Good.
+
+Speaker B: So if I get HTTP 500, the network did not just explode.
+
+Speaker A: Correct.
+
+Speaker B: The request made it pretty far.
+
+Speaker A: Very far compared with a DNS failure.
+
+Speaker B: That's useful.
+
+Speaker A: It is one of the best habits in troubleshooting: use the error to tell you how far the request got.
+
+Speaker B: Let's make a mistake on purpose.
+
+Speaker A: Okay. The browser shows "server unavailable." Someone on the team says, "It's DNS."
+
+Speaker B: Because they saw an error and picked their favorite layer.
+
+Speaker A: Exactly.
+
+Speaker B: What evidence do we have?
+
+Speaker A: We don't know yet.
+
+Speaker B: So I would run:
+
+Speaker B: curl -v https://api.example.com/orders
+
+Speaker A: Good.
+
+Speaker B: We can see more of the request.
+
+Speaker A: And we can see which part fails.
+
+Speaker B: Suppose the name resolves.
+
+Speaker A: Then what?
+
+Speaker B: DNS worked.
+
+Speaker A: Good.
+
+Speaker B: Suppose the connection starts and then TLS fails with a certificate problem.
+
+Speaker A: Then are we dealing with DNS?
+
+Speaker B: No. We're farther down the path.
+
+Speaker A: Good.
+
+Speaker B: The server might be there. The secure setup is wrong.
+
+Speaker A: Right.
+
+Speaker B: Now suppose TLS succeeds and HTTP returns 401.
+
+Speaker A: What's that tell you?
+
+Speaker B: The request reached the application or something in front of it that understands HTTP and rejected authentication.
+
+Speaker A: Good.
+
+Speaker B: So saying "the network is down" would be pretty silly at that point.
+
+Speaker A: Very.
+
+Speaker B: I like that the errors are almost breadcrumbs.
+
+Speaker A: That's a good way to think about them.
+
+Speaker B: Give me the everyday version.
+
+Speaker A: Imagine you call a clinic.
+
+Speaker B: Okay.
+
+Speaker A: The number itself is wrong.
+
+Speaker B: DNS-like problem.
+
+Speaker A: You find the right number, but nobody can reach the phone.
+
+Speaker B: Connection problem.
+
+Speaker A: The line connects, but the secure phone system rejects your identity.
+
+Speaker B: TLS or authentication.
+
+Speaker A: Then someone answers and says, "You don't have permission to book this service."
+
+Speaker B: Authorization.
+
+Speaker A: Exactly.
+
+Speaker B: And if the receptionist answers with, "Our booking system is broken."
+
+Speaker A: Application error.
+
+Speaker B: Good. That actually makes the layers easy to remember.
+
+Speaker A: That's the point. But keep the map in your head. The real system uses network addresses, transport connections, TLS and HTTP. It is not a phone call.
+
+Speaker B: Right.
+
+Speaker A: Now let's talk about HTTP itself.
+
+Speaker B: Request and response.
+
+Speaker A: Yes. A client sends a method, a path, headers, and sometimes a body. The server sends a status code, headers, and sometimes a body.
+
+Speaker B: GET, POST, PUT, DELETE.
+
+Speaker A: Those are common methods. You will use more over time, but the important thing now is that HTTP gives the application a clear request and response model.
+
+Speaker B: So TCP gets the bytes there. HTTP tells the application what those bytes mean.
+
+Speaker A: Exactly.
+
+Speaker B: And TLS protects the connection.
+
+Speaker A: Right.
+
+Speaker B: DNS helps us find where to connect.
+
+Speaker A: Exactly.
+
+Speaker B: I think this layered model is finally becoming automatic.
+
+Speaker A: Good. Let's test it.
+
+Speaker A: The frontend calls /orders. The API returns 404.
+
+Speaker B: The server probably got the request.
+
+Speaker A: Yes.
+
+Speaker B: The route may not exist.
+
+Speaker A: Good.
+
+Speaker B: Or the resource does not exist.
+
+Speaker A: Correct. The exact meaning depends on the application.
+
+Speaker B: But we already know it is not a basic DNS failure.
+
+Speaker A: Right.
+
+Speaker B: New case. We get connection refused.
+
+Speaker A: What next?
+
+Speaker B: Check whether the target service is listening. Check the port. Check local firewall or network policy. We also need to know where the refusal happened.
+
+Speaker A: Good.
+
+Speaker B: New case. Timeout.
+
+Speaker A: What next?
+
+Speaker B: I don't jump to one cause. I check route, firewall, server health, service health, and whether there is a working path from the place that failed.
+
+Speaker A: Good.
+
+Speaker B: New case. TLS says the certificate name does not match.
+
+Speaker A: Where?
+
+Speaker B: TLS and certificate configuration.
+
+Speaker A: Good.
+
+Speaker B: New case. HTTP 403.
+
+Speaker A: Where?
+
+Speaker B: Authorization.
+
+Speaker A: Right.
+
+Speaker B: New case. HTTP 500.
+
+Speaker A: Where?
+
+Speaker B: Usually application or an upstream dependency, depending on the system.
+
+Speaker A: Exactly. Do not pretend the status code tells you the whole root cause.
+
+Speaker B: So the code narrows the search. It does not finish the search.
+
+Speaker A: Yes.
+
+Speaker B: That's a really important distinction.
+
+Speaker A: It is.
+
+Speaker B: Let's talk about TLS without making it a three-hour certificate class.
+
+Speaker A: Please.
+
+Speaker B: What is TLS doing here?
+
+Speaker A: It gives the connection a way to establish security properties. The client and server agree on cryptographic settings, the server proves its identity with a certificate, and they create keys for the secure session.
+
+Speaker B: So encryption is not the only thing.
+
+Speaker A: Correct. Identity matters too.
+
+Speaker B: Which is why a certificate problem can stop a request even when the server is clearly there.
+
+Speaker A: Exactly.
+
+Speaker B: And a certificate can be valid but still be for the wrong name.
+
+Speaker A: Yes.
+
+Speaker B: Or the client may not trust the certificate chain.
+
+Speaker A: Right.
+
+Speaker B: So again, one broad label like "HTTPS broken" hides several possible causes.
+
+Speaker A: And the evidence tells us which one to check.
+
+Speaker B: I'm noticing a pattern.
+
+Speaker A: Good.
+
+Speaker B: Everything comes back to evidence.
+
+Speaker A: Because computers give us evidence. We just have to read it before changing things.
+
+Speaker B: Let's make the failure slightly nasty.
+
+Speaker A: Okay. The API works from the engineer's laptop. The frontend in the browser works. But the containerized frontend cannot call the API.
+
+Speaker B: That sounds like the same issue we had yesterday.
+
+Speaker A: Right. Which is why it matters.
+
+Speaker B: Test from the container.
+
+Speaker A: Exactly.
+
+Speaker B: If the container cannot resolve the API name, DNS inside the container.
+
+Speaker A: Yes.
+
+Speaker B: If it resolves but times out, move to network path or firewall.
+
+Speaker A: Yes.
+
+Speaker B: If it connects but TLS fails, inspect certificate names and trust.
+
+Speaker A: Yes.
+
+Speaker B: If HTTP returns 401, inspect credentials.
+
+Speaker A: Exactly.
+
+Speaker B: So the same application can have different network problems depending on where the client runs.
+
+Speaker A: Very important.
+
+Speaker B: Laptop network and container network are not automatically the same.
+
+Speaker A: Correct.
+
+Speaker B: Real-life example?
+
+Speaker A: You call the same company from inside the building and from outside the building.
+
+Speaker B: Different paths.
+
+Speaker A: Exactly. The number might be the same. The access rules can still be different.
+
+Speaker B: And if the company blocks outside calls, the inside call works while the outside call fails.
+
+Speaker A: That's the idea.
+
+Speaker B: Okay. Now give me an example that hurts.
+
+Speaker A: Fine. A developer changes DNS and says, "It should be fixed now."
+
+Speaker B: Famous sentence.
+
+Speaker A: A few users say it works. Others still see the old address.
+
+Speaker B: Cache.
+
+Speaker A: Right. Or different resolvers. Or different network paths. Again, do not assume one observation represents every client.
+
+Speaker B: So the first question is "who is still failing?"
+
+Speaker A: Exactly.
+
+Speaker B: That's a good operational question.
+
+Speaker A: It saves a lot of time.
+
+Speaker B: Pause.
+
+Speaker A: Okay.
+
+Speaker B: Make a prediction. The DNS lookup works. The TCP connection works. TLS works. The API returns 401. Which layer do you inspect first?
+
+Speaker A: Stop before answering.
+
+Speaker B: My answer is authentication.
+
+Speaker A: Good.
+
+Speaker B: Not DNS. Not routing. Not the container network.
+
+Speaker A: Right. The request already passed those stages.
+
+Speaker B: So the error itself tells us what the request has already survived.
+
+Speaker A: Exactly.
+
+Speaker B: That's much more useful than memorizing status codes as a table.
+
+Speaker A: Yes. You want the path, not the list.
+
+Speaker B: Mac lab?
+
+Speaker A: Run:
+
+Speaker A: curl -v https://example.com
+
+Speaker A: Watch the name lookup.
+
+Speaker A: Watch the connection.
+
+Speaker A: Watch the TLS exchange.
+
+Speaker A: Then look at the HTTP status.
+
+Speaker B: And don't try to read every line.
+
+Speaker A: Exactly. Pick one stage.
+
+Speaker B: Then I can create a safe failure by requesting a port that is not listening.
+
+Speaker A: Good.
+
+Speaker B: Compare refusal with a timeout.
+
+Speaker A: Yes.
+
+Speaker B: And then we can test an HTTP path that returns a known error, like a missing page.
+
+Speaker A: Good.
+
+Speaker B: That gives us three very different things to compare.
+
+Speaker A: Right.
+
+Speaker B: Connection failure. Secure connection failure. Application response.
+
+Speaker A: Exactly.
+
+Speaker B: This feels like real debugging now.
+
+Speaker A: Good. That's the point of the course.
+
+Speaker B: What should I record in the lab?
+
+Speaker A: The command you ran. The important output. The layer you were testing. What you expected. What actually happened.
+
+Speaker B: So the lab itself trains incident notes.
+
+Speaker A: Yes.
+
+Speaker B: Nice.
+
+Speaker A: Now let's do recall.
+
+Speaker B: Go.
+
+Speaker A: Question one. What does DNS do in this request path?
+
+Speaker B: It gives the client address information for the name.
+
+Speaker A: Good.
+
+Speaker B: Question two.
+
+Speaker A: What does TLS add?
+
+Speaker B: A secure session, including encryption and server identity checks.
+
+Speaker A: Good.
+
+Speaker B: Question three.
+
+Speaker A: What does HTTP add?
+
+Speaker B: The application request and response model, with methods, paths, headers, status codes, and possibly a body.
+
+Speaker A: Good.
+
+Speaker B: Question four.
+
+Speaker A: What does connection refused tell you compared with timeout?
+
+Speaker B: Refused means something answered and rejected the connection. Timeout means the expected response did not arrive in time.
+
+Speaker A: Good.
+
+Speaker B: Question five.
+
+Speaker A: Why do we test from the place that fails?
+
+Speaker B: Because the name lookup, network path, access rules, and environment can be different there.
+
+Speaker A: Good.
+
+Speaker B: Final challenge.
+
+Speaker A: Your B1 frontend works on the laptop but returns 401 from inside a container.
+
+Speaker B: First, confirm the container can resolve the API name.
+
+Speaker A: Good.
+
+Speaker B: Then confirm it can connect.
+
+Speaker A: Good.
+
+Speaker B: If it reaches the API and gets 401, I stop debugging the basic network path and inspect authentication.
+
+Speaker A: Exactly.
+
+Speaker B: So the skill is not "know 401."
+
+Speaker A: It's "know how far the request got."
+
+Speaker B: That's much better.
+
+Speaker A: Run the lab now.
+
+Speaker B: And bring back the evidence.
+
+Speaker A: Exactly.
