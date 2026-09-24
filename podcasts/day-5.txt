@@ -1,0 +1,159 @@
+DAY 5
+
+EPISODE D5.1 — Scaling
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Scale is about bottlenecks, statelessness, caching, queues, load balancing and data locality.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Scaling. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Scaling in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D5.2 — Databases at Scale
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Distributed systems fail partially. Reason about replication, consistency, quorum, timeouts, ordering and recovery.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Databases at Scale. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Databases at Scale in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D5.3 — Distributed Systems
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Distributed systems fail partially. Reason about replication, consistency, quorum, timeouts, ordering and recovery.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Distributed Systems. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Distributed Systems in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D5.4 — Reliability Patterns
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Reliability patterns control blast radius: timeouts, retries, backoff, jitter, idempotency, breakers and backpressure.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Reliability Patterns. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Reliability Patterns in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D5.5 — Observability
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Observability and SRE turn behavior into evidence: logs, metrics, traces, SLI, SLO, error budget, RPO and RTO.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Observability. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Observability in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D5.6 — Disaster Recovery
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Observability and SRE turn behavior into evidence: logs, metrics, traces, SLI, SLO, error budget, RPO and RTO.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Disaster Recovery. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Disaster Recovery in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D5.7 — Global-Scale Architecture
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Scale is about bottlenecks, statelessness, caching, queues, load balancing and data locality.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Global-Scale Architecture. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Global-Scale Architecture in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D5.8 — The Production Incident
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Observability and SRE turn behavior into evidence: logs, metrics, traces, SLI, SLO, error budget, RPO and RTO.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to The Production Incident. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place The Production Incident in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
