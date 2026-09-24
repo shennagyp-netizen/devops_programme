@@ -37,4 +37,4 @@ The authored Beginner core is complete: all seven sections have lesson coverage,
 
 ## Prerequisite diagnostics
 
-The current adaptive pilot includes B-F1, B-F2, B-A1, B-A2 and B-A3. A diagnostic recommendation may compress introductory theory, but the associated exercise remains mandatory.
+The current adaptive pilot includes all seven Beginner sections: B-F1, B-F2, B-A1, B-A2, B-A3, B-A4 and B-A5. Each section has a prerequisite diagnostic. A diagnostic recommendation may compress introductory theory, but the associated exercise remains mandatory.
