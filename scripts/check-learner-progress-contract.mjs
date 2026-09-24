@@ -70,7 +70,7 @@ assert.doesNotMatch(content.contract, /getLearnerId|localStorage|learnerId/);
 
 assert.match(content.app, /initialCompletionHistory/);
 assert.match(content.app, /^"use client";/);
-assert.match(content.app, /completeLearningItemAction/);
+assert.match(content.app, /completeLearningItemAction/);\nassert.match(content.app, /UserButton/);
 assert.doesNotMatch(content.app, /getLearnerId|listCompletionHistory|\/api\/progress/);
 
 assert.match(content.page, /await auth\(\)/);
