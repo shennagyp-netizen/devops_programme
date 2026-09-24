@@ -97,11 +97,18 @@ The four authoring bands are:
 
 ## Current pilot banks
 
-The repository currently contains five 40-item pilot banks:
+The repository currently contains nine 40-item pilot banks:
 
+Beginner:
 - `B-F1` — Linux and Process Foundations
 - `B-F2` — Networking Foundations
 - `B-A1` — Service Communication
+- `B-A2` — Containers
+- `B-A3` — CI/CD and Reproducible Delivery
+- `B-A4` — Observability and Recovery
+- `B-A5` — Queues, Retries and Failure
+
+Intermediate:
 - `I-F1` — Linux and Operating Systems
 - `I-F2` — Networking and Protocols
 
