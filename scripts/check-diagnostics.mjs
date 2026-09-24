@@ -6,10 +6,12 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
 const diagnosticsPath = path.join(root, "app", "src", "data", "diagnostics.ts");
 const lessonsPath = path.join(root, "app", "src", "data", "courseLessons.ts");
+const intermediateLessonsPath = path.join(root, "app", "src", "data", "curriculum.ts");
 const programmePath = path.join(root, "app", "src", "data", "programme.ts");
 
 const diagnostics = await readFile(diagnosticsPath, "utf8");
 const lessons = await readFile(lessonsPath, "utf8");
+const intermediateLessons = await readFile(intermediateLessonsPath, "utf8");
 const programme = await readFile(programmePath, "utf8");
 
 let failed = false;
@@ -106,7 +108,11 @@ const remediationIds = [...diagnostics.matchAll(
 );
 
 for (const lessonId of remediationIds) {
-  if (!lessons.includes(`id: "${lessonId}"`)) {
+  const knownLesson =
+    lessons.includes(`id: "${lessonId}"`) ||
+    intermediateLessons.includes(`"id": "${lessonId}"`);
+
+  if (!knownLesson) {
     failed = true;
     console.error(
       `Diagnostic remediation lesson ${lessonId} does not exist in courseLessons.ts`
@@ -121,7 +127,11 @@ const prerequisiteIds = [...diagnostics.matchAll(
 );
 
 for (const lessonId of prerequisiteIds) {
-  if (!lessons.includes(`id: "${lessonId}"`)) {
+  const knownLesson =
+    lessons.includes(`id: "${lessonId}"`) ||
+    intermediateLessons.includes(`"id": "${lessonId}"`);
+
+  if (!knownLesson) {
     failed = true;
     console.error(
       `Diagnostic prerequisite lesson ${lessonId} does not exist in courseLessons.ts`
