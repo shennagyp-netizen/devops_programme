@@ -128,3 +128,14 @@ A learner's real external project is represented as another project instance usi
 - assessment mapping
 
 It is not a separate learning architecture.
+
+
+## Authoring authority
+
+The detailed normative standards for authoring lessons, sections, projects, diagnostics, assessments, spoken lessons, hands-on work, runtime verification and testing are maintained in:
+
+[COURSE_DESIGN_STANDARDS.md](./COURSE_DESIGN_STANDARDS.md)
+
+The current implementation handoff is maintained in:
+
+[../CONTINUATION_HANDOFF_CURRENT.md](../CONTINUATION_HANDOFF_CURRENT.md)
