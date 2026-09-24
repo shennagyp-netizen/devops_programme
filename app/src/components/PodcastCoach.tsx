@@ -7,7 +7,6 @@ import {
   type PodcastCueKind
 } from "../data/podcastSync";
 import {
-  dayFor,
   getEpisodeText,
   parseTurns,
   podcastUrl,
@@ -78,7 +77,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     audioRef.current = null;
 
     Promise.all([
-      fetch(podcastUrl(dayFor(lesson.id))).then((r) => (r.ok ? r.text() : "")),
+      fetch(podcastUrl(lesson.podcast)).then((r) => (r.ok ? r.text() : "")),
       fetch("/podcasts/manifest.json")
         .then((r) =>
           r.ok
