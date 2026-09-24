@@ -1,7 +1,7 @@
 import { pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
-export const learnerCompletions = pgTable(
-  "learner_completions",
+export const learnerProgressHistory = pgTable(
+  "learner_progress_history",
   {
     id: uuid("id").defaultRandom().primaryKey(),
     learnerId: text("learner_id").notNull(),
@@ -13,7 +13,7 @@ export const learnerCompletions = pgTable(
     completedAt: timestamp("completed_at", { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
-    learnerItemUnique: uniqueIndex("learner_completions_learner_item_uq").on(
+    learnerItemUnique: uniqueIndex("learner_progress_history_learner_item_uq").on(
       table.learnerId,
       table.itemType,
       table.itemId
