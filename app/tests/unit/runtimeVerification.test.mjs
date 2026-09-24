@@ -195,6 +195,66 @@ describe("machine verification contract", () => {
     );
   });
 
+  it("fails closed on an invalid verification source", () => {
+    const task = runtimeTaskForLesson("B1.2");
+    const result = validateMachineVerification(task, {
+      schemaVersion: 1,
+      taskId: task.taskId,
+      contractVersion: task.contractVersion,
+      lessonId: task.lessonId,
+      platform: "linux",
+      verificationLevel: "machine-verified",
+      verificationSource: "invalid-source",
+      runnerVersion: "0.1.0",
+      environmentFingerprint: "fingerprint",
+      startedAt: "2026-09-24T10:00:00.000Z",
+      completedAt: "2026-09-24T10:01:00.000Z",
+      stepResults: [],
+      resetPerformed: true
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.failures).toContain(
+      "Envelope verificationSource is invalid."
+    );
+  });
+
+  it("requires reset verification when a task contract requires it", () => {
+    const task = {
+      ...runtimeTaskForLesson("B1.2"),
+      resetRequired: true
+    };
+    const validHash = "f".repeat(64);
+    const result = validateMachineVerification(task, {
+      schemaVersion: 1,
+      taskId: task.taskId,
+      contractVersion: task.contractVersion,
+      lessonId: task.lessonId,
+      platform: "linux",
+      verificationLevel: "machine-verified",
+      verificationSource: "local-runner",
+      runnerVersion: "0.1.0",
+      environmentFingerprint: "fingerprint",
+      startedAt: "2026-09-24T10:00:00.000Z",
+      completedAt: "2026-09-24T10:01:00.000Z",
+      stepResults: task.steps.map((step, index) => ({
+        stepId: step.id,
+        startedAt: `2026-09-24T10:00:0${index}.000Z`,
+        completedAt: `2026-09-24T10:00:1${index}.000Z`,
+        exitCode: 0,
+        stdoutHash: validHash,
+        stderrHash: validHash,
+        result: "passed"
+      })),
+      resetPerformed: false
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.failures).toContain(
+      "Task requires reset verification, but resetPerformed is false."
+    );
+  });
+
   it("fails closed when no runtime task exists", () => {
     const result = validateMachineVerification(undefined, {
       schemaVersion: 1,
