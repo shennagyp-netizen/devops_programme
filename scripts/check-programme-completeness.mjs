@@ -80,7 +80,7 @@ for (const [course, spec] of Object.entries(expected)) {
 }
 
 const beginnerLessons = [...courseLessons.matchAll(/id: "(B\d+\.\d+)",/g)].map((match) => match[1]);
-const intermediateLessons = [...intermediateLessonsSource.matchAll(/id:\s*"(D\d+\.\d+)"/g)].map((match) => match[1]);
+const intermediateLessons = [...intermediateLessonsSource.matchAll(/"id":\s*"(D\d+\.\d+)"/g)].map((match) => match[1]);
 const advancedLessons = [...courseLessons.matchAll(/id: "(A\d+\.\d+)",/g)].map((match) => match[1]);
 
 const counts = {
