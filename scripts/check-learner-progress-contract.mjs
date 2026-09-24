@@ -1,52 +1,103 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 
 const files = {
-  schema: "../app/api/_lib/schema.ts",
-  api: "../app/api/progress.ts",
-  migration: "../app/drizzle/migrations/0000_learner_completions.sql",
-  client: "../app/src/data/learnerProgress.ts",
+  package: "../app/package.json",
+  schema: "../app/src/lib/server/schema.ts",
+  progress: "../app/src/lib/server/progress.ts",
+  action: "../app/src/app/actions/progress.ts",
+  contract: "../app/src/lib/progress-contract.ts",
   app: "../app/src/App.tsx",
-  lesson: "../app/src/components/LessonPanel.tsx",
-  evidence: "../app/src/data/evidence.ts"
+  page: "../app/src/app/page.tsx",
+  layout: "../app/src/app/layout.tsx",
+  proxy: "../app/src/proxy.ts"
 };
 
 async function read(relativePath) {
   return readFile(new URL(relativePath, import.meta.url), "utf8");
 }
 
-const [schema, api, migration, client, app, lesson, evidence] = await Promise.all(
-  Object.values(files).map(read)
+async function exists(relativePath) {
+  try {
+    await access(new URL(relativePath, import.meta.url));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+const loaded = await Promise.all(
+  Object.entries(files).map(async ([name, relativePath]) => [
+    name,
+    await read(relativePath)
+  ])
 );
 
-assert.match(schema, /pgTable(s*"learner_progress_history"/);
-assert.match(schema, /learner_id/);
-assert.match(schema, /item_type/);
-assert.match(schema, /item_id/);
-assert.match(schema, /learner_progress_history_learner_item_uq/);
+const content = Object.fromEntries(loaded);
 
-assert.match(migration, /CREATE TABLE IF NOT EXISTS "learner_progress_history"/);
-assert.match(
-  migration,
-  /UNIQUE INDEX IF NOT EXISTS "learner_progress_history_learner_item_uq"/
-);
+const packageJson = JSON.parse(content.package);
 
-assert.match(api, /learnerProgressHistory/);
-assert.match(api, /onConflictDoUpdate/);
-assert.match(api, /orderBy(asc(learnerProgressHistory.completedAt)/);
-assert.doesNotMatch(api, /stdout|stderr|machineEnvelope|attempt/);
-assert.doesNotMatch(api, /method === "DELETE"/);
+assert.equal(packageJson.scripts.dev, "npm run sync:podcasts && next dev");
+assert.equal(packageJson.scripts.start, "next start");
+assert.equal(packageJson.scripts.typecheck, "tsc -b");
+assert.ok(packageJson.dependencies.next);
+assert.ok(packageJson.dependencies["@clerk/nextjs"]);
+assert.equal(packageJson.dependencies.react, "19.2.8");
+assert.equal(packageJson.dependencies["react-dom"], "19.2.8");
+assert.equal(packageJson.dependencies.next, "16.3.5");
+assert.equal(packageJson.dependencies["@clerk/nextjs"], "7.9.4");
+assert.equal(packageJson.devDependencies.vite, undefined);
+assert.equal(packageJson.devDependencies["@vitejs/plugin-react"], undefined);
 
-assert.match(client, /listCompletionHistory/);
-assert.match(client, /completeLearningItem/);
-assert.doesNotMatch(client, /uncompleteLearningItem/);
+assert.match(content.schema, /userId\("user_id"\)/);
+assert.match(content.schema, /learner_progress_history_user_item_uq/);
+assert.doesNotMatch(content.schema, /learnerId/);
 
-assert.match(app, /listCompletionHistory/);
-assert.match(app, /completeLesson/);
-assert.doesNotMatch(app, /uncompleteLearningItem/);
+assert.match(content.progress, /onConflictDoNothing/);
+assert.match(content.progress, /completedAt/);
+assert.doesNotMatch(content.progress, /stdout|stderr|attempt|machineEnvelope/);
 
-assert.doesNotMatch(lesson, /localStorage\.setItem[\s\S]*machineEnvelope/);
-assert.doesNotMatch(evidence, /envelope: JSON\.stringify\(input\.envelope\)/);
+assert.match(content.action, /"use server"/);
+assert.match(content.action, /await auth\(\)/);
+assert.match(content.action, /Authentication required/);
+assert.doesNotMatch(content.action, /learnerId/);
 
-console.log("Learner progress contract: PASS");
-console.log("Completion history is one row per learner/item, ordered by server completion time.");
+assert.match(content.contract, /lesson/);
+assert.match(content.contract, /assignment/);
+assert.match(content.contract, /question/);
+assert.match(content.contract, /project/);
+assert.doesNotMatch(content.contract, /getLearnerId|localStorage|learnerId/);
+
+assert.match(content.app, /initialCompletionHistory/);
+assert.match(content.app, /completeLearningItemAction/);
+assert.doesNotMatch(content.app, /getLearnerId|listCompletionHistory|\/api\/progress/);
+
+assert.match(content.page, /await auth\(\)/);
+assert.match(content.page, /listCompletionHistoryForUser/);
+assert.match(content.page, /redirect\("\/sign-in"\)/);
+
+assert.match(content.layout, /<body>/);
+assert.match(content.layout, /<ClerkProvider>/);
+assert.ok(content.layout.indexOf("<body>") < content.layout.indexOf("<ClerkProvider>"));
+
+assert.match(content.proxy, /clerkMiddleware/);
+
+for (const obsolete of [
+  "../app/vite.config.ts",
+  "../app/index.html",
+  "../app/src/main.tsx",
+  "../app/src/data/learnerProgress.ts",
+  "../app/api/progress.ts",
+  "../api/progress.ts",
+  "../app/api/_lib/schema.ts",
+  "../app/api/_lib/db.ts"
+]) {
+  assert.equal(
+    await exists(obsolete),
+    false,
+    "Obsolete architecture still exists: " + obsolete
+  );
+}
+
+console.log("Learner progress/auth architecture contract: PASS");
+console.log("Single architecture: Next.js App Router + Clerk + Drizzle/PostgreSQL + Server Actions.");
