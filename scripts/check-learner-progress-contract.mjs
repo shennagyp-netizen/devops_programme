@@ -65,7 +65,7 @@ assert.match(content.gitignore, /^\.env$/m);
 assert.match(content.gitignore, /^\.env\.\*$/m);
 assert.doesNotMatch(content.gitignore, /\\n/);
 
-assert.match(content.schema, /userId\("user_id"\)/);
+assert.match(content.schema, /userId:\s*text\("user_id"\)/);
 assert.match(content.schema, /learner_progress_history_user_item_uq/);
 assert.match(content.schema, /item_type IN/);
 assert.doesNotMatch(content.schema, /learnerId/);
