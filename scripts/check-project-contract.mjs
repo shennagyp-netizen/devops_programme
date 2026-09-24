@@ -6,11 +6,13 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
 const lessonsPath = path.join(root, "app", "src", "data", "courseLessons.ts");
 const intermediateLessonsPath = path.join(root, "app", "src", "data", "curriculum.ts");
+const intermediateMappingPath = path.join(root, "app", "src", "data", "courseLessons.ts");
 const projectsPath = path.join(root, "app", "src", "data", "projects.ts");
 
 const lessons = await readFile(lessonsPath, "utf8");
 const intermediateLessons = await readFile(intermediateLessonsPath, "utf8");
 const projects = await readFile(projectsPath, "utf8");
+const intermediateMapping = await readFile(intermediateMappingPath, "utf8");
 
 let failed = false;
 
@@ -22,7 +24,7 @@ const lessonProjectIds = new Set(
   [...lessons.matchAll(/projectId:\s*"([^"]+)"/g)].map((match) => match[1])
 );
 
-for (const projectId of [...intermediateLessons.matchAll(/return\s+"(I[1-3])"/g)].map((match) => match[1])) {
+for (const projectId of [...intermediateMapping.matchAll(/return\s+"(I[1-3])"/g)].map((match) => match[1])) {
   lessonProjectIds.add(projectId);
 }
 
@@ -62,7 +64,6 @@ if (allIntermediateLessonIds.length !== 32) {
   );
 }
 
-const intermediateMapping = await readFile(lessonsPath, "utf8");
 for (const projectId of intermediateProjectIds) {
   if (!intermediateMapping.includes(`return "${projectId}"`)) {
     failed = true;
