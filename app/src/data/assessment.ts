@@ -90,7 +90,13 @@ const pilotSections = new Set([
   "B-A4",
   "B-A5",
   "I-F1",
-  "I-F2"
+  "I-F2",
+  "I-A1",
+  "I-A2",
+  "I-A3",
+  "I-A4",
+  "I-A5",
+  "I-A6"
 ]);
 
 export const assessmentBlueprints: AssessmentBlueprint[] = courses.flatMap(
