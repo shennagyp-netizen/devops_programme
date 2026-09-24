@@ -1,0 +1,139 @@
+DAY 2
+
+EPISODE D2.1 — TCP and UDP
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Build networking from first principles: frame, MAC, IP, route, port, socket, DNS, TCP, TLS and HTTP. Trace a request layer by layer.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to TCP and UDP. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place TCP and UDP in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D2.2 — DNS
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Build networking from first principles: frame, MAC, IP, route, port, socket, DNS, TCP, TLS and HTTP. Trace a request layer by layer.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to DNS. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place DNS in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D2.3 — HTTP
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Build networking from first principles: frame, MAC, IP, route, port, socket, DNS, TCP, TLS and HTTP. Trace a request layer by layer.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to HTTP. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place HTTP in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D2.4 — TLS and HTTPS
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Build networking from first principles: frame, MAC, IP, route, port, socket, DNS, TCP, TLS and HTTP. Trace a request layer by layer.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to TLS and HTTPS. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place TLS and HTTPS in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D2.5 — Why Containers Exist
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Treat a container as an isolated process environment. Learn images, layers, networks, ports, volumes and health by breaking them.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Why Containers Exist. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Why Containers Exist in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D2.6 — Docker Networking and Storage
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Treat a container as an isolated process environment. Learn images, layers, networks, ports, volumes and health by breaking them.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Docker Networking and Storage. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Docker Networking and Storage in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D2.7 — Break Docker
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Treat a container as an isolated process environment. Learn images, layers, networks, ports, volumes and health by breaking them.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Break Docker. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Break Docker in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
