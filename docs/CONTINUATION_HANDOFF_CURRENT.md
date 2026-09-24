@@ -1199,3 +1199,52 @@ Database files:
 Testing:
 - Added unit coverage for learner-id stability, loading completion state, completion writes without terminal output, question uncompletion, and API-write failure handling.
 - Hosted CI remains infrastructure-blocked by the previously recorded zero-step GitHub Actions startup failure, so these tests have not been executed by hosted CI on this branch.
+
+============================================================
+31. ORDER-INDEPENDENT LEARNER COMPLETION HISTORY — 2026-09-24
+============================================================
+
+The learner progress design has been refined to match the real learning model: learners are not required to follow the authored curriculum sequence.
+
+Persistent table:
+- learner_progress_history
+
+Uniqueness:
+- one row per learner + item type + item id
+- duplicate completion does not create another row
+- original completed_at remains the history timestamp
+
+History order:
+- completed_at is the learner's actual completion timeline
+- the server returns rows ordered by completed_at
+- authored curriculum order is not treated as learner execution order
+
+Stored:
+- learner identity
+- lesson/assignment/question/project identity
+- optional course/project context
+- verification level
+- server completion time
+
+Not stored:
+- terminal stdout/stderr
+- machine envelopes
+- retries
+- failed attempts
+- command history
+- intermediate execution output
+
+Terminal output is transient and is discarded after the current verification/UI flow.
+
+Completion writes are append-once and the API no longer supports deletion of history.
+
+Implementation:
+- app/api/_lib/schema.ts
+- app/api/_lib/db.ts
+- app/api/progress.ts
+- api/progress.ts
+- app/src/data/learnerProgress.ts
+- app/drizzle/migrations/0000_learner_completions.sql
+- scripts/check-learner-progress-contract.mjs
+
+GitHub Actions now includes the learner-progress contract check.
