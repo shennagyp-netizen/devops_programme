@@ -18,9 +18,8 @@ export type PodcastAudioManifest = {
 /*
  * Audio is deliberately optional until generated audio has been aligned.
  *
- * The React app must never infer exact voice position from text length.
- * When a manifest exists, playback time drives the transcript and exercise state.
- * When it does not, the app falls back to guided/manual transcript mode.
+ * React must never infer exact spoken position from text length, word count,
+ * paragraph length, or average speaking rate.
  */
 export const podcastAudioManifest: Record<string, PodcastAudioManifest> = {};
 
@@ -33,9 +32,33 @@ export function findActiveCue(
   timeMs: number
 ): PodcastCue | undefined {
   if (!manifest) return undefined;
-  return manifest.cues.find(
-    (cue) =>
-      timeMs >= cue.startMs &&
-      (cue.endMs === undefined || timeMs < cue.endMs)
-  );
+
+  for (let i = 0; i < manifest.cues.length; i += 1) {
+    const cue = manifest.cues[i];
+    const effectiveEnd =
+      cue.endMs ?? manifest.cues[i + 1]?.startMs ?? manifest.durationMs;
+
+    if (timeMs >= cue.startMs && timeMs < effectiveEnd) {
+      return cue;
+    }
+  }
+
+  return undefined;
+}
+
+export function findCurrentTurnId(
+  manifest: PodcastAudioManifest | undefined,
+  timeMs: number
+) {
+  if (!manifest) return undefined;
+
+  let current: PodcastCue | undefined;
+  for (const cue of manifest.cues) {
+    if (cue.startMs <= timeMs) {
+      current = cue;
+    } else {
+      break;
+    }
+  }
+  return current?.turnId;
 }
