@@ -3,8 +3,6 @@ import type{Lesson}from"../data/curriculum";
 import{dayFor,getEpisodeText,parseTurns,podcastUrl}from"../data/podcastsRaw";
 
 type Phase="brief"|"listen"|"coach"|"lab"|"recall"|"done";
-const dayFor=(id:string)=>id.split(".")[0];
-
 export function PodcastCoach({lesson}:{lesson:Lesson}){
  const[phase,setPhase]=useState<Phase>("brief");
  const[turnIndex,setTurnIndex]=useState(0);
