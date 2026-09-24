@@ -3,7 +3,12 @@ import type { CourseLesson } from "../data/courseLessons";
 import type { PlatformId } from "../data/programme";
 import type { DiagnosticRecommendation } from "../data/diagnostics";
 import { diagnosticBySection } from "../data/diagnostics";
-import { addEvidence } from "../data/evidence";
+import { recordHandsOnEvidence } from "../data/evidence";
+import {
+  getHandsOnTask,
+  validateHandsOnEvidence,
+  type HandsOnTask
+} from "../data/handsOn";
 import { commandForPlatform } from "../data/platformAdapters";
 import { MotionIllustration } from "./MotionIllustration";
 import { PodcastCoach } from "./PodcastCoach";
@@ -36,30 +41,30 @@ export function LessonPanel({
 }) {
   const [mode, setMode] = useState<Mode>("learn");
   const [showTheory, setShowTheory] = useState(true);
-  const evidenceKey = `devops-programme-exercise-evidence:${lesson.id}`;
-  const [exerciseEvidence, setExerciseEvidence] = useState(() => {
-    try {
-      return localStorage.getItem(evidenceKey) ?? "";
-    } catch {
-      return "";
-    }
-  });
-  const [exerciseRecorded, setExerciseRecorded] = useState(() => {
-    try {
-      return Boolean(localStorage.getItem(evidenceKey));
-    } catch {
-      return false;
-    }
-  });
+  const evidenceKey = `devops-programme-hands-on-evidence:${lesson.id}`;
+  const [handsOnEvidence, setHandsOnEvidence] = useState<Record<string, string>>({});
+  const [exerciseRecorded, setExerciseRecorded] = useState(false);
+  const [validationMessage, setValidationMessage] = useState("");
   const command = commandForPlatform(lesson, platform);
+  const handsOnTask: HandsOnTask = getHandsOnTask(lesson);
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(evidenceKey) ?? "";
-      setExerciseEvidence(stored);
-      setExerciseRecorded(Boolean(stored));
+      const stored = localStorage.getItem(evidenceKey);
+      if (!stored) {
+        setHandsOnEvidence({});
+        setExerciseRecorded(false);
+        return;
+      }
+
+      const parsed = JSON.parse(stored) as {
+        evidence?: Record<string, string>;
+        verified?: boolean;
+      };
+      setHandsOnEvidence(parsed.evidence ?? {});
+      setExerciseRecorded(parsed.verified === true);
     } catch {
-      setExerciseEvidence("");
+      setHandsOnEvidence({});
       setExerciseRecorded(false);
     }
   }, [evidenceKey]);
@@ -201,58 +206,102 @@ export function LessonPanel({
           <p>{lesson.lab.challenge}</p>
 
           <div className="content-card">
-            <span className="eyebrow">EXERCISE EVIDENCE</span>
-            <h4>What did you actually observe?</h4>
-            <p>
-              Record the key observation and the evidence that supports your
-              diagnosis or recovery. This is a local self-report for now; the
-              future hands-on engine will replace it with machine-verified evidence.
-            </p>
-            <textarea
-              value={exerciseEvidence}
-              onChange={(event) => {
-                const value = event.target.value;
-                setExerciseEvidence(value);
-                setExerciseRecorded(false);
-                try {
-                  if (value.trim()) {
-                    localStorage.setItem(evidenceKey, value);
-                  } else {
-                    localStorage.removeItem(evidenceKey);
-                  }
-                } catch {
-                  // Local evidence is best-effort in the MVP.
-                }
-              }}
-              placeholder="Example: DNS resolved, TCP connected, but TLS failed after the certificate changed."
-            />
+            <span className="eyebrow">EXERCISE EVIDENCE · ${handsOnTask.verificationLevel}</span>
+            <h4>{handsOnTask.title}</h4>
+            <p>{handsOnTask.objective}</p>
+            <ol>
+              {handsOnTask.steps.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+
+            <h4>Evidence required</h4>
+            {handsOnTask.evidenceFields.map((field) => (
+              <label key={field.id} className="evidence-field">
+                <strong>{field.label}</strong>
+                <textarea
+                  value={handsOnEvidence[field.id] ?? ""}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setHandsOnEvidence((current) => ({
+                      ...current,
+                      [field.id]: value
+                    }));
+                    setExerciseRecorded(false);
+                    setValidationMessage("");
+                  }}
+                  placeholder={field.kind}
+                />
+              </label>
+            ))}
+
             <button
               className="primary"
-              disabled={!exerciseEvidence.trim()}
               onClick={() => {
+                const validation = validateHandsOnEvidence(
+                  handsOnTask,
+                  handsOnEvidence
+                );
+                if (!validation.valid) {
+                  setExerciseRecorded(false);
+                  setValidationMessage(validation.failures.join(" "));
+                  return;
+                }
+
+                const summary = handsOnTask.evidenceFields
+                  .map((field) => handsOnEvidence[field.id]?.trim())
+                  .filter(Boolean)
+                  .join(" | ");
+
                 try {
-                  localStorage.setItem(evidenceKey, exerciseEvidence);
+                  localStorage.setItem(
+                    evidenceKey,
+                    JSON.stringify({
+                      taskId: handsOnTask.id,
+                      evidence: handsOnEvidence,
+                      verified: true,
+                      verificationLevel: handsOnTask.verificationLevel,
+                      savedAt: new Date().toISOString()
+                    })
+                  );
                 } catch {
                   // Local evidence is best-effort in the MVP.
                 }
-                addEvidence({
+
+                recordHandsOnEvidence({
                   course: lesson.course,
                   projectId: lesson.projectId,
                   lessonId: lesson.id,
-                  kind: "exercise",
-                  summary: exerciseEvidence.trim()
+                  taskId: handsOnTask.id,
+                  summary,
+                  verificationLevel: handsOnTask.verificationLevel,
+                  evidencePayload: handsOnEvidence
                 });
+
                 setExerciseRecorded(true);
+                setValidationMessage("Evidence structure validated and saved locally.");
                 onEvidenceRecorded?.();
               }}
             >
-              Record exercise evidence
+              Validate and record evidence
             </button>
+
+            {validationMessage ? (
+              <p className="range">{validationMessage}</p>
+            ) : null}
+
             {exerciseRecorded ? (
               <p className="range">
-                Exercise evidence recorded locally. You can now mark this lesson complete.
+                This task is structurally validated. It is not yet machine-verified against the learner's environment.
               </p>
             ) : null}
+
+            <p className="range">
+              Success criteria: {handsOnTask.successCriteria.join(" · ")}
+            </p>
+            <p className="range">
+              {handsOnTask.verificationNote}
+            </p>
           </div>
         </div>
       )}
