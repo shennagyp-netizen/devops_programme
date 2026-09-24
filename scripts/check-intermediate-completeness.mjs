@@ -50,7 +50,7 @@ for (const sectionId of expectedSections) {
   }
 }
 
-const lessonIds = [...lessons.matchAll(/id:\s*"(D[1-5]\.\d+)"/g)].map((match) => match[1]);
+const lessonIds = [...lessons.matchAll(/"id":\s*"(D[1-5]\.\d+)"/g)].map((match) => match[1]);
 if (lessonIds.length !== expectedLessons) {
   failed = true;
   console.error(`Intermediate lesson count is ${lessonIds.length}; expected ${expectedLessons}.`);
