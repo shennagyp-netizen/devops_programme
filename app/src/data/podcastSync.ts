@@ -23,6 +23,55 @@ export type PodcastAudioManifest = {
   cues: PodcastCue[];
 };
 
+const cueKinds = new Set<PodcastCueKind>([
+  "prediction",
+  "lab",
+  "recall",
+  "transition"
+]);
+
+function isFiniteNonNegative(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0;
+}
+
+function isValidManifest(value: unknown): value is PodcastAudioManifest {
+  if (!value || typeof value !== "object") return false;
+
+  const candidate = value as Partial<PodcastAudioManifest>;
+  if (typeof candidate.episodeId !== "string" || !candidate.episodeId) return false;
+  if (typeof candidate.scriptVersion !== "string" || !candidate.scriptVersion) return false;
+  if (typeof candidate.audioUrl !== "string" || !candidate.audioUrl) return false;
+  if (!isFiniteNonNegative(candidate.durationMs) || candidate.durationMs === 0) return false;
+  if (!Array.isArray(candidate.turns) || !Array.isArray(candidate.cues)) return false;
+
+  let previousTurnEnd = 0;
+  for (const turn of candidate.turns) {
+    if (!turn || typeof turn.turnId !== "string" || !turn.turnId) return false;
+    if (!isFiniteNonNegative(turn.startMs) || !isFiniteNonNegative(turn.endMs)) return false;
+    if (turn.endMs <= turn.startMs || turn.endMs > candidate.durationMs) return false;
+    if (turn.startMs < previousTurnEnd) return false;
+    previousTurnEnd = turn.endMs;
+  }
+
+  const turnIds = new Set(candidate.turns.map((turn) => turn.turnId));
+  let previousCueStart = 0;
+  for (const cue of candidate.cues) {
+    if (!cue || typeof cue.id !== "string" || !cue.id) return false;
+    if (typeof cue.turnId !== "string" || !turnIds.has(cue.turnId)) return false;
+    if (!cueKinds.has(cue.kind)) return false;
+    if (!isFiniteNonNegative(cue.startMs) || cue.startMs > candidate.durationMs) return false;
+    if (cue.endMs !== undefined) {
+      if (!isFiniteNonNegative(cue.endMs) || cue.endMs <= cue.startMs || cue.endMs > candidate.durationMs) {
+        return false;
+      }
+    }
+    if (cue.startMs < previousCueStart) return false;
+    previousCueStart = cue.startMs;
+  }
+
+  return true;
+}
+
 /*
  * Audio is deliberately optional until generated audio has been aligned.
  *
@@ -39,7 +88,18 @@ export async function loadPodcastAudioManifest(): Promise<
   try {
     const response = await fetch("/podcasts/audio-manifest.json");
     if (!response.ok) return {};
-    return (await response.json()) as Record<string, PodcastAudioManifest>;
+
+    const raw = (await response.json()) as unknown;
+    if (!raw || typeof raw !== "object") return {};
+
+    const validated: Record<string, PodcastAudioManifest> = {};
+    for (const [episodeId, value] of Object.entries(raw as Record<string, unknown>)) {
+      if (isValidManifest(value) && value.episodeId === episodeId) {
+        validated[episodeId] = value;
+      }
+    }
+
+    return validated;
   } catch {
     return {};
   }
