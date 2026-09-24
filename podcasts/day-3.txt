@@ -2,98 +2,98 @@ DAY 3
 
 EPISODE D3.1 — Kubernetes Mental Model
 
-Speaker A: We will build the operational mental model, not memorize vocabulary.
+Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I already understand application development. What changes when I operate the system?
+Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Kubernetes is reconciliation: desired state, controllers, pods, workloads, services, ingress, health and resources.
+Speaker A: Kubernetes is reconciliation: desired state is declared and controllers move actual state toward it. Pods, deployments, services, ingress, probes and resources become meaningful through that model.
 
-Speaker B: What must I be able to do afterward?
+Speaker B: Give me the failure-oriented version.
 
-Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
 
-Hands-on: Use the Mac to run an experiment related to Kubernetes Mental Model. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+Hands-on: Use the Mac to perform an experiment related to Kubernetes Mental Model. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
 
-Production: Place Kubernetes Mental Model in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+Production: Place Kubernetes Mental Model in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
 
 ==============================
 
 EPISODE D3.2 — Kubernetes Networking
 
-Speaker A: We will build the operational mental model, not memorize vocabulary.
+Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I already understand application development. What changes when I operate the system?
+Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Kubernetes is reconciliation: desired state, controllers, pods, workloads, services, ingress, health and resources.
+Speaker A: Kubernetes is reconciliation: desired state is declared and controllers move actual state toward it. Pods, deployments, services, ingress, probes and resources become meaningful through that model.
 
-Speaker B: What must I be able to do afterward?
+Speaker B: Give me the failure-oriented version.
 
-Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
 
-Hands-on: Use the Mac to run an experiment related to Kubernetes Networking. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+Hands-on: Use the Mac to perform an experiment related to Kubernetes Networking. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
 
-Production: Place Kubernetes Networking in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+Production: Place Kubernetes Networking in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
 
 ==============================
 
 EPISODE D3.3 — Kubernetes Configuration and Storage
 
-Speaker A: We will build the operational mental model, not memorize vocabulary.
+Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I already understand application development. What changes when I operate the system?
+Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Kubernetes is reconciliation: desired state, controllers, pods, workloads, services, ingress, health and resources.
+Speaker A: Kubernetes is reconciliation: desired state is declared and controllers move actual state toward it. Pods, deployments, services, ingress, probes and resources become meaningful through that model.
 
-Speaker B: What must I be able to do afterward?
+Speaker B: Give me the failure-oriented version.
 
-Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
 
-Hands-on: Use the Mac to run an experiment related to Kubernetes Configuration and Storage. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+Hands-on: Use the Mac to perform an experiment related to Kubernetes Configuration and Storage. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
 
-Production: Place Kubernetes Configuration and Storage in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+Production: Place Kubernetes Configuration and Storage in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
 
 ==============================
 
 EPISODE D3.4 — Kubernetes Health and Scaling
 
-Speaker A: We will build the operational mental model, not memorize vocabulary.
+Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I already understand application development. What changes when I operate the system?
+Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Kubernetes is reconciliation: desired state, controllers, pods, workloads, services, ingress, health and resources.
+Speaker A: Kubernetes is reconciliation: desired state is declared and controllers move actual state toward it. Pods, deployments, services, ingress, probes and resources become meaningful through that model.
 
-Speaker B: What must I be able to do afterward?
+Speaker B: Give me the failure-oriented version.
 
-Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
 
-Hands-on: Use the Mac to run an experiment related to Kubernetes Health and Scaling. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+Hands-on: Use the Mac to perform an experiment related to Kubernetes Health and Scaling. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
 
-Production: Place Kubernetes Health and Scaling in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+Production: Place Kubernetes Health and Scaling in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
 
 ==============================
 
 EPISODE D3.5 — Kubernetes Failure Lab
 
-Speaker A: We will build the operational mental model, not memorize vocabulary.
+Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I already understand application development. What changes when I operate the system?
+Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Kubernetes is reconciliation: desired state, controllers, pods, workloads, services, ingress, health and resources.
+Speaker A: Kubernetes is reconciliation: desired state is declared and controllers move actual state toward it. Pods, deployments, services, ingress, probes and resources become meaningful through that model.
 
-Speaker B: What must I be able to do afterward?
+Speaker B: Give me the failure-oriented version.
 
-Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
 
-Hands-on: Use the Mac to run an experiment related to Kubernetes Failure Lab. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+Hands-on: Use the Mac to perform an experiment related to Kubernetes Failure Lab. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
 
-Production: Place Kubernetes Failure Lab in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+Production: Place Kubernetes Failure Lab in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
 
-Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
