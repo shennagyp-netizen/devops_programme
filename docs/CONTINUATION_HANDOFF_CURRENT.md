@@ -1114,3 +1114,36 @@ Important operational boundary:
 - GitHub Free currently includes 2,000 standard-hosted Actions minutes per month; GitHub blocks usage after the included quota when no valid payment/allowance is available.
 
 Do not weaken the full gate, mark it green manually, or merge a failing check just to remove the red state.
+
+
+============================================================
+29. FINAL GITHUB ACTIONS RE-TEST — 2026-09-24
+============================================================
+
+The GitHub Actions configuration is complete as a repository-side full-programme gate.
+
+Final verification attempt:
+- PR #14: CI: finalize GitHub Actions full-programme gate.
+- Commit: 81465993490239fba2a3a7bacb891c5ae1d47355.
+- Run #852 / run id 36022779623.
+- Workflow: devops-programme-app.
+- Job: full-programme-gate.
+- Job id: 107711587429.
+- Result: failure before any visible workflow step executed.
+- Step list: empty.
+- Job logs: unavailable because no runner step execution occurred.
+
+The PR was closed without merge. No failing check was merged, and no test was weakened to manufacture a green result.
+
+The canonical main workflow remains the complete full-programme gate with:
+- all authored content/assessment/diagnostic/project/platform/hands-on/programme/runtime contracts
+- full unit + integration test suite
+- TypeScript compilation
+- Vite production build
+- workflow_dispatch support.
+
+Conclusion:
+- Repository-side GitHub Actions configuration: complete.
+- Application/test workflow execution on GitHub-hosted runners: still blocked before first step by the same infrastructure/startup condition.
+- No hosted-green result exists yet.
+- Once Actions execution is restored at the account/repository level, the existing workflow can be rerun through workflow_dispatch or a normal pull request; the gate itself is already configured to validate the complete programme.
