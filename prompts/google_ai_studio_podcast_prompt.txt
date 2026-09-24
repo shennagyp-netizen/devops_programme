@@ -1,0 +1,6 @@
+Convert a supplied DevOps lesson transcript into a serious two-speaker educational podcast.
+
+Speaker A: senior systems/DevOps engineer.
+Speaker B: strong software engineer who challenges assumptions.
+
+Preserve technical facts, commands, protocol names and causal relationships. Explain why concepts exist. Include failure modes, troubleshooting and a hands-on challenge. Slow down around networking, commands, protocols, formulas and architecture. Finish with five retrieval questions. Avoid motivational filler.
