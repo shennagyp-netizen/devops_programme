@@ -334,166 +334,178 @@
       "family": "diagnostic",
       "difficulty": "foundation",
       "cognitiveLevel": "application",
-      "itemType": [
-        "startup logs and exit state"
-      ],
+      "itemType": "scenario",
       "expectedMinutes": 2,
       "competencyId": "B-A2.diagnostic",
-      "prompt": "Container starts and exits with code 1. What is the first evidence to collect?"
+      "prompt": "Container starts and exits with code 1. What is the first evidence to collect?",
+      "expectedElements": [
+        "startup logs and exit state"
+      ]
     },
     {
       "id": "BA2-D-002",
       "family": "diagnostic",
       "difficulty": "foundation",
       "cognitiveLevel": "application",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 2,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "A container is healthy but a client gets connection refused. What should you compare?",
+      "expectedElements": [
         "container health result",
         "listener/port mapping",
         "client connection path"
-      ],
-      "expectedMinutes": 2,
-      "competencyId": "B-A2.diagnostic",
-      "prompt": "A container is healthy but a client gets connection refused. What should you compare?"
+      ]
     },
     {
       "id": "BA2-D-003",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "The image digest is unchanged but behavior changed after redeploy. What should you inspect?",
+      "expectedElements": [
         "runtime configuration",
         "mounted files/volumes",
         "environment variables or secrets",
         "host/runtime differences"
-      ],
-      "expectedMinutes": 3,
-      "competencyId": "B-A2.diagnostic",
-      "prompt": "The image digest is unchanged but behavior changed after redeploy. What should you inspect?"
+      ]
     },
     {
       "id": "BA2-D-004",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
-        "network membership",
-        "container/DNS service names"
-      ],
+      "itemType": "scenario",
       "expectedMinutes": 3,
       "competencyId": "B-A2.diagnostic",
-      "prompt": "Two containers cannot resolve each other's service name. What should you check?"
+      "prompt": "Two containers cannot resolve each other's service name. What should you check?",
+      "expectedElements": [
+        "network membership",
+        "container/DNS service names"
+      ]
     },
     {
       "id": "BA2-D-005",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
-        "mounted path",
-        "application configuration pointing to the actual data location"
-      ],
+      "itemType": "scenario",
       "expectedMinutes": 3,
       "competencyId": "B-A2.diagnostic",
-      "prompt": "A volume contains the expected files but the application reports an empty database. What distinction matters?"
+      "prompt": "A volume contains the expected files but the application reports an empty database. What distinction matters?",
+      "expectedElements": [
+        "mounted path",
+        "application configuration pointing to the actual data location"
+      ]
     },
     {
       "id": "BA2-D-006",
       "family": "diagnostic",
       "difficulty": "applied",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
-        "shared dependency saturation",
-        "bad service discovery or load distribution"
-      ],
+      "itemType": "scenario",
       "expectedMinutes": 3,
       "competencyId": "B-A2.diagnostic",
-      "prompt": "A new replica increases timeout rate. Give two hypotheses."
+      "prompt": "A new replica increases timeout rate. Give two hypotheses.",
+      "expectedElements": [
+        "shared dependency saturation",
+        "bad service discovery or load distribution"
+      ]
     },
     {
       "id": "BA2-D-007",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "A container works with an interactive shell but fails as a service. What differs?",
+      "expectedElements": [
         "startup command/entrypoint",
         "environment or working directory",
         "logging/foreground process behavior"
-      ],
-      "expectedMinutes": 4,
-      "competencyId": "B-A2.diagnostic",
-      "prompt": "A container works with an interactive shell but fails as a service. What differs?"
+      ]
     },
     {
       "id": "BA2-D-008",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "After a configuration change, health checks fail but the process stays alive. What evidence separates bad config from dependency failure?",
+      "expectedElements": [
         "application logs",
         "dependency connection check",
         "configuration diff"
-      ],
-      "expectedMinutes": 4,
-      "competencyId": "B-A2.diagnostic",
-      "prompt": "After a configuration change, health checks fail but the process stays alive. What evidence separates bad config from dependency failure?"
+      ]
     },
     {
       "id": "BA2-D-009",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "An API is reachable from the host but not from a peer container. Build the smallest test sequence.",
+      "expectedElements": [
         "container-to-container name resolution",
         "container port/reachability",
         "service binding/network membership"
-      ],
-      "expectedMinutes": 4,
-      "competencyId": "B-A2.diagnostic",
-      "prompt": "An API is reachable from the host but not from a peer container. Build the smallest test sequence."
+      ]
     },
     {
       "id": "BA2-D-010",
       "family": "diagnostic",
       "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "One container image works on a developer laptop and fails in CI. Design a discriminating evidence set.",
+      "expectedElements": [
         "image digest",
         "runtime/container version",
         "environment variables/secrets",
         "filesystem or architecture differences"
-      ],
-      "expectedMinutes": 4,
-      "competencyId": "B-A2.diagnostic",
-      "prompt": "One container image works on a developer laptop and fails in CI. Design a discriminating evidence set."
+      ]
     },
     {
       "id": "BA2-D-011",
       "family": "diagnostic",
       "difficulty": "challenge",
       "cognitiveLevel": "design",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "A stateful container crashes after a bad migration. What is the safest recovery decision?",
+      "expectedElements": [
         "preserve data first",
         "restore or roll back the known-good application/data state",
         "verify schema/data integrity before reopening traffic"
-      ],
-      "expectedMinutes": 5,
-      "competencyId": "B-A2.diagnostic",
-      "prompt": "A stateful container crashes after a bad migration. What is the safest recovery decision?"
+      ]
     },
     {
       "id": "BA2-D-012",
       "family": "diagnostic",
       "difficulty": "challenge",
       "cognitiveLevel": "design",
-      "itemType": [
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "B-A2.diagnostic",
+      "prompt": "A container service is intermittently failing. Design an evidence chain that distinguishes process restarts, network failures, and dependency failures.",
+      "expectedElements": [
         "restart/exit metrics",
         "network request results",
         "dependency timings/errors",
         "correlation across time"
-      ],
-      "expectedMinutes": 5,
-      "competencyId": "B-A2.diagnostic",
-      "prompt": "A container service is intermittently failing. Design an evidence chain that distinguishes process restarts, network failures, and dependency failures."
+      ]
     },
     {
       "id": "BA2-H-001",
