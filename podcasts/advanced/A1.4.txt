@@ -212,23 +212,23 @@ Speaker A: Maybe. Keep the recovery condition explicit.
 
 Speaker B: Multiple zones inside each region.
 
-Speaker A: Good.
+Speaker A: Good. Let’s keep that tied to the actual system behavior.
 
 Speaker B: Services spread across hosts.
 
-Speaker A: Good.
+Speaker A: Good. Now say what evidence would confirm it.
 
 Speaker B: Data copies separated by the failures we want to survive.
 
-Speaker A: Good.
+Speaker A: Good. That distinction matters when the failure starts spreading.
 
 Speaker B: Traffic can move when one area is unhealthy.
 
-Speaker A: Yes.
+Speaker A: Yes. I would not change the design until that is measured.
 
 Speaker B: But that only works if the other areas have spare capacity.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now the user-visible effect is explicit.
 
 Speaker B: Back to capacity.
 
@@ -248,15 +248,15 @@ Speaker A: What do you need to know?
 
 Speaker B: Remaining capacity.
 
-Speaker A: Good.
+Speaker A: Good. That gives us a safe next experiment.
 
 Speaker B: If three instances cannot handle the traffic, availability may still fall.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Let’s keep that tied to the actual system behavior.
 
 Speaker B: So zone redundancy without headroom is weak.
 
-Speaker A: Good.
+Speaker A: Good. Now say what evidence would confirm it.
 
 Speaker B: Another prediction. We have two regions, but both use one shared identity provider. The identity provider fails. Do the regions still have independent operation?
 
