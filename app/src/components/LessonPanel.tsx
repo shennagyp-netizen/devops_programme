@@ -89,20 +89,10 @@ export function LessonPanel({
       const parsed = JSON.parse(stored) as {
         evidence?: Record<string, string>;
         verified?: boolean;
-        machineVerified?: boolean;
-        machineEnvelope?: {
-          stepResults?: Array<{
-            stepId: string;
-            stdout: string;
-            stderr: string;
-            exitCode: number;
-            result: string;
-          }>;
-        };
       };
       setHandsOnEvidence(parsed.evidence ?? {});
       setExerciseRecorded(parsed.verified === true);
-      setMachineResults(parsed.machineEnvelope?.stepResults ?? []);
+      setMachineResults([]);
     } catch {
       setHandsOnEvidence({});
       setExerciseRecorded(false);
@@ -183,26 +173,10 @@ export function LessonPanel({
       const isFullExerciseVerification = runtimeTask.scope === "exercise";
       setExerciseRecorded(isFullExerciseVerification);
       setMachineResults(envelope.stepResults ?? []);
-      try {
-        localStorage.setItem(
-          evidenceKey,
-          JSON.stringify({
-            taskId: runtimeTask.taskId,
-            verified: runtimeTask.scope === "exercise",
-            machineVerified: true,
-            verificationLevel: "machine-verified",
-            machineEnvelope: envelope,
-            savedAt: new Date().toISOString()
-          })
-        );
-      } catch {
-        // Evidence ledger is already updated; local UI persistence is best-effort.
-      }
-
       setMachineVerificationMessage(
         runtimeTask.scope === "exercise"
-          ? "Laptop terminal execution verified and saved."
-          : "Laptop probe execution verified and saved. Complete the required hands-on exercise below to unlock the lesson."
+          ? "Laptop terminal execution verified for this session."
+          : "Laptop probe execution verified for this session. Complete the required hands-on exercise below to unlock the lesson."
       );
       onEvidenceRecorded?.();
     } catch (error) {
@@ -249,27 +223,9 @@ export function LessonPanel({
       const isFullExerciseVerification = runtimeTask.scope === "exercise";
       setExerciseRecorded(isFullExerciseVerification);
       setMachineResults(envelope.stepResults ?? []);
-      try {
-        const existing = localStorage.getItem(evidenceKey);
-        const parsedExisting = existing ? JSON.parse(existing) : {};
-        localStorage.setItem(
-          evidenceKey,
-          JSON.stringify({
-            ...parsedExisting,
-            taskId: runtimeTask.taskId,
-            verified: runtimeTask.scope === "exercise",
-            machineVerified: true,
-            verificationLevel: "machine-verified",
-            machineEnvelope: envelope,
-            savedAt: new Date().toISOString()
-          })
-        );
-      } catch {
-        // Machine evidence already entered the ledger; browser persistence is best-effort.
-      }
       setMachineVerificationMessage(
         isFullExerciseVerification
-          ? "Verified execution evidence was accepted and saved locally."
+          ? "Verified execution evidence was accepted for this session."
           : "Machine probe evidence was accepted. Complete the required hands-on exercise below to unlock the lesson."
       );
     } catch (error) {
