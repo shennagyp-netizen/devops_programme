@@ -812,10 +812,21 @@ Test expansion:
 - the project-contract validator's malformed intermediate-lesson regex was corrected.
 
 CI status:
+- latest branch head reviewed: fdeaab70d559d29315c28fe098a335bc89579a1c.
+- latest pull-request run observed for that head: #649.
+- run #649 concluded failure at the GitHub job level.
+- its build job exposes no step list or downloadable artifact through the connector.
+- an earlier failed run was explicitly re-run and failed again, so the failure is reproducible at the workflow/job boundary, but the failing application stage remains unobservable.
 - recent push and pull-request workflow runs still report failure.
 - the GitHub connector exposes the failed build job but its log endpoint currently returns BlobNotFound and job step details are null.
 - therefore no CI stage is being declared failed or passed from these runs.
 - the latest application-level source fixes should be revalidated by the next observable CI run before any runtime-task expansion is considered green.
+
+Project-contract gap still open:
+- the documented project contract includes change history and incident history.
+- ProjectDefinition currently models milestones, failure scenarios, evidence requirements and completion criteria, but does not yet model explicit change-history or incident-history records.
+- The evidence ledger is not being treated as a substitute for those project history records.
+- Do not silently mark this requirement complete.
 
 Next gate:
 1. obtain observable test-stage evidence from CI or a working local checkout/dependency environment.
