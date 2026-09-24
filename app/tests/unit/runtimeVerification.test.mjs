@@ -26,6 +26,7 @@ describe("machine verification contract", () => {
       lessonId: "B1.2",
       platform: "linux",
       verificationLevel: "machine-verified",
+      verificationSource: "local-runner",
       runnerVersion: "0.1.0",
       environmentFingerprint: "fingerprint",
       startedAt: "2026-09-24T10:00:00.000Z",
