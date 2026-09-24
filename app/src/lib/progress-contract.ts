@@ -10,17 +10,12 @@ export type LearningItemType = (typeof LEARNING_ITEM_TYPES)[number];
 export type CompletionInput = {
   itemType: LearningItemType;
   itemId: string;
-  course?: string;
-  projectId?: string;
-  verificationLevel?: string;
 };
 
 const limits = {
-  itemId: 200,
-  course: 64,
-  projectId: 128,
-  verificationLevel: 64
+  itemId: 200
 } as const;
+
 
 function requireString(
   value: unknown,
@@ -37,15 +32,6 @@ function requireString(
   }
 
   return value.trim();
-}
-
-function optionalString(
-  value: unknown,
-  name: string,
-  maxLength: number
-): string | undefined {
-  if (value === undefined || value === null) return undefined;
-  return requireString(value, name, maxLength);
 }
 
 export function parseCompletionInput(value: unknown): CompletionInput {
@@ -71,28 +57,7 @@ export function parseCompletionInput(value: unknown): CompletionInput {
 
   return {
     itemType: rawType as LearningItemType,
-    itemId: requireString(source.itemId, "itemId", limits.itemId),
-    ...(source.course === undefined
-      ? {}
-      : { course: optionalString(source.course, "course", limits.course) }),
-    ...(source.projectId === undefined
-      ? {}
-      : {
-          projectId: optionalString(
-            source.projectId,
-            "projectId",
-            limits.projectId
-          )
-        }),
-    ...(source.verificationLevel === undefined
-      ? {}
-      : {
-          verificationLevel: optionalString(
-            source.verificationLevel,
-            "verificationLevel",
-            limits.verificationLevel
-          )
-        })
+    itemId: requireString(source.itemId, "itemId", limits.itemId)
   };
 }
 

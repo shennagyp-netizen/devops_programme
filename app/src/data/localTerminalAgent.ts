@@ -1,26 +1,34 @@
 import type { MachineVerificationEnvelope } from "./runtimeVerification";
 
 export type LocalTerminalAgentStatus =
-  | { available: true; version: string; platform: string }
+  | {
+      available: true;
+      version: string;
+      platform: string;
+      attestationPublicKey: string;
+    }
   | { available: false; reason: string };
 
 const AGENT_URL = "http://127.0.0.1:4317";
-const TOKEN_KEY = "devops-programme-terminal-agent-token";
+
+let pairingToken = "";
 
 export function getLocalTerminalToken() {
-  try {
-    return localStorage.getItem(TOKEN_KEY) ?? "";
-  } catch {
-    return "";
-  }
+  return pairingToken;
 }
 
 export function setLocalTerminalToken(token: string) {
-  try {
-    localStorage.setItem(TOKEN_KEY, token.trim());
-  } catch {
-    // Best-effort local preference.
+  pairingToken = token.trim();
+}
+
+export function createExecutionChallenge() {
+  if (!globalThis.crypto?.getRandomValues) {
+    throw new Error("Secure browser randomness is unavailable.");
   }
+
+  const bytes = new Uint8Array(32);
+  globalThis.crypto.getRandomValues(bytes);
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
 export async function localTerminalAgentStatus(): Promise<LocalTerminalAgentStatus> {
@@ -37,10 +45,20 @@ export async function localTerminalAgentStatus(): Promise<LocalTerminalAgentStat
     }
 
     const body = await response.json();
+    const attestationPublicKey = String(body.attestation?.publicKey ?? "");
+
+    if (!attestationPublicKey) {
+      return {
+        available: false,
+        reason: "Local terminal agent did not publish an attestation public key."
+      };
+    }
+
     return {
       available: true,
       version: String(body.version ?? "unknown"),
-      platform: String(body.platform ?? "unknown")
+      platform: String(body.platform ?? "unknown"),
+      attestationPublicKey
     };
   } catch {
     return {
@@ -54,9 +72,14 @@ export async function runLocalTerminalTask(input: {
   taskId: string;
   platform: string;
   token: string;
+  challenge: string;
 }): Promise<MachineVerificationEnvelope> {
   if (!input.token.trim()) {
     throw new Error("Enter the local terminal agent pairing token first.");
+  }
+
+  if (!/^[a-f0-9]{64}$/i.test(input.challenge)) {
+    throw new Error("A valid execution challenge is required.");
   }
 
   const request = new Request(`${AGENT_URL}/execute`, {
@@ -68,7 +91,8 @@ export async function runLocalTerminalTask(input: {
     },
     body: JSON.stringify({
       taskId: input.taskId,
-      platform: input.platform
+      platform: input.platform,
+      challenge: input.challenge
     }),
     targetAddressSpace: "loopback"
   } as RequestInit & { targetAddressSpace: "loopback" });

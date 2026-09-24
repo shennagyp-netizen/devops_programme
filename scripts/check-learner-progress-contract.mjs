@@ -13,6 +13,7 @@ const files = {
   page: "../app/src/app/page.tsx",
   layout: "../app/src/app/layout.tsx",
   proxy: "../app/src/proxy.ts",
+  learningCatalog: "../app/src/lib/server/learning-item-catalog.ts",
   signIn: "../app/src/app/sign-in/[[...sign-in]]/page.tsx",
   signUp: "../app/src/app/sign-up/[[...sign-up]]/page.tsx",
   gitignore: "../.gitignore"
@@ -70,6 +71,9 @@ assert.match(content.migration, /learner_progress_history_item_type_ck/);
 
 assert.match(content.progress, /onConflictDoNothing/);
 assert.match(content.progress, /orderBy\([\s\S]*completedAt/);
+assert.match(content.progress, /resolveLearningItem/);
+assert.match(content.progress, /verificationLevel: "self-report"/);
+assert.doesNotMatch(content.progress, /input\.course|input\.projectId|input\.verificationLevel/);
 assert.doesNotMatch(content.progress, /stdout|stderr|attempt|machineEnvelope/);
 
 assert.match(content.action, /"use server"/);
@@ -80,7 +84,9 @@ assert.doesNotMatch(content.action, /learnerId/);
 for (const itemType of ["lesson", "assignment", "question", "project"]) {
   assert.match(content.contract, new RegExp(itemType));
 }
-assert.doesNotMatch(content.contract, /getLearnerId|localStorage|learnerId/);
+assert.doesNotMatch(content.contract, /getLearnerId|localStorage|learnerId|verificationLevel|projectId|course/);
+assert.match(content.learningCatalog, /resolveLearningItem/);
+assert.match(content.learningCatalog, /hands-on-/);
 
 assert.match(content.app, /^"use client";/);
 assert.match(content.app, /initialCompletionHistory/);

@@ -1,7 +1,10 @@
+import { lessonsByCourse } from "./courseLessons";
+import { getHandsOnTask } from "./handsOn";
 import type { CourseLevel } from "./programme";
 import type { VerificationLevel } from "./handsOn";
 import type { RuntimeVerificationScope } from "./runtimeVerification";
 import {
+  runtimeTaskForLesson,
   validateMachineVerification,
   type MachineVerificationEnvelope,
   type RuntimeTask
@@ -79,14 +82,42 @@ export function clearEvidence() {
   writeLedger([]);
 }
 
-export function recordMachineVerification(input: {
-  course: CourseLevel;
-  projectId: string;
+export type MachineEvidenceSource = "local-agent" | "imported-file";
+
+export async function recordMachineVerification(input: {
   task: RuntimeTask;
   envelope: MachineVerificationEnvelope;
   summary: string;
+  source: MachineEvidenceSource;
+  expectedChallenge?: string;
+  expectedAttestationPublicKey?: string;
 }) {
-  const validation = validateMachineVerification(input.task, input.envelope);
+  const canonicalTask = runtimeTaskForLesson(input.task.lessonId);
+  const canonicalLesson = (Object.keys(lessonsByCourse) as CourseLevel[])
+    .flatMap((course) => lessonsByCourse[course])
+    .find((lesson) => lesson.id === input.task.lessonId);
+
+  if (
+    !canonicalTask ||
+    input.task.taskId !== canonicalTask.taskId ||
+    input.task.contractVersion !== canonicalTask.contractVersion ||
+    !canonicalLesson
+  ) {
+    return {
+      recorded: false as const,
+      failures: ["Runtime task is not the canonical published task for this lesson."]
+    };
+  }
+
+  const validation = await validateMachineVerification(
+    canonicalTask,
+    input.envelope,
+    {
+      requireAttestation: input.source === "local-agent",
+      expectedChallenge: input.expectedChallenge,
+      expectedAttestationPublicKey: input.expectedAttestationPublicKey
+    }
+  );
 
   if (!validation.valid) {
     return {
@@ -95,45 +126,59 @@ export function recordMachineVerification(input: {
     };
   }
 
+  const locallyAttested =
+    input.source === "local-agent" &&
+    input.envelope.verificationSource === "local-runner" &&
+    input.envelope.executionMode === "local-machine";
+
   const entry = addEvidence({
-    course: input.course,
-    projectId: input.projectId,
-    lessonId: input.task.lessonId,
+    course: canonicalLesson.course,
+    projectId: canonicalLesson.projectId,
+    lessonId: canonicalLesson.id,
     kind: "exercise",
     summary: input.summary,
     taskId: input.task.taskId,
-    verificationLevel: "machine-verified",
-    verificationScope: input.task.scope,
+    verificationLevel: locallyAttested ? "machine-verified" : "structured",
+    verificationScope: canonicalTask.scope,
     evidencePayload: {
       verificationSource: input.envelope.verificationSource,
       runnerVersion: input.envelope.runnerVersion,
-      environmentFingerprint: input.envelope.environmentFingerprint
+      environmentFingerprint: input.envelope.environmentFingerprint,
+      evidenceSource: input.source,
+      trust: locallyAttested ? "local-direct" : "imported-untrusted"
     }
   });
 
   return {
     recorded: true as const,
+    trustedForCompletion: locallyAttested,
     entry
   };
 }
 
 export function recordHandsOnEvidence(input: {
-  course: CourseLevel;
-  projectId: string;
   lessonId: string;
-  taskId: string;
   summary: string;
-  verificationLevel: VerificationLevel;
   evidencePayload: Record<string, string>;
 }) {
+  const canonicalLesson = (Object.keys(lessonsByCourse) as CourseLevel[])
+    .flatMap((course) => lessonsByCourse[course])
+    .find((lesson) => lesson.id === input.lessonId);
+
+  if (!canonicalLesson) {
+    throw new Error("Lesson does not exist.");
+  }
+
+  const canonicalTask = getHandsOnTask(canonicalLesson);
+
   return addEvidence({
-    course: input.course,
-    projectId: input.projectId,
-    lessonId: input.lessonId,
+    course: canonicalLesson.course,
+    projectId: canonicalLesson.projectId,
+    lessonId: canonicalLesson.id,
     kind: "exercise",
     summary: input.summary,
-    taskId: input.taskId,
-    verificationLevel: input.verificationLevel,
+    taskId: canonicalTask.taskId,
+    verificationLevel: "structured",
     evidencePayload: input.evidencePayload
   });
 }

@@ -13,6 +13,7 @@ import { commandForPlatform } from "../data/platformAdapters";
 import { runtimeTaskForLesson } from "../data/runtimeVerification";
 import {
   getLocalTerminalToken,
+  createExecutionChallenge,
   localTerminalAgentStatus,
   runLocalTerminalTask,
   setLocalTerminalToken
@@ -59,6 +60,7 @@ export function LessonPanel({
   const [machineVerificationMessage, setMachineVerificationMessage] = useState("");
   const [localAgentAvailable, setLocalAgentAvailable] = useState(false);
   const [localAgentPlatform, setLocalAgentPlatform] = useState<string | null>(null);
+  const [localAgentPublicKey, setLocalAgentPublicKey] = useState<string | null>(null);
   const [localAgentInfo, setLocalAgentInfo] = useState("Not connected");
   const [localAgentToken, setLocalAgentTokenState] = useState(getLocalTerminalToken());
   const [localAgentRunning, setLocalAgentRunning] = useState(false);
@@ -90,8 +92,10 @@ export function LessonPanel({
         evidence?: Record<string, string>;
         verified?: boolean;
       };
-      setHandsOnEvidence(parsed.evidence ?? {});
-      setExerciseRecorded(parsed.verified === true);
+      const savedEvidence = parsed.evidence ?? {};
+      const validation = validateHandsOnEvidence(handsOnTask, savedEvidence);
+      setHandsOnEvidence(savedEvidence);
+      setExerciseRecorded(parsed.verified === true && validation.valid);
       setMachineResults([]);
     } catch {
       setHandsOnEvidence({});
@@ -114,10 +118,12 @@ export function LessonPanel({
       if (status.available) {
         setLocalAgentAvailable(true);
         setLocalAgentPlatform(status.platform);
+        setLocalAgentPublicKey(status.attestationPublicKey);
         setLocalAgentInfo(`Connected · ${status.platform} · agent ${status.version}`);
       } else {
         setLocalAgentAvailable(false);
         setLocalAgentPlatform(null);
+        setLocalAgentPublicKey(null);
         setLocalAgentInfo(status.reason);
       }
     }
@@ -147,18 +153,21 @@ export function LessonPanel({
     setMachineVerificationMessage("Running the verified exercise on this laptop...");
 
     try {
+      const challenge = createExecutionChallenge();
       const envelope = await runLocalTerminalTask({
         taskId: runtimeTask.taskId,
         platform,
-        token: localAgentToken
+        token: localAgentToken,
+        challenge
       });
 
-      const result = recordMachineVerification({
-        course: lesson.course,
-        projectId: lesson.projectId,
+      const result = await recordMachineVerification({
         task: runtimeTask,
         envelope,
-        summary: `Verified laptop execution for ${lesson.id}`
+        summary: `Verified laptop execution for ${lesson.id}`,
+        source: "local-agent",
+        expectedChallenge: challenge,
+        expectedAttestationPublicKey: localAgentPublicKey ?? undefined
       });
 
       if (!result.recorded) {
@@ -170,13 +179,16 @@ export function LessonPanel({
         return;
       }
 
-      const isFullExerciseVerification = runtimeTask.scope === "exercise";
+      const isFullExerciseVerification =
+        runtimeTask.scope === "exercise" && result.trustedForCompletion === true;
       setExerciseRecorded(isFullExerciseVerification);
       setMachineResults(envelope.stepResults ?? []);
       setMachineVerificationMessage(
-        runtimeTask.scope === "exercise"
-          ? "Laptop terminal execution verified for this session."
-          : "Laptop probe execution verified for this session. Complete the required hands-on exercise below to unlock the lesson."
+        result.trustedForCompletion
+          ? runtimeTask.scope === "exercise"
+            ? "Laptop terminal execution verified for this session."
+            : "Laptop probe execution verified for this session. Complete the required hands-on exercise below to unlock the lesson."
+          : "Imported evidence matched the runtime integrity contract, but imported files are not trusted as machine completion proof."
       );
       onEvidenceRecorded?.();
     } catch (error) {
@@ -204,12 +216,13 @@ export function LessonPanel({
     try {
       const source = await file.text();
       const envelope = JSON.parse(source);
-      const result = recordMachineVerification({
+      const result = await recordMachineVerification({
         course: lesson.course,
         projectId: lesson.projectId,
         task: runtimeTask,
         envelope,
-        summary: `Verified remote execution for ${lesson.id}`
+        summary: `Imported execution evidence for ${lesson.id}`,
+        source: "imported-file"
       });
 
       if (!result.recorded) {
@@ -220,13 +233,14 @@ export function LessonPanel({
         return;
       }
 
-      const isFullExerciseVerification = runtimeTask.scope === "exercise";
-      setExerciseRecorded(isFullExerciseVerification);
+      setExerciseRecorded(
+        runtimeTask.scope === "exercise" && result.trustedForCompletion === true
+      );
       setMachineResults(envelope.stepResults ?? []);
       setMachineVerificationMessage(
-        isFullExerciseVerification
-          ? "Verified execution evidence was accepted for this session."
-          : "Machine probe evidence was accepted. Complete the required hands-on exercise below to unlock the lesson."
+        result.trustedForCompletion
+          ? "Direct local execution evidence was accepted against the runtime contract."
+          : "Imported evidence matched the runtime contract, but it is not trusted as machine completion proof."
       );
     } catch (error) {
       setExerciseRecorded(false);
@@ -555,12 +569,8 @@ export function LessonPanel({
                 }
 
                 recordHandsOnEvidence({
-                  course: lesson.course,
-                  projectId: lesson.projectId,
                   lessonId: lesson.id,
-                  taskId: handsOnTask.id,
                   summary,
-                  verificationLevel: handsOnTask.verificationLevel,
                   evidencePayload: handsOnEvidence
                 });
 

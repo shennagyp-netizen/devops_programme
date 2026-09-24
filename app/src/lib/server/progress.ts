@@ -1,6 +1,7 @@
 import { and, asc, eq } from "drizzle-orm";
 import { getDb } from "./db";
 import { learnerProgressHistory } from "./schema";
+import { resolveLearningItem } from "./learning-item-catalog";
 import {
   parseCompletionInput,
   type CompletionInput,
@@ -52,17 +53,18 @@ export async function completeLearningItemForUser(
 ): Promise<CompletionRecord> {
   const safeUserId = requireUserId(userId);
   const input: CompletionInput = parseCompletionInput(rawInput);
+  const item = resolveLearningItem(input.itemType, input.itemId);
   const db = getDb();
 
   await db
     .insert(learnerProgressHistory)
     .values({
       userId: safeUserId,
-      itemType: input.itemType,
-      itemId: input.itemId,
-      course: input.course ?? null,
-      projectId: input.projectId ?? null,
-      verificationLevel: input.verificationLevel ?? null
+      itemType: item.itemType,
+      itemId: item.itemId,
+      course: item.course,
+      projectId: item.projectId,
+      verificationLevel: "structured"
     })
     .onConflictDoNothing({
       target: [

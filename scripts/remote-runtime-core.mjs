@@ -7,6 +7,24 @@ export function shellQuotePosix(value) {
   return "'" + String(value).replaceAll("'", "'\\''") + "'";
 }
 
+function validateSshUser(value) {
+  if (
+    typeof value !== "string" ||
+    !/^[A-Za-z0-9._-]{1,64}$/.test(value)
+  ) {
+    throw new Error("Invalid SSH user.");
+  }
+}
+
+function validateSshHost(value) {
+  if (
+    typeof value !== "string" ||
+    !/^(?:[A-Za-z0-9](?:[A-Za-z0-9._:%-]{0,252}))$/.test(value)
+  ) {
+    throw new Error("Invalid SSH host.");
+  }
+}
+
 export function remoteCommandForStep(task, step, platform) {
   const command = step.commands?.[platform];
   if (!command) {
@@ -31,6 +49,9 @@ export function sshArguments({
   step,
   platform
 }) {
+  validateSshUser(user);
+  validateSshHost(host);
+
   const args = [
     "-o",
     "BatchMode=yes",

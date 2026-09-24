@@ -211,3 +211,28 @@ Integration tests cover the Server Action boundary:
 The repository architecture contract also verifies that the old Vite bootstrap, anonymous learner storage, and progress REST API are absent.
 
 Hosted CI remains a separate verification boundary and must not be called green without an executed runner result.
+
+## Security boundary update — 2026-09-24
+
+Progress completion is now server-authoritative for item identity.
+
+The browser submits only:
+- item type
+- item ID
+
+The server resolves the item against canonical programme data and derives:
+- course
+- project
+- verification level.
+
+Normal progress is stored as self-report because a completion request does not independently prove that the learner performed the exercise.
+
+A valid learning item can therefore be recorded as complete by its authenticated learner. This is intentionally a progress feature, not a secure certification boundary.
+
+The server rejects nonexistent learning-item identities instead of creating arbitrary progress rows.
+
+Machine verification remains separate from progress persistence. Machine evidence is validated on the client for contract integrity, including recomputed SHA-256 output hashes, step identity/order and execution timestamps. It is not treated as independent cryptographic attestation.
+
+See:
+- docs/SECURITY_ARCHITECTURE.md
+- scripts/check-security-contract.mjs
