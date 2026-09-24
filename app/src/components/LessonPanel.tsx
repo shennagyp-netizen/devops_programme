@@ -47,6 +47,15 @@ export function LessonPanel({
   const [exerciseRecorded, setExerciseRecorded] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
   const [machineVerificationMessage, setMachineVerificationMessage] = useState("");
+  const [machineResults, setMachineResults] = useState<
+    Array<{
+      stepId: string;
+      stdout: string;
+      stderr: string;
+      exitCode: number;
+      result: string;
+    }>
+  >([]);
   const command = commandForPlatform(lesson, platform);
   const handsOnTask: HandsOnTask = getHandsOnTask(lesson);
   const runtimeTask = runtimeTaskForLesson(lesson.id);
@@ -66,9 +75,12 @@ export function LessonPanel({
       };
       setHandsOnEvidence(parsed.evidence ?? {});
       setExerciseRecorded(parsed.verified === true);
+      setMachineResults(parsed.machineEnvelope?.stepResults ?? []);
     } catch {
       setHandsOnEvidence({});
       setExerciseRecorded(false);
+      setMachineResults([]);
+      setMachineVerificationMessage("");
     }
   }, [evidenceKey]);
 
@@ -106,6 +118,24 @@ export function LessonPanel({
       }
 
       setExerciseRecorded(true);
+      setMachineResults(envelope.stepResults ?? []);
+      try {
+        const existing = localStorage.getItem(evidenceKey);
+        const parsedExisting = existing ? JSON.parse(existing) : {};
+        localStorage.setItem(
+          evidenceKey,
+          JSON.stringify({
+            ...parsedExisting,
+            taskId: runtimeTask.id,
+            verified: true,
+            verificationLevel: "machine-verified",
+            machineEnvelope: envelope,
+            savedAt: new Date().toISOString()
+          })
+        );
+      } catch {
+        // Machine evidence already entered the ledger; browser persistence is best-effort.
+      }
       setMachineVerificationMessage(
         "Verified execution evidence was accepted and saved locally."
       );
@@ -286,6 +316,29 @@ export function LessonPanel({
                   </label>
                   {machineVerificationMessage ? (
                     <p className="range">{machineVerificationMessage}</p>
+                  ) : null}
+
+                  {machineResults.length ? (
+                    <div className="content-card">
+                      <span className="eyebrow">REMOTE RESULTS</span>
+                      {machineResults.map((step) => (
+                        <div key={step.stepId}>
+                          <h4>
+                            {step.stepId} · {step.result} · exit {step.exitCode}
+                          </h4>
+                          {step.stdout ? (
+                            <pre>
+                              <code>{step.stdout}</code>
+                            </pre>
+                          ) : null}
+                          {step.stderr ? (
+                            <pre>
+                              <code>{step.stderr}</code>
+                            </pre>
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
                   ) : null}
                 </>
               )}
