@@ -5,6 +5,8 @@ import { LessonPanel } from "./components/LessonPanel";
 import { Progress } from "./components/Progress";
 import { DiagnosticPanel } from "./components/DiagnosticPanel";
 import type { DiagnosticRecommendation } from "./data/diagnostics";
+import { projectsByCourse } from "./data/projects";
+import { ProjectPanel } from "./components/ProjectPanel";
 
 const K = "devops-programme-mastered";
 
@@ -115,6 +117,8 @@ export default function App() {
           course={course}
           onRecommendation={recordDiagnosticRecommendation}
         />
+
+        <ProjectPanel projects={projectsByCourse[course]} />
 
         <div className="content-card course-path">
           <div className="course-path-head">
