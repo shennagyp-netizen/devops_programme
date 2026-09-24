@@ -1,5 +1,11 @@
 export type PodcastCueKind = "prediction" | "lab" | "recall" | "transition";
 
+export type PodcastTurnTiming = {
+  turnId: string;
+  startMs: number;
+  endMs: number;
+};
+
 export type PodcastCue = {
   turnId: string;
   kind: PodcastCueKind;
@@ -12,6 +18,7 @@ export type PodcastAudioManifest = {
   scriptVersion: string;
   audioUrl: string;
   durationMs: number;
+  turns: PodcastTurnTiming[];
   cues: PodcastCue[];
 };
 
@@ -20,6 +27,10 @@ export type PodcastAudioManifest = {
  *
  * React must never infer exact spoken position from text length, word count,
  * paragraph length, or average speaking rate.
+ *
+ * Every spoken turn gets a timing range. Exercise cues are a separate layer
+ * because a single turn can contain the words that cause React to hand control
+ * to the learner.
  */
 export const podcastAudioManifest: Record<string, PodcastAudioManifest> = {};
 
@@ -52,13 +63,7 @@ export function findCurrentTurnId(
 ) {
   if (!manifest) return undefined;
 
-  let current: PodcastCue | undefined;
-  for (const cue of manifest.cues) {
-    if (cue.startMs <= timeMs) {
-      current = cue;
-    } else {
-      break;
-    }
-  }
-  return current?.turnId;
+  return manifest.turns.find(
+    (turn) => timeMs >= turn.startMs && timeMs < turn.endMs
+  )?.turnId;
 }
