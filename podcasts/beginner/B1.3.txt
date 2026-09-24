@@ -16,7 +16,9 @@ Speaker A: Now we ask what happened before that screen appeared.
 
 Speaker B: Name lookup. Connection. TLS. HTTP. Then the application response.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That makes the diagnosis easier to test.
+
+Speaker A: Let's keep that tied to the actual problem.
 
 Speaker B: So this is the lesson where all those pieces finally join together.
 
@@ -30,23 +32,27 @@ Speaker A: https://api.example.com/orders
 
 Speaker B: First the name has to be resolved.
 
-Speaker A: Right.
+Speaker A: Right. We can check that without changing everything.
+
+Speaker A: Now say what evidence would confirm that.
 
 Speaker B: DNS gives us address information.
 
-Speaker A: Yes.
+Speaker A: Yes. Now we have a concrete prediction.
+
+Speaker A: That gives us a useful next test.
 
 Speaker B: Then the client connects to the server.
 
-Speaker A: Right.
+Speaker A: Right. Keep the recovery condition in the plan.
 
 Speaker B: Then TLS creates the secure session.
 
-Speaker A: Yes.
+Speaker A: Yes. That is a safer way to reason about it.
 
 Speaker B: Then HTTP carries the application request.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now compare that with the known-good state.
 
 Speaker B: And then the API can say 200, 401, 403, 404, 500, or something else.
 
