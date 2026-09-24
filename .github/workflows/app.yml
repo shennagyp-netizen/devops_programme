@@ -15,40 +15,55 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    defaults:
-      run:
-        working-directory: app
     steps:
+      - name: Mark diagnostic start
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const content = [
+              "Beginner diagnostic started.",
+              "run=" + context.runId,
+              "event=" + context.eventName,
+              "sha=" + context.sha,
+              "runner=" + process.env.RUNNER_OS
+            ].join("\n");
+            const branch = context.payload.pull_request?.head?.ref;
+            if (!branch) return;
+            await github.rest.repos.createOrUpdateFileContents({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path: "ci-debug/beginner-" + context.runId + ".txt",
+              message: "ci: record Beginner diagnostic start",
+              content: Buffer.from(content).toString("base64"),
+              branch
+            });
+
       - uses: actions/checkout@v4
+        id: checkout
 
       - uses: actions/setup-node@v4
+        id: setup
         with:
           node-version: 22
 
-      - name: Run Beginner diagnostic and persist result
+      - name: Run Beginner diagnostic stages
+        id: stages
         shell: bash
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          RUN_ID: ${{ github.run_id }}
-          REPOSITORY: ${{ github.repository }}
-          HEAD_BRANCH: ${{ github.head_ref }}
         run: |
           set +e
-          mkdir -p ../ci-debug
-          report="../ci-debug/beginner-${RUN_ID}.txt"
-          : > "${report}"
+          report="ci-debug-local.txt"
+          : > "$report"
 
           run_stage() {
             name="$1"
             shift
-            echo "===== ${name} =====" >> "${report}"
-            echo "COMMAND: $*" >> "${report}"
+            echo "===== $name =====" >> "$report"
+            echo "COMMAND: $*" >> "$report"
             "$@" > /tmp/beginner-stage.out 2>&1
             code=$?
-            echo "EXIT: ${code}" >> "${report}"
-            tail -n 200 /tmp/beginner-stage.out >> "${report}"
-            echo >> "${report}"
-            return 0
+            echo "EXIT: $code" >> "$report"
+            tail -n 250 /tmp/beginner-stage.out >> "$report"
+            echo >> "$report"
           }
 
           run_stage "npm-install" npm install
@@ -57,22 +72,43 @@ jobs:
           run_stage "beginner-integration" npm exec vitest run tests/integration/beginner-course.integration.test.mjs
           run_stage "beginner-completeness" npm run check:beginner
 
-          {
-            echo "REPOSITORY: ${REPOSITORY}"
-            echo "RUN_ID: ${RUN_ID}"
-            echo "HEAD_BRANCH: ${HEAD_BRANCH}"
-            echo "COMMIT: ${GITHUB_SHA}"
-            echo "NODE: $(node --version 2>&1)"
-            echo
-            cat "${report}"
-          } > /tmp/beginner-report.txt
+          exit 0
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ../ci-debug/beginner-${RUN_ID}.txt
-          git commit -m "ci: record Beginner diagnostic ${RUN_ID}"
-          git push origin HEAD:"${HEAD_BRANCH}"
+      - name: Publish Beginner diagnostic report
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          CHECKOUT: ${{ steps.checkout.outcome }}
+          SETUP: ${{ steps.setup.outcome }}
+          STAGES: ${{ steps.stages.outcome }}
+        with:
+          script: |
+            const fs = require("node:fs");
+            const branch = context.payload.pull_request?.head?.ref;
+            if (!branch) return;
 
+            let report = [
+              "Beginner diagnostic final report",
+              "run=" + context.runId,
+              "sha=" + context.sha,
+              "checkout=" + process.env.CHECKOUT,
+              "setup=" + process.env.SETUP,
+              "stages=" + process.env.STAGES,
+              ""
+            ].join("\n");
+
+            if (fs.existsSync("ci-debug-local.txt")) {
+              report += fs.readFileSync("ci-debug-local.txt", "utf8");
+            }
+
+            await github.rest.repos.createOrUpdateFileContents({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path: "ci-debug/beginner-" + context.runId + "-final.txt",
+              message: "ci: record Beginner diagnostic result",
+              content: Buffer.from(report).toString("base64"),
+              branch
+            });
   beginner_gate:
     name: beginner-gate
     runs-on: ubuntu-latest
