@@ -4,7 +4,9 @@ Speaker A: The support team just sent us one sentence.
 
 Speaker B: Let me guess. "The app is slow."
 
-Speaker A: Exactly.
+Speaker A: Exactly. That makes the diagnosis easier to test.
+
+Speaker A: Let's keep that tied to the actual problem.
 
 Speaker B: That's not much to work with.
 
@@ -40,7 +42,9 @@ Speaker A: Everybody does. Application engineer sees a slow page and checks the 
 
 Speaker B: Or higher.
 
-Speaker A: Exactly.
+Speaker A: Exactly. We can check that without changing everything.
+
+Speaker A: Now say what evidence would confirm that.
 
 Speaker B: Okay. Let's build the machine from the bottom.
 
@@ -84,7 +88,9 @@ Speaker A: Imagine the application is waiting for a database response. CPU can b
 
 Speaker B: So low CPU can happen when the app is healthy and when the app is stuck.
 
-Speaker A: Yes.
+Speaker A: Yes. Now we have a concrete prediction.
+
+Speaker A: That gives us a useful next test.
 
 Speaker B: Same metric, different causes.
 
@@ -100,7 +106,7 @@ Speaker A: Good. What do you ask?
 
 Speaker B: Is it one user or everybody?
 
-Speaker A: Good.
+Speaker A: Good. Keep the recovery condition in the plan.
 
 Speaker B: Did it start today?
 
