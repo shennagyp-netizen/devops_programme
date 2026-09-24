@@ -37,6 +37,34 @@ describe("Beginner course integration gate", () => {
       expect(bank.items.filter((item) => item.family === "conceptual")).toHaveLength(20);
       expect(bank.items.filter((item) => item.family === "diagnostic")).toHaveLength(12);
       expect(bank.items.filter((item) => item.family === "hands-on")).toHaveLength(8);
+
+      const rules = {
+        conceptual: { count: 20, minutes: 60, levels: ["mechanism", "application", "design"], suffix: "core", bands: { foundation: 3, applied: 7, difficult: 7, challenge: 3 } },
+        diagnostic: { count: 12, minutes: 45, levels: ["application", "diagnosis"], suffix: "diagnostic", bands: { foundation: 2, applied: 4, difficult: 4, challenge: 2 } },
+        "hands-on": { count: 8, minutes: 90, levels: ["application", "diagnosis", "design"], suffix: "hands-on", bands: { foundation: 1, applied: 3, difficult: 3, challenge: 1 } }
+      };
+
+      for (const [family, rule] of Object.entries(rules)) {
+        const familyItems = bank.items.filter((item) => item.family === family);
+        expect(familyItems).toHaveLength(rule.count);
+
+        for (const level of rule.levels) {
+          expect(familyItems.some((item) => item.cognitiveLevel === level)).toBe(true);
+        }
+        expect(familyItems.every((item) => item.competencyId === section.id + "." + rule.suffix)).toBe(true);
+
+        const selected = [];
+        for (const [band, count] of Object.entries(rule.bands)) {
+          const bandItems = familyItems
+            .filter((item) => item.difficulty === band)
+            .sort((a, b) => b.expectedMinutes - a.expectedMinutes)
+            .slice(0, count);
+          expect(bandItems).toHaveLength(count);
+          selected.push(...bandItems);
+        }
+
+        expect(selected.reduce((sum, item) => sum + item.expectedMinutes, 0)).toBeLessThanOrEqual(rule.minutes * 1.25);
+      }
       for (const item of bank.items) {
         expect(item.competencyId.startsWith(section.id + ".")).toBe(true);
         expect(item.prompt.trim()).not.toBe("");
@@ -53,6 +81,7 @@ describe("Beginner course integration gate", () => {
     for (const lesson of lessons) {
       const source = await readFile(path.join(root, "podcasts/beginner", lesson.id + ".txt"), "utf8");
       expect(source.trim().length).toBeGreaterThan(100);
+      expect(source).toContain(lesson.title);
     }
   });
 });
