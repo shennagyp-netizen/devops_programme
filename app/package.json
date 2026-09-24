@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "npm run sync:podcasts && vite",
-    "build": "npm run sync:podcasts && tsc -b && vite build",
+    "build": "npm run sync:podcasts && npm run check:content && tsc -b && vite build",
     "preview": "vite preview",
-    "sync:podcasts": "node ../scripts/sync-podcast-assets.mjs"
+    "sync:podcasts": "node ../scripts/sync-podcast-assets.mjs",
+    "check:content": "node ../scripts/check-podcast-language.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",
