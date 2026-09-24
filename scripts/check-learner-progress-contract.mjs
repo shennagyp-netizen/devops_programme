@@ -61,9 +61,9 @@ assert.equal(packageJson.devDependencies["@vitejs/plugin-react"], undefined);
 assert.match(content.env, /DATABASE_URL=/);
 assert.match(content.env, /NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=/);
 assert.match(content.env, /CLERK_SECRET_KEY=/);
-assert.match(content.gitignore, /^\\.env$/m);
-assert.match(content.gitignore, /^\\.env\\.$/m);
-assert.doesNotMatch(content.gitignore, /\\n/);
+assert.match(content.gitignore, /^\.env$/m);
+assert.match(content.gitignore, /^\.env\.\*$/m);
+assert.doesNotMatch(content.gitignore, /\n/);
 
 assert.match(content.schema, /userId\("user_id"\)/);
 assert.match(content.schema, /learner_progress_history_user_item_uq/);
@@ -106,7 +106,7 @@ assert.ok(content.layout.indexOf("<body>") < content.layout.indexOf("<ClerkProvi
 
 assert.match(content.proxy, /clerkMiddleware/);
 
-assert.doesNotMatch(content.vitest, /@vite\\/plugin-react/);
+assert.doesNotMatch(content.vitest, /@vite\/plugin-react/);
 assert.match(content.terminalAgent, /DEVOPS_TERMINAL_ALLOWED_ORIGINS/);
 assert.match(content.terminalAgent, /MAX_COMMAND_TIMEOUT/);
 assert.match(content.terminalAgent, /SIGKILL/);
