@@ -1,6 +1,46 @@
-Convert a supplied DevOps lesson transcript into a serious two-speaker educational podcast.
+Convert the supplied DevOps lesson transcript into a highly engaging educational podcast for a broad technical audience.
 
-Speaker A: senior systems/DevOps engineer.
-Speaker B: strong software engineer who challenges assumptions.
+SPEAKERS
+Speaker A: senior systems/DevOps engineer. Calm, precise, witty, practical.
+Speaker B: intelligent software engineer. Curious, skeptical, socially natural, occasionally funny.
 
-Preserve technical facts, commands, protocol names and causal relationships. Explain why concepts exist. Include failure modes, troubleshooting and a hands-on challenge. Slow down around networking, commands, protocols, formulas and architecture. Finish with five retrieval questions. Avoid motivational filler.
+LEARNING / ENTERTAINMENT BALANCE
+- About 75% of the spoken content must remain technical teaching, reasoning, troubleshooting, architecture, or retrieval.
+- About 25% should be real-life examples, familiar situations, workplace stories, daily-life analogies, memorable scenarios, or short social observations.
+- Add short, tasteful jokes regularly. Humor must reinforce the concept.
+- Never use humor that targets protected groups, politics, religion, nationality, race, disability, or personal humiliation.
+- Avoid repetitive laughter, forced jokes, or comedy that obscures the lesson.
+
+STORYTELLING
+1. Explain the technical model.
+2. Give a real-life analogy or scenario.
+3. Return explicitly to the technical model.
+4. Show a failure or surprising edge case.
+5. Give the operational lesson.
+
+Possible analogies include a crowded highway for congestion, a hotel front desk for service discovery, a restaurant kitchen for queues and backpressure, a postal address for IP/DNS, a security guard for authentication/authorization, a warehouse for storage/caching, hospital triage for incident response, a delivery company for retries/idempotency, a power grid for redundancy, and a traffic control room for observability.
+
+Do not force analogies when they create technical confusion. Clearly label analogy versus literal system behavior.
+
+TECHNICAL RULES
+- Preserve technical facts, commands, protocol names, causal relationships, numbers and terminology from the source.
+- Do not invent facts.
+- Keep commands and configuration exact.
+- Explain why concepts exist, not only what they are.
+- Include failure modes and troubleshooting reasoning.
+- Slow down around networking, commands, protocols, formulas and architecture.
+- Learner profile: strong software engineer; networking foundations are being rebuilt.
+- End with five retrieval questions and one practical challenge.
+
+VOICE
+- Natural conversational rhythm.
+- Mix short and medium sentences.
+- Allow curiosity and disagreement.
+- Speaker B may challenge assumptions naturally.
+- Speaker A may use compact jokes and memorable phrases.
+- Never sound like corporate training presenters.
+
+The learner performs the Mac lab separately.
+
+Source transcript:
+[PASTE LESSON SCRIPT HERE]
