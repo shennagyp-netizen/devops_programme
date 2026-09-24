@@ -394,6 +394,112 @@ export const diagnosticDefinitions: DiagnosticDefinition[] = [
     ]
   },
   {
+    sectionId: "B-A4",
+    course: "beginner",
+    title: "Observability and Recovery",
+    prerequisiteLessonIds: ["B2.2", "B2.3"],
+    remediationLessonIds: ["B2.2", "B2.3"],
+    questions: [
+      {
+        id: "BA4-P-1",
+        prompt: "A service is slow while CPU is low. What remains plausible?",
+        options: [
+          "I/O, dependency latency, locks or network delay",
+          "Nothing; low CPU proves the service is healthy",
+          "DNS cannot exist when CPU is low",
+          "The process must be stopped"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "BA4-P-2",
+        prompt: "Why should you collect evidence before restarting during an incident?",
+        options: [
+          "A restart can change or remove useful transient evidence",
+          "A restart always makes the issue worse",
+          "Logs are never useful",
+          "Restarting proves the root cause"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "BA4-P-3",
+        prompt: "A health endpoint is 200 but real writes fail. What is a useful inference?",
+        options: [
+          "The health check is narrower than the real user operation",
+          "The entire network is broken",
+          "The database is definitely corrupt",
+          "HTTP is disabled"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "BA4-P-4",
+        prompt: "What does RPO describe?",
+        options: [
+          "The amount of data loss a recovery plan is intended to tolerate",
+          "The time needed to restart a process",
+          "The number of requests per second",
+          "The CPU limit for a container"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+  {
+    sectionId: "B-A5",
+    course: "beginner",
+    title: "Queues, Retries and Failure",
+    prerequisiteLessonIds: ["B3.1"],
+    remediationLessonIds: ["B3.1", "B3.2"],
+    questions: [
+      {
+        id: "BA5-P-1",
+        prompt: "A queue grows continuously. Which relationship should you test first?",
+        options: [
+          "Arrival rate is above effective service rate",
+          "DNS TTL is too high",
+          "The UI has too many buttons",
+          "TLS must be broken"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "BA5-P-2",
+        prompt: "Why can retries make a failing dependency less healthy?",
+        options: [
+          "Retries add more work to a component that is already under pressure",
+          "Retries always reduce traffic",
+          "Retries replace the queue",
+          "Retries guarantee idempotency"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "BA5-P-3",
+        prompt: "What is idempotency?",
+        options: [
+          "Repeating an operation has an acceptable result instead of duplicating its business effect",
+          "A request that never times out",
+          "A queue that cannot grow",
+          "A database that never changes"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "BA5-P-4",
+        prompt: "Why use backpressure?",
+        options: [
+          "To limit incoming work when downstream capacity is constrained",
+          "To make retries faster",
+          "To remove all failures",
+          "To replace monitoring"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+  {
     sectionId: "I-A1",
     course: "intermediate",
     title: "Containers and Docker",
