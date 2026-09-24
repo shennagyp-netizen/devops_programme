@@ -1,0 +1,119 @@
+DAY 4
+
+EPISODE D4.1 — Git as a Production Workflow
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Turn source change into deterministic CI/CD. Separate source, tests, artifacts, promotion and rollback.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Git as a Production Workflow. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Git as a Production Workflow in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D4.2 — CI/CD Mental Model
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Turn source change into deterministic CI/CD. Separate source, tests, artifacts, promotion and rollback.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to CI/CD Mental Model. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place CI/CD Mental Model in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D4.3 — GitHub Actions
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Turn source change into deterministic CI/CD. Separate source, tests, artifacts, promotion and rollback.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to GitHub Actions. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place GitHub Actions in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D4.4 — Infrastructure as Code
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Infrastructure as code makes desired state, dependency graph, state and drift explicit.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Infrastructure as Code. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Infrastructure as Code in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D4.5 — Terraform Lifecycle
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Infrastructure as code makes desired state, dependency graph, state and drift explicit.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Terraform Lifecycle. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Terraform Lifecycle in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
+
+==============================
+
+EPISODE D4.6 — Cloud Primitives
+
+Speaker A: We will build the operational mental model, not memorize vocabulary.
+
+Speaker B: I already understand application development. What changes when I operate the system?
+
+Speaker A: Learn cloud primitives and failure domains before memorizing provider services.
+
+Speaker B: What must I be able to do afterward?
+
+Speaker A: Explain the causal sequence, predict failure symptoms, operate, break, diagnose from evidence, repair, and transfer the idea to production.
+
+Hands-on: Use the Mac to run an experiment related to Cloud Primitives. Make one controlled change, predict the outcome, execute it, observe the evidence, and explain the result.
+
+Production: Place Cloud Primitives in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation and recovery.
+
+Recall: 1) explain without notes; 2) lowest layer that can explain failure; 3) evidence distinguishing configuration from network failure; 4) first production signal; 5) safe recovery.
