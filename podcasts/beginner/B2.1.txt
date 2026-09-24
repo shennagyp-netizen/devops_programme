@@ -4,11 +4,15 @@ Speaker A: B1 works on a laptop. Now someone changes the code.
 
 Speaker B: Which means we have to get that change to users.
 
-Speaker A: Yes.
+Speaker A: Yes. That makes the diagnosis easier to test.
+
+Speaker A: Let's keep that tied to the actual problem.
 
 Speaker B: And this is where "just deploy it" stops being a good plan.
 
-Speaker A: Correct.
+Speaker A: Correct. We can check that without changing everything.
+
+Speaker A: Now say what evidence would confirm that.
 
 Speaker B: What do we want?
 
@@ -16,19 +20,27 @@ Speaker A: A clear path from code change to a safe release.
 
 Speaker B: So the change should be reviewable.
 
-Speaker A: Yes.
+Speaker A: Yes. Now we have a concrete prediction.
+
+Speaker A: That gives us a useful next test.
 
 Speaker B: Tested.
 
-Speaker A: Yes.
+Speaker A: Yes. Keep the recovery condition in the plan.
+
+Speaker A: I would not change the system before checking that.
 
 Speaker B: Built into something we can identify.
 
-Speaker A: Yes.
+Speaker A: Yes. That is a safer way to reason about it.
+
+Speaker A: Keep the user-visible effect in view.
 
 Speaker B: And then deployed in a way we can trace.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now compare that with the known-good state.
+
+Speaker A: That is the part I would verify first.
 
 Speaker B: Start with Git.
 
@@ -40,23 +52,29 @@ Speaker A: Usually.
 
 Speaker B: Commit.
 
-Speaker A: Yes.
+Speaker A: Yes. That tells us which layer to inspect next.
+
+Speaker A: Now the assumption is explicit.
 
 Speaker B: Review.
 
-Speaker A: Good.
+Speaker A: Good. I want the observation before the fix.
+
+Speaker A: That makes the diagnosis easier to test.
 
 Speaker B: Then CI.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That is where the real mechanism shows up.
+
+Speaker A: We can check that without changing everything.
 
 Speaker B: Then artifact.
 
-Speaker A: Right.
+Speaker A: Right. Now the failure has a clear boundary.
 
 Speaker B: Then deployment.
 
-Speaker A: Right.
+Speaker A: Right. Let's see whether the evidence supports that.
 
 Speaker B: That's the path.
 
@@ -72,7 +90,7 @@ Speaker A: Imagine an incident at 3 p.m. A customer says orders are failing.
 
 Speaker B: We need to know what changed.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That would change my next move.
 
 Speaker B: If the answer is "someone edited production directly," we're in trouble.
 
@@ -80,7 +98,7 @@ Speaker A: Very much.
 
 Speaker B: If the answer is "release 2026-09-24.3 came from commit abc123, passed tests, and was deployed at 14:35," that's much better.
 
-Speaker A: Yes.
+Speaker A: Yes. Keep the incident scoped to one hypothesis.
 
 Speaker B: So history is not only for developers.
 
@@ -92,7 +110,7 @@ Speaker A: Think about an approved document.
 
 Speaker B: We know which version was approved.
 
-Speaker A: Right.
+Speaker A: Right. Let's keep that tied to the actual problem.
 
 Speaker B: If someone asks what version was used, we don't say "the latest."
 
