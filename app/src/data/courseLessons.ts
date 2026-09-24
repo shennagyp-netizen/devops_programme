@@ -367,9 +367,21 @@ const advanced: CourseLesson[] = [
   })
 ];
 
-function lesson(input: Omit<CourseLesson, "podcast" | "platformCommands" | "course" | "podcastStatus"> & {
+type LessonAuthoringInput = {
+  id: string;
+  title: string;
+  domain: string;
+  sectionId: string;
+  projectId: string;
+  kind: "foundation" | "application";
+  objective: string;
+  example: string;
+  command: string;
+  challenge: string;
   recall: string[];
-}): CourseLesson {
+};
+
+function lesson(input: LessonAuthoringInput): CourseLesson {
   return {
     ...input,
     course: input.id.startsWith("B") ? "beginner" : "advanced",
