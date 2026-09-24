@@ -17,7 +17,7 @@ architecture for very large populations with explicit consistency, cost, latency
 
 ## Prerequisite diagnostics
 
-The current adaptive pilot includes A-F1 and A-F2. A diagnostic recommendation may compress introductory theory, but the capacity and queueing exercises remain mandatory.
+The authored Advanced core is now complete across all six sections (A-F1/A-F2/A-F3/A-A1/A-A2/A-A3). Each section has prerequisite diagnostics, a 40-item pilot assessment bank, lesson coverage, project linkage and hands-on task coverage. A diagnostic recommendation may compress introductory theory, but associated exercises remain mandatory.
 
 ## Teaching model
 
