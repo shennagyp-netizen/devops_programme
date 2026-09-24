@@ -16,7 +16,7 @@ export type AssessmentItem = {
   family: AssessmentFamily;
   difficulty: DifficultyBand;
   cognitiveLevel: CognitiveLevel;
-  itemType: string;
+  itemType: string | string[];
   expectedMinutes: number;
   competencyId: string;
   prompt: string;
