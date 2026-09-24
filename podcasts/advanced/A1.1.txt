@@ -10,6 +10,8 @@ Speaker B: So we scale the web servers.
 
 Speaker A: Maybe.
 
+Speaker A: Let’s keep that as a testable claim.
+
 Speaker B: That's the obvious answer.
 
 Speaker A: Which is why I want to slow down before we use it.
@@ -42,6 +44,8 @@ Speaker B: So the real question is where the first limit appears.
 
 Speaker A: Exactly.
 
+Speaker A: That gives us a useful boundary.
+
 Speaker B: Let's make a simple model.
 
 Speaker A: Suppose one API instance can handle 100 requests per second at our target latency.
@@ -50,9 +54,13 @@ Speaker B: Ten instances could handle 1,000 in a perfect world.
 
 Speaker A: Right.
 
+Speaker A: Now connect that to the request path.
+
 Speaker B: But no real system is perfect.
 
 Speaker A: Correct.
+
+Speaker A: I would measure that before changing anything.
 
 Speaker B: Maybe the database can handle only 600 requests per second.
 
@@ -62,9 +70,13 @@ Speaker B: The API looks less busy while the database is dying.
 
 Speaker A: Exactly.
 
+Speaker A: That is where the failure becomes useful.
+
 Speaker B: So we moved the problem.
 
 Speaker A: Yes.
+
+Speaker A: Now we can compare it with the real system.
 
 Speaker B: Human example?
 
@@ -78,9 +90,13 @@ Speaker B: Until everyone reaches the payment terminal.
 
 Speaker A: Exactly.
 
+Speaker A: Keep the user-visible effect in the model.
+
 Speaker B: Or there is one person checking IDs for every lane.
 
 Speaker A: Right.
+
+Speaker A: That is the part I would verify first.
 
 Speaker B: So opening more lanes can move the queue.
 
@@ -98,13 +114,19 @@ Speaker B: Throughput and response time.
 
 Speaker A: Yes.
 
+Speaker A: Now the assumption is explicit.
+
 Speaker B: Then resource use.
 
 Speaker A: Yes.
 
+Speaker A: That gives us a cleaner diagnosis.
+
 Speaker B: Then queues and dependency capacity.
 
 Speaker A: Exactly.
+
+Speaker A: We can test that without changing the whole system.
 
 Speaker B: What is saturation?
 
@@ -129,6 +151,8 @@ Speaker A: Another.
 Speaker B: So saturation is about a limit, not just a CPU graph.
 
 Speaker A: Correct.
+
+Speaker A: That is a better reason to make the change.
 
 Speaker B: What about latency?
 
