@@ -106,7 +106,7 @@ assert.ok(content.layout.indexOf("<body>") < content.layout.indexOf("<ClerkProvi
 
 assert.match(content.proxy, /clerkMiddleware/);
 
-assert.doesNotMatch(content.vitest, /@vite\/plugin-react/);
+assert.equal(content.vitest.includes("@vitejs/plugin-react"), false);
 assert.match(content.terminalAgent, /DEVOPS_TERMINAL_ALLOWED_ORIGINS/);
 assert.match(content.terminalAgent, /MAX_COMMAND_TIMEOUT/);
 assert.match(content.terminalAgent, /SIGKILL/);
