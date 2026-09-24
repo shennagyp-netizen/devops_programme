@@ -433,7 +433,7 @@
     {
       "id": "BF1-D-006",
       "family": "diagnostic",
-      "difficulty": "applied",
+      "difficulty": "difficult",
       "cognitiveLevel": "diagnosis",
       "itemType": "scenario",
       "expectedMinutes": 3,
@@ -447,7 +447,7 @@
     {
       "id": "BF1-D-007",
       "family": "diagnostic",
-      "difficulty": "applied",
+      "difficulty": "challenge",
       "cognitiveLevel": "diagnosis",
       "itemType": "scenario",
       "expectedMinutes": 3,
