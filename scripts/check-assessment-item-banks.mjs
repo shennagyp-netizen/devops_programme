@@ -141,6 +141,22 @@ for (const file of files) {
       );
     }
 
+    const validExpectedElements =
+      item.expectedElements === undefined ||
+      (Array.isArray(item.expectedElements) &&
+        item.expectedElements.length > 0 &&
+        item.expectedElements.every(
+          (value) => typeof value === "string" && value.trim().length > 0
+        )) ||
+      (Number.isInteger(item.expectedElements) && item.expectedElements > 0);
+
+    if (!validExpectedElements) {
+      failed = true;
+      console.error(
+        `${file.rel}: item ${item.id} has invalid expectedElements; expected a non-empty string array or positive integer`
+      );
+    }
+
     if (item.expectedMinutes <= 0) {
       failed = true;
       console.error(`${file.rel}: item ${item.id} has non-positive expectedMinutes`);
