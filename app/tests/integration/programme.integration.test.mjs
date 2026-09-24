@@ -85,4 +85,47 @@ describe("programme architecture integration", () => {
     expect(dockerLessons.every((lesson) => lesson.sectionId === "I-A1")).toBe(true);
     expect(dockerLessons.every((lesson) => lesson.projectId === "I1")).toBe(true);
   });
+
+  it("preserves the complete intermediate lesson-to-section map", () => {
+    const expected = {
+      "I-F1": ["D1.1", "D1.2", "D1.3"],
+      "I-F2": ["D1.4", "D1.5", "D1.6", "D2.1", "D2.2", "D2.3", "D2.4"],
+      "I-A1": ["D2.5", "D2.6", "D2.7"],
+      "I-A2": ["D3.1", "D3.4", "D3.5"],
+      "I-A3": ["D3.2", "D3.3"],
+      "I-A4": ["D4.1", "D4.2", "D4.3", "D4.4", "D4.5", "D4.6"],
+      "I-A5": ["D5.5", "D5.8"],
+      "I-A6": ["D5.1", "D5.2", "D5.3", "D5.4", "D5.6", "D5.7"]
+    };
+
+    for (const [sectionId, lessonIds] of Object.entries(expected)) {
+      const actual = courseLessons
+        .filter((lesson) => lesson.course === "intermediate" && lesson.sectionId === sectionId)
+        .map((lesson) => lesson.id);
+
+      expect(actual).toEqual(lessonIds);
+    }
+  });
+
+  it("keeps every lesson inside the same course as its section and project", () => {
+    const sectionById = new Map(
+      courses.flatMap((course) =>
+        course.sections.map((section) => [section.id, course.id])
+      )
+    );
+    const projectById = new Map(
+      courses.flatMap((course) =>
+        course.projects.map((projectId) => [projectId, course.id])
+      )
+    );
+
+    for (const lesson of courseLessons) {
+      expect(sectionById.get(lesson.sectionId)).toBe(lesson.course);
+      expect(projectById.get(lesson.projectId)).toBe(lesson.course);
+      expect(lesson.platformCommands.macos).toBeTruthy();
+      expect(lesson.platformCommands.linux).toBeTruthy();
+      expect(lesson.platformCommands.windows).toBeTruthy();
+    }
+  });
+
 });
