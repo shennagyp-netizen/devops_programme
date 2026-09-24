@@ -1,18 +1,9 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { getDbMock, insertMock, selectMock } = vi.hoisted(() => ({
   getDbMock: vi.fn(),
   insertMock: vi.fn(),
   selectMock: vi.fn()
-}));
-
-import { describe, expect, it, vi, beforeEach } from "vitest";
-
-const insertMock = vi.fn();
-const selectMock = vi.fn();
-const getDbMock = vi.fn(() => ({
-  insert: insertMock,
-  select: selectMock
 }));
 
 vi.mock("../../src/lib/server/db.ts", () => ({
@@ -37,11 +28,6 @@ vi.mock("../../src/lib/server/schema.ts", () => ({
     id: "id"
   }
 }));
-
-getDbMock.mockReturnValue({
-  insert: insertMock,
-  select: selectMock
-});
 
 const { completeLearningItemForUser } = await import(
   "../../src/lib/server/progress.ts"
@@ -76,6 +62,10 @@ describe("progress persistence service", () => {
     };
 
     selectMock.mockReturnValue(selectChain);
+    getDbMock.mockReturnValue({
+      insert: insertMock,
+      select: selectMock
+    });
   });
 
   it("binds persistence to the authenticated user", async () => {
@@ -89,6 +79,7 @@ describe("progress persistence service", () => {
     });
 
     const values = insertMock.mock.results[0].value.values.mock.calls[0][0];
+
     expect(values.userId).toBe("user_123");
     expect(values.learnerId).toBeUndefined();
     expect(values.stdout).toBeUndefined();
