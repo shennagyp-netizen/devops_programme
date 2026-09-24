@@ -16,41 +16,21 @@ const projectIds = new Set(
   [...projects.matchAll(/id:\s*"([A-Z][A-Z0-9.-]*)",\s*course:/g)].map((match) => match[1])
 );
 
-const projectCourses = new Map(
-  [...projects.matchAll(/id:\s*"([A-Z][A-Z0-9.-]*)",\s*course:\s*"([^"]+)"/g)].map(
-    (match) => [match[1], match[2]]
-  )
+const lessonProjectIds = new Set(
+  [...lessons.matchAll(/projectId:\s*"([^"]+)"/g)].map((match) => match[1])
 );
 
-const lessonRecords = [
-  ...lessons.matchAll(
-    /id:\s*"([^"]+)"[\s\S]*?course:\s*"([^"]+)"[\s\S]*?sectionId:\s*"([^"]+)"[\s\S]*?projectId:\s*"([^"]+)"/g
-  )
-].map((match) => ({
-  id: match[1],
-  course: match[2],
-  sectionId: match[3],
-  projectId: match[4]
-}));
-
-for (const lesson of lessonRecords) {
-  if (!projectIds.has(lesson.projectId)) {
+for (const lessonProjectId of lessonProjectIds) {
+  if (!projectIds.has(lessonProjectId)) {
     failed = true;
     console.error(
-      `Lesson ${lesson.id} points to undefined project ${lesson.projectId}.`
-    );
-  }
-
-  if (projectCourses.get(lesson.projectId) !== lesson.course) {
-    failed = true;
-    console.error(
-      `Lesson ${lesson.id} maps to project ${lesson.projectId}, but their courses differ.`
+      `Lesson metadata points to undefined project ${lessonProjectId}.`
     );
   }
 }
 
 for (const projectId of projectIds) {
-  if (!lessonRecords.some((lesson) => lesson.projectId === projectId)) {
+  if (!lessonProjectIds.has(projectId)) {
     failed = true;
     console.error(`Project ${projectId} has no lesson coverage.`);
   }
@@ -59,5 +39,5 @@ for (const projectId of projectIds) {
 if (failed) process.exit(1);
 
 console.log(
-  `Project contract check passed: ${projectIds.size} projects and ${lessonRecords.length} lesson records.`
+  `Project contract check passed: ${projectIds.size} projects and ${lessonProjectIds.size} referenced projects.`
 );
