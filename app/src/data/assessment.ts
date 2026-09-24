@@ -14,6 +14,7 @@ export type AssessmentBlueprint = {
   minimumCompetencies: string[];
   expectedMinutes: number;
   status: AssessmentStatus;
+  targetItemCount: number;
 };
 
 export const defaultDifficultyMix: Record<DifficultyBand, number> = {
@@ -29,7 +30,7 @@ const familyRules: Record<
 > = {
   conceptual: {
     levels: ["mechanism", "application", "design"],
-    minutes: 20
+    minutes: 25
   },
   diagnostic: {
     levels: ["application", "diagnosis"],
@@ -37,7 +38,7 @@ const familyRules: Record<
   },
   "hands-on": {
     levels: ["application", "diagnosis", "design"],
-    minutes: 35
+    minutes: 45
   }
 };
 
@@ -57,7 +58,8 @@ export const assessmentBlueprints: AssessmentBlueprint[] = courses.flatMap(
           requiredCognitiveLevels: familyRules[family].levels,
           minimumCompetencies: competenciesFor(section, family),
           expectedMinutes: familyRules[family].minutes,
-          status: "items-authoring" as const
+          status: "items-authoring" as const,
+          targetItemCount: family === "conceptual" ? 20 : family === "diagnostic" ? 12 : 8
         })
       )
     )
