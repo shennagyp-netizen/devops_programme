@@ -10,6 +10,8 @@ Speaker B: So we add replicas.
 
 Speaker A: Maybe.
 
+Speaker A: Let’s keep that as a testable claim.
+
 Speaker B: You really enjoy that word.
 
 Speaker A: Because it saves us from making fast decisions.
@@ -26,13 +28,19 @@ Speaker B: Read traffic.
 
 Speaker A: Right.
 
+Speaker A: That gives us a useful boundary.
+
 Speaker B: If reads can go to more than one copy, one database does not have to answer every read.
 
 Speaker A: Exactly.
 
+Speaker A: Now connect that to the request path.
+
 Speaker B: So we can spread read work.
 
 Speaker A: Yes.
+
+Speaker A: I would measure that before changing anything.
 
 Speaker B: Then what goes wrong?
 
@@ -42,17 +50,25 @@ Speaker B: Replication lag.
 
 Speaker A: Exactly.
 
+Speaker A: That is where the failure becomes useful.
+
 Speaker B: So the new read path may be faster but slightly stale.
 
 Speaker A: Yes.
+
+Speaker A: Now we can compare it with the real system.
 
 Speaker B: Which is fine for some reads.
 
 Speaker A: Right.
 
+Speaker A: Keep the user-visible effect in the model.
+
 Speaker B: Not fine for others.
 
 Speaker A: Exactly.
+
+Speaker A: That is the part I would verify first.
 
 Speaker B: Human example?
 
@@ -70,9 +86,13 @@ Speaker B: So it says yes even though the item was just sold.
 
 Speaker A: Right.
 
+Speaker A: Now the assumption is explicit.
+
 Speaker B: Another warehouse has the new data.
 
 Speaker A: Right.
+
+Speaker A: That gives us a cleaner diagnosis.
 
 Speaker B: So two answers can disagree for a while.
 
@@ -80,9 +100,13 @@ Speaker B: That's a consistency problem.
 
 Speaker A: Yes.
 
+Speaker A: We can test that without changing the whole system.
+
 Speaker B: So we have to choose what the business needs.
 
 Speaker A: Exactly.
+
+Speaker A: That is a better reason to make the change.
 
 Speaker B: The system cannot just say "strong consistency everywhere" for free.
 
