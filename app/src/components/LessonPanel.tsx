@@ -175,7 +175,8 @@ export function LessonPanel({
         return;
       }
 
-      setExerciseRecorded(true);
+      const isFullExerciseVerification = runtimeTask.scope === "exercise";
+      setExerciseRecorded(isFullExerciseVerification);
       setMachineResults(envelope.stepResults ?? []);
       try {
         localStorage.setItem(
@@ -193,7 +194,9 @@ export function LessonPanel({
       }
 
       setMachineVerificationMessage(
-        "Laptop terminal execution verified and saved."
+        runtimeTask.scope === "exercise"
+          ? "Laptop terminal execution verified and saved."
+          : "Laptop probe execution verified and saved. Complete the required hands-on exercise below to unlock the lesson."
       );
       onEvidenceRecorded?.();
     } catch (error) {
@@ -237,7 +240,8 @@ export function LessonPanel({
         return;
       }
 
-      setExerciseRecorded(true);
+      const isFullExerciseVerification = runtimeTask.scope === "exercise";
+      setExerciseRecorded(isFullExerciseVerification);
       setMachineResults(envelope.stepResults ?? []);
       try {
         const existing = localStorage.getItem(evidenceKey);
@@ -257,7 +261,9 @@ export function LessonPanel({
         // Machine evidence already entered the ledger; browser persistence is best-effort.
       }
       setMachineVerificationMessage(
-        "Verified execution evidence was accepted and saved locally."
+        isFullExerciseVerification
+          ? "Verified execution evidence was accepted and saved locally."
+          : "Machine probe evidence was accepted. Complete the required hands-on exercise below to unlock the lesson."
       );
     } catch (error) {
       setExerciseRecorded(false);
