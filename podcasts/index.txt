@@ -1,0 +1,32 @@
+D1.1 | Linux Operating Model | podcasts/day-1.txt
+D1.2 | Terminal as an Engineering Tool | podcasts/day-1.txt
+D1.3 | Processes, Services, Permissions and Logs | podcasts/day-1.txt
+D1.4 | What Is a Network? | podcasts/day-1.txt
+D1.5 | IP Addresses, Subnets and CIDR | podcasts/day-1.txt
+D1.6 | Routing, Gateways and NAT | podcasts/day-1.txt
+D2.1 | TCP and UDP | podcasts/day-2.txt
+D2.2 | DNS | podcasts/day-2.txt
+D2.3 | HTTP | podcasts/day-2.txt
+D2.4 | TLS and HTTPS | podcasts/day-2.txt
+D2.5 | Why Containers Exist | podcasts/day-2.txt
+D2.6 | Docker Networking and Storage | podcasts/day-2.txt
+D2.7 | Break Docker | podcasts/day-2.txt
+D3.1 | Kubernetes Mental Model | podcasts/day-3.txt
+D3.2 | Kubernetes Networking | podcasts/day-3.txt
+D3.3 | Kubernetes Configuration and Storage | podcasts/day-3.txt
+D3.4 | Kubernetes Health and Scaling | podcasts/day-3.txt
+D3.5 | Kubernetes Failure Lab | podcasts/day-3.txt
+D4.1 | Git as a Production Workflow | podcasts/day-4.txt
+D4.2 | CI/CD Mental Model | podcasts/day-4.txt
+D4.3 | GitHub Actions | podcasts/day-4.txt
+D4.4 | Infrastructure as Code | podcasts/day-4.txt
+D4.5 | Terraform Lifecycle | podcasts/day-4.txt
+D4.6 | Cloud Primitives | podcasts/day-4.txt
+D5.1 | Scaling | podcasts/day-5.txt
+D5.2 | Databases at Scale | podcasts/day-5.txt
+D5.3 | Distributed Systems | podcasts/day-5.txt
+D5.4 | Reliability Patterns | podcasts/day-5.txt
+D5.5 | Observability | podcasts/day-5.txt
+D5.6 | Disaster Recovery | podcasts/day-5.txt
+D5.7 | Global-Scale Architecture | podcasts/day-5.txt
+D5.8 | The Production Incident | podcasts/day-5.txt
