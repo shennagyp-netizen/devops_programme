@@ -17,7 +17,9 @@ application, Kubernetes, infrastructure, observability, database, recovery and i
 
 ## Prerequisite diagnostics
 
-The authored Intermediate core is now complete across all eight sections (I-F1/I-F2/I-A1/I-A2/I-A3/I-A4/I-A5/I-A6). Each section has prerequisite diagnostics, a 40-item pilot assessment bank, lesson coverage and project-linked hands-on work. A diagnostic recommendation may compress introductory theory, but associated exercises remain mandatory.
+The authored Intermediate core is now complete across all eight sections (I-F1/I-F2/I-A1/I-A2/I-A3/I-A4/I-A5/I-A6). Each section has prerequisite diagnostics, a 40-item pilot assessment bank, lesson coverage, project linkage and hands-on task coverage. A diagnostic recommendation may compress introductory theory, but associated exercises remain mandatory.
+
+The Docker lessons D2.5-D2.7 are explicitly mapped to I-A1; the Kubernetes, IaC, SRE and distributed-system lessons are mapped to their corresponding application sections.
 
 ## Teaching model
 
