@@ -2,12 +2,31 @@
 
 ## Core model
 
-The learner moves through:
-
 Understand -> Predict -> Operate -> Break -> Diagnose -> Repair -> Recall -> Design
 
 Each concept can be represented as:
 textbook + podcast + co-teacher + motion + platform-specific lab + retrieval + deliberate failure + production design + assessment.
+
+## Human-first teaching
+
+Human-friendliness is a system requirement.
+
+The learner should never feel they are being spoken at by a syllabus.
+
+Explanations should begin from what a competent engineer is seeing or trying to fix. The system then introduces the minimum conceptual machinery needed to understand the behaviour, followed by an exercise that proves the learner can use it.
+
+The spoken layer must sound like real human engineering conversation:
+- natural speech
+- different personalities
+- real questions
+- disagreement
+- correction
+- uncertainty before evidence
+- occasional humour
+- no corporate narration
+- no robotic symmetry
+
+The podcast prompt contains an explicit anti-robotic review contract.
 
 ## Adaptive theory
 
@@ -24,12 +43,17 @@ When a prerequisite is not demonstrated:
 ## Three courses
 
 ### Beginner
+
 Problems create the need for each DevOps tool.
 
+The learner sees a concrete system problem first and discovers why the tool exists.
+
 ### Intermediate
-Deep engineering theory is distributed through projects, visual stories, labs and failure diagnosis.
+
+Deep engineering theory is distributed through projects, visual stories, labs, diagnosis and production transfer.
 
 ### Advanced
+
 Scale, uncertainty and partial failure are the teaching constraints.
 
 ## Project spine
@@ -54,7 +78,7 @@ The assessment engine uses blueprints, item metadata, scoring rubrics, evidence 
 
 ## Podcast/co-teacher
 
-The podcast is an exercise-driven spoken lesson between two engineers.
+The podcast is an exercise-driven spoken lesson between two believable engineers.
 
 The React co-teacher:
 - obtains predictions before explanation
@@ -63,6 +87,8 @@ The React co-teacher:
 - exposes transcript as recovery support
 - records local learning state
 - links the learner back to the project
+
+The transcript is a recovery aid, not a replacement for listening and operating.
 
 ## Evidence
 
