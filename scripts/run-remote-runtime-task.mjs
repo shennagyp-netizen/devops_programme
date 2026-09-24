@@ -69,18 +69,19 @@ async function runStep({ task, step, options }) {
       exitCode: 0,
       stdout,
       stderr,
-      stdout,
-      stderr,
       stdoutHash: sha256(stdout),
       stderrHash: sha256(stderr),
       result: "passed"
     };
   } catch (error) {
-    const stdout = capture(typeof error.stdout === "string" ? error.stdout : "");
+    const stdout = capture(
+      typeof error.stdout === "string" ? error.stdout : ""
+    );
     const stderr = capture(
       typeof error.stderr === "string"
         ? error.stderr
-        : String(error.message ?? error);
+        : String(error.message ?? error)
+    );
     const exitCode = typeof error.code === "number" ? error.code : 1;
 
     return {
@@ -88,6 +89,8 @@ async function runStep({ task, step, options }) {
       startedAt,
       completedAt: new Date().toISOString(),
       exitCode,
+      stdout,
+      stderr,
       stdoutHash: sha256(stdout),
       stderrHash: sha256(stderr),
       result: "failed"
