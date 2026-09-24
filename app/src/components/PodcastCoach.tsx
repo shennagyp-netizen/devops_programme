@@ -321,9 +321,11 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
           <div className="coach-actions">
             {!audioManifest ? (
               <>
-                <button onClick={() => setPhase("coach")}>
-                  Pause for a prediction
-                </button>
+                {current?.kind === "prediction" ? (
+                  <button onClick={() => setPhase("coach")}>
+                    Stop here — make the prediction
+                  </button>
+                ) : null}
                 <button className="primary" onClick={nextTurn}>
                   {turnIndex >= turns.length - 1
                     ? "Finish listening"
