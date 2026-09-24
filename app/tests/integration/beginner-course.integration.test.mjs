@@ -40,6 +40,11 @@ describe("Beginner course integration gate", () => {
       for (const item of bank.items) {
         expect(item.competencyId.startsWith(section.id + ".")).toBe(true);
         expect(item.prompt.trim()).not.toBe("");
+        expect(typeof item.itemType).toBe("string");
+        expect(item.itemType.trim()).not.toBe("");
+        if (!item.options && item.family !== "hands-on") {
+          expect(item.expectedElements?.length).toBeGreaterThan(0);
+        }
       }
     }
   });
