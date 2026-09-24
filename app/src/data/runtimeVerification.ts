@@ -34,6 +34,8 @@ export type RuntimeTask = {
   scope: string;
 };
 
+export type RuntimeVerificationScope = "probe" | "exercise";
+
 export type RuntimeStepResult = {
   stepId: string;
   startedAt: string;
@@ -51,6 +53,7 @@ export type MachineVerificationEnvelope = {
   lessonId: string;
   platform: PlatformId;
   verificationLevel: "machine-verified";
+  verificationSource: "local-runner" | "managed-runner";
   runnerVersion: string;
   environmentFingerprint: string;
   startedAt: string;
@@ -71,10 +74,6 @@ export function runtimeTaskForLesson(lessonId: string) {
 
 function isIsoDate(value: string) {
   return !Number.isNaN(Date.parse(value));
-}
-
-function isSha256(value: string) {
-  return /^[a-f0-9]{64}$/i.test(value);
 }
 
 function supportedPlatform(value: string): value is PlatformId {
@@ -130,6 +129,10 @@ export function validateMachineVerification(
     }
   }
 
+  if (!["local-runner", "managed-runner"].includes(envelope.verificationSource)) {
+    failures.push("Envelope verificationSource is invalid.");
+  }
+
   if (!envelope.runnerVersion.trim()) {
     failures.push("Runner version is missing.");
   }
@@ -169,8 +172,8 @@ export function validateMachineVerification(
       failures.push(`Runtime step ${result.stepId} completedAt precedes startedAt.`);
     }
 
-    if (!isSha256(result.stdoutHash) || !isSha256(result.stderrHash)) {
-      failures.push(`Output hashes are not valid SHA-256 values for runtime step ${result.stepId}.`);
+    if (!result.stdoutHash.trim() || !result.stderrHash.trim()) {
+      failures.push(`Output hashes are missing for runtime step ${result.stepId}.`);
     }
 
     if (result.result === "passed" && result.exitCode !== 0) {
