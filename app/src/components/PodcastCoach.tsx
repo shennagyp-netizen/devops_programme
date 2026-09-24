@@ -109,6 +109,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
         if (!cancelled) {
           setEpisodeSource("");
           setScriptVersions({});
+          setAudioManifests({});
         }
       });
 
@@ -244,6 +245,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     setAudioPlaying(false);
     lastCueIdRef.current = null;
     lastAudioTimeMsRef.current = 0;
+    setAudioManifests({});
   };
 
   const allRecall = recallDone.every(Boolean);
