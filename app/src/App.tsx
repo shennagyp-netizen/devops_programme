@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { courses, platformProfiles, type CourseLevel, type PlatformId } from "./data/programme";
 import { lessonsByCourse } from "./data/courseLessons";
 import { LessonPanel } from "./components/LessonPanel";
@@ -37,6 +37,16 @@ export default function App() {
   const completedInCourse = selectedLessons.filter((item) =>
     m.includes(item.id)
   ).length;
+
+  const recordDiagnosticRecommendation = useCallback(
+    (sectionId: string, recommendation: DiagnosticRecommendation) => {
+      setDiagnosticRecommendations((current) => ({
+        ...current,
+        [sectionId]: recommendation
+      }));
+    },
+    []
+  );
 
   function changeCourse(next: CourseLevel) {
     setCourse(next);
@@ -104,12 +114,7 @@ export default function App() {
         {course === "beginner" ? (
           <DiagnosticPanel
             course="beginner"
-            onRecommendation={(sectionId, recommendation) =>
-              setDiagnosticRecommendations((current) => ({
-                ...current,
-                [sectionId]: recommendation
-              }))
-            }
+            onRecommendation={recordDiagnosticRecommendation}
           />
         ) : (
           <div className="content-card">
