@@ -29,8 +29,7 @@ const withIntermediateMetadata = (lesson: Lesson): CourseLesson => ({
 
 function sectionForIntermediate(id: string) {
   if (id === "D1.1" || id === "D1.2" || id === "D1.3") return "I-F1";
-  if (id === "D1.4" || id === "D1.5" || id === "D1.6" || id.startsWith("D2.")) return "I-F2";
-  if (["D2.3", "D2.4"].includes(id)) return "I-F2";
+  if (["D1.4", "D1.5", "D1.6", "D2.1", "D2.2", "D2.3", "D2.4"].includes(id)) return "I-F2";
   if (["D2.5", "D2.6", "D2.7"].includes(id)) return "I-A1";
   if (id === "D3.1") return "I-A2";
   if (id === "D3.2" || id === "D3.3") return "I-A3";
