@@ -1,0 +1,333 @@
+EPISODE A2.3 — Partial Network Failure
+
+Speaker A: Here's a nasty incident.
+
+Speaker B: Go on.
+
+Speaker A: Service A can reach service B from one host.
+
+Speaker B: Okay.
+
+Speaker A: The same service cannot reach B from another host.
+
+Speaker B: So the network is broken.
+
+Speaker A: Which network?
+
+Speaker B: Ah.
+
+Speaker A: That's the problem.
+
+Speaker B: Partial network failure.
+
+Speaker A: Exactly.
+
+Speaker B: Some paths work.
+
+Speaker A: Some paths fail.
+
+Speaker B: And the healthy paths can make the system look normal.
+
+Speaker A: Yes.
+
+Speaker B: Human example?
+
+Speaker A: Two branches of the same company.
+
+Speaker B: Each branch can talk to its local team.
+
+Speaker A: But the phone link between branches is down.
+
+Speaker B: So local work continues.
+
+Speaker A: Some cross-branch work fails.
+
+Speaker B: The whole company is not dead.
+
+Speaker A: Exactly.
+
+Speaker B: That makes diagnosis harder.
+
+Speaker A: Because "up or down" is too simple.
+
+Speaker B: We need to ask, "Which path?"
+
+Speaker A: Yes.
+
+Speaker B: First principle: test from the place that fails.
+
+Speaker A: Right.
+
+Speaker B: A successful curl from my laptop does not prove the pod can reach the database.
+
+Speaker A: Exactly.
+
+Speaker B: A successful request from zone A does not prove zone B has the same path.
+
+Speaker A: Routing can differ.
+
+Speaker B: Firewall rules can differ.
+
+Speaker A: Security policy can differ.
+
+Speaker B: DNS answers can differ.
+
+Speaker A: Load balancers can make different choices.
+
+Speaker B: Network interfaces can have different state.
+
+Speaker A: Good.
+
+Speaker B: So the test location is part of the evidence.
+
+Speaker A: Always.
+
+Speaker B: Let's make a small matrix.
+
+Speaker A: Client 1 to service B: works.
+
+Speaker B: Client 2 to service B: fails.
+
+Speaker A: Client 1 to service C: works.
+
+Speaker B: Client 2 to service C: works.
+
+Speaker A: What does that suggest?
+
+Speaker B: The failure is narrower than "client 2 has no network."
+
+Speaker A: Exactly.
+
+Speaker B: Maybe the path from client 2 to B is blocked.
+
+Speaker A: Good.
+
+Speaker B: Maybe B only accepts traffic from one network.
+
+Speaker A: Good.
+
+Speaker B: Maybe a route is missing.
+
+Speaker A: Good.
+
+Speaker B: Maybe DNS returns different addresses.
+
+Speaker A: Good.
+
+Speaker B: We now have competing hypotheses.
+
+Speaker A: That's what we want.
+
+Speaker B: Prediction.
+
+Speaker A: Go.
+
+Speaker B: If DNS returns different addresses for the two clients, both clients can use the same service name and still hit different destinations.
+
+Speaker A: Correct.
+
+Speaker B: If only one destination is broken, one client can fail while another works.
+
+Speaker A: Exactly.
+
+Speaker B: So comparing name resolution is useful.
+
+Speaker A: Yes.
+
+Speaker B: Another prediction.
+
+Speaker A: Go.
+
+Speaker B: If routing is the problem, the destination may be reachable from one subnet and not another.
+
+Speaker A: Correct.
+
+Speaker B: So we compare routes from both source locations.
+
+Speaker A: Yes.
+
+Speaker B: Another one.
+
+Speaker A: Go.
+
+Speaker B: If the firewall drops traffic, the application may report a timeout instead of a clear refusal.
+
+Speaker A: Good.
+
+Speaker B: Which means the error shape gives us a clue, but not a complete diagnosis.
+
+Speaker A: Exactly.
+
+Speaker B: What if the path works for TCP but the application still fails?
+
+Speaker A: Then move up the stack.
+
+Speaker B: TLS?
+
+Speaker A: Could be.
+
+Speaker B: HTTP?
+
+Speaker A: Could be.
+
+Speaker B: Authentication?
+
+Speaker A: Could be.
+
+Speaker B: Wrong host header?
+
+Speaker A: Maybe.
+
+Speaker B: So networking is not finished when ping works.
+
+Speaker A: Correct.
+
+Speaker B: In fact, some production networks block ping.
+
+Speaker A: Right.
+
+Speaker B: Better to test the actual required path.
+
+Speaker A: Good.
+
+Speaker B: Let's talk about distributed systems and timeouts.
+
+Speaker A: A partial network failure can create long waits.
+
+Speaker B: The client sends a request.
+
+Speaker A: Packets disappear.
+
+Speaker B: Client waits.
+
+Speaker A: Timeout.
+
+Speaker B: Retry.
+
+Speaker A: We already know where this can go.
+
+Speaker B: Retry storm.
+
+Speaker A: Exactly.
+
+Speaker B: So partial network failure can become an application load problem.
+
+Speaker A: Yes.
+
+Speaker B: It can also create disagreement between replicas.
+
+Speaker A: Explain.
+
+Speaker B: A node may lose contact with another node.
+
+Speaker A: Right.
+
+Speaker B: Both still have local state.
+
+Speaker A: And now coordination is limited.
+
+Speaker B: So the system must have rules for what it can safely do without communication.
+
+Speaker A: Exactly.
+
+Speaker B: This is why network partitions are central to distributed-systems design.
+
+Speaker A: You cannot assume communication always works.
+
+Speaker B: But we should also avoid treating every timeout as a partition.
+
+Speaker A: Good distinction.
+
+Speaker B: It could be congestion.
+
+Speaker A: Slow dependency.
+
+Speaker B: Resource exhaustion.
+
+Speaker A: Connection pool limits.
+
+Speaker B: Bad route.
+
+Speaker A: Firewall.
+
+Speaker B: DNS.
+
+Speaker A: TLS.
+
+Speaker B: Or an overloaded destination.
+
+Speaker A: Evidence decides.
+
+Speaker B: Mac lab?
+
+Speaker A: Use two local containers or network namespaces if available.
+
+Speaker B: Give both clients access to one service.
+
+Speaker A: Verify the healthy matrix.
+
+Speaker B: Then break one route only.
+
+Speaker A: For example, block one destination port from one client.
+
+Speaker B: Test the same request from both clients.
+
+Speaker A: Compare DNS.
+
+Speaker B: Compare route.
+
+Speaker A: Compare TCP connection.
+
+Speaker B: Compare application response.
+
+Speaker A: Record exactly where behavior first differs.
+
+Speaker B: That is the exercise.
+
+Speaker A: Not "run ten commands."
+
+Speaker B: Find the smallest part of the path that explains the evidence.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: One. What is partial network failure?
+
+Speaker B: A condition where some communication paths work while others fail.
+
+Speaker A: Two. Why test from the failing location?
+
+Speaker B: Because routing, DNS, policy and other state can differ by source.
+
+Speaker A: Three. What can different DNS answers cause?
+
+Speaker B: Different clients can reach different destinations even with the same service name.
+
+Speaker A: Four. Why can network failure become an application failure?
+
+Speaker B: Timeouts, retries and blocked work consume application resources.
+
+Speaker A: Five. What is the goal of a failure matrix?
+
+Speaker B: Find the smallest difference between working and failing paths that explains the behavior.
+
+Speaker B: Final challenge?
+
+Speaker A: Draw a two-zone service.
+
+Speaker B: Then make one cross-zone path fail.
+
+Speaker A: Leave local paths working.
+
+Speaker B: Now explain what a user in each zone sees.
+
+Speaker A: Then explain which observation would let you localize the failure.
+
+Speaker B: That's the advanced skill.
+
+Speaker A: Yes.
+
+Speaker B: Not knowing every network command.
+
+Speaker A: Knowing how to turn different paths into evidence.
