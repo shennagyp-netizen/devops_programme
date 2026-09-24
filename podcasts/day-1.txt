@@ -12,7 +12,7 @@ Speaker B: So the cloud is just a very expensive machine room with better market
 
 Speaker A: That's a dangerous oversimplification... but a useful starting point.
 
-Speaker A: Think about a restaurant. The customer sees the waiter carrying food. Behind that waiter are the kitchen, refrigerators, staff, inventory, electricity, and a manager deciding what gets attention first. A Linux process is one active piece of work. The kernel arbitrates access to shared resources.
+Speaker A: Think about a restaurant. The customer sees the waiter carrying food. Behind that waiter are the kitchen, refrigerators, staff, inventory, electricity, and a manager deciding what gets attention first. A Linux process is one active piece of work. The kernel manages access to shared resources.
 
 Speaker B: And when the restaurant becomes slow, yelling at the waiter is probably not root-cause analysis.
 
@@ -53,7 +53,7 @@ Speaker A: Exactly. Never fall in love with the first metric that looks dramatic
 
 Speaker B: What about memory?
 
-Speaker A: Same idea. Linux gives processes address spaces and manages memory on their behalf. A process can allocate memory, the kernel can reclaim pages, files can be cached, and a machine can look “full” in one view without meaning what a beginner thinks it means.
+Speaker A: Same idea. Linux gives processes address spaces and manages memory on their behalf. A process can ask for memory, the kernel can reclaim pages, files can be cached, and a machine can look “full” in one view without meaning what a beginner thinks it means.
 
 Speaker B: And file descriptors?
 
