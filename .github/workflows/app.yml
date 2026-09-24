@@ -4,6 +4,10 @@ on:
     paths: ["app/**","podcasts/**","scripts/**",".github/workflows/app.yml"]
   pull_request:
     paths: ["app/**","podcasts/**","scripts/**",".github/workflows/app.yml"]
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   beginner_gate:
     name: beginner-gate
@@ -19,19 +23,54 @@ jobs:
           node-version: 22
 
       - name: Install
+        id: install
         run: npm install
 
       - name: Beginner structural contract
+        id: structural
         run: node ../scripts/check-beginner-gate.mjs
 
       - name: Beginner unit tests
+        id: unit
         run: npm exec vitest run tests/unit/beginner-course.test.mjs
 
       - name: Beginner integration tests
+        id: integration
         run: npm exec vitest run tests/integration/beginner-course.integration.test.mjs
 
       - name: Beginner completeness validator
+        id: completeness
         run: npm run check:beginner
+
+      - name: Report Beginner gate outcomes
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          INSTALL: ${{ steps.install.outcome }}
+          STRUCTURAL: ${{ steps.structural.outcome }}
+          UNIT: ${{ steps.unit.outcome }}
+          INTEGRATION: ${{ steps.integration.outcome }}
+          COMPLETENESS: ${{ steps.completeness.outcome }}
+        with:
+          script: |
+            if (context.eventName !== "pull_request") return;
+            const body = [
+              "### Beginner gate diagnostic",
+              "",
+              "| Stage | Outcome |",
+              "|---|---|",
+              "| npm install | " + process.env.INSTALL + " |",
+              "| structural contract | " + process.env.STRUCTURAL + " |",
+              "| unit tests | " + process.env.UNIT + " |",
+              "| integration tests | " + process.env.INTEGRATION + " |",
+              "| completeness validator | " + process.env.COMPLETENESS + " |"
+            ].join("\\n");
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body
+            });
 
   build:
     runs-on: ubuntu-latest
