@@ -1,5 +1,13 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
+const { getDbMock, insertMock, selectMock } = vi.hoisted(() => ({
+  getDbMock: vi.fn(),
+  insertMock: vi.fn(),
+  selectMock: vi.fn()
+}));
+
+import { describe, expect, it, vi, beforeEach } from "vitest";
+
 const insertMock = vi.fn();
 const selectMock = vi.fn();
 const getDbMock = vi.fn(() => ({
@@ -9,6 +17,12 @@ const getDbMock = vi.fn(() => ({
 
 vi.mock("../../src/lib/server/db.ts", () => ({
   getDb: getDbMock
+}));
+
+vi.mock("drizzle-orm", () => ({
+  and: vi.fn(() => "and"),
+  asc: vi.fn(() => "asc"),
+  eq: vi.fn(() => "eq")
 }));
 
 vi.mock("../../src/lib/server/schema.ts", () => ({
@@ -23,6 +37,11 @@ vi.mock("../../src/lib/server/schema.ts", () => ({
     id: "id"
   }
 }));
+
+getDbMock.mockReturnValue({
+  insert: insertMock,
+  select: selectMock
+});
 
 const { completeLearningItemForUser } = await import(
   "../../src/lib/server/progress.ts"
