@@ -17,49 +17,49 @@ const expectedLessons = 11;
 let failed = false;
 
 for (const sectionId of expectedSections) {
-  if (!programme.includes(\`id: "\${sectionId}"\`)) {
+  if (!programme.includes(`id: "${sectionId}"`)) {
     failed = true;
-    console.error(\`Advanced section \${sectionId} is missing from programme.ts.\`);
+    console.error(`Advanced section ${sectionId} is missing from programme.ts.`);
   }
 
-  const bankPath = path.join(root, "exams", "items", "advanced", \`\${sectionId}.json\`);
+  const bankPath = path.join(root, "exams", "items", "advanced", `${sectionId}.json`);
   try {
     const bank = JSON.parse(await readFile(bankPath, "utf8"));
     if (bank.items.length !== 40) {
       failed = true;
-      console.error(\`Advanced \${sectionId} bank has \${bank.items.length} items; expected 40.\`);
+      console.error(`Advanced ${sectionId} bank has ${bank.items.length} items; expected 40.`);
     }
   } catch (error) {
     failed = true;
-    console.error(\`Advanced \${sectionId} assessment bank is missing or invalid: \${error.message}\`);
+    console.error(`Advanced ${sectionId} assessment bank is missing or invalid: ${error.message}`);
   }
 
-  if (!diagnostics.includes(\`sectionId: "\${sectionId}"\`)) {
+  if (!diagnostics.includes(`sectionId: "${sectionId}"`)) {
     failed = true;
-    console.error(\`Advanced section \${sectionId} has no prerequisite diagnostic.\`);
+    console.error(`Advanced section ${sectionId} has no prerequisite diagnostic.`);
   }
 }
 
 const advancedLessonIds = [...lessons.matchAll(/id: "(A\d+\.\d+)",/g)].map((match) => match[1]);
 if (advancedLessonIds.length !== expectedLessons) {
   failed = true;
-  console.error(\`Advanced lesson count is \${advancedLessonIds.length}; expected \${expectedLessons}.\`);
+  console.error(`Advanced lesson count is ${advancedLessonIds.length}; expected ${expectedLessons}.`);
 }
 
 for (const projectId of expectedProjects) {
-  if (!projects.includes(\`id: "\${projectId}"\`)) {
+  if (!projects.includes(`id: "${projectId}"`)) {
     failed = true;
-    console.error(\`Advanced project \${projectId} is missing.\`);
+    console.error(`Advanced project ${projectId} is missing.`);
   }
 }
 
 for (const script of ["A1.1","A1.2","A1.3","A1.4","A1.5","A1.6","A2.1","A2.2","A2.3","A3.1","A3.2"]) {
-  const advancedPodcast = path.join(root, "podcasts", "advanced", \`\${script}.txt\`);
+  const advancedPodcast = path.join(root, "podcasts", "advanced", `${script}.txt`);
   try {
     await access(advancedPodcast);
   } catch {
     failed = true;
-    console.error(\`Advanced podcast script missing for \${script}.\`);
+    console.error(`Advanced podcast script missing for ${script}.`);
   }
 }
 
@@ -71,5 +71,5 @@ if (!handsOn.includes("export function getHandsOnTask")) {
 if (failed) process.exit(1);
 
 console.log(
-  \`Advanced completeness check passed: \${advancedLessonIds.length} lessons, \${expectedSections.length} sections, \${expectedProjects.length} projects, \${expectedSections.length} diagnostics and \${expectedSections.length} pilot banks.\`
+  `Advanced completeness check passed: ${advancedLessonIds.length} lessons, ${expectedSections.length} sections, ${expectedProjects.length} projects, ${expectedSections.length} diagnostics and ${expectedSections.length} pilot banks.`
 );
