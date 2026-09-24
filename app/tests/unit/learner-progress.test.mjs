@@ -1,14 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 class MemoryStorage {
-  constructor() {\n    this.values = new Map();\n  }
+  constructor() {
+    this.values = new Map();
+  }
 
-  getItem(key: string) {
+  getItem(key) {
     return this.values.get(key) ?? null;
   }
 
-  setItem(key: string, value: string) {
-    this.values.set(key, value);
+  setItem(key, value) {
+    this.values.set(key, String(value));
   }
 
   clear() {
@@ -92,7 +94,7 @@ describe("learner progress client", () => {
       verificationLevel: "machine-verified"
     });
 
-    const init = fetchMock.mock.calls[0][1] as RequestInit;
+    const init = fetchMock.mock.calls[0][1];
     const body = JSON.parse(String(init.body));
     expect(body.itemType).toBe("assignment");
     expect(body.itemId).toBe("B1-project");
