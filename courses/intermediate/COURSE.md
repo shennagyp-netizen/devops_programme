@@ -17,7 +17,7 @@ application, Kubernetes, infrastructure, observability, database, recovery and i
 
 ## Prerequisite diagnostics
 
-The current adaptive pilot includes I-F1 and I-F2. A diagnostic recommendation may compress introductory theory, but the associated exercises remain mandatory.
+The current adaptive pilot includes I-F1, I-F2 and I-A1. A diagnostic recommendation may compress introductory theory, but the associated exercises remain mandatory.
 
 ## Teaching model
 
