@@ -54,6 +54,7 @@ export function LessonPanel({
   const [validationMessage, setValidationMessage] = useState("");
   const [machineVerificationMessage, setMachineVerificationMessage] = useState("");
   const [localAgentAvailable, setLocalAgentAvailable] = useState(false);
+  const [localAgentPlatform, setLocalAgentPlatform] = useState<string | null>(null);
   const [localAgentInfo, setLocalAgentInfo] = useState("Not connected");
   const [localAgentToken, setLocalAgentTokenState] = useState(getLocalTerminalToken());
   const [localAgentRunning, setLocalAgentRunning] = useState(false);
@@ -117,9 +118,11 @@ export function LessonPanel({
       if (!active) return;
       if (status.available) {
         setLocalAgentAvailable(true);
+        setLocalAgentPlatform(status.platform);
         setLocalAgentInfo(`Connected · ${status.platform} · agent ${status.version}`);
       } else {
         setLocalAgentAvailable(false);
+        setLocalAgentPlatform(null);
         setLocalAgentInfo(status.reason);
       }
     }
@@ -407,6 +410,13 @@ export function LessonPanel({
               </p>
 
               <p className="range">{localAgentInfo}</p>
+              {localAgentAvailable && localAgentPlatform !== platform ? (
+                <p className="range">
+                  Select {localAgentPlatform} as the course environment to run
+                  this lesson directly on this laptop, or use the manual
+                  terminal path.
+                </p>
+              ) : null}
 
               {!localAgentAvailable ? (
                 <>
@@ -435,7 +445,13 @@ export function LessonPanel({
 
               <button
                 className="primary"
-                disabled={!localAgentAvailable || !localAgentToken.trim() || localAgentRunning}
+,
+                disabled={
+                  !localAgentAvailable ||
+                  !localAgentToken.trim() ||
+                  localAgentRunning ||
+                  localAgentPlatform !== platform
+                }
                 onClick={() => {
                   void runOnLaptop();
                 }}
