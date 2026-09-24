@@ -1370,3 +1370,37 @@ The connector has not returned an executed GitHub Actions run for the security b
 Operational security follow-up:
 - the repository still has no committed npm lockfile, so npm install can resolve ranged transitive dependencies differently across runs;
 - Next.js 16.3.6 is the currently pinned patched release for the September 22, 2026 critical next/og advisory, but the scheduled September 30 security release should be reviewed before production promotion.
+
+============================================================
+34. HOSTED CI VALIDATION STATUS — 2026-09-24 20:xx UTC
+============================================================
+
+PR #18 remains the active red-team branch.
+
+The latest repository security fixes are present, including the server-side exercise completion gate: a lesson cannot be persisted unless the submitted completion uses the supported `exercise-validated` level. The database connection is acquired only after curriculum, metadata, and verification validation succeeds.
+
+GitHub Actions was tested directly through the Actions API.
+
+Observed runs for this workflow repeatedly fail before any workflow step starts. A representative run has:
+- workflow: `devops-programme-app`
+- job: `full-programme-gate`
+- runner label: tested with both `ubuntu-24.04` and `ubuntu-latest`
+- status: completed/failure
+- steps: empty
+- runner ID: 0
+- workflow runtime: a few seconds.
+
+Rerunning the failed job changes the run attempt but still produces a job with no steps before failure. This means the application test suite has not yet been reached by GitHub-hosted CI.
+
+The repository workflow itself has been hardened during this investigation:
+- Node pinned to 22.23.3 LTS in CI
+- immutable setup-node v7.0.0 pin
+- immutable checkout v6.0.0 pin
+- custom token-bearing git checkout removed
+- workflow concurrency enabled
+- current runner label is `ubuntu-latest`.
+
+Do not mark the repository CI-green until GitHub executes the first workflow step and the complete unit/integration/typecheck/build gate passes.
+
+Current external limitation:
+The connected GitHub API exposes workflow/run metadata and confirms the pre-step failure, but it does not expose repository Actions settings/billing controls through the available connector. No repository code change can manufacture a successful hosted runner when the runner is not being allocated.
