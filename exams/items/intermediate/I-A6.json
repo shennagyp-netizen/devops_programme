@@ -1,0 +1,827 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "I-A6",
+  "purpose": "Pilot item bank for Distributed Systems and Recovery. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "IA6-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A6.core",
+      "prompt": "What makes a distributed system different from a local process?",
+      "options": [
+        "Components can fail or communicate imperfectly while other components continue",
+        "All components always share memory",
+        "Networks are irrelevant",
+        "Every failure is global"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA6-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A6.core",
+      "prompt": "What is partial failure?",
+      "options": [
+        "Some components or communication paths fail while others remain available",
+        "The entire system stops",
+        "Only a disk can fail",
+        "A request always succeeds"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA6-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A6.core",
+      "prompt": "Why are timeouts necessary in distributed calls?",
+      "options": [
+        "They bound how long one component waits for another",
+        "They guarantee success",
+        "They remove retries",
+        "They replace monitoring"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA6-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A6.core",
+      "prompt": "Why can retries be dangerous in distributed systems?",
+      "options": [
+        "They can amplify load during dependency failure",
+        "They always reduce traffic",
+        "They eliminate duplicate work",
+        "They guarantee consistency"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA6-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A6.core",
+      "prompt": "What is replication for?",
+      "options": [
+        "Keeping multiple copies or instances to improve availability, locality or scale",
+        "Removing all consistency issues",
+        "Replacing backups completely",
+        "Changing source code"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA6-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A6.core",
+      "prompt": "What is a consistency trade-off?",
+      "options": [
+        "Choosing how and when different readers should observe shared state",
+        "Choosing a CPU type",
+        "Changing HTTP status codes",
+        "Selecting a container image"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA6-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A6.core",
+      "prompt": "Why are idempotent operations useful?",
+      "options": [
+        "Repeated attempts can be made safer during retries or recovery",
+        "They prevent all network failures",
+        "They remove timeouts",
+        "They guarantee atomicity everywhere"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA6-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A6.core",
+      "prompt": "What does quorum reasoning help with?",
+      "options": [
+        "Understanding which subset of replicas must participate for an operation",
+        "Choosing a Git branch",
+        "Compressing logs",
+        "Building containers"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA6-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A6.core",
+      "prompt": "Why is recovery different from restart?",
+      "options": [
+        "Recovery verifies system state and user behavior, not only process liveness",
+        "Restart always restores data",
+        "Recovery never needs evidence",
+        "Restart proves root cause"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA6-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A6.core",
+      "prompt": "What is a failure domain?",
+      "options": [
+        "A set of components likely to fail together because of a shared dependency or boundary",
+        "Any one log entry",
+        "A programming language",
+        "A database query"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA6-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A6.core",
+      "prompt": "Why can two healthy services still have a user-visible outage?",
+      "expectedElements": [
+        "the communication path, shared dependency or state consistency can fail between otherwise healthy components"
+      ]
+    },
+    {
+      "id": "IA6-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A6.core",
+      "prompt": "Why can clocks complicate distributed diagnosis?",
+      "expectedElements": [
+        "events observed on different systems may be ordered incorrectly if time is not comparable"
+      ]
+    },
+    {
+      "id": "IA6-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A6.core",
+      "prompt": "Why is 'the database is up' incomplete evidence?",
+      "expectedElements": [
+        "connectivity, latency, correctness, capacity or specific query behavior can still be failing"
+      ]
+    },
+    {
+      "id": "IA6-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A6.core",
+      "prompt": "Why can regional failover overload the surviving region?",
+      "expectedElements": [
+        "capacity may be sized for normal regional traffic rather than full-failure traffic"
+      ]
+    },
+    {
+      "id": "IA6-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A6.core",
+      "prompt": "What does graceful degradation mean?",
+      "expectedElements": [
+        "the system preserves important functions while reducing or disabling less critical work"
+      ]
+    },
+    {
+      "id": "IA6-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-A6.core",
+      "prompt": "Design a retry policy for a distributed dependency.",
+      "expectedElements": [
+        "timeout",
+        "bounded attempts",
+        "backoff/jitter",
+        "idempotency",
+        "non-retryable errors"
+      ]
+    },
+    {
+      "id": "IA6-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-A6.core",
+      "prompt": "Explain how replication can improve availability while increasing consistency complexity.",
+      "expectedElements": [
+        "multiple copies tolerate some failures",
+        "writes/reads may diverge or lag",
+        "coordination has cost"
+      ]
+    },
+    {
+      "id": "IA6-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "I-A6.core",
+      "prompt": "A request succeeds in one region and fails in another. Give two competing hypotheses and tests.",
+      "expectedElements": [
+        "regional routing/dependency issue",
+        "regional state/configuration difference"
+      ]
+    },
+    {
+      "id": "IA6-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "I-A6.core",
+      "prompt": "Design disaster recovery evidence for a critical service.",
+      "expectedElements": [
+        "RPO/RTO target",
+        "backup/replica state",
+        "restore/failover test",
+        "user-path verification"
+      ]
+    },
+    {
+      "id": "IA6-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "I-A6.core",
+      "prompt": "Build a diagnosis tree for 'one part of the system is down'.",
+      "expectedElements": [
+        "scope failure domain",
+        "path/dependency checks",
+        "state/replica evidence",
+        "safe mitigation",
+        "recovery verification"
+      ]
+    },
+    {
+      "id": "IA6-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "network/path latency",
+        "target dependency saturation",
+        "request timeout behavior"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "I-A6.diagnostic",
+      "prompt": "One service times out calling another while the target looks healthy. What should you inspect?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA6-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "bound or reduce retries",
+        "protect dependency"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "I-A6.diagnostic",
+      "prompt": "A retry storm begins after a dependency slows. What is the first control?",
+      "expectedElements": 2
+    },
+    {
+      "id": "IA6-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "replication lag/visibility",
+        "write path and consistency model"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A6.diagnostic",
+      "prompt": "Two replicas disagree after a write. What evidence matters?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA6-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "surviving-region capacity or dependency pressure",
+        "data locality changes"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A6.diagnostic",
+      "prompt": "Failover moves traffic successfully but latency doubles. What does that suggest?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA6-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "recovery verification"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A6.diagnostic",
+      "prompt": "A backup exists but restore is untested. What is missing?",
+      "expectedElements": 1
+    },
+    {
+      "id": "IA6-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "regional network/path",
+        "regional dependency/configuration/data locality"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A6.diagnostic",
+      "prompt": "A distributed request fails only across regions. Give two hypotheses.",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA6-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "clock skew/timestamps",
+        "request or trace IDs",
+        "causal evidence"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A6.diagnostic",
+      "prompt": "Two logs suggest opposite event order. What should you consider?",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA6-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "connectivity from latency/locking/capacity",
+        "query behavior"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A6.diagnostic",
+      "prompt": "A database is reachable but transactions time out. What should you separate?",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA6-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "local health",
+        "cross-service path",
+        "dependency endpoints",
+        "regional/network boundary"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A6.diagnostic",
+      "prompt": "Design evidence for a partial failure where local traffic works but cross-service traffic fails.",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA6-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "protect surviving capacity",
+        "control failover/load",
+        "prioritize critical traffic",
+        "verify user impact"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A6.diagnostic",
+      "prompt": "A region fails and traffic shifts to another region whose error rate then rises. Design the safest response.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA6-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "stop harmful writes if needed",
+        "identify consistency model",
+        "preserve evidence",
+        "repair/reconcile",
+        "verify"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "I-A6.diagnostic",
+      "prompt": "Design an incident response for inconsistent replicated state.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA6-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "stabilize",
+        "degrade/queue if safe",
+        "recover dependency or fallback",
+        "verify state",
+        "restore normal traffic gradually"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "I-A6.diagnostic",
+      "prompt": "Build a recovery tree for a distributed service after a dependency outage.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA6-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "I-A6.hands-on",
+      "prompt": "Introduce a timeout and verify bounded failure.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "configure disposable client/dependency",
+        "induce delay",
+        "observe timeout",
+        "restore",
+        "verify"
+      ],
+      "success": [
+        "timeout bound",
+        "failure signal",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA6-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A6.hands-on",
+      "prompt": "Create a bounded retry experiment.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "failing dependency",
+        "measure attempts",
+        "apply backoff/jitter",
+        "compare pressure",
+        "reset"
+      ],
+      "success": [
+        "attempt rate",
+        "reduced amplification"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA6-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A6.hands-on",
+      "prompt": "Simulate stale replicated state.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "write/read known value",
+        "introduce controlled delay",
+        "capture stale read",
+        "restore",
+        "verify"
+      ],
+      "success": [
+        "freshness requirement",
+        "stale evidence",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA6-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A6.hands-on",
+      "prompt": "Run a cross-region failure simulation.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "define two regions/simulated paths",
+        "fail one",
+        "observe routing/capacity",
+        "recover",
+        "verify"
+      ],
+      "success": [
+        "failure-domain evidence",
+        "survivor behavior",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA6-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A6.hands-on",
+      "prompt": "Perform a tested restore/failover.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "record RPO/RTO",
+        "restore/failover",
+        "verify data",
+        "verify user path",
+        "record"
+      ],
+      "success": [
+        "recovery objectives",
+        "data verification",
+        "user verification"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA6-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A6.hands-on",
+      "prompt": "Run a partial-failure incident drill.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "keep local path healthy",
+        "break cross-path",
+        "trace boundary",
+        "mitigate",
+        "recover"
+      ],
+      "success": [
+        "partial-failure evidence",
+        "safe action",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA6-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A6.hands-on",
+      "prompt": "Diagnose a distributed inconsistency incident.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "capture values/timestamps/request IDs",
+        "identify consistency model",
+        "reconcile safely",
+        "verify"
+      ],
+      "success": [
+        "causal evidence",
+        "reconciliation",
+        "verification"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA6-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "I-A6.hands-on",
+      "prompt": "Lead an I3 disaster-recovery exercise.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "declare failure domain",
+        "activate recovery",
+        "control traffic",
+        "verify data/service",
+        "restore normal operation",
+        "timeline"
+      ],
+      "success": [
+        "RPO/RTO evidence",
+        "state verification",
+        "service recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    }
+  ]
+}
