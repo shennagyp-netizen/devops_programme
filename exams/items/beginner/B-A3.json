@@ -1,0 +1,832 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "B-A3",
+  "purpose": "Pilot item bank for CI/CD and Reproducible Delivery. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "BA3-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-A3.core",
+      "prompt": "What is a release identity?",
+      "options": [
+        "A stable reference to the exact change or artifact being deployed",
+        "A user's password",
+        "A DNS cache entry",
+        "A temporary process ID"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA3-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-A3.core",
+      "prompt": "Why run automated checks before deployment?",
+      "options": [
+        "To catch defined classes of problems before promotion",
+        "To guarantee production never fails",
+        "To replace rollback",
+        "To make code immutable"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA3-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "B-A3.core",
+      "prompt": "What is an artifact?",
+      "options": [
+        "A concrete build output that can be tested and promoted",
+        "A developer's local shell",
+        "A database query",
+        "A DNS request"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA3-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A3.core",
+      "prompt": "Why is the same artifact useful across environments?",
+      "options": [
+        "It reduces uncertainty about what was actually tested and deployed",
+        "It forces every environment to have identical secrets",
+        "It removes configuration differences",
+        "It makes failures impossible"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA3-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A3.core",
+      "prompt": "What does a rollback need?",
+      "options": [
+        "A known-good version and a controlled way to restore it",
+        "A new Git branch only",
+        "A database with no backups",
+        "A different developer"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA3-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A3.core",
+      "prompt": "Why should a CI pipeline be reproducible?",
+      "options": [
+        "The same source and inputs should produce a predictable result",
+        "Every run must always take one second",
+        "It removes all human review",
+        "It prevents dependency changes forever"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA3-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A3.core",
+      "prompt": "What does a deployment gate do?",
+      "options": [
+        "Stops promotion until required conditions or evidence are satisfied",
+        "Deletes failed builds",
+        "Changes the source code automatically",
+        "Creates DNS records only"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA3-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A3.core",
+      "prompt": "Why record deployment evidence?",
+      "options": [
+        "To know what changed, where it went, and whether recovery was verified",
+        "To increase CPU capacity",
+        "To replace logs",
+        "To avoid version control"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA3-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A3.core",
+      "prompt": "A build passes locally but fails in CI. What is a useful first comparison?",
+      "options": [
+        "Environment, dependencies, inputs and exact build command",
+        "Keyboard layout",
+        "Office location only",
+        "GitHub stars"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA3-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "B-A3.core",
+      "prompt": "What is configuration drift?",
+      "options": [
+        "Actual infrastructure or runtime state differs from intended managed state",
+        "Two developers use different editors",
+        "A DNS record has a long name",
+        "A build log is large"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "BA3-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A3.core",
+      "prompt": "Why can a pipeline be green while a deployment is still unsafe?",
+      "expectedElements": [
+        "Pipeline checks may not cover runtime behavior or dependencies",
+        "The application may fail after promotion",
+        "Equivalent operational evidence"
+      ]
+    },
+    {
+      "id": "BA3-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A3.core",
+      "prompt": "A rollback succeeds but users still fail. What does that suggest?",
+      "expectedElements": [
+        "The previous release may not be the only failing component",
+        "The rollback may not have reached all instances",
+        "A dependency or data state may still be unhealthy"
+      ]
+    },
+    {
+      "id": "BA3-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A3.core",
+      "prompt": "Why pin or otherwise control dependencies in a reproducible build?",
+      "expectedElements": [
+        "Uncontrolled dependency changes can alter build behavior without a source-code change"
+      ]
+    },
+    {
+      "id": "BA3-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A3.core",
+      "prompt": "What evidence links an incident to a deployment?",
+      "expectedElements": [
+        "release identity or version",
+        "deployment time",
+        "failure timing or metrics",
+        "comparison with known-good behavior"
+      ]
+    },
+    {
+      "id": "BA3-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "B-A3.core",
+      "prompt": "Why separate build and deployment permissions?",
+      "expectedElements": [
+        "It limits the blast radius of compromised or incorrect automation",
+        "It makes builds slower only",
+        "It removes the need for artifacts",
+        "Equivalent least-privilege reasons"
+      ]
+    },
+    {
+      "id": "BA3-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "B-A3.core",
+      "prompt": "Design a minimal release evidence record.",
+      "expectedElements": [
+        "source/commit identity",
+        "artifact identity",
+        "checks performed",
+        "deployment target/time",
+        "recovery or verification result"
+      ]
+    },
+    {
+      "id": "BA3-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "B-A3.core",
+      "prompt": "Explain why 'latest' is a weak production release identifier.",
+      "expectedElements": [
+        "it can move",
+        "it is ambiguous during incidents",
+        "exact tested artifact/version is needed"
+      ]
+    },
+    {
+      "id": "BA3-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "B-A3.core",
+      "prompt": "Design a safe promotion flow for a small service.",
+      "expectedElements": [
+        "commit",
+        "build artifact",
+        "automated checks",
+        "controlled promotion",
+        "runtime verification",
+        "rollback path"
+      ]
+    },
+    {
+      "id": "BA3-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 5,
+      "competencyId": "B-A3.core",
+      "prompt": "A deployment is healthy in staging but fails in production. Give two competing hypotheses and a discriminating test for each.",
+      "expectedElements": [
+        "configuration/secret difference with config comparison",
+        "traffic/dependency difference with production-path telemetry"
+      ]
+    },
+    {
+      "id": "BA3-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "B-A3.core",
+      "prompt": "Build a release decision rule that refuses promotion when evidence is incomplete.",
+      "expectedElements": [
+        "required checks",
+        "artifact identity",
+        "deployment target",
+        "health/recovery evidence",
+        "explicit refusal on missing evidence"
+      ]
+    },
+    {
+      "id": "BA3-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "release/artifact identity"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "A build passed but no artifact can be identified. What is missing?"
+    },
+    {
+      "id": "BA3-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "deployment change",
+        "known-good configuration",
+        "runtime error"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "A deployment failed immediately after a configuration change. What should you compare first?"
+    },
+    {
+      "id": "BA3-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "all components affected by the request path",
+        "dependency/data state",
+        "rollback coverage"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "Rollback completed but errors remain. What should you inspect?"
+    },
+    {
+      "id": "BA3-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "dependency versions or environment",
+        "exact commands/inputs",
+        "runtime or architecture differences"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "CI fails while local build passes. Name two useful comparisons."
+    },
+    {
+      "id": "BA3-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "artifact identity",
+        "runtime configuration",
+        "target environment"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "Two deployments of the same commit behave differently. What evidence matters?"
+    },
+    {
+      "id": "BA3-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "tests did not cover runtime path",
+        "production dependency/configuration differs",
+        "post-deploy checks are insufficient"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "A pipeline is green but users see errors. Give two reasons."
+    },
+    {
+      "id": "BA3-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "recovery path is ambiguous",
+        "incident reconstruction is harder",
+        "known-good version may be unclear"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "A failed release has no rollback record. Why is that an operational problem?"
+    },
+    {
+      "id": "BA3-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "request rate/latency/errors",
+        "dependency saturation",
+        "capacity or load-specific behavior"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "A deployment failure appears only under real traffic. What should you measure?"
+    },
+    {
+      "id": "BA3-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "exact dependency version",
+        "build logs",
+        "repeatability across runs"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "A new dependency version causes flaky builds. Design the smallest evidence set."
+    },
+    {
+      "id": "BA3-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "config/secrets",
+        "traffic and data shape",
+        "dependency access",
+        "artifact identity",
+        "environment differences"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "Design an investigation for 'works in staging, fails in production'."
+    },
+    {
+      "id": "BA3-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "stop or pause promotion",
+        "identify affected version scope",
+        "choose rollback/forward fix based on evidence",
+        "verify recovery"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "A rollout is partially complete when errors rise. What is a safer decision process?"
+    },
+    {
+      "id": "BA3-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "establish impact",
+        "identify release",
+        "collect evidence",
+        "mitigate safely",
+        "verify recovery",
+        "preserve timeline"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "B-A3.diagnostic",
+      "prompt": "Design the first ten minutes of a release incident."
+    },
+    {
+      "id": "BA3-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "B-A3.hands-on",
+      "prompt": "Create a release identity and trace it.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "make small change",
+        "commit",
+        "build artifact",
+        "record identity",
+        "verify artifact"
+      ],
+      "success": [
+        "commit identity",
+        "artifact identity",
+        "traceable result"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA3-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "B-A3.hands-on",
+      "prompt": "Break a CI check and restore it.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "introduce reversible failure",
+        "run checks",
+        "capture failure",
+        "repair",
+        "rerun"
+      ],
+      "success": [
+        "failure captured",
+        "repair captured",
+        "green rerun"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA3-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "B-A3.hands-on",
+      "prompt": "Deploy a known artifact to a disposable environment.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "select artifact",
+        "deploy",
+        "verify runtime version",
+        "record result",
+        "reset"
+      ],
+      "success": [
+        "artifact identity",
+        "deployment evidence",
+        "runtime verification"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA3-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "B-A3.hands-on",
+      "prompt": "Perform a controlled rollback.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "deploy bad change",
+        "observe failure",
+        "select known-good version",
+        "rollback",
+        "verify user path"
+      ],
+      "success": [
+        "known-good identity",
+        "rollback evidence",
+        "recovery evidence"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA3-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "B-A3.hands-on",
+      "prompt": "Compare staging and production inputs.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "record configuration sets",
+        "identify differences",
+        "test one hypothesis",
+        "document result"
+      ],
+      "success": [
+        "difference evidence",
+        "test evidence",
+        "conclusion"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA3-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "B-A3.hands-on",
+      "prompt": "Add a post-deployment verification step.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "define signal",
+        "deploy",
+        "run check",
+        "force safe failure",
+        "verify check catches it"
+      ],
+      "success": [
+        "signal definition",
+        "failure caught",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA3-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "B-A3.hands-on",
+      "prompt": "Run a release incident drill.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "identify impact",
+        "freeze promotion",
+        "collect release evidence",
+        "mitigate",
+        "verify recovery",
+        "timeline"
+      ],
+      "success": [
+        "ordered incident evidence",
+        "safe mitigation",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    },
+    {
+      "id": "BA3-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "B-A3.hands-on",
+      "prompt": "Design and rehearse a release gate.",
+      "environment": [
+        "Disposable local service environment with container/runtime access"
+      ],
+      "initialState": "Known-good service or synthetic workload with a reset path.",
+      "allowedOperations": [
+        "define required evidence",
+        "simulate missing evidence",
+        "refuse promotion",
+        "supply evidence",
+        "allow promotion"
+      ],
+      "success": [
+        "gate rejects incomplete release",
+        "gate accepts complete release"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure or state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one variable without recording the first change",
+        "claims recovery without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify the intended user/system path"
+      ],
+      "resetStrategy": "Delete and recreate the disposable workload or restore the documented fixture."
+    }
+  ]
+}
