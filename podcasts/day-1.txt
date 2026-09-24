@@ -1,119 +1,155 @@
-DAY 1
+DAY 1 — LINUX + NETWORKING FOUNDATIONS
+
+
 
 EPISODE D1.1 — Linux Operating Model
 
-Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Start below the application: shell, kernel, process, memory, filesystem, file descriptors, services and logs. Operational skill means observing live state and explaining what the operating system is doing.
+Speaker A: Before we touch DevOps tools, let's talk about the machine underneath the drama. Your application is ultimately a collection of processes asking an operating system for CPU time, memory, files, and network access.
 
-Speaker B: Give me the failure-oriented version.
+Speaker B: So the cloud is just a very expensive machine room with better marketing?
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: That's a dangerous oversimplification... but a useful starting point.
 
-Hands-on: Use the Mac to perform an experiment related to Linux Operating Model. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Think about a restaurant. The customer sees the waiter carrying food. Behind that waiter are the kitchen, refrigerators, staff, inventory, electricity, and a manager deciding what gets attention first. A Linux process is one active piece of work. The kernel arbitrates access to shared resources.
 
-Production: Place Linux Operating Model in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker B: And when the restaurant becomes slow, yelling at the waiter is probably not root-cause analysis.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker A: Exactly. You inspect the kitchen.
 
-==============================
+Speaker A: Linux gives processes identifiers, memory, file descriptors, scheduling, signals, filesystem access, and network sockets. The shell is itself a process; it asks the kernel to launch or control other processes.
+
+Speaker B: File descriptors always sound like something invented by people who hate newcomers.
+
+Speaker A: They are just numbered handles to communication channels. Standard input, standard output, and standard error are the famous ones. Pipes connect channels so processes can compose.
+
+Speaker A: When you run ps, top, lsof, kill, or inspect logs, you are asking the system to reveal state.
+
+Speaker B: Real-life version?
+
+Speaker A: If a clinic says, 'the lab is slow,' the useful questions are: Which machine? Which process? CPU? Memory? Disk? Network? One user or everyone? That is the same diagnostic mindset.
+
+Speaker A: Mac lab: inspect processes and listening sockets. Pick one harmless process, predict what happens if it stops, then verify.
+
+
+
+Recall: What is a process? What is the kernel responsible for? What is a file descriptor? Why is the shell not the kernel? What evidence do you collect before blaming the machine?
+
+
 
 EPISODE D1.2 — Terminal as an Engineering Tool
 
-Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Start below the application: shell, kernel, process, memory, filesystem, file descriptors, services and logs. Operational skill means observing live state and explaining what the operating system is doing.
+Speaker A: The terminal is not a collection of spells. It is a compositional language for interrogating and manipulating a system.
 
-Speaker B: Give me the failure-oriented version.
+Speaker B: I know the commands but sometimes type them like a medieval wizard.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: Most engineers have done that. The trick is understanding what each command contributes.
 
-Hands-on: Use the Mac to perform an experiment related to Terminal as an Engineering Tool. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Imagine a detective with a clipboard. ps tells you who is alive. grep filters evidence. tail watches recent events. find searches. A pipe hands output from one investigator to another.
 
-Production: Place Terminal as an Engineering Tool in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker B: So ps | grep something is two detectives passing notes.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker A: Precisely. Except the detectives are processes, and nobody gets paid overtime.
 
-==============================
+Speaker A: Review pwd, ls, cd, find, grep, cat, less, head, tail, awk, sed, pipes, redirection, environment variables, ssh, curl, and process inspection.
+
+Speaker A: Real-life example: 'The service is down.' First ask the machine: Is the process alive? Is a port listening? What does the log say? Can the local endpoint answer?
+
+Speaker B: That is triage.
+
+Speaker A: Exactly. The command line becomes a fast triage instrument.
+
+Speaker A: Lab: inspect a harmless process, redirect output, filter a list, then query a closed local port and study the evidence.
+
+
 
 EPISODE D1.3 — Processes, Services, Permissions and Logs
 
-Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Start below the application: shell, kernel, process, memory, filesystem, file descriptors, services and logs. Operational skill means observing live state and explaining what the operating system is doing.
+Speaker A: A production service has a lifecycle. It starts, runs, consumes resources, emits evidence, and eventually stops or restarts.
 
-Speaker B: Give me the failure-oriented version.
+Speaker B: Like an employee, except the employee can be restarted automatically.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: Please do not give management ideas.
 
-Hands-on: Use the Mac to perform an experiment related to Processes, Services, Permissions and Logs. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Think of a hotel. Guests are requests. Rooms are resources. Staff are processes. The front desk is a service endpoint. The supervisor keeps the system operating when one worker disappears.
 
-Production: Place Processes, Services, Permissions and Logs in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker A: In Linux, understand process state, signals, users, groups, permissions, environment variables, services and logs.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker B: Why can a perfectly healthy application still fail?
 
-==============================
+Speaker A: Because it may not be allowed to read a file, bind a socket, access a directory, or obtain a credential.
+
+Speaker A: Real-life example: a lab technician knows the correct file exists but cannot open a locked cabinet. The data exists; authority is missing.
+
+Speaker A: Lab: inspect a service-like process, its environment, files and logs. In a temporary directory, make one permission change and observe the failure.
+
+
 
 EPISODE D1.4 — What Is a Network?
 
-Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Build networking from the link layer upward. Keep frame, MAC, IP, route, port, socket, DNS, TCP, TLS and HTTP distinct. A failure at each layer produces a different symptom.
+Speaker A: Now we rebuild networking from the ground up.
 
-Speaker B: Give me the failure-oriented version.
+Speaker B: I know IP addresses, but the layers around them have always felt like a group project where nobody introduced themselves.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: Start at the link layer. Ethernet moves frames. MAC addresses identify interfaces on a local link. Switches move frames inside a LAN. ARP helps map local IP addresses to MAC addresses.
 
-Hands-on: Use the Mac to perform an experiment related to What Is a Network?. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Real-life analogy: an apartment building. The apartment number matters after the building is known. Local delivery needs local addressing.
 
-Production: Place What Is a Network? in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker A: Then IP gives network-level addressing. Do not confuse MAC, IP, and a TCP port.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker B: So if DNS is broken, the Ethernet cable can still be perfectly healthy.
 
-==============================
+Speaker A: Correct. Different layer, different failure.
+
+Speaker A: Lab: inspect your Mac's interfaces, addresses, gateway and nearby network information.
+
+
 
 EPISODE D1.5 — IP Addresses, Subnets and CIDR
 
-Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Build networking from the link layer upward. Keep frame, MAC, IP, route, port, socket, DNS, TCP, TLS and HTTP distinct. A failure at each layer produces a different symptom.
+Speaker A: IP addressing gets easier when you stop treating CIDR as a decorative slash.
 
-Speaker B: Give me the failure-oriented version.
+Speaker B: The slash has always looked like a fraction that escaped into networking.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: It is a compact way to state how many leading bits define the network portion.
 
-Hands-on: Use the Mac to perform an experiment related to IP Addresses, Subnets and CIDR. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: Imagine a neighborhood. The street identifies a shared area; the house number identifies one home. A subnet is the neighborhood boundary.
 
-Production: Place IP Addresses, Subnets and CIDR in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker A: We will reason through 192.168.1.0/24, 192.168.1.0/26, and 10.0.0.0/16, calculating boundaries and understanding why segmentation matters.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker A: Real-life example: a large hospital does not need every device in one undifferentiated network. Departments and sensitive systems may be separated to control communication.
 
-==============================
+Speaker A: Lab: calculate CIDR ranges manually before using a calculator, then compare with the machine.
+
+
 
 EPISODE D1.6 — Routing, Gateways and NAT
 
-Speaker A: We build an operational mental model, not a vocabulary list.
 
-Speaker B: I understand application development. What changes when I operate the system?
 
-Speaker A: Build networking from the link layer upward. Keep frame, MAC, IP, route, port, socket, DNS, TCP, TLS and HTTP distinct. A failure at each layer produces a different symptom.
+Speaker A: Routing answers: where should this packet go next?
 
-Speaker B: Give me the failure-oriented version.
+Speaker B: Like Google Maps, except the packet is not allowed to ask for coffee.
 
-Speaker A: State the normal causal path. Then ask what evidence appears when each dependency fails. Identify the layer, inputs, outputs, and next dependency.
+Speaker A: And it does not appreciate scenic routes.
 
-Hands-on: Use the Mac to perform an experiment related to Routing, Gateways and NAT. Predict the result before running it, execute it, capture the evidence, and explain the difference between hypothesis and reality.
+Speaker A: A route table contains decisions about destinations and next hops. The default gateway handles traffic that does not match a more specific route.
 
-Production: Place Routing, Gateways and NAT in a system serving millions of users. Identify dependencies, failure domain, first useful signal, mitigation, recovery, and what automation should do before a human intervenes.
+Speaker A: Think of a courier company. The local driver does not know every street in every city. They know which distribution center receives the package next.
 
-Recall: 1) explain without notes; 2) draw the causal flow; 3) give two failure modes and their symptoms; 4) name the first diagnostic evidence; 5) explain how scale changes the problem.
+Speaker A: NAT changes addressing at a boundary. Do not confuse NAT with routing or security.
+
+Speaker A: Lab: inspect your Mac's routing information and trace a destination. In a safe environment, change one route and predict the effect.
+
+Speaker B: So the practical rule is: identify the destination, the next hop, and what changes at the boundary.
+
+Speaker A: Exactly.
