@@ -8,7 +8,7 @@ Speaker A: Three times normal in the last ten minutes.
 
 Speaker B: So we scale the web servers.
 
-Speaker A: Maybe.
+Speaker A: Maybe. That gives us a useful boundary.
 
 Speaker A: Let’s keep that as a testable claim.
 
@@ -42,7 +42,7 @@ Speaker A: A system can be able to handle ten times the traffic in one part and 
 
 Speaker B: So the real question is where the first limit appears.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now connect that to the request path.
 
 Speaker A: That gives us a useful boundary.
 
@@ -52,13 +52,13 @@ Speaker A: Suppose one API instance can handle 100 requests per second at our ta
 
 Speaker B: Ten instances could handle 1,000 in a perfect world.
 
-Speaker A: Right.
+Speaker A: Right. I would measure that before changing anything.
 
 Speaker A: Now connect that to the request path.
 
 Speaker B: But no real system is perfect.
 
-Speaker A: Correct.
+Speaker A: Correct. That is where the failure becomes useful.
 
 Speaker A: I would measure that before changing anything.
 
@@ -68,13 +68,13 @@ Speaker A: Then adding the sixth, seventh, and eighth API server does not solve 
 
 Speaker B: The API looks less busy while the database is dying.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now we can compare it with the real system.
 
 Speaker A: That is where the failure becomes useful.
 
 Speaker B: So we moved the problem.
 
-Speaker A: Yes.
+Speaker A: Yes. Keep the user-visible effect in the model.
 
 Speaker A: Now we can compare it with the real system.
 
@@ -88,13 +88,13 @@ Speaker A: Right. You open ten lanes. Now the checkout area is faster.
 
 Speaker B: Until everyone reaches the payment terminal.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That is the part I would verify first.
 
 Speaker A: Keep the user-visible effect in the model.
 
 Speaker B: Or there is one person checking IDs for every lane.
 
-Speaker A: Right.
+Speaker A: Right. Now the assumption is explicit.
 
 Speaker A: That is the part I would verify first.
 
@@ -112,13 +112,13 @@ Speaker A: Start with traffic and latency.
 
 Speaker B: Throughput and response time.
 
-Speaker A: Yes.
+Speaker A: Yes. That gives us a cleaner diagnosis.
 
 Speaker A: Now the assumption is explicit.
 
 Speaker B: Then resource use.
 
-Speaker A: Yes.
+Speaker A: Yes. We can test that without changing the whole system.
 
 Speaker A: That gives us a cleaner diagnosis.
 
