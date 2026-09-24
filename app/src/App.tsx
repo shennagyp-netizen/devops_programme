@@ -1,6 +1,11 @@
 import { useMemo, useState } from "react";
 import { days, lessons } from "./data/curriculum";
-import { courses, platformProfiles, type CourseLevel, type PlatformId } from "./data/programme";
+import {
+  courses,
+  platformProfiles,
+  type CourseLevel,
+  type PlatformId
+} from "./data/programme";
 import { LessonPanel } from "./components/LessonPanel";
 import { Progress } from "./components/Progress";
 
@@ -39,18 +44,20 @@ export default function App() {
         <div>
           <span className="eyebrow">DEVOPS PROGRAMME</span>
           <h1>From scattered knowledge to operational mastery.</h1>
-          <p>Three course levels. Platform-aware labs. Evidence-driven assessment.</p>
+          <p>
+            Three genuinely different courses. Human-first teaching.
+            Platform-aware labs.
+          </p>
         </div>
         <Progress total={lessons.length} completed={m.length} />
       </header>
 
       <section className="content-card">
         <div>
-          <h3>Learning profile</h3>
-          <p>
-            {selectedCourse.title}: {selectedCourse.purpose}
-          </p>
+          <h3>{selectedCourse.title}</h3>
+          <p>{selectedCourse.purpose}</p>
         </div>
+
         <div className="mode-tabs">
           {courses.map((item) => (
             <button
@@ -62,6 +69,7 @@ export default function App() {
             </button>
           ))}
         </div>
+
         <div className="mode-tabs">
           {platformProfiles.map((item) => (
             <button
@@ -73,14 +81,33 @@ export default function App() {
             </button>
           ))}
         </div>
+
         <p className="range">
           Environment: {selectedPlatform.label} · {selectedPlatform.shell}
         </p>
+
+        <div className="content-card">
+          <h4>Course path</h4>
+          <ol>
+            {selectedCourse.sections.map((section) => (
+              <li key={section.id}>
+                <strong>{section.id}</strong> — {section.title}{" "}
+                <span className="range">
+                  [{section.kind}]
+                </span>
+                <div>{section.humanExample}</div>
+              </li>
+            ))}
+          </ol>
+          <p className="range">
+            Projects: {selectedCourse.projects.join(" · ")}
+          </p>
+        </div>
       </section>
 
       <main className="layout">
         <aside className="sidebar">
-          <h3>Curriculum</h3>
+          <h3>Current operational core</h3>
           {days.map((d) => (
             <div className="day" key={d.id}>
               <div className="day-title">{d.title}</div>
