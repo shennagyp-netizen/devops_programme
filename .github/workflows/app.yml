@@ -92,3 +92,14 @@ jobs:
         with:
           name: devops-runner-probe
           path: runner-probe.txt
+
+  bare_runner_probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Bare runner shell probe
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "bare-runner-ok"
+          uname -a
+          command -v bash
