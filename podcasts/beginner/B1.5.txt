@@ -6,7 +6,9 @@ Speaker B: Please tell me it's not another mystery network bug.
 
 Speaker A: Not this time.
 
-Speaker B: Good.
+Speaker B: Good. That makes the diagnosis easier to test.
+
+Speaker B: Let's keep that tied to the actual problem.
 
 Speaker A: We have an app that works. We have containers. We can start the API.
 
@@ -36,7 +38,9 @@ Speaker A: Clear can mean, "Ask me and I'll tell you."
 
 Speaker B: Repeatable means, "The system tells you."
 
-Speaker A: Yes.
+Speaker A: Yes. We can check that without changing everything.
+
+Speaker A: Now say what evidence would confirm that.
 
 Speaker B: Good. I like that.
 
@@ -44,7 +48,9 @@ Speaker A: A repeatable app should have a known way to start, known configuratio
 
 Speaker B: So we want fewer hidden steps.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Now we have a concrete prediction.
+
+Speaker A: That gives us a useful next test.
 
 Speaker B: This sounds simple until a project has thirty setup commands.
 
@@ -60,7 +66,9 @@ Speaker A: Then someone in a comment says, "Works for me."
 
 Speaker B: That's not documentation. That's folklore.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Keep the recovery condition in the plan.
+
+Speaker A: I would not change the system before checking that.
 
 Speaker B: So what should B1 give us?
 
@@ -72,23 +80,29 @@ Speaker A: Good. First: application code.
 
 Speaker B: Second: image.
 
-Speaker A: Good.
+Speaker A: Good. That is a safer way to reason about it.
+
+Speaker A: Keep the user-visible effect in view.
 
 Speaker B: Third: configuration.
 
-Speaker A: Good.
+Speaker A: Good. Now compare that with the known-good state.
+
+Speaker A: That is the part I would verify first.
 
 Speaker B: Fourth: network.
 
-Speaker A: Good.
+Speaker A: Good. That tells us which layer to inspect next.
+
+Speaker A: Now the assumption is explicit.
 
 Speaker B: Fifth: data.
 
-Speaker A: Good.
+Speaker A: Good. I want the observation before the fix.
 
 Speaker B: Sixth: health.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That is where the real mechanism shows up.
 
 Speaker B: Let's start with configuration.
 
@@ -96,19 +110,19 @@ Speaker A: An application often needs values that change between environments.
 
 Speaker B: Database URL. Port. API settings. Feature flags.
 
-Speaker A: Right.
+Speaker A: Right. Now the failure has a clear boundary.
 
 Speaker B: We don't want to bake every value into the image.
 
-Speaker A: Correct.
+Speaker A: Correct. Let's see whether the evidence supports that.
 
 Speaker B: Because then the same image cannot move cleanly between environments.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That would change my next move.
 
 Speaker B: So the image should hold the application. The environment should provide the changing values.
 
-Speaker A: Good.
+Speaker A: Good. Keep the incident scoped to one hypothesis.
 
 Speaker B: Human example?
 
@@ -116,7 +130,7 @@ Speaker A: A restaurant has the same kitchen equipment, but lunch and dinner may
 
 Speaker B: Same kitchen, different input.
 
-Speaker A: Right.
+Speaker A: Right. Let's keep that tied to the actual problem.
 
 Speaker B: So the kitchen is the image, and the day's stock is configuration.
 
