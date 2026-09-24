@@ -27,6 +27,8 @@ describe("Beginner course unit gate", () => {
       expect(project.failureScenarios.length).toBeGreaterThan(0);
       expect(project.evidenceRequirements.length).toBeGreaterThan(0);
       expect(project.completionCriteria.length).toBeGreaterThan(0);
+      expect(project.changeHistory.length).toBeGreaterThan(0);
+      expect(project.incidentHistory.length).toBeGreaterThan(0);
     }
   });
 
