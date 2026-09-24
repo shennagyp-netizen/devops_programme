@@ -16,7 +16,7 @@ Speaker A: Exactly. Failure engineering starts with a question.
 
 Speaker B: "What happens if this dependency disappears?"
 
-Speaker A: Good.
+Speaker A: Good. But do not jump to the fix yet.
 
 Speaker B: And the second question is, "What was supposed to happen?"
 
@@ -40,6 +40,8 @@ Speaker A: Yes.
 
 Speaker B: The cache helps with reads.
 
+Speaker B: But I would not call it optional until we prove that.
+
 Speaker A: Right.
 
 Speaker B: We kill the cache.
@@ -52,11 +54,11 @@ Speaker A: Good.
 
 Speaker B: Reads may get slower.
 
-Speaker A: Maybe.
+Speaker A: Maybe. I want evidence for that one.
 
 Speaker B: Database load may increase.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That is the clue I care about.
 
 Speaker B: So if every API request fails, our model was incomplete.
 
@@ -80,7 +82,7 @@ Speaker A: Exactly.
 
 Speaker B: Or all the other doors lead to the same locked corridor.
 
-Speaker A: Good. That is a shared dependency.
+Speaker A: Good. That is a shared dependency, and it is easy to miss when the diagram looks clean.
 
 Speaker B: So in software, "we have three copies" does not mean we have three independent paths.
 
@@ -144,11 +146,13 @@ Speaker A: What should a product page do?
 
 Speaker B: The page should still load, but recommendations may disappear.
 
-Speaker A: Good.
+Speaker B: That is the behavior I would expect if the dependency is truly optional.
+
+Speaker A: Good. That gives us a useful baseline.
 
 Speaker B: Unless the page waits for recommendations before returning.
 
-Speaker A: Exactly.
+Speaker A: Exactly. The failure becomes part of the feature path.
 
 Speaker B: Then we discover the dependency is synchronous.
 
