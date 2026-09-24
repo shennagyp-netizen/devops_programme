@@ -553,6 +553,271 @@ export const diagnosticDefinitions: DiagnosticDefinition[] = [
     ]
   },
   {
+    sectionId: "I-A2",
+    course: "intermediate",
+    title: "Kubernetes Control Loops",
+    prerequisiteLessonIds: ["D3.1", "D3.4"],
+    remediationLessonIds: ["D3.1", "D3.4", "D3.5"],
+    questions: [
+      {
+        id: "IA2-P-1",
+        prompt: "What does Kubernetes reconciliation try to do?",
+        options: [
+          "Move observed state toward the declared desired state",
+          "Build container images",
+          "Replace DNS",
+          "Store Git commits"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA2-P-2",
+        prompt: "Why can a Pod be replaced without changing a Service endpoint?",
+        options: [
+          "The Service identity is separate from individual Pod identity",
+          "Pods never change",
+          "Services contain the application data",
+          "Kubernetes disables Pod IPs"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA2-P-3",
+        prompt: "What does readiness mainly influence?",
+        options: [
+          "Whether the Pod should receive normal traffic",
+          "Whether an image can be built",
+          "Whether a node has a CPU",
+          "Whether Git can merge"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA2-P-4",
+        prompt: "A Deployment has the desired replica count but users still get errors. What should you inspect?",
+        options: [
+          "Pod readiness and the real request path",
+          "Only the Deployment YAML formatting",
+          "Only Git history",
+          "Only node names"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+  {
+    sectionId: "I-A3",
+    course: "intermediate",
+    title: "Kubernetes Networking and Storage",
+    prerequisiteLessonIds: ["D3.2", "D3.3"],
+    remediationLessonIds: ["D3.2", "D3.3"],
+    questions: [
+      {
+        id: "IA3-P-1",
+        prompt: "What is a Kubernetes Service mainly providing?",
+        options: [
+          "A stable way to reach selected Pods",
+          "A Terraform state file",
+          "A container image",
+          "A node scheduler"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA3-P-2",
+        prompt: "A Service has no endpoints. What should you check first?",
+        options: [
+          "The Service selector and Pod labels/readiness",
+          "The image registry password only",
+          "Git branches",
+          "CPU frequency"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA3-P-3",
+        prompt: "What does a PersistentVolumeClaim represent?",
+        options: [
+          "A request for persistent storage with defined requirements",
+          "A network port",
+          "A Pod identity",
+          "A deployment history"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA3-P-4",
+        prompt: "A Pod reaches a database by IP but not by Service name. Which area is most relevant?",
+        options: [
+          "Service/DNS naming and cluster networking",
+          "Git commit history",
+          "Container image layers only",
+          "CPU scheduling only"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+  {
+    sectionId: "I-A4",
+    course: "intermediate",
+    title: "CI/CD and Infrastructure as Code",
+    prerequisiteLessonIds: ["D4.1", "D4.4"],
+    remediationLessonIds: ["D4.2", "D4.4", "D4.5"],
+    questions: [
+      {
+        id: "IA4-P-1",
+        prompt: "What is the main purpose of a Terraform plan?",
+        options: [
+          "Show intended infrastructure changes before they are applied",
+          "Start every application container",
+          "Replace source control",
+          "Generate application logs"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA4-P-2",
+        prompt: "Why is Terraform state important?",
+        options: [
+          "It tracks managed infrastructure so plans can relate configuration to resources",
+          "It is the application database",
+          "It is a DNS cache",
+          "It is the CI runner"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA4-P-3",
+        prompt: "What is configuration drift?",
+        options: [
+          "Actual infrastructure differs from intended managed configuration",
+          "A DNS request times out",
+          "A container restarts",
+          "A Git branch is renamed"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA4-P-4",
+        prompt: "Why should a deployment identify the exact artifact being promoted?",
+        options: [
+          "So the tested change can be traced to the deployed change",
+          "So rollback becomes impossible",
+          "So monitoring is unnecessary",
+          "So every environment has identical secrets"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+  {
+    sectionId: "I-A5",
+    course: "intermediate",
+    title: "Observability and SRE",
+    prerequisiteLessonIds: ["D5.5"],
+    remediationLessonIds: ["D5.5", "D5.8"],
+    questions: [
+      {
+        id: "IA5-P-1",
+        prompt: "What does an SLI measure?",
+        options: [
+          "A defined aspect of service behavior or user experience",
+          "A Git commit",
+          "A container image",
+          "A firewall rule"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA5-P-2",
+        prompt: "What does an SLO provide?",
+        options: [
+          "A target for an SLI over a defined period",
+          "A Pod identity",
+          "A backup archive",
+          "A DNS resolver"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA5-P-3",
+        prompt: "Why are latency percentiles useful?",
+        options: [
+          "They expose tail behavior that an average can hide",
+          "They guarantee low latency",
+          "They measure CPU only",
+          "They replace traces"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA5-P-4",
+        prompt: "What is an error budget used for?",
+        options: [
+          "Linking reliability performance to change and risk decisions",
+          "Choosing a Docker image",
+          "Replacing incident logs",
+          "Increasing database storage"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+  {
+    sectionId: "I-A6",
+    course: "intermediate",
+    title: "Distributed Systems and Recovery",
+    prerequisiteLessonIds: ["D5.2", "D5.3", "D5.6"],
+    remediationLessonIds: ["D5.2", "D5.3", "D5.6"],
+    questions: [
+      {
+        id: "IA6-P-1",
+        prompt: "What is partial failure?",
+        options: [
+          "Some components or communication paths fail while others continue",
+          "The whole system stops",
+          "Only storage can fail",
+          "Every request succeeds"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA6-P-2",
+        prompt: "Why are bounded timeouts important?",
+        options: [
+          "They prevent one dependency call from waiting forever and consuming resources",
+          "They guarantee success",
+          "They remove consistency issues",
+          "They replace monitoring"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA6-P-3",
+        prompt: "Why can regional failover cause a second incident?",
+        options: [
+          "The surviving region may not have enough capacity for the transferred load",
+          "Failover always deletes data",
+          "DNS cannot resolve two regions",
+          "Replication prevents traffic movement"
+        ],
+        correctOption: 0
+      },
+      {
+        id: "IA6-P-4",
+        prompt: "What proves disaster recovery actually works?",
+        options: [
+          "A tested recovery plus verification of the real service and data",
+          "A backup file existing",
+          "A successful process restart",
+          "A green dashboard only"
+        ],
+        correctOption: 0
+      }
+    ]
+  },
+  {
     sectionId: "A-F2",
     course: "advanced",
     title: "Distributed State Foundations",
