@@ -102,6 +102,8 @@ The repository currently contains five 40-item pilot banks:
 - `B-F1` — Linux and Process Foundations
 - `B-F2` — Networking Foundations
 - `B-A1` — Service Communication
+- `I-F1` — Linux and Operating Systems
+- `I-F2` — Networking and Protocols
 
 Each bank contains:
 - 20 conceptual items
