@@ -214,7 +214,7 @@ Speaker A: In Linux, understand process state, signals, users, groups, permissio
 
 Speaker B: Why can a perfectly healthy application still fail?
 
-Speaker A: Because it may not be allowed to read a file, bind a socket, access a directory, or obtain a credential.
+Speaker A: Because it may not be allowed to read a file, bind a socket, access a directory, or get a credential.
 
 Speaker A: Real-life example: a lab technician knows the correct file exists but cannot open a locked cabinet. The data exists; authority is missing.
 
