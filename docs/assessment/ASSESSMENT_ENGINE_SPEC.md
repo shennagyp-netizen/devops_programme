@@ -186,3 +186,36 @@ These are different concerns.
 ## Current implementation status
 
 This specification defines the target architecture. It does not claim that psychometric calibration, formal standard setting, or certification-grade security is already implemented.
+
+
+## Form generation implementation
+
+The current application implementation uses deterministic blueprint-controlled forms.
+
+Default form sizes are:
+- Conceptual: 20 items, target 25 minutes
+- Diagnostic: 12 items, target 30 minutes
+- Hands-on: 8 tasks, target 45 minutes
+
+The default difficulty mix is:
+
+| Band | Target |
+|---|---:|
+| Foundation | 15% |
+| Applied | 35% |
+| Difficult | 35% |
+| Challenge | 15% |
+
+A different seed can choose different items from the same calibrated pool. The seed does not change:
+- required competencies
+- difficulty targets
+- assessment family
+- expected time limit
+- scoring rules
+
+The generator fails closed when:
+- a difficulty band does not have enough eligible items
+- a required competency is missing
+- the selected form is too long
+
+The current implementation is a form generator, not a completed certification system. Item calibration, standard setting, secure delivery and operational item exposure controls still require further implementation and validation.
