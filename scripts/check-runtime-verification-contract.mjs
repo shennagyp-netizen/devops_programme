@@ -154,6 +154,17 @@ if (!source.includes("completedAt") || !source.includes("startedAt")) {
   console.error("Machine evidence must include timing boundaries.");
 }
 
+if (!source.includes("verificationSource") || !source.includes("local-runner")) {
+  failed = true;
+  console.error("Machine evidence must identify its verification source.");
+}
+
+if (!source.includes("resetRequired") || !source.includes("reset verification")) {
+  failed = true;
+  console.error("Runtime validator/runner must preserve the reset-verification boundary.");
+}
+
+
 if (failed) process.exit(1);
 
 console.log(
