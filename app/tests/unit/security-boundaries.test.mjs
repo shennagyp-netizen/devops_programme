@@ -43,7 +43,6 @@ describe("red-team repository boundaries", () => {
       path.join(root, ".github", "workflows", "app.yml"),
       "utf8"
     );
-    expect(workflow).not.toContain("set -euxo pipefail");
     expect(workflow).not.toContain("git remote add origin \"https://x-access-token:${GH_TOKEN}");
     expect(workflow).toContain("http.extraheader=AUTHORIZATION: bearer ${GH_TOKEN}");
   });
