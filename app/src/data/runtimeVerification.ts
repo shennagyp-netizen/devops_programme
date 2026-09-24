@@ -1,6 +1,6 @@
-import runtimeTaskCatalog from "./runtimeTasks.json";
 import type { PlatformId } from "./programme";
 import type { VerificationLevel } from "./handsOn";
+import runtimeTaskCatalog from "./runtimeTasks.json";
 
 export type RuntimeStepKind =
   | "observe"
@@ -24,16 +24,14 @@ export type RuntimeStep = {
   required: boolean;
 };
 
-export type RuntimeVerificationScope = "probe" | "exercise";
-
 export type RuntimeTask = {
   taskId: string;
   contractVersion: number;
   lessonId: string;
-  scope: RuntimeVerificationScope;
   verificationLevel: VerificationLevel;
   steps: RuntimeStep[];
   resetRequired: boolean;
+  scope: string;
 };
 
 export type RuntimeStepResult = {
@@ -53,7 +51,6 @@ export type MachineVerificationEnvelope = {
   lessonId: string;
   platform: PlatformId;
   verificationLevel: "machine-verified";
-  verificationSource: "local-runner" | "managed-runner";
   runnerVersion: string;
   environmentFingerprint: string;
   startedAt: string;
@@ -66,13 +63,7 @@ export type RuntimeVerificationResult =
   | { valid: true; envelope: MachineVerificationEnvelope }
   | { valid: false; failures: string[] };
 
-const SAFE_DEFAULT_TIMEOUT_MS = 30_000;
-
-export function command(program: string, args: string[], destructive = false): RuntimeCommand {
-  return { program, args, timeoutMs: SAFE_DEFAULT_TIMEOUT_MS, destructive };
-}
-
-export const runtimeTasks: RuntimeTask[] = runtimeTaskCatalog.runtimeTasks as RuntimeTask[];
+export const runtimeTasks = runtimeTaskCatalog.runtimeTasks as RuntimeTask[];
 
 export function runtimeTaskForLesson(lessonId: string) {
   return runtimeTasks.find((task) => task.lessonId === lessonId);
@@ -83,10 +74,17 @@ function isIsoDate(value: string) {
 }
 
 export function validateMachineVerification(
-  task: RuntimeTask,
+  task: RuntimeTask | undefined,
   envelope: MachineVerificationEnvelope
 ): RuntimeVerificationResult {
   const failures: string[] = [];
+
+  if (!task) {
+    return {
+      valid: false,
+      failures: ["Runtime task is not defined."]
+    };
+  }
 
   if (envelope.schemaVersion !== 1) {
     failures.push("Unsupported machine-verification schema version.");
@@ -106,10 +104,6 @@ export function validateMachineVerification(
 
   if (envelope.verificationLevel !== "machine-verified") {
     failures.push("Envelope must declare machine-verified status.");
-  }
-
-  if (!["local-runner", "managed-runner"].includes(envelope.verificationSource)) {
-    failures.push("Envelope verificationSource is invalid.");
   }
 
   if (!envelope.runnerVersion.trim()) {
