@@ -20,17 +20,13 @@ Speaker A: That's the problem.
 
 Speaker B: Partial network failure.
 
-Speaker A: Exactly.
-
-Speaker B: Some paths work.
+Speaker A: Exactly. That is the key step.\n\nSpeaker B: Some paths work.
 
 Speaker A: Some paths fail.
 
 Speaker B: And the healthy paths can make the system look normal.
 
-Speaker A: Yes.
-
-Speaker B: Human example?
+Speaker A: Yes. The important part is what happens next.\n\nSpeaker B: Human example?
 
 Speaker A: Two branches of the same company.
 
@@ -44,25 +40,17 @@ Speaker A: Some cross-branch work fails.
 
 Speaker B: The whole company is not dead.
 
-Speaker A: Exactly.
-
-Speaker B: That makes diagnosis harder.
+Speaker A: Exactly. That changes the diagnosis.\n\nSpeaker B: That makes diagnosis harder.
 
 Speaker A: Because "up or down" is too simple.
 
 Speaker B: We need to ask, "Which path?"
 
-Speaker A: Yes.
+Speaker A: Yes. Keep following the request path.\n\nSpeaker B: First principle: test from the place that fails.
 
-Speaker B: First principle: test from the place that fails.
+Speaker A: Right. The point is not the command; it is the evidence.\n\nSpeaker B: A successful curl from my laptop does not prove the pod can reach the database.
 
-Speaker A: Right.
-
-Speaker B: A successful curl from my laptop does not prove the pod can reach the database.
-
-Speaker A: Exactly.
-
-Speaker B: A successful request from zone A does not prove zone B has the same path.
+Speaker A: Exactly. That is why the failure is useful.\n\nSpeaker B: A successful request from zone A does not prove zone B has the same path.
 
 Speaker A: Routing can differ.
 
@@ -76,9 +64,7 @@ Speaker A: Load balancers can make different choices.
 
 Speaker B: Network interfaces can have different state.
 
-Speaker A: Good.
-
-Speaker B: So the test location is part of the evidence.
+Speaker A: Exactly. Now we have a real boundary.\n\nThat is why the wording matters.\n\nSpeaker B: So the test location is part of the evidence.
 
 Speaker A: Always.
 
@@ -96,25 +82,15 @@ Speaker A: What does that suggest?
 
 Speaker B: The failure is narrower than "client 2 has no network."
 
-Speaker A: Exactly.
+Speaker A: Exactly. That is the key step.\n\nSpeaker B: Maybe the path from client 2 to B is blocked.
 
-Speaker B: Maybe the path from client 2 to B is blocked.
+Speaker A: Always. The source location is part of the evidence.\n\nSpeaker B: Maybe B only accepts traffic from one network.
 
-Speaker A: Good.
+Speaker A: Good. That is one concrete hypothesis.\n\nSpeaker B: Maybe a route is missing.
 
-Speaker B: Maybe B only accepts traffic from one network.
+Speaker A: Correct. And there is another part to watch.\n\nNow we have a test that can separate causes.\n\nSpeaker B: Maybe DNS returns different addresses.
 
-Speaker A: Good.
-
-Speaker B: Maybe a route is missing.
-
-Speaker A: Good.
-
-Speaker B: Maybe DNS returns different addresses.
-
-Speaker A: Good.
-
-Speaker B: We now have competing hypotheses.
+Speaker A: Good. But the error shape is still only a clue.\n\nSpeaker B: We now have competing hypotheses.
 
 Speaker A: That's what we want.
 
@@ -124,41 +100,27 @@ Speaker A: Go.
 
 Speaker B: If DNS returns different addresses for the two clients, both clients can use the same service name and still hit different destinations.
 
-Speaker A: Correct.
+Speaker A: Correct. That is an important distinction.\n\nSpeaker B: If only one destination is broken, one client can fail while another works.
 
-Speaker B: If only one destination is broken, one client can fail while another works.
+Speaker A: Exactly. That changes the diagnosis.\n\nSpeaker B: So comparing name resolution is useful.
 
-Speaker A: Exactly.
-
-Speaker B: So comparing name resolution is useful.
-
-Speaker A: Yes.
-
-Speaker B: Another prediction.
+Speaker A: Yes. That can change the load pattern.\n\nSpeaker B: Another prediction.
 
 Speaker A: Go.
 
 Speaker B: If routing is the problem, the destination may be reachable from one subnet and not another.
 
-Speaker A: Correct.
+Speaker A: Correct. But we still need evidence.\n\nSpeaker B: So we compare routes from both source locations.
 
-Speaker B: So we compare routes from both source locations.
-
-Speaker A: Yes.
-
-Speaker B: Another one.
+Speaker A: Yes. The important part is what happens next.\n\nSpeaker B: Another one.
 
 Speaker A: Go.
 
 Speaker B: If the firewall drops traffic, the application may report a timeout instead of a clear refusal.
 
-Speaker A: Good.
+Speaker A: Exactly. That is why the failure is useful.\n\nReachability is not the same as application success.\n\nSpeaker B: Which means the error shape gives us a clue, but not a complete diagnosis.
 
-Speaker B: Which means the error shape gives us a clue, but not a complete diagnosis.
-
-Speaker A: Exactly.
-
-Speaker B: What if the path works for TCP but the application still fails?
+Speaker A: Exactly. Now we have a real boundary.\n\nSpeaker B: What if the path works for TCP but the application still fails?
 
 Speaker A: Then move up the stack.
 
@@ -176,21 +138,13 @@ Speaker A: Could be.
 
 Speaker B: Wrong host header?
 
-Speaker A: Maybe.
+Speaker A: Maybe. I would treat that as a hypothesis, not a conclusion.\n\nSpeaker B: So networking is not finished when ping works.
 
-Speaker B: So networking is not finished when ping works.
+Speaker A: Correct. And there is another part to watch.\n\nSpeaker B: In fact, some production networks block ping.
 
-Speaker A: Correct.
+Speaker A: Right. That is the assumption we need to test.\n\nSpeaker B: Better to test the actual required path.
 
-Speaker B: In fact, some production networks block ping.
-
-Speaker A: Right.
-
-Speaker B: Better to test the actual required path.
-
-Speaker A: Good.
-
-Speaker B: Let's talk about distributed systems and timeouts.
+Speaker A: Exactly. That is the key step.\n\nThat is why the wording matters.\n\nSpeaker B: Let's talk about distributed systems and timeouts.
 
 Speaker A: A partial network failure can create long waits.
 
@@ -208,29 +162,21 @@ Speaker A: We already know where this can go.
 
 Speaker B: Retry storm.
 
-Speaker A: Exactly.
+Speaker A: Exactly. That changes the diagnosis.\n\nSpeaker B: So partial network failure can become an application load problem.
 
-Speaker B: So partial network failure can become an application load problem.
-
-Speaker A: Yes.
-
-Speaker B: It can also create disagreement between replicas.
+Speaker A: Yes. Keep following the request path.\n\nSpeaker B: It can also create disagreement between replicas.
 
 Speaker A: Explain.
 
 Speaker B: A node may lose contact with another node.
 
-Speaker A: Right.
-
-Speaker B: Both still have local state.
+Speaker A: Right. Now the failure becomes observable.\n\nSpeaker B: Both still have local state.
 
 Speaker A: And now coordination is limited.
 
 Speaker B: So the system must have rules for what it can safely do without communication.
 
-Speaker A: Exactly.
-
-Speaker B: This is why network partitions are central to distributed-systems design.
+Speaker A: Exactly. That is why the failure is useful.\n\nSpeaker B: This is why network partitions are central to distributed-systems design.
 
 Speaker A: You cannot assume communication always works.
 
@@ -288,9 +234,7 @@ Speaker A: Not "run ten commands."
 
 Speaker B: Find the smallest part of the path that explains the evidence.
 
-Speaker A: Exactly.
-
-Speaker B: Recall.
+Speaker A: Exactly. Now we have a real boundary.\n\nSpeaker B: Recall.
 
 Speaker A: One. What is partial network failure?
 
@@ -326,8 +270,6 @@ Speaker A: Then explain which observation would let you localize the failure.
 
 Speaker B: That's the advanced skill.
 
-Speaker A: Yes.
-
-Speaker B: Not knowing every network command.
+Speaker A: Yes. That can change the load pattern.\n\nSpeaker B: Not knowing every network command.
 
 Speaker A: Knowing how to turn different paths into evidence.
