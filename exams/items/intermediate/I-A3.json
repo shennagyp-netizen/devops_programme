@@ -1,0 +1,832 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "I-A3",
+  "purpose": "Pilot item bank for Kubernetes Networking and Storage. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "IA3-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A3.core",
+      "prompt": "What does Kubernetes DNS commonly provide?",
+      "options": [
+        "Service name resolution inside the cluster",
+        "Image building",
+        "Node replacement",
+        "Terraform state"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA3-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A3.core",
+      "prompt": "What is the purpose of a Service selector?",
+      "options": [
+        "Selecting Pods that should receive traffic for that Service",
+        "Selecting Docker images",
+        "Choosing a Terraform provider",
+        "Selecting a storage class"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA3-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A3.core",
+      "prompt": "Why is a Pod IP not usually the stable application endpoint?",
+      "options": [
+        "Pods are replaceable and their IPs can change",
+        "Pod IPs are encrypted",
+        "Pods never restart",
+        "Services cannot use DNS"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA3-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A3.core",
+      "prompt": "What does an Ingress or gateway normally control?",
+      "options": [
+        "How external HTTP traffic is routed toward services",
+        "How disks are formatted",
+        "How Pods are scheduled",
+        "How images are built"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA3-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A3.core",
+      "prompt": "What is a PersistentVolumeClaim asking for?",
+      "options": [
+        "A claim for persistent storage with requested characteristics",
+        "A network port",
+        "A container image",
+        "A secret token"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA3-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A3.core",
+      "prompt": "Why separate application identity from Pod identity?",
+      "options": [
+        "Clients need a stable endpoint while Pods can be replaced",
+        "Pods cannot have IPs",
+        "Services store CPU limits",
+        "DNS requires static Pods"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA3-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A3.core",
+      "prompt": "What is a StorageClass used for?",
+      "options": [
+        "Defining classes and provisioning behavior for persistent storage",
+        "Routing HTTP traffic",
+        "Scheduling Pods",
+        "Managing Git branches"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA3-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A3.core",
+      "prompt": "Why can a volume mount succeed while the application still fails?",
+      "options": [
+        "The application may use the wrong path, permissions or data format",
+        "Volumes always break networking",
+        "Mounts replace readiness",
+        "Storage removes configuration"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA3-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A3.core",
+      "prompt": "What evidence identifies a Service routing problem?",
+      "options": [
+        "Service definition, selected endpoints and request-path behavior",
+        "Only node CPU",
+        "Only Git history",
+        "Only image size"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA3-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A3.core",
+      "prompt": "Why can DNS be healthy while the application is unavailable?",
+      "options": [
+        "Name resolution is only one step of the request path",
+        "DNS controls the application process",
+        "DNS stores database state",
+        "DNS guarantees readiness"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA3-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A3.core",
+      "prompt": "A Service has no endpoints. What should you inspect?",
+      "expectedElements": [
+        "selector match",
+        "Pod labels/readiness",
+        "Service definition"
+      ]
+    },
+    {
+      "id": "IA3-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A3.core",
+      "prompt": "A Pod can resolve a Service name but cannot connect. What remains plausible?",
+      "expectedElements": [
+        "Service endpoints/listener",
+        "network policy/path",
+        "application port"
+      ]
+    },
+    {
+      "id": "IA3-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A3.core",
+      "prompt": "A Stateful workload restarts and data disappears. What should you question?",
+      "expectedElements": [
+        "whether storage was persistent and correctly mounted",
+        "whether the application wrote to the intended path"
+      ]
+    },
+    {
+      "id": "IA3-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A3.core",
+      "prompt": "Why might a PVC remain Pending?",
+      "expectedElements": [
+        "no compatible storage provisioner/class",
+        "capacity/access-mode constraints",
+        "storage-system problem"
+      ]
+    },
+    {
+      "id": "IA3-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A3.core",
+      "prompt": "An application is reachable directly through Pod IP but not through Ingress. What area is narrowed?",
+      "expectedElements": [
+        "external routing/Ingress/gateway configuration rather than the application process itself"
+      ]
+    },
+    {
+      "id": "IA3-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-A3.core",
+      "prompt": "Explain the Kubernetes service request path from DNS to Pod.",
+      "expectedElements": [
+        "DNS/service identity",
+        "Service selection/endpoints",
+        "network path",
+        "Pod listener/application"
+      ]
+    },
+    {
+      "id": "IA3-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-A3.core",
+      "prompt": "Design evidence for a storage failure that distinguishes mount, permission and application-data problems.",
+      "expectedElements": [
+        "mount state",
+        "filesystem/path/permissions",
+        "application logs and data path"
+      ]
+    },
+    {
+      "id": "IA3-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "I-A3.core",
+      "prompt": "A service works inside one namespace but not another. Give two hypotheses and tests.",
+      "expectedElements": [
+        "DNS/service name/namespace addressing",
+        "network policy/routing",
+        "endpoint availability"
+      ]
+    },
+    {
+      "id": "IA3-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "I-A3.core",
+      "prompt": "Design a safe recovery for a failed persistent workload.",
+      "expectedElements": [
+        "protect data",
+        "identify storage state",
+        "repair mount/application issue",
+        "verify data and user path"
+      ]
+    },
+    {
+      "id": "IA3-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "I-A3.core",
+      "prompt": "Build a diagnosis tree for 'Kubernetes service is unreachable'.",
+      "expectedElements": [
+        "DNS",
+        "Service/endpoints",
+        "Pod listener/readiness",
+        "network policy/path",
+        "external gateway if relevant"
+      ]
+    },
+    {
+      "id": "IA3-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "endpoints",
+        "Pod listener/port",
+        "readiness"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "I-A3.diagnostic",
+      "prompt": "Service DNS resolves but connection is refused. What should you inspect next?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA3-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "selector/labels",
+        "Pod readiness"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "I-A3.diagnostic",
+      "prompt": "Service has zero endpoints. What evidence is most direct?",
+      "expectedElements": 2
+    },
+    {
+      "id": "IA3-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "Service selection/routing",
+        "cluster network path"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A3.diagnostic",
+      "prompt": "Pod IP works but Service IP fails. What is narrowed?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA3-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "StorageClass/provisioner",
+        "claim requirements",
+        "storage events"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A3.diagnostic",
+      "prompt": "PVC is Pending. Which evidence should be checked?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA3-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "mount path",
+        "permissions",
+        "application data path/config"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A3.diagnostic",
+      "prompt": "Volume is mounted but app says data is missing. What should you inspect?",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA3-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "Ingress route/host/path configuration",
+        "gateway rules"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A3.diagnostic",
+      "prompt": "Ingress returns 404 while direct Service requests work. What does that suggest?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA3-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "namespace/service-name context",
+        "cluster DNS configuration"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A3.diagnostic",
+      "prompt": "DNS works only with the full Service FQDN, not the short name. What should you investigate?",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA3-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "DNS resolution",
+        "endpoint selection",
+        "network policy/path"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A3.diagnostic",
+      "prompt": "A Pod can reach one Service but not another in the same cluster. Design the smallest evidence set.",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA3-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "permissions/ownership",
+        "application path/schema/configuration"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A3.diagnostic",
+      "prompt": "Storage data is correct after restart but application cannot open it. Give two hypotheses.",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA3-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "endpoint stability",
+        "Pod readiness/restarts",
+        "network policy/path",
+        "application/dependency latency"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A3.diagnostic",
+      "prompt": "Design a diagnostic sequence for intermittent Service timeouts.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA3-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "storage durability/location",
+        "volume lifecycle/attachment"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "I-A3.diagnostic",
+      "prompt": "A workload survives Pod replacement but loses data after node failure. What assumption failed?",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA3-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "scope namespace/path",
+        "collect policy/endpoints evidence",
+        "change one control",
+        "verify affected and unaffected paths"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "I-A3.diagnostic",
+      "prompt": "Design recovery for a namespace networking incident without changing unrelated workloads.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA3-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "I-A3.hands-on",
+      "prompt": "Create two Services and verify cluster DNS routing.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "deploy two disposable Pods",
+        "create Service",
+        "resolve DNS",
+        "request through Service",
+        "reset"
+      ],
+      "success": [
+        "DNS result",
+        "endpoint routing",
+        "recovery/reset"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA3-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A3.hands-on",
+      "prompt": "Create a Service selector mismatch and repair it.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "record labels/endpoints",
+        "change selector",
+        "observe no endpoints",
+        "restore selector",
+        "verify"
+      ],
+      "success": [
+        "before/after endpoints",
+        "request result",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA3-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A3.hands-on",
+      "prompt": "Test Pod-to-Service versus Pod-to-Pod reachability.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "record paths",
+        "run controlled requests",
+        "isolate one path",
+        "repair",
+        "verify"
+      ],
+      "success": [
+        "path evidence",
+        "failure boundary",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA3-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A3.hands-on",
+      "prompt": "Provision a disposable PVC and prove persistence across Pod replacement.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "claim storage",
+        "write data",
+        "replace Pod",
+        "read data",
+        "reset"
+      ],
+      "success": [
+        "PVC state",
+        "data before/after",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA3-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A3.hands-on",
+      "prompt": "Introduce a storage permission failure and diagnose it.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "record mount/path",
+        "change disposable permissions",
+        "capture failure",
+        "repair",
+        "verify"
+      ],
+      "success": [
+        "mount evidence",
+        "permission evidence",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA3-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A3.hands-on",
+      "prompt": "Break an Ingress route and recover it.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "record working route",
+        "change path/host",
+        "capture 4xx/5xx",
+        "restore route",
+        "verify"
+      ],
+      "success": [
+        "route change",
+        "failure",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA3-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A3.hands-on",
+      "prompt": "Run a cross-layer Kubernetes network incident.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "state symptom",
+        "check DNS/Service/endpoints/network path",
+        "mitigate",
+        "repair",
+        "verify"
+      ],
+      "success": [
+        "evidence chain",
+        "safe action",
+        "user-path recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA3-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "I-A3.hands-on",
+      "prompt": "Lead an I3-style Kubernetes storage/network drill.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "inject one failure",
+        "preserve evidence",
+        "diagnose",
+        "recover",
+        "verify persistence and reachability"
+      ],
+      "success": [
+        "incident timeline",
+        "data safety",
+        "verified recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    }
+  ]
+}
