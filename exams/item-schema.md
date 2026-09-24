@@ -1,49 +1,44 @@
 # Assessment Item Schema
 
-## Core metadata
+## Bank wrapper
+
+Each JSON bank contains:
+
+```
+schemaVersion
+sectionId
+purpose
+items[]
+```
+
+The current pilot banks are section-scoped. Course identity is derived from the bank path and section ID.
+
+## Core item metadata
 
 Every item defines:
 
 ```
 id
-course_id
-section_id
-competency_id
-objective_id
-assessment_family
-item_type
+family
 difficulty
-cognitive_level
-expected_minutes
-prerequisites
-status
-version
-```
-
-## Learner-facing content
-
-Items also define:
-
-```
+cognitiveLevel
+itemType
+expectedMinutes
+competencyId
 prompt
-options
-correct_option
-expected_elements
-scoring
 ```
 
-Use the fields that match the item type.
+The current pilot uses one primary `competencyId` per item. The blueprint selects the competency required for the assessment family.
 
-The assessment question must be clear enough that the learner is not being tested on difficult English.
+Optional learner/scoring fields include:
 
-Technical difficulty belongs in:
-- the system behavior
-- the evidence
-- the diagnosis
-- the trade-off
-- the hands-on task
-
-It should not come from complex wording.
+```
+options
+correctOption
+expectedElements
+scoring
+scoringNote
+```
 
 ## Hands-on items
 
@@ -51,13 +46,13 @@ Hands-on items additionally define:
 
 ```
 environment
-initial_state
-allowed_operations
+initialState
+allowedOperations
 success
 evidence
-failure_conditions
-recovery_requirements
-reset_strategy
+failureConditions
+recoveryRequirements
+resetStrategy
 ```
 
 The environment must be disposable or resettable.
@@ -70,7 +65,7 @@ A final state alone is not enough. The rubric can require:
 - repair
 - verification
 
-## Item states
+## Item lifecycle
 
 Recommended lifecycle:
 
@@ -91,25 +86,28 @@ An item must not enter an operational exam pool before its required reviews are 
 
 `difficulty` is an authoring target at first.
 
-Observed difficulty is stored separately after pilot use. It may later replace the initial estimate when enough evidence exists.
+Observed difficulty should be stored separately after pilot use and may later replace the initial estimate when enough evidence exists.
 
-The four current authoring bands are:
+The four authoring bands are:
 
 - foundation
 - applied
 - difficult
 - challenge
 
-## Pilot example
+## Current pilot banks
 
-The repository currently contains a 40-item pilot bank for section `B-F1`.
+The repository currently contains two 40-item pilot banks:
 
-It uses:
+- `B-F1` — Linux and Process Foundations
+- `B-F2` — Networking Foundations
+
+Each bank contains:
 - 20 conceptual items
 - 12 diagnostic items
 - 8 hands-on items
 
-and follows the target difficulty mix:
-15% / 35% / 35% / 15%.
+Each family follows:
+15% foundation / 35% applied / 35% difficult / 15% challenge.
 
-That pilot bank is not yet a certification pool.
+These pilot banks are not certification pools. They exist to validate the assessment architecture and item-writing contract before broader authoring and calibration.
