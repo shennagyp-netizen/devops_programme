@@ -888,4 +888,19 @@ Hosted-runner diagnosis:
 - The temporary probe was removed after the diagnosis.
 - GitHub's public status API reported the Actions component operational at the latest status snapshot, so the failure is specific to repository/account runner availability or permissions rather than a confirmed platform-wide outage.
 - The repository must not claim CI green until a real hosted job starts and completes successfully.
+ 
+BEGINNER GATE CLOSED — 2026-09-24
+- Hosted runner is pinned to ubuntu-24.04. The previous ubuntu-22.04 probe failed immediately; ubuntu-24.04 completed successfully.
+- The Beginner CI gate is intentionally scoped to Beginner during this clearance milestone.
+- PR-triggered run #719 completed successfully.
+- Beginner structural contract: PASS.
+- Beginner unit tests: PASS.
+- Beginner integration tests: PASS.
+- Beginner completeness validator: PASS.
+- Beginner gate therefore has real hosted CI evidence, not source-only inspection.
+- The temporary hosted-runner probe workflow has been removed.
+- The dependency-resolution defect was fixed by aligning Vite with @vitejs/plugin-react: Vite is now ^8.3.0 while @vitejs/plugin-react remains ^6.1.1.
+- The Beginner podcast integration test now checks stable episode identity rather than exact punctuation/quote style in the lesson title.
+- The Beginner gate validator now treats hands-on assessment items using their dedicated hands-on contract instead of requiring generic response scoring.
+- The full-program build remains intentionally deferred during this Beginner-first clearance. Its latest observed run exposed unrelated Intermediate/Advanced contract and syntax defects; those are not being marked fixed or hidden by this Beginner milestone.
 
