@@ -82,29 +82,6 @@ export function clearEvidence() {
 export function recordMachineVerification(input: {
   course: CourseLevel;
   projectId: string;
-  lessonId: string;
-  taskId: string;
-  summary: string;
-  scope: RuntimeVerificationScope;
-  evidencePayload: Record<string, string>;
-}) {
-  return addEvidence({
-    course: input.course,
-    projectId: input.projectId,
-    lessonId: input.lessonId,
-    kind: "exercise",
-    summary: input.summary,
-    taskId: input.taskId,
-    verificationLevel: "machine-verified",
-    verificationScope: input.scope,
-    evidencePayload: input.evidencePayload
-  });
-}
-
-
-export function recordMachineVerification(input: {
-  course: CourseLevel;
-  projectId: string;
   task: RuntimeTask;
   envelope: MachineVerificationEnvelope;
   summary: string;
@@ -126,6 +103,7 @@ export function recordMachineVerification(input: {
     summary: input.summary,
     taskId: input.task.taskId,
     verificationLevel: "machine-verified",
+    verificationScope: input.task.scope,
     evidencePayload: {
       verificationSource: input.envelope.verificationSource,
       runnerVersion: input.envelope.runnerVersion,
