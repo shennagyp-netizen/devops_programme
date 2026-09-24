@@ -31,6 +31,34 @@ The learner:
 
 The current application validates evidence structure and stores it in the local evidence ledger. Structured evidence is not presented as machine verification.
 
+
+## Local website-to-terminal bridge
+
+For the normal laptop learner, the preferred verified path is now the local terminal agent.
+
+Start it once on the learner machine:
+
+```bash
+cd app
+npm install
+npm run terminal-agent
+```
+
+The agent listens only on `127.0.0.1` and prints a pairing token. The learner enters that token in the website. The website then sends an exact runtime task ID to the local agent and receives the machine result directly; no JSON file import is required.
+
+The local agent:
+- uses the same `runtimeTasks.json` source of truth
+- executes with `shell: false`
+- rejects destructive catalog steps
+- requires the pairing token
+- rejects a selected platform that does not match the laptop's actual OS
+- captures bounded stdout/stderr and hashes the captured output
+- returns the machine-verification envelope directly to the website.
+
+The browser can reach a loopback service from a secure context subject to browser local-network permissions and normal CORS/security rules. The application therefore detects agent availability and keeps the manual terminal path visible whenever the agent is unavailable. Current browser standards expose loopback/local-network controls for this use case. citeturn258037search1turn258037search3
+
+The website never receives arbitrary shell access. It can request only catalogued task IDs.
+
 ## Verified SSH path
 
 The repository provides an optional SSH runner:
