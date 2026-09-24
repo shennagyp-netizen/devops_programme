@@ -9,100 +9,32 @@ permissions:
   pull-requests: write
 
 jobs:
-  beginner_runner_smoke:
-    name: beginner-runner-smoke
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Runner smoke
-        run: |
-          node --version
-          npm --version
-          printf 'runner-ok\n'
-
-  beginner_install:
-    name: beginner-install
+  beginner_gate:
+    name: beginner-gate
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: app
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - name: Install
         run: npm install
 
-
-  beginner_structural:
-    name: beginner-structural
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: app
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Install
-        run: npm install
-
-      - name: Structural contract
+      - name: Beginner structural contract
         run: node ../scripts/check-beginner-gate.mjs
 
-  beginner_unit:
-    name: beginner-unit
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: app
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Install
-        run: npm install
-
-      - name: Unit tests
+      - name: Beginner unit tests
         run: npm exec vitest run tests/unit/beginner-course.test.mjs
 
-  beginner_integration:
-    name: beginner-integration
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: app
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Install
-        run: npm install
-
-      - name: Integration tests
+      - name: Beginner integration tests
         run: npm exec vitest run tests/integration/beginner-course.integration.test.mjs
 
-  beginner_completeness:
-    name: beginner-completeness
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: app
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Install
-        run: npm install
-
-      - name: Completeness validator
+      - name: Beginner completeness validator
         run: npm run check:beginner
 
   build:
