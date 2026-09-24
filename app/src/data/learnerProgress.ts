@@ -86,6 +86,8 @@ async function migrateLegacyMasteredLessons(items: CompletionRecord[]) {
       // Database is authoritative; legacy cleanup is best-effort.
     }
   }
+
+  return legacyIds.length > 0;
 }
 
 export async function listCompletedItems(): Promise<CompletionRecord[]> {
@@ -95,8 +97,8 @@ export async function listCompletedItems(): Promise<CompletionRecord[]> {
     { method: "GET" }
   );
 
-  await migrateLegacyMasteredLessons(result.items);
-  if (result.items.length === 0 && getLegacyMasteredLessonIds().length === 0) {
+  const migrated = await migrateLegacyMasteredLessons(result.items);
+  if (!migrated) {
     return result.items;
   }
 
