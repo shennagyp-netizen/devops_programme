@@ -65,7 +65,7 @@ The assessment engine separates:
 - accessibility accommodation
 - competency standardization
 
-Observed item performance is recorded for later calibration. The first implementation uses blueprint-controlled forms; computerized adaptive testing is deferred until the item pool is empirically calibrated.
+Observed item performance will be recorded once assessment delivery and evidence capture are implemented. The first implementation uses blueprint-controlled forms; computerized adaptive testing is deferred until the item pool is empirically calibrated.
 
 Assessment quality is designed around internationally recognized assessment principles including validity, reliability, fairness and standardization. This repository does not claim certification or formal compliance.
 
