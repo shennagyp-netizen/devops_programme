@@ -4,7 +4,9 @@
 
 This is the initial home of the existing five-day operational core, expanded into a production engineering curriculum.
 
-## Foundations
+## Foundation competency domains
+
+The intermediate course has five reusable foundation domains. They are competency domains, not all separate section IDs in the current operational slice.
 
 ### F1 Linux and operating systems
 - processes
@@ -16,6 +18,8 @@ This is the initial home of the existing five-day operational core, expanded int
 - logs
 - process lifecycle
 
+Current section: **I-F1**.
+
 ### F2 Networking
 - Ethernet and ARP
 - IP/CIDR
@@ -24,11 +28,15 @@ This is the initial home of the existing five-day operational core, expanded int
 - TCP/UDP
 - DNS
 
+Current section: **I-F2**.
+
 ### F3 Application protocols
 - HTTP
 - TLS
 - authentication boundaries
 - timeout/refusal/reset semantics
+
+Activated inside current section **I-F2**.
 
 ### F4 Distributed systems and databases
 - replication
@@ -36,6 +44,8 @@ This is the initial home of the existing five-day operational core, expanded int
 - partial failure
 - partitioning
 - recovery
+
+Activated inside current section **I-A6**.
 
 ### F5 Reliability
 - observability
@@ -45,6 +55,10 @@ This is the initial home of the existing five-day operational core, expanded int
 - idempotency
 - backpressure
 - disaster recovery
+
+Activated mainly inside **I-A5** and **I-A6**.
+
+This distinction prevents the foundation catalog from being mistaken for a promise that every foundation domain already has its own standalone application section.
 
 ## Project I1 — Production Kubernetes Platform
 
