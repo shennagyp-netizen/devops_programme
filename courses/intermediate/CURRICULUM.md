@@ -112,8 +112,12 @@ The learner operates the whole system rather than treating each tool as an isola
 
 ## Assessment
 
-Every section has conceptual, diagnostic and hands-on forms.
+Every one of the eight sections has:
+- a 40-item pilot bank
+- conceptual, diagnostic and hands-on families
+- the controlled 15% foundation / 35% applied / 35% difficult / 15% challenge difficulty mix
+- prerequisite diagnostics
 
-Difficult questions should introduce ambiguity, interacting failures or incomplete evidence rather than simply using longer wording.
+Difficult questions introduce ambiguity, interacting failures or incomplete evidence rather than simply using longer wording. Challenge questions require transfer to a system not identical to the taught example.
 
-Challenge questions should require transfer to a system not identical to the taught example.
+The authored intermediate core contains 32 lessons across the five-day operational source, mapped into the eight current sections.
