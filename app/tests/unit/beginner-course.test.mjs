@@ -30,6 +30,27 @@ describe("Beginner course unit gate", () => {
     }
   });
 
+  it("has lesson-specific authored hands-on tasks for all Beginner lessons", () => {
+    const expectedTitles = {
+      "B1.1": "Prove the process before restarting it",
+      "B1.2": "Prove the request path",
+      "B1.3": "Prove an application-layer failure",
+      "B1.4": "Prove container isolation",
+      "B1.5": "Prove the application is repeatable",
+      "B2.1": "Prove a safe delivery path",
+      "B2.2": "Prove observability can reduce uncertainty",
+      "B2.3": "Prove restore, not just backup",
+      "B3.1": "Prove queue protection",
+      "B3.2": "Run the first incident"
+    };
+
+    for (const lesson of lessons) {
+      const task = getHandsOnTask(lesson);
+      expect(task.title).toBe(expectedTitles[lesson.id]);
+      expect(task.verificationNote.trim()).not.toBe("");
+    }
+  });
+
   it("builds valid structured hands-on evidence for every Beginner lesson", () => {
     for (const lesson of lessons) {
       const task = getHandsOnTask(lesson);
