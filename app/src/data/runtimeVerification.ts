@@ -24,9 +24,12 @@ export type RuntimeStep = {
   required: boolean;
 };
 
+export type RuntimeVerificationScope = "probe" | "exercise";
+
 export type RuntimeTask = {
   taskId: string;
   lessonId: string;
+  scope: RuntimeVerificationScope;
   verificationLevel: VerificationLevel;
   steps: RuntimeStep[];
   resetRequired: boolean;
