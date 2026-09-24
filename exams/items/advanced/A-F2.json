@@ -1,0 +1,827 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "A-F2",
+  "purpose": "Pilot item bank for Distributed State Foundations. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "AF2-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-F2.core",
+      "prompt": "Why replicate state?",
+      "options": [
+        "To improve availability, locality or scale by keeping more than one copy",
+        "To remove all consistency costs",
+        "To avoid backups forever",
+        "To eliminate network latency"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF2-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-F2.core",
+      "prompt": "What is stale data?",
+      "options": [
+        "A value that does not yet reflect the latest relevant update",
+        "Corrupted data only",
+        "A missing DNS record",
+        "A failed process"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF2-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-F2.core",
+      "prompt": "What is replication lag?",
+      "options": [
+        "The delay between a source update and a replica reflecting it",
+        "The time to boot a server",
+        "The queue depth",
+        "The disk size"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF2-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F2.core",
+      "prompt": "What is data locality?",
+      "options": [
+        "Placing data near the workloads that use it to reduce access cost or latency",
+        "Keeping all data in one region",
+        "Encrypting a database",
+        "Replacing replicas"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF2-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F2.core",
+      "prompt": "Why can more replicas increase complexity?",
+      "options": [
+        "Updates and consistency across copies require coordination or defined visibility rules",
+        "Replicas always use less storage",
+        "Replication removes failures",
+        "Readers cannot use replicas"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF2-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F2.core",
+      "prompt": "What is eventual consistency?",
+      "options": [
+        "Replicas may temporarily differ but converge when updates propagate successfully",
+        "Every read is always current",
+        "Writes never fail",
+        "Data is never replicated"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF2-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F2.core",
+      "prompt": "Why are conflicts possible with multiple writers?",
+      "options": [
+        "Different updates can arrive or be accepted without a single immediate ordering",
+        "Networks are always reliable",
+        "Only one region can exist",
+        "Caches prevent writes"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF2-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F2.core",
+      "prompt": "What is a partition in distributed-state reasoning?",
+      "options": [
+        "A communication failure that separates components that may each continue operating",
+        "A database table partition only",
+        "A CPU partition",
+        "A Git branch"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF2-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F2.core",
+      "prompt": "Why can read-after-write requirements matter?",
+      "options": [
+        "Some users expect their subsequent reads to reflect their own successful write",
+        "They define CPU capacity",
+        "They replace replication",
+        "They prevent all stale reads"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF2-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F2.core",
+      "prompt": "Why is cache invalidation a consistency concern?",
+      "options": [
+        "A cache can serve an older value after the source has changed",
+        "Caches never store data",
+        "Invalidation affects CPU only",
+        "Caching removes replicas"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF2-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-F2.core",
+      "prompt": "A replica is healthy but serves old data. What is the likely class of issue?",
+      "expectedElements": [
+        "replication lag or visibility/consistency policy rather than process failure"
+      ]
+    },
+    {
+      "id": "AF2-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-F2.core",
+      "prompt": "Why can local data improve latency while complicating global state?",
+      "expectedElements": [
+        "less network distance is exchanged for coordination and freshness challenges"
+      ]
+    },
+    {
+      "id": "AF2-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-F2.core",
+      "prompt": "What evidence separates stale data from a missing record?",
+      "expectedElements": [
+        "known write/read path",
+        "replica/cache state",
+        "freshness timing or version information"
+      ]
+    },
+    {
+      "id": "AF2-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-F2.core",
+      "prompt": "Why can a database be available but still violate a business consistency rule?",
+      "expectedElements": [
+        "technical availability does not guarantee every read/write sequence meets business invariants"
+      ]
+    },
+    {
+      "id": "AF2-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-F2.core",
+      "prompt": "Why are version numbers or timestamps useful in distributed data?",
+      "expectedElements": [
+        "They help reason about ordering, freshness and conflict resolution"
+      ]
+    },
+    {
+      "id": "AF2-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "A-F2.core",
+      "prompt": "Design a consistency policy for product inventory.",
+      "expectedElements": [
+        "acceptable staleness",
+        "critical read/write paths",
+        "conflict handling",
+        "failure behavior"
+      ]
+    },
+    {
+      "id": "AF2-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "A-F2.core",
+      "prompt": "Explain why cross-region reads can be expensive even when the database is healthy.",
+      "expectedElements": [
+        "distance/latency",
+        "network cost",
+        "possible freshness/coordination impact"
+      ]
+    },
+    {
+      "id": "AF2-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "A-F2.core",
+      "prompt": "A user writes in region A and immediately reads stale data in region B. Give two designs and trade-offs.",
+      "expectedElements": [
+        "route user reads to write region/session affinity",
+        "stronger coordination/consistency",
+        "latency trade-off"
+      ]
+    },
+    {
+      "id": "AF2-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "A-F2.core",
+      "prompt": "Design a recovery plan for inconsistent replicas.",
+      "expectedElements": [
+        "stop unsafe propagation if needed",
+        "identify authoritative state",
+        "reconcile",
+        "verify invariants",
+        "resume"
+      ]
+    },
+    {
+      "id": "AF2-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "A-F2.core",
+      "prompt": "Build a diagnosis tree for 'some users see old data'.",
+      "expectedElements": [
+        "write success",
+        "replica/cache path",
+        "freshness/version",
+        "regional routing",
+        "recovery"
+      ]
+    },
+    {
+      "id": "AF2-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "write path",
+        "replica/cache visibility",
+        "freshness timing"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "A-F2.diagnostic",
+      "prompt": "A read is stale after a successful write. What should you inspect?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AF2-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "replication lag",
+        "write ordering/conflict state",
+        "consistency model"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "A-F2.diagnostic",
+      "prompt": "Two replicas disagree. What evidence matters?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AF2-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "replica freshness",
+        "routing/data locality",
+        "cross-region propagation"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-F2.diagnostic",
+      "prompt": "Users in one region see newer data than another. What is a useful comparison?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AF2-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "cache invalidation/TTL",
+        "read path",
+        "source freshness"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-F2.diagnostic",
+      "prompt": "A cache serves old inventory after a database update. What should be checked?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AF2-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "divergent state or conflicts"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-F2.diagnostic",
+      "prompt": "A region is isolated but still accepting writes. What risk appears?",
+      "expectedElements": 2
+    },
+    {
+      "id": "AF2-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "invariant/reconciliation logic",
+        "write ordering/duplication",
+        "application semantics"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-F2.diagnostic",
+      "prompt": "A replicated database is healthy but business totals differ. What should be investigated?",
+      "expectedElements": 4
+    },
+    {
+      "id": "AF2-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "version/timestamp",
+        "read route",
+        "replica/cache state",
+        "propagation delay"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-F2.diagnostic",
+      "prompt": "Design evidence for a stale-read incident with no process failures.",
+      "expectedElements": 4
+    },
+    {
+      "id": "AF2-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "coordination/remote writes/consensus or locking cost",
+        "increased latency from distance"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-F2.diagnostic",
+      "prompt": "A global write path becomes slow after stronger consistency is enabled. Why?",
+      "expectedElements": 4
+    },
+    {
+      "id": "AF2-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "establish authoritative state or safe reconciliation",
+        "verify freshness/invariants"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-F2.diagnostic",
+      "prompt": "A failover region reads stale state. What must happen before accepting critical writes?",
+      "expectedElements": 5
+    },
+    {
+      "id": "AF2-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "protect invariant",
+        "freeze risky writes if needed",
+        "identify authoritative state",
+        "reconcile",
+        "verify"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-F2.diagnostic",
+      "prompt": "Design an incident response for conflicting writes.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AF2-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "business requirement",
+        "read/write path",
+        "acceptable staleness",
+        "coordination cost",
+        "fallback"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "A-F2.diagnostic",
+      "prompt": "Build a multi-region consistency decision tree.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AF2-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "controlled write",
+        "specific read sequence",
+        "failure/partition condition",
+        "observed result"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "A-F2.diagnostic",
+      "prompt": "Design a test proving a system's advertised consistency property.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AF2-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "A-F2.hands-on",
+      "prompt": "Create and measure replication lag in a disposable model.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "write known value",
+        "delay propagation",
+        "read replica",
+        "restore",
+        "verify"
+      ],
+      "success": [
+        "lag measured",
+        "freshness recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF2-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-F2.hands-on",
+      "prompt": "Simulate stale cache behavior.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "set source value",
+        "populate cache",
+        "update source",
+        "read stale cache",
+        "invalidate",
+        "verify"
+      ],
+      "success": [
+        "stale evidence",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF2-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-F2.hands-on",
+      "prompt": "Run a cross-region freshness drill.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "write in region A",
+        "read region B",
+        "measure delay",
+        "restore normal"
+      ],
+      "success": [
+        "latency/freshness evidence",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF2-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-F2.hands-on",
+      "prompt": "Introduce a controlled conflicting write.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "create two writers",
+        "apply conflicting updates",
+        "capture state",
+        "reconcile",
+        "verify invariant"
+      ],
+      "success": [
+        "conflict evidence",
+        "resolution",
+        "verification"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF2-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-F2.hands-on",
+      "prompt": "Test read-after-write behavior.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "perform write",
+        "read through normal user path",
+        "repeat across region/failover",
+        "record"
+      ],
+      "success": [
+        "expected property",
+        "observed result"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF2-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-F2.hands-on",
+      "prompt": "Run a partitioned-state simulation.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "isolate one path",
+        "observe writes/reads",
+        "restore communication",
+        "reconcile"
+      ],
+      "success": [
+        "partition boundary",
+        "state divergence",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF2-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-F2.hands-on",
+      "prompt": "Lead an A1 data-locality incident.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "state symptom",
+        "measure local/remote path",
+        "mitigate",
+        "verify freshness",
+        "record"
+      ],
+      "success": [
+        "evidence",
+        "decision",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF2-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "A-F2.hands-on",
+      "prompt": "Review a distributed-state design under failure.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "state consistency target",
+        "identify trade-offs",
+        "inject failure case",
+        "revise",
+        "verify"
+      ],
+      "success": [
+        "trade-off record",
+        "test evidence"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    }
+  ]
+}
