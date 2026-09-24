@@ -30,7 +30,7 @@ The podcast prompt contains an explicit anti-robotic review contract.
 
 ## Adaptive theory
 
-The target workflow is: the learner selects an environment profile, completes a prerequisite diagnostic, and receives targeted theory skipping/remediation. The current MVP has the profile and course-aware lesson routing; the diagnostic and automatic remediation loop are still planned.
+The workflow is now partially implemented: the learner selects an environment profile, completes an authored prerequisite diagnostic for Beginner B-F1/B-F2, and receives a persisted recommendation to skip, condense, or remediate theory. Broader course coverage and full automatic remediation routing remain planned.
 
 When a prerequisite is already demonstrated:
 - introductory theory can be skipped or condensed
