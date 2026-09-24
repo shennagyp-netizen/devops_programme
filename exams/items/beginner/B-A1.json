@@ -110,7 +110,14 @@
         "zero": [
           "treats HTTPS as a single step without separating layers"
         ]
-      }
+      },
+      "expectedElements": [
+        "DNS resolves the hostname to an address",
+        "routing reaches the destination",
+        "TCP establishes the connection",
+        "TLS authenticates/encrypts the connection",
+        "HTTP carries the application request and response"
+      ]
     },
     {
       "id": "BA1-C-007",
@@ -166,7 +173,11 @@
         "zero": [
           "treats them as the same check"
         ]
-      }
+      },
+      "expectedElements": [
+        "authentication establishes who the caller is",
+        "authorization determines what that identity is allowed to do"
+      ]
     },
     {
       "id": "BA1-C-010",
@@ -235,7 +246,12 @@
         "zero": [
           "claims 500 proves the database is broken"
         ]
-      }
+      },
+      "expectedElements": [
+        "restart can remove evidence and change temporary state",
+        "database failure is only one hypothesis among several application dependencies",
+        "evidence from the failed request should be collected before restart"
+      ]
     },
     {
       "id": "BA1-C-014",
@@ -307,7 +323,12 @@
         "zero": [
           "always runs the same checks regardless of evidence"
         ]
-      }
+      },
+      "expectedElements": [
+        "use the result of each successful lower-layer check to move upward",
+        "once DNS, TCP, and TLS succeed, focus on HTTP/application evidence",
+        "do not keep repeating lower-layer tests without new evidence"
+      ]
     },
     {
       "id": "BA1-C-018",
@@ -361,7 +382,13 @@
         "zero": [
           "starts with an unexplained restart or scaling action"
         ]
-      }
+      },
+      "expectedElements": [
+        "scope the impact first",
+        "check DNS, then TCP, then TLS, then HTTP/application behavior only as evidence requires",
+        "inspect the relevant dependency when application evidence points there",
+        "choose mitigation only after the failure stage is supported by evidence"
+      ]
     },
     {
       "id": "BA1-D-001",
