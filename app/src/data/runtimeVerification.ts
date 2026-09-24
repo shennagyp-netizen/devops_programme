@@ -73,6 +73,14 @@ function isIsoDate(value: string) {
   return !Number.isNaN(Date.parse(value));
 }
 
+function isSha256(value: string) {
+  return /^[a-f0-9]{64}$/i.test(value);
+}
+
+function supportedPlatform(value: string): value is PlatformId {
+  return value === "macos" || value === "linux" || value === "windows";
+}
+
 export function validateMachineVerification(
   task: RuntimeTask | undefined,
   envelope: MachineVerificationEnvelope
@@ -84,6 +92,10 @@ export function validateMachineVerification(
       valid: false,
       failures: ["Runtime task is not defined."]
     };
+  }
+
+  if (task.verificationLevel !== "machine-verified") {
+    failures.push("Runtime task must declare machine-verified status.");
   }
 
   if (envelope.schemaVersion !== 1) {
@@ -106,6 +118,18 @@ export function validateMachineVerification(
     failures.push("Envelope must declare machine-verified status.");
   }
 
+  if (!supportedPlatform(String(envelope.platform))) {
+    failures.push("Envelope platform is unsupported.");
+  } else {
+    for (const step of task.steps) {
+      if (!step.commands[envelope.platform]) {
+        failures.push(
+          `Runtime step ${step.id} has no command for envelope platform ${envelope.platform}.`
+        );
+      }
+    }
+  }
+
   if (!envelope.runnerVersion.trim()) {
     failures.push("Runner version is missing.");
   }
@@ -120,30 +144,47 @@ export function validateMachineVerification(
     failures.push("Envelope completedAt precedes startedAt.");
   }
 
-  const resultByStep = new Map(
-    envelope.stepResults.map((result) => [result.stepId, result])
-  );
+  if (!Array.isArray(envelope.stepResults)) {
+    failures.push("Envelope stepResults must be an array.");
+    return { valid: false, failures };
+  }
 
-  for (const step of task.steps) {
-    const result = resultByStep.get(step.id);
+  const expectedStepIds = new Set(task.steps.map((step) => step.id));
+  const seenStepIds = new Set<string>();
 
-    if (!result) {
-      if (step.required) {
-        failures.push(`Required runtime step is missing: ${step.id}`);
-      }
+  for (const result of envelope.stepResults) {
+    if (seenStepIds.has(result.stepId)) {
+      failures.push(`Duplicate runtime step result: ${result.stepId}`);
+    }
+    seenStepIds.add(result.stepId);
+
+    if (!expectedStepIds.has(result.stepId)) {
+      failures.push(`Unknown runtime step result: ${result.stepId}`);
       continue;
     }
 
     if (!isIsoDate(result.startedAt) || !isIsoDate(result.completedAt)) {
-      failures.push(`Invalid timestamps for runtime step ${step.id}.`);
+      failures.push(`Invalid timestamps for runtime step ${result.stepId}.`);
+    } else if (Date.parse(result.completedAt) < Date.parse(result.startedAt)) {
+      failures.push(`Runtime step ${result.stepId} completedAt precedes startedAt.`);
     }
 
-    if (!result.stdoutHash.trim() || !result.stderrHash.trim()) {
-      failures.push(`Output hashes are missing for runtime step ${step.id}.`);
+    if (!isSha256(result.stdoutHash) || !isSha256(result.stderrHash)) {
+      failures.push(`Output hashes are not valid SHA-256 values for runtime step ${result.stepId}.`);
+    }
+
+    if (result.result === "passed" && result.exitCode !== 0) {
+      failures.push(`Runtime step ${result.stepId} is marked passed with a non-zero exit code.`);
     }
 
     if (result.result !== "passed") {
-      failures.push(`Runtime step ${step.id} did not pass.`);
+      failures.push(`Runtime step ${result.stepId} did not pass.`);
+    }
+  }
+
+  for (const step of task.steps) {
+    if (!seenStepIds.has(step.id) && step.required) {
+      failures.push(`Required runtime step is missing: ${step.id}`);
     }
   }
 
