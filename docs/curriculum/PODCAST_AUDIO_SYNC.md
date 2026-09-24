@@ -7,19 +7,20 @@ React must never estimate spoken position from:
 - word count
 - average speaking speed
 - paragraph length
-- turn count
+- number of turns
 
-Those are too unstable for real voice.
+Those values vary with speaker, voice, pauses, pronunciation and recording style.
 
 ## Synchronization contract
 
 Every generated audio episode has:
 
-1. the original script revision
+1. the exact source script revision
 2. a stable episode ID
 3. a stable turn ID for every dialogue turn
-4. audio duration
-5. timestamp cues for learning events
+4. a timing range for every dialogue turn
+5. audio duration
+6. timestamp cues for learner-control events
 
 Turn IDs follow:
 
@@ -29,43 +30,77 @@ Example:
 
 `D2.2.T014`
 
-The audio alignment manifest maps those IDs to milliseconds.
+The manifest therefore has two timing layers.
 
-## Learning cues
+### Layer 1 — spoken turn timing
+
+Every dialogue turn has:
+
+`turnId + startMs + endMs`
+
+React uses this layer to keep the visible transcript aligned to the voice.
+
+### Layer 2 — learning cues
+
+Important interactions have:
+
+`turnId + kind + startMs + optional endMs`
 
 Supported cue types:
-
 - `prediction`
 - `lab`
 - `recall`
 - `transition`
 
-When the audio clock reaches a prediction cue, React pauses the audio and opens the prediction interaction.
+React uses this layer to pause the voice and hand control to the learner.
 
-When it reaches a lab cue, React transfers control to the hands-on lab.
+## Why the layers are separate
 
-When it reaches a recall cue, React opens retrieval.
+A turn is a speech unit.
 
-## Why this is safer
+A cue is an instructional event.
 
-The voice can breathe, speed up, slow down, pause, restart a sentence, or use a different TTS voice without breaking React. The alignment data remains authoritative.
+They are not the same thing.
 
-The app can also fall back to guided transcript mode when audio has not yet been aligned.
+For example, Speaker A can say:
+
+"Okay, make a prediction. If the DNS record is stale, what would you expect?"
+
+That sentence is one spoken turn with one turn timing range. The prediction cue can point into that turn at the moment where the learner should stop.
+
+## Synchronization behavior
+
+When aligned audio is available:
+
+1. audio playback time is authoritative
+2. React displays the turn containing that time
+3. React pauses when it crosses an authored learning cue
+4. learner performs the interaction
+5. React resumes the same audio position
+6. the next turn/cue continues naturally
+
+React does not attempt to predict where the voice should be.
 
 ## Audio generation workflow
 
 1. Freeze the episode script revision.
 2. Generate the voice recording.
 3. Align the recording to the transcript.
-4. Produce `audioUrl`, `durationMs`, and cue timestamps.
+4. Produce `audioUrl`, `durationMs`, all turn timings, and learning cues.
 5. Store the manifest.
-6. Verify every cue by listening at its timestamp.
+6. Listen through every pause and verify the cue lands at the intended spoken moment.
 7. Only then mark the episode voice-synced.
 
-Changing the spoken script invalidates the alignment manifest.
+Changing the spoken script invalidates its audio manifest.
 
-Changing only UI wording does not.
+Changing only React UI text does not.
+
+## Fallback
+
+Until aligned audio exists, the application deliberately uses guided transcript mode.
+
+It must not fake synchronization by estimating timing.
 
 ## Current status
 
-The synchronization engine is implemented in React, but no production audio manifests have been committed yet. Until they exist, the UI intentionally uses the safe guided-transcript fallback.
+The synchronization engine and manifest schema are implemented in React. Production audio manifests are not committed yet, so current episodes intentionally use the safe guided-transcript fallback.
