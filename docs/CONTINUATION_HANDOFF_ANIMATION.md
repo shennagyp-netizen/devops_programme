@@ -297,3 +297,35 @@ Browser visual validation is still **Not yet validated** because no Vercel team/
 The invariant remains:
 
 > **Curriculum determines teaching. Animation library provides reusable visual capabilities. The standalone playground is a host for inspection, not a second curriculum.**
+
+
+## 2026-09-25 POST-MERGE OVERRIDE — CURRENT MAIN
+
+PR #22 has now been merged to main.
+
+Authoritative main merge:
+- PR: #22
+- merge commit: `d6f659e174af388dc11d8e43a56dd40dda722945`
+- exact post-merge workflow run: `36089271904`
+- job: `full-programme-gate`
+- conclusion: success
+- 44 test files / 310 tests
+- programme contract checks passed
+- TypeScript typecheck passed
+- Next.js production build passed.
+
+Therefore the standalone animation capability is now part of main.
+
+Current launch surfaces:
+- `/animations`
+- `/animations/[animationId]`
+
+Current architecture:
+- reusable animation runtime remains curriculum-independent and stateless
+- standalone playground owns only its local preview clock
+- curriculum bindings remain the production instructional integration boundary
+- PodcastCoach remains the production audio-clock authority.
+
+Browser visual validation remains **Not yet validated**. CI success proves contract/build correctness, not rendered browser appearance or live audio/animation synchronization.
+
+The next boundary is the first real curriculum-authored animated binding using the actual PodcastCoach clock.
