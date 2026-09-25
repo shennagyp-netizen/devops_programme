@@ -44,6 +44,8 @@ export type CurriculumIllustrationBindingV1 = {
 export type IllustrationBindingContextV1 = {
   animationDefinitions: readonly AnimationDefinitionV1[];
   voiceCueIds?: ReadonlySet<string>;
+  expectedLessonId?: string;
+  expectedContentIndex?: number;
 };
 
 export type IllustrationBindingValidationResultV1 = {
@@ -336,6 +338,18 @@ export function validateCurriculumIllustrationBinding(
 
   if (!isFiniteNonNegativeInteger(value.contentIndex)) {
     failures.push("contentIndex is invalid");
+  } else if (
+    context.expectedContentIndex !== undefined &&
+    value.contentIndex !== context.expectedContentIndex
+  ) {
+    failures.push("contentIndex does not match the lesson content position");
+  }
+
+  if (
+    context.expectedLessonId !== undefined &&
+    value.lessonId !== context.expectedLessonId
+  ) {
+    failures.push("lessonId does not match the lesson");
   }
 
   if (value.id !== block.bindingId) {
@@ -490,7 +504,9 @@ export function validateLessonIllustrationBindings(
         block as IllustrationContentBlockV1,
         {
           animationDefinitions,
-          voiceCueIds: options.voiceCueIds
+          voiceCueIds: options.voiceCueIds,
+          expectedLessonId: lesson.id,
+          expectedContentIndex: contentIndex
         }
       );
 
