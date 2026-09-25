@@ -12,7 +12,8 @@ export type LessonIllustrationVariantV1 =
   | "https-stack-v1"
   | "repeatable-service-v1"
   | "delivery-pipeline-v1"
-  | "observability-diagnosis-v1";
+  | "observability-diagnosis-v1"
+  | "backup-recovery-v1";
 
 export type LessonContentBlock =
   | {
@@ -65,6 +66,30 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "B2.3": {
+    version: 1,
+    blocks: [
+      {
+        id: "b2-3-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "A backup is a copy, not proof that the service can return to a useful state. Recovery requires restore, compatibility, verification and a user-facing recovery check."
+      },
+      {
+        id: "b2-3-recovery",
+        type: "illustration",
+        heading: "From backup to recovery",
+        alt: "A system backup is restored into a safe target, checked for compatibility, verified, and returned to a working service state",
+        bindingId: "B2.3:b2-3-recovery",
+        nodes: ["Backup", "Restore", "Compatibility", "Verify", "Recover"],
+        variant: "backup-recovery-v1",
+        caption:
+          "Recovery is a system path, not a successful backup command."
+      }
+    ]
+  },
+
   "B2.2": {
     version: 1,
     blocks: [
@@ -288,7 +313,8 @@ export function validateLessonContent(
         block.variant !== "https-stack-v1" &&
         block.variant !== "repeatable-service-v1" &&
         block.variant !== "delivery-pipeline-v1" &&
-        block.variant !== "observability-diagnosis-v1"
+        block.variant !== "observability-diagnosis-v1" &&
+        block.variant !== "backup-recovery-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }

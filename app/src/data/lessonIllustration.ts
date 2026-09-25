@@ -7,7 +7,8 @@ export type LessonIllustrationVariantV1 =
   | "https-stack-v1"
   | "repeatable-service-v1"
   | "delivery-pipeline-v1"
-  | "observability-diagnosis-v1";
+  | "observability-diagnosis-v1"
+  | "backup-recovery-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -228,6 +229,35 @@ const OBSERVABILITY_DIAGNOSIS_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const BACKUP_RECOVERY_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "backup-recovery-v1",
+  title: "From backup to recovery",
+  stages: [
+    { id: "backup", label: "Backup", detail: "Keep a usable copy of the data with a known age and recoverability boundary." },
+    { id: "restore", label: "Restore", detail: "Recreate the data in a safe target before overwriting the only remaining copy." },
+    { id: "compatibility", label: "Compatibility", detail: "Use an application, schema, configuration and secret set that can work with the restored data." },
+    { id: "verify", label: "Verify", detail: "Prove that the restored data is complete, usable and consistent with the recovery goal." },
+    { id: "recover", label: "Recover", detail: "Return the service to the required user-facing state within the recovery objectives." }
+  ],
+  foundation: {
+    label: "RPO + RTO",
+    detail: "RPO defines acceptable data loss; RTO defines how long recovery may take."
+  },
+  callouts: [
+    { id: "backup-age", label: "Backup age", detail: "A backup only protects against the data loss window it can cover." },
+    { id: "restore-target", label: "Safe restore target", detail: "Restore to a separate target first when the incident makes the original copy uncertain." },
+    { id: "encryption-key", label: "Recovery secrets", detail: "Encrypted backups also require the keys or secret-recovery path needed to use them." }
+  ],
+  failureChecks: [
+    { id: "backup-usable", label: "1. Backup usable?", detail: "Can the team access the expected backup and identify its data age and integrity?" },
+    { id: "restore-works", label: "2. Restore works?", detail: "Can the backup actually recreate usable data?" },
+    { id: "application-compatible", label: "3. Application compatible?", detail: "Can the intended application version, schema and configuration use the restored data?" },
+    { id: "user-recovery", label: "4. User recovery?", detail: "Can the service perform the required real user action again?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -295,6 +325,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "backup-recovery-v1") {
+    return {
+      ...BACKUP_RECOVERY_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -316,7 +353,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "https-stack-v1" &&
     model.variant !== "repeatable-service-v1" &&
     model.variant !== "delivery-pipeline-v1" &&
-    model.variant !== "observability-diagnosis-v1"
+    model.variant !== "observability-diagnosis-v1" &&
+    model.variant !== "backup-recovery-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }

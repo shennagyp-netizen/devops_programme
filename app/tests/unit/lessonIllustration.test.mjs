@@ -59,6 +59,39 @@ describe("lesson illustration teaching model", () => {
 
 
 
+  it("models recovery as backup, restore, compatibility and proven service recovery", () => {
+    const model = getLessonIllustrationModel({
+      id: "b2-3-recovery",
+      type: "illustration",
+      heading: "From backup to recovery",
+      alt: "A system backup is restored into a safe target, checked for compatibility, verified, and returned to a working service state",
+      bindingId: "B2.3:b2-3-recovery",
+      nodes: ["Backup", "Restore", "Compatibility", "Verify", "Recover"],
+      variant: "backup-recovery-v1"
+    });
+
+    expect(model.variant).toBe("backup-recovery-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "backup",
+      "restore",
+      "compatibility",
+      "verify",
+      "recover"
+    ]);
+    expect(model.foundation.label).toBe("RPO + RTO");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "backup-age",
+      "restore-target",
+      "encryption-key"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "backup-usable",
+      "restore-works",
+      "application-compatible",
+      "user-recovery"
+    ]);
+  });
+
   it("models observability as a diagnosis path from vague symptom to correlated proof", () => {
     const model = getLessonIllustrationModel({
       id: "b2-2-observability",
