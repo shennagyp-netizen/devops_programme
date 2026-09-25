@@ -1686,333 +1686,72 @@ Speaker B: Run the stack, break one boundary at a time, and prove recovery.
 
 EPISODE D2.7 — Break Docker
 
-Speaker A: You now know how containers run, how they communicate, and how their data can persist.
+Speaker A: The fastest way to learn containers is to break them deliberately.
 
-Speaker B: So now we break them.
+Speaker B: So today the syllabus is failure.
 
-Speaker A: Deliberately.
+Speaker A: Correct. Wrong port. Wrong hostname. Wrong environment variable. Permission failure. Unhealthy dependency. Resource exhaustion.
 
-Speaker B: The picture is:
+Speaker A: Real-life example: debugging a restaurant that is 'closed' could mean no chef, locked door, missing electricity, broken refrigerator, or a failed payment terminal. The symptom is the same; the cause is not.
 
-Speaker A: Baseline -> Change -> Symptom -> Evidence -> Recovery.
+Speaker B: So we need evidence that separates hypotheses.
 
-Speaker B: That sounds less like Docker training and more like incident response.
+Speaker A: Exactly. Check process, logs, network, configuration, health, and resource state in a deliberate order.
 
-Speaker A: That is the point. Operating systems is not memorizing commands. It is making controlled changes and understanding what the system tells you.
+Speaker A: Lab: introduce one failure at a time and predict the visible symptom before observing it.
 
-Speaker B: Rule one?
+Speaker B: And if my prediction is wrong?
 
-Speaker A: Start with a known-good baseline.
+Speaker A: Excellent. That is where learning begins.
+Speaker B: This is my favorite kind of lesson: break it on purpose.
 
-Speaker B: Prove it works before the failure.
+Speaker A: Good. The trick is to break one variable at a time.
 
-Speaker A: Exactly.
+Speaker B: Wrong port first.
 
-Speaker B: Rule two?
+Speaker A: Then wrong hostname. Then environment variable. Then permissions. Then a dependency that is alive but not ready.
 
-Speaker A: Change one thing.
+Speaker B: The important part is predicting the symptom before I touch anything.
 
-Speaker B: Not three.
+Speaker A: Yes. Otherwise you're just performing random mutations and calling them experiments.
 
-Speaker A: Not five.
+Speaker B: Real-life example?
 
-Speaker B: One.
+Speaker A: A restaurant is “closed.” But is the staff missing? Is the front door locked? Is the kitchen without power? Is the payment terminal down? Is the building open but online ordering broken?
 
-Speaker A: Exactly.
+Speaker B: Same customer symptom. Completely different failure paths.
 
-Speaker B: Rule three?
+Speaker A: That's the entire job.
 
-Speaker A: Predict the symptom before you break the system.
+Speaker B: Prediction. Wrong hostname.
 
-Speaker B: So I am not guessing after the failure.
+Speaker A: What do you expect?
 
-Speaker A: Right.
+Speaker B: DNS or service-discovery failure from the client. The database process itself might be perfectly healthy.
 
-Speaker B: Rule four?
+Speaker A: Good. Wrong port?
 
-Speaker A: Collect evidence that can separate your hypotheses.
+Speaker B: Depends. If nothing is listening there, connection refused. If traffic can't reach the destination, maybe timeout.
 
-Speaker B: And rule five?
+Speaker A: Better. Now add a bad credential.
 
-Speaker A: Restore the known-good state and prove that the original user path works again.
+Speaker B: The TCP connection can succeed, TLS might succeed if present, and the application then returns an authentication error.
 
-Speaker B: So recovery is part of the experiment.
-
-Speaker A: Always.
-
-Speaker B: First failure: wrong hostname.
-
-Speaker A: The API expects database service name `db`, but we change it to `database` while no such service exists.
-
-Speaker B: Prediction?
-
-Speaker A: The API should fail at service-name resolution before it can make a database TCP connection.
-
-Speaker B: Good.
-
-Speaker A: What evidence would you collect?
-
-Speaker B: API error or logs, DNS/service-discovery result inside the container, and the actual network membership of the services.
-
-Speaker A: Good.
-
-Speaker B: What would not be the first move?
-
-Speaker A: Changing the database password.
-
-Speaker B: Or rebuilding the image.
-
-Speaker A: Exactly. The evidence points to the name boundary.
-
-Speaker B: Restore the hostname.
-
-Speaker A: Then prove the API can connect again.
-
-Speaker B: Failure two: wrong published port.
-
-Speaker A: The frontend works inside the Docker network, but the user cannot reach it from the host because the published host port is wrong.
-
-Speaker B: Prediction?
-
-Speaker A: External access should fail while internal container-to-container communication can still work.
-
-Speaker A: Good.
-
-Speaker B: Evidence?
-
-Speaker A: Inspect the published port mapping, then test the host-side port and compare it with the internal service port.
-
-Speaker B: Restore the mapping.
-
-Speaker A: And prove the real browser or curl path works again.
-
-Speaker B: Failure three: bad environment variable.
-
-Speaker A: The container starts, but the application uses the wrong database URL.
-
-Speaker B: Prediction?
-
-Speaker A: The process may stay running while the application fails when it tries to use the dependency.
-
-Speaker B: So this is different from a container that exits immediately.
-
-Speaker A: Exactly.
-
-Speaker B: Evidence?
-
-Speaker A: Inspect the effective environment safely, application logs, and the exact request or startup action that triggers the failure.
-
-Speaker B: Failure four: permission problem.
-
-Speaker A: The process cannot read a mounted file.
-
-Speaker B: Prediction?
-
-Speaker A: The process can be alive while one operation fails with a permission-related error.
-
-Speaker A: Good.
-
-Speaker B: Evidence?
-
-Speaker A: Inspect the process identity, file ownership and permissions, mount path and application logs.
-
-Speaker B: Not just restart the container.
-
-Speaker A: Correct. Restarting does not change the permission model.
-
-Speaker B: Failure five: unhealthy dependency.
-
-Speaker A: The database process is running, but it is not ready to serve the application.
-
-Speaker B: Prediction?
-
-Speaker A: The API may see connection failures or timeouts even though the database container looks 'up'.
-
-Speaker A: Exactly.
-
-Speaker B: So container state and service readiness are not the same thing.
-
-Speaker A: Correct.
-
-Speaker B: That is an important operational lesson.
-
-Speaker A: It is.
-
-Speaker B: Failure six: resource pressure.
-
-Speaker A: The application runs until the container reaches a memory or CPU constraint.
-
-Speaker B: Prediction?
-
-Speaker A: The process may become slow, restart, or fail under load depending on the resource and runtime behavior.
-
-Speaker A: Good.
-
-Speaker B: Evidence?
-
-Speaker A: Resource metrics, container state, process state and logs.
-
-Speaker B: So even here, we follow the same loop.
-
-Speaker A: Baseline.
-
-Speaker B: Change.
-
-Speaker A: Prediction.
-
-Speaker B: Observe.
-
-Speaker A: Diagnose.
-
-Speaker B: Recover.
-
-Speaker A: Prove.
-
-Speaker B: Now the important part: do not create a chaos experiment you cannot safely reverse.
-
-Speaker A: Exactly. Use a disposable local stack or an isolated test environment you control.
-
-Speaker B: Build a small frontend, API and database.
-
-Speaker A: Make the known-good user path work.
-
-Speaker B: Write down the evidence.
-
-Speaker A: Then choose one failure.
-
-Speaker B: Prediction first.
-
-Speaker A: Yes.
-
-Speaker B: Break it.
-
-Speaker A: Observe it.
-
-Speaker B: Record actual evidence.
-
-Speaker A: Restore it.
-
-Speaker B: Prove recovery.
-
-Speaker A: Then repeat with a different failure.
-
-Speaker B: That sounds simple.
-
-Speaker A: It is simple. It is not easy.
-
-Speaker B: Because I have to resist random changes.
-
-Speaker A: Exactly.
-
-Speaker B: Prediction pause.
-
-Speaker A: The database is healthy. The API container is healthy. The API still reports 'cannot resolve db'. What is your first hypothesis?
-
-Speaker B: Service discovery or Docker network membership, not database credentials.
-
-Speaker A: Good.
-
-Speaker B: Another.
-
-Speaker A: The API resolves `db` and connects to the host, but the browser cannot reach the frontend.
-
-Speaker B: I inspect the published host port and external access path before changing the internal Docker network.
-
-Speaker A: Good.
-
-Speaker B: Another.
-
-Speaker A: The database container is recreated and the database is empty.
-
-Speaker B: I inspect volume attachment and persistence before assuming the database application lost its data.
-
-Speaker A: Good.
-
-Speaker B: Final one.
-
-Speaker A: The container keeps restarting.
-
-Speaker B: I inspect the main process command, exit status, logs and health behavior before touching the image or the host.
-
-Speaker A: Exactly.
+Speaker A: Exactly. That's why layered diagnosis matters.
 
 Speaker B: Mac lab?
 
-Speaker A: Run the known-good stack.
+Speaker A: Create a tiny stack and keep notes. For every break, write four things: your hypothesis, the predicted observation, the actual observation, and the next test. At the end, erase the notes and repeat from memory.
 
-Speaker B: Prove the real user path.
+Speaker B: That last part is mean.
 
-Speaker A: Choose one failure.
+Speaker A: It's called retrieval practice.
 
-Speaker B: Write the prediction before the change.
+Speaker B: Same thing, nicer branding.
 
-Speaker A: Good.
+Speaker A: Fine. Call it supervised cruelty.
 
-Speaker B: Make the change.
+Speaker B: And that's apparently our educational philosophy.
 
-Speaker A: Observe.
-
-Speaker B: Capture evidence.
-
-Speaker A: Restore.
-
-Speaker B: Prove recovery.
-
-Speaker A: Good.
-
-Speaker B: Then choose a different failure and repeat.
-
-Speaker A: Keep the experiment log.
-
-Speaker B: Hypothesis.
-
-Speaker A: Predicted symptom.
-
-Speaker B: Actual symptom.
-
-Speaker A: Evidence.
-
-Speaker B: Root boundary.
-
-Speaker A: Recovery action.
-
-Speaker B: Recovery proof.
-
-Speaker A: Exactly.
-
-Speaker B: Recall.
-
-Speaker A: Why do we start from a baseline?
-
-Speaker B: To know what good looks like before the failure and to prove recovery afterward.
-
-Speaker A: Why change one thing?
-
-Speaker B: So the observed change can be connected to one cause.
-
-Speaker A: Why predict first?
-
-Speaker B: Prediction forces a testable hypothesis instead of random troubleshooting.
-
-Speaker A: What makes the experiment complete?
-
-Speaker B: Evidence explains the failure, the known-good setting is restored, and the real user path works again.
-
-Speaker A: Final challenge.
-
-Speaker B: The Docker stack is 'broken.'
-
-Speaker A: Your response?
-
-Speaker B: Do not mutate randomly. Establish the baseline, choose one boundary, predict the symptom, make one controlled change, collect evidence, restore the state, and prove recovery.
-
-Speaker A: Good.
-
-Speaker B: So breaking Docker is not destruction.
-
-Speaker A: It is a controlled experiment.
-
-Speaker B: And the quality of the lesson is the quality of the evidence.
-
-Speaker A: Exactly. Break one thing. Explain it. Recover it. Prove it.
+Speaker A: Only on Tuesdays.
 
