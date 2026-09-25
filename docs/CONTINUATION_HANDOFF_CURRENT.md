@@ -1930,7 +1930,7 @@ Merged PR #54 / #78:
 - Final merged commit status is **Vercel success**.
 - D2.7 turns Docker failure into a controlled incident drill: one change, one prediction, evidence, restoration and real recovery proof.
 - The later PR #78 is the authoritative merge record because it contains the latest branch head.
-- Next content boundary: **D2.8**.
+- Next content boundary: **D3.1 — Kubernetes Mental Model**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
