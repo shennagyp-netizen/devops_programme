@@ -1,5 +1,47 @@
 import { sql } from "drizzle-orm";
-import { check, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import {
+  check,
+  index,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid
+} from "drizzle-orm/pg-core";
+
+export const authUsers = pgTable(
+  "auth_users",
+  {
+    id: text("id").primaryKey(),
+    email: text("email").notNull(),
+    passwordHash: text("password_hash").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => ({
+    emailUnique: uniqueIndex("auth_users_email_uq").on(table.email)
+  })
+);
+
+export const authSessions = pgTable(
+  "auth_sessions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => authUsers.id, { onDelete: "cascade" }),
+    tokenHash: text("token_hash").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => ({
+    tokenUnique: uniqueIndex("auth_sessions_token_hash_uq").on(table.tokenHash),
+    userIndex: index("auth_sessions_user_id_idx").on(table.userId)
+  })
+);
 
 export const learnerProgressHistory = pgTable(
   "learner_progress_history",
@@ -28,6 +70,8 @@ export const learnerProgressHistory = pgTable(
   })
 );
 
+export type AuthUser = typeof authUsers.$inferSelect;
+export type AuthSession = typeof authSessions.$inferSelect;
 export type LearnerProgressHistory =
   typeof learnerProgressHistory.$inferSelect;
 export type NewLearnerProgressHistory =
