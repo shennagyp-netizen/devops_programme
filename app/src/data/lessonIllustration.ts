@@ -9,7 +9,8 @@ export type LessonIllustrationVariantV1 =
   | "delivery-pipeline-v1"
   | "observability-diagnosis-v1"
   | "backup-recovery-v1"
-  | "queue-state-v1";
+  | "queue-state-v1"
+  | "incident-loop-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -287,6 +288,37 @@ const QUEUE_STATE_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const INCIDENT_LOOP_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "incident-loop-v1",
+  title: "The incident loop",
+  stages: [
+    { id: "impact", label: "Impact", detail: "Start with what users or business operations are actually experiencing." },
+    { id: "scope", label: "Scope", detail: "Separate affected requests, users, time window and failure domain from the wider system." },
+    { id: "evidence", label: "Evidence", detail: "Correlate signals, change history and system state before choosing the next action." },
+    { id: "mitigate", label: "Mitigate", detail: "Take the smallest safe action that reduces harm and protects the system." },
+    { id: "recover", label: "Recover", detail: "Restore the user path and prove the key signals return to stable behavior." },
+    { id: "learn", label: "Learn", detail: "Record the timeline, cause, missed signal, recovery limits and next preventive test." }
+  ],
+  foundation: {
+    label: "Reduce harm before chasing a perfect explanation",
+    detail: "During an active incident, mitigation and evidence can progress together; do not make the system worse while searching for certainty."
+  },
+  callouts: [
+    { id: "timeline", label: "Timeline", detail: "Keep user reports, evidence, changes and actions tied to exact times." },
+    { id: "change-identity", label: "Change identity", detail: "Know which release, configuration or operational change was active before the failure." },
+    { id: "blast-radius", label: "Blast radius", detail: "Prefer actions that limit how many users, workers or dependencies are exposed to the failure." },
+    { id: "recovery-proof", label: "Recovery proof", detail: "A command finishing is not recovery; prove the original user-visible behavior and stable system signals." }
+  ],
+  failureChecks: [
+    { id: "user-impact", label: "1. User impact", detail: "What is failing for whom, and what business action is blocked?" },
+    { id: "first-signal", label: "2. First useful signal", detail: "Which observation narrows the likely causes without changing the system?" },
+    { id: "safe-action", label: "3. Safe action", detail: "What change reduces harm without creating a larger failure or losing evidence?" },
+    { id: "stable-recovery", label: "4. Stable recovery", detail: "Did the user path recover and remain healthy after the mitigation?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -368,6 +400,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "incident-loop-v1") {
+    return {
+      ...INCIDENT_LOOP_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -391,7 +430,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "delivery-pipeline-v1" &&
     model.variant !== "observability-diagnosis-v1" &&
     model.variant !== "backup-recovery-v1" &&
-    model.variant !== "queue-state-v1"
+    model.variant !== "queue-state-v1" &&
+    model.variant !== "incident-loop-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
