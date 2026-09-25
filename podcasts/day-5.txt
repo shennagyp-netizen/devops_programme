@@ -845,45 +845,155 @@ Speaker A: Recovery planning should make you uncomfortable before the incident d
 
 EPISODE D5.7 — Global-Scale Architecture
 
-Speaker A: Now we combine everything. A global system needs traffic distribution, compute, data, cache, queues, observability, identity, security, and recovery.
-
-Speaker B: And the fun part is that every decision changes another decision.
-
-Speaker A: Exactly. This is architecture as a dependency graph.
-
-Speaker A: Real-life example: international airports do not simply add more gates. They need runways, terminals, baggage systems, security, traffic routing, emergency procedures, and regional coordination.
-
-Speaker A: For a global software system, ask where users enter, where data lives, which failures are isolated, what is cached, what is asynchronous, and what can degrade gracefully.
-
-Speaker A: Lab: design a multi-region architecture for millions of users and explain every major failure domain.
-Speaker B: Global scale adds geography to every previous problem.
-
-Speaker A: And latency.
-
-Speaker B: And failure domains.
-
-Speaker A: And data sovereignty, routing, replication, deployment, capacity planning.
-
-Speaker B: Airport analogy?
-
-Speaker A: Think about an international airport system. You might have regional hubs, local feeder routes, traffic control, baggage systems, security, and alternate airports. A global application has analogous layers, though the mechanisms are different.
-
-Speaker B: Prediction. If one region fails, should traffic automatically move to another region?
-
-Speaker A: Only if the architecture, data model, routing, capacity, and recovery design make that safe.
-
-Speaker B: So “multi-region” is not one checkbox.
-
-Speaker A: Exactly. You can have two regions and still have one logical bottleneck.
-
-Speaker B: Mac exercise?
-
-Speaker A: Draw a two-region web service. Mark where users enter, where sessions live, where writes go, how data replicates, and what happens when one region disappears. Then calculate whether the surviving region has enough capacity.
-
-Speaker B: The last part is easy to forget.
-
-Speaker A: And that forgotten part is how failover becomes a second outage.
-
+Speaker A: We have spent the course learning how one system fails.
+Speaker B: Global systems add geography to every one of those failures.
+Speaker A: Exactly.
+Speaker B: The visual is:
+Speaker A: Users -> Routing -> Regions -> Dependencies -> Capacity -> Recovery.
+Speaker B: So multi-region is not two copies of the same application.
+Speaker A: Correct. It is a different failure-domain design.
+Speaker B: Start with users.
+Speaker A: Where does a user enter the system?
+Speaker B: Which region receives the request?
+Speaker A: What latency does the user expect?
+Speaker B: Those are architecture questions before we name a cloud product.
+Speaker A: Exactly.
+Speaker B: Stage two: routing.
+Speaker A: Global routing decides where traffic goes.
+Speaker B: DNS.
+Speaker A: One option.
+Speaker B: Anycast or a global load-balancing layer.
+Speaker A: Depending on the architecture.
+Speaker B: So failover is a routing decision.
+Speaker A: Yes, but only if the rest of the system can survive the decision.
+Speaker B: Make a prediction.
+Speaker A: Region A fails completely. Traffic is moved to Region B. Is the incident over?
+Speaker B: No. Region B may not have enough capacity, its data may be stale or unavailable, and shared dependencies can still fail.
+Speaker A: Exactly.
+Speaker B: That is the central trap.
+Speaker A: Multi-region can simply move the bottleneck.
+Speaker B: Stage three: regions.
+Speaker A: A region is a useful failure boundary only when enough of the workload and its dependencies can fail independently.
+Speaker B: So two regions that both depend on one global database cluster may still share a large failure domain.
+Speaker A: Exactly.
+Speaker B: Another prediction.
+Speaker A: Region A is lost. The web tier in Region B is healthy. The shared identity service is down. Can the system still be considered fully recovered?
+Speaker B: No. The surviving workload can still be blocked by a shared dependency.
+Speaker A: Good.
+Speaker B: Stage four: dependencies.
+Speaker A: Data services, identity, queues, third-party APIs and control planes may cross regional boundaries.
+Speaker B: Which means I need to draw them explicitly.
+Speaker A: Yes. Never hide shared dependencies behind the word multi-region.
+Speaker B: Evidence question?
+Speaker A: For each critical dependency: where does it run, what happens when its primary region fails, and what evidence proves the surviving path still works?
+Speaker B: Stage five: capacity.
+Speaker A: This is where many failover diagrams become fiction.
+Speaker B: Two regions exist.
+Speaker A: But the surviving region is sized for half the normal traffic.
+Speaker B: Then sending the other half there can create a second outage.
+Speaker A: Exactly.
+Speaker B: Prediction.
+Speaker A: Region A carries 60% of traffic and Region B carries 40%. Region A disappears. Can Region B safely absorb the full 100%?
+Speaker B: Only if it has enough safe capacity and the dependencies behind it can also handle the added load.
+Speaker A: Good.
+Speaker B: So capacity headroom is part of the recovery design.
+Speaker A: Exactly.
+Speaker B: Measure it.
+Speaker A: Yes. Compute, database connections, queue depth, storage throughput and any other limiting resource.
+Speaker B: Stage six: recovery.
+Speaker A: Recovery is not a routing rule.
+Speaker B: It is a verified operational path.
+Speaker A: Exactly.
+Speaker B: What must we prove?
+Speaker A: Traffic reaches the surviving region.
+Speaker B: The application remains healthy.
+Speaker A: Required data is available at the required freshness.
+Speaker B: Dependencies remain usable.
+Speaker A: Capacity stays within safe limits.
+Speaker B: And the user path still works.
+Speaker A: Exactly.
+Speaker B: Real-life analogy?
+Speaker A: International airports.
+Speaker B: One airport closes.
+Speaker A: Another airport accepts diverted flights.
+Speaker B: But only if it has runway capacity, gates, baggage systems, staff, fuel, security and road access.
+Speaker A: Exactly. A second airport exists, but that does not automatically create a safe failover.
+Speaker B: Now data placement.
+Speaker A: Suppose orders are written in Region A and replicated to Region B.
+Speaker B: What do we ask?
+Speaker A: How fresh is the replicated data?
+Speaker B: Can Region B accept writes?
+Speaker A: If both regions can write, how are conflicts handled?
+Speaker B: If only one region can write, what happens during failover?
+Speaker A: Exactly.
+Speaker B: Prediction.
+Speaker A: Region A fails five seconds after a successful order write, and replication normally takes three seconds. What must the recovery design tell you?
+Speaker B: Whether the write is guaranteed to be present in Region B or whether a bounded amount of data can be lost.
+Speaker A: Good. You need the actual data-replication contract, not a diagram that says 'replicated.'
+Speaker B: Good distinction.
+Speaker A: Another failure domain is deployment.
+Speaker B: A global rollout can break every region at once.
+Speaker A: Exactly.
+Speaker B: So independent failure domains are useful only if deployment and configuration respect them.
+Speaker A: Good.
+Speaker B: The same is true for identity.
+Speaker A: Yes. A global identity dependency can defeat otherwise independent regional workloads.
+Speaker B: So shared dependencies belong in the failure analysis.
+Speaker A: Exactly.
+Speaker B: Let's build the failure matrix.
+Speaker A: Region A disappears.
+Speaker B: Check routing, survivor capacity, data freshness, shared dependencies and user-path health.
+Speaker A: Region B overloads after failover.
+Speaker B: Capacity or a downstream dependency was under-sized.
+Speaker A: Data is stale after failover.
+Speaker B: Replication contract or consistency design is the next boundary.
+Speaker A: Authentication fails globally.
+Speaker B: Shared identity is a global failure domain.
+Speaker A: One deployment breaks both regions.
+Speaker B: The deployment or configuration system is a shared blast radius.
+Speaker A: Good.
+Speaker B: Controlled experiment?
+Speaker A: Draw a two-region web system.
+Speaker B: Mark user entry.
+Speaker A: Mark workload capacity.
+Speaker B: Mark write location and read replicas.
+Speaker A: Mark identity, queue and third-party dependencies.
+Speaker B: Then remove Region A.
+Speaker A: Predict the new traffic path.
+Speaker B: Calculate whether Region B has enough capacity.
+Speaker A: Good.
+Speaker B: Then mark which data is guaranteed to survive and which may lag.
+Speaker A: Good.
+Speaker B: Finally identify any dependency that still crosses the failed boundary.
+Speaker A: Exactly.
+Speaker B: What evidence makes the design credible?
+Speaker A: Capacity numbers.
+Speaker B: Data replication evidence.
+Speaker A: Routing behavior.
+Speaker B: Dependency health.
+Speaker A: User-path recovery.
+Speaker B: Good.
+Speaker A: Recall.
+Speaker B: Why is multi-region not just two copies?
+Speaker A: Because routing, capacity, data placement, deployment and shared dependencies determine whether the second region is actually an independent recovery path.
+Speaker B: Why is survivor capacity important?
+Speaker A: Because failover sends more traffic to the surviving region and can create a second outage if the headroom is insufficient.
+Speaker B: What should we ask about replicated data?
+Speaker A: Freshness, write ownership, conflict behavior and what data can be lost or delayed during a regional failure.
+Speaker B: Why draw shared dependencies?
+Speaker A: Because a supposedly regional failure can still become global if critical identity, data or third-party services remain shared.
+Speaker B: Final challenge.
+Speaker A: Region A fails.
+Speaker B: My model?
+Speaker A: Users -> Routing -> Regions -> Dependencies -> Capacity -> Recovery.
+Speaker B: And my evidence?
+Speaker A: Prove where traffic goes, whether the surviving region has safe capacity, whether required state is available at the required freshness, whether dependencies remain usable, and whether the real user path recovers.
+Speaker B: So global architecture is failure-domain engineering.
+Speaker A: Exactly.
+Speaker B: Not a list of products.
+Speaker A: Not a diagram with two boxes.
+Speaker B: A set of boundaries that must still work when one of them disappears.
+Speaker A: Run the design exercise, remove one region, and prove the surviving architecture.
 
 EPISODE D5.8 — The Production Incident
 

@@ -88,6 +88,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D5.7": {
+    version: 1,
+    blocks: [
+      {
+        id: "d5-7-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Global architecture is a failure-domain problem. Traffic routing, regional capacity, state placement and shared dependencies all decide whether losing one region is survivable."
+      },
+      {
+        id: "d5-7-global-architecture",
+        type: "illustration",
+        heading: "The global failure-domain map",
+        alt: "Global users enter through traffic routing into regions that depend on workloads and data, with capacity and recovery boundaries visible",
+        bindingId: "D5.7:d5-7-global-architecture",
+        nodes: ["Users", "Routing", "Regions", "Dependencies", "Capacity", "Recovery"],
+        variant: "global-architecture-v1",
+        caption:
+          "Design the surviving path before calling an architecture multi-region."
+      }
+    ]
+  },
+
+
   "D5.3": {
     version: 1,
     blocks: [
@@ -973,6 +998,7 @@ export function validateLessonContent(
         block.variant !== "cloud-primitives-v1" &&
         block.variant !== "database-scaling-v1" &&
         block.variant !== "distributed-partial-failure-v1" &&
+        block.variant !== "global-architecture-v1" &&
         block.variant !== "kubernetes-service-path-v1" &&
         block.variant !== "kubernetes-config-storage-v1" &&
         block.variant !== "kubernetes-health-scaling-v1" &&

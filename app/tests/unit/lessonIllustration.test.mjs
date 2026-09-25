@@ -465,6 +465,41 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models global architecture as users, routing, regions, dependencies, capacity and recovery", () => {
+    const model = getLessonIllustrationModel({
+      id: "d5-7-global-architecture",
+      type: "illustration",
+      heading: "The global failure-domain map",
+      alt: "Global users enter through traffic routing into regions that depend on workloads and data, with capacity and recovery boundaries visible",
+      bindingId: "D5.7:d5-7-global-architecture",
+      nodes: ["Users", "Routing", "Regions", "Dependencies", "Capacity", "Recovery"],
+      variant: "global-architecture-v1"
+    });
+
+    expect(model.variant).toBe("global-architecture-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "users",
+      "routing",
+      "regions",
+      "dependencies",
+      "capacity",
+      "recovery"
+    ]);
+    expect(model.foundation.label).toBe("Multi-region changes failure domains, not just location");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "latency",
+      "headroom",
+      "data-placement",
+      "blast-radius"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "regional-loss",
+      "survivor-capacity",
+      "data-consistency",
+      "dependency-isolation"
+    ]);
+  });
+
   it("models distributed systems as request, local state, network, remote state, uncertainty and evidence", () => {
     const model = getLessonIllustrationModel({
       id: "d5-3-distributed-systems",
