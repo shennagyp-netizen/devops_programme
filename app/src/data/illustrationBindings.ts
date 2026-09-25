@@ -485,10 +485,10 @@ export function validateLessonIllustrationBindings(
     };
   }>,
   options: {
-    bindings?: readonly CurriculumIllustrationBindingV1[];
+    bindings: readonly CurriculumIllustrationBindingV1[];
     animationDefinitions?: readonly AnimationDefinitionV1[];
     voiceCueIds?: ReadonlySet<string>;
-  } = {}
+  }
 ): {
   valid: boolean;
   failures: string[];
@@ -500,7 +500,7 @@ export function validateLessonIllustrationBindings(
   const usedBindingIds = new Set<string>();
   const animationDefinitions = options.animationDefinitions ?? [];
 
-  for (const binding of options.bindings ?? []) {
+  for (const binding of options.bindings) {
     if (authoredBindings.has(binding.id)) {
       failures.push(`duplicate authored illustration binding: ${binding.id}`);
     } else {
@@ -526,13 +526,15 @@ export function validateLessonIllustrationBindings(
         return;
       }
 
-      const canonicalBinding = buildDefaultIllustrationBinding(
-        lesson.id,
-        block as IllustrationContentBlockV1,
-        contentIndex
-      );
-      const binding =
-        authoredBindings.get(block.bindingId) ?? canonicalBinding;
+      const binding = authoredBindings.get(block.bindingId);
+
+      if (!binding) {
+        failures.push(
+          `lesson ${lesson.id} illustration ${block.id} has no authored curriculum binding: ${block.bindingId}`
+        );
+        return;
+      }
+
       usedBindingIds.add(binding.id);
 
       if (block.bindingId !== binding.id) {
