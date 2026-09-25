@@ -19,30 +19,34 @@ function filesUnder(directory) {
   return result;
 }
 
+function stripComments(source) {
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/(^|\s)\/\/.*$/gm, "$1");
+}
+
 describe("curriculum/animation dependency boundary", () => {
   it("keeps the reusable animation library independent from curriculum sources", () => {
     const root = resolve(process.cwd(), "src/animations");
     const forbiddenImportPatterns = [
-      /\\b(?:from|import)\\s*["'][^"']*(?:courseLessons|lessonContent|illustrationBindings|PodcastCoach|LessonPanel)[^"']*["']/,
-      /\\b(?:from|import)\\s*["'][^"']*\\.\\.\\/data\\// 
+      /\bfrom\s*["'][^"']*(?:courseLessons|lessonContent|illustrationBindings|PodcastCoach|LessonPanel)[^"']*["']/,
+      /\bimport\s*(?:type\s*)?[^"']*["'][^"']*(?:courseLessons|lessonContent|illustrationBindings|PodcastCoach|LessonPanel)[^"']*["']/,
+      /\bfrom\s*["'][^"']*\.\.\/data\//,
+      /\bimport\s*(?:type\s*)?[^"']*["'][^"']*\.\.\/data\//
     ];
 
     for (const file of filesUnder(root)) {
-      const code = readFileSync(file, "utf8");
-      const importLines = code
-        .split("\\n")
-        .filter((line) => /^\\s*(?:import|export).*from\\s+["']|^\\s*import\\s*["']/.test(line))
-        .join("\\n");
+      const source = stripComments(readFileSync(file, "utf8"));
 
       for (const forbiddenPattern of forbiddenImportPatterns) {
-        expect(importLines, file).not.toMatch(forbiddenPattern);
+        expect(source, file).not.toMatch(forbiddenPattern);
       }
     }
   });
 
   it("keeps the curriculum binding layer above animation contracts", () => {
     const file = resolve(process.cwd(), "src/data/illustrationBindings.ts");
-    const code = readFileSync(file, "utf8");
+    const code = stripComments(readFileSync(file, "utf8"));
 
     expect(code).toContain("../animations/contracts");
     expect(code).not.toContain("../animations/runtime");
