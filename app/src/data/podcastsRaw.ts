@@ -34,7 +34,7 @@ function classifyTurn(text: string): Turn["kind"] {
   }
 
   if (
-    /(mac lab|mac exercise|run (that|the) command|run the command|lab:|hands-on|practical challenge)/i.test(
+    /(mac lab|mac exercise|now (the )?lab|lab time|lab:|hands-on|practical challenge|run (that|the) command|run the command)/i.test(
       normalized
     )
   ) {
