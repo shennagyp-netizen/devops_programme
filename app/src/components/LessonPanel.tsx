@@ -22,13 +22,7 @@ import { LessonContentFeed } from "./LessonContentFeed";
 import { PodcastCoach } from "./PodcastCoach";
 import { AssessmentPanel } from "./AssessmentPanel";
 
-type Mode =
-  | "learn"
-  | "listen"
-  | "do"
-  | "recall"
-  | "design"
-  | "assessment";
+type Mode = "learn" | "do" | "recall" | "design" | "assessment";
 
 export function LessonPanel({
   lesson,
@@ -284,18 +278,18 @@ export function LessonPanel({
 
       <MotionIllustration lesson={lesson} />
 
+      <PodcastCoach lesson={lesson} />
+
       {mode === "learn" ? <LessonContentFeed blocks={lesson.content.blocks} /> : null}
 
       <nav className="mode-tabs">
-        {(
-          ["learn", "listen", "do", "recall", "design", "assessment"] as Mode[]
-        ).map((item) => (
+        {(["learn", "do", "recall", "design", "assessment"] as Mode[]).map((item) => (
           <button
             key={item}
             className={mode === item ? "active" : ""}
             onClick={() => setMode(item)}
           >
-            {item === "listen" ? "co-teacher" : item}
+            {item}
           </button>
         ))}
       </nav>
@@ -355,21 +349,6 @@ export function LessonPanel({
           ) : null}
         </>
       )}
-
-      {mode === "listen" &&
-        (lesson.podcastStatus === "script-ready" && lesson.podcast ? (
-          <PodcastCoach lesson={lesson} />
-        ) : (
-          <div className="content-card">
-            <span className="eyebrow">SCRIPT READY · VOICE NOT YET ALIGNED</span>
-            <h3>The spoken lesson is ready for recording</h3>
-            <p>
-              The script, lab, recall and assessment are ready. The voice
-              recording is kept separate and React will use it only after its
-              timing manifest matches this exact script version.
-            </p>
-          </div>
-        ))}
 
       {mode === "do" && (
         <div className="content-card">
