@@ -94,6 +94,7 @@ export const DEFAULT_ANIMATION_CUSTOMIZATION: Required<
   density: "comfortable",
   emphasis: "standard",
   nodeVariant: "rounded",
+  shapeClearancePx: 12,
   motion: {
     travelMs: 600,
     emphasisMs: 300,
@@ -374,8 +375,8 @@ function center(rect: Rect): Point {
 
 function orientation(a: Point, b: Point, c: Point): number {
   const value =
-    (b.y - a.y) * (c.x - b.x) -
-    (b.x - a.x) * (c.y - b.y);
+    (b.x - a.x) * (c.y - a.y) -
+    (b.y - a.y) * (c.x - a.x);
 
   if (Math.abs(value) < 0.000001) return 0;
   return value > 0 ? 1 : 2;
@@ -771,6 +772,9 @@ export function validateAnimationDefinition(
   }
 
   const primitiveIds = new Set<string>();
+  const visualCustomization = isObject(value.visual)
+    ? value.visual.customization
+    : undefined;
 
   if (Array.isArray(value.primitives)) {
     for (const primitive of value.primitives) {
@@ -794,7 +798,7 @@ export function validateAnimationDefinition(
       }
     }
 
-    validateGeometry(value.primitives, value.visual.customization, failures);
+    validateGeometry(value.primitives, visualCustomization, failures);
   }
 
   const stateIds = new Set<string>();
