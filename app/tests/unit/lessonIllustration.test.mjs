@@ -1367,6 +1367,142 @@ describe("lesson illustration teaching model", () => {
       ]
     });
   });
+  it("models capacity as demand, service rate, bottleneck, queue and headroom", () => {
+    const model = getLessonIllustrationModel({
+      id: "a1-1-capacity",
+      type: "illustration",
+      heading: "The capacity system",
+      alt: "Demand enters a service, one bottleneck limits throughput, a queue grows when arrival rate exceeds service rate, and headroom protects recovery",
+      bindingId: "A1.1:a1-1-capacity",
+      nodes: ["Demand", "Service", "Bottleneck", "Queue", "Headroom"],
+      variant: "capacity-system-v1"
+    });
+
+    expect(model.variant).toBe("capacity-system-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "demand",
+      "service",
+      "bottleneck",
+      "queue",
+      "headroom"
+    ]);
+    expect(model.foundation.label).toBe("Throughput is limited by the bottleneck");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "arrival-rate",
+      "service-rate",
+      "saturation",
+      "headroom"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "first-bottleneck",
+      "queue-growth",
+      "tail-latency",
+      "recovery-capacity"
+    ]);
+  });
+
+  it("models backpressure as producer, queue, consumer, capacity and admission control", () => {
+    const model = getLessonIllustrationModel({
+      id: "a1-2-backpressure",
+      type: "illustration",
+      heading: "The backpressure system",
+      alt: "A producer sends work into a queue, consumers process it at finite capacity, and backpressure limits admission when the queue grows",
+      bindingId: "A1.2:a1-2-backpressure",
+      nodes: ["Producer", "Queue", "Consumer", "Capacity", "Backpressure"],
+      variant: "queue-backpressure-v1"
+    });
+
+    expect(model.variant).toBe("queue-backpressure-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "producer",
+      "queue",
+      "consumer",
+      "capacity",
+      "backpressure"
+    ]);
+    expect(model.foundation.label).toBe("A queue absorbs rate mismatch; it does not create capacity");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "arrival",
+      "depth",
+      "service-rate",
+      "admission"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "rate-mismatch",
+      "queue-limit",
+      "consumer-bottleneck",
+      "load-shedding"
+    ]);
+  });
+
+  it("models replication as write, copies, lag, read and consistency choice", () => {
+    const model = getLessonIllustrationModel({
+      id: "a1-3-replication",
+      type: "illustration",
+      heading: "The replication trade-off",
+      alt: "A write creates multiple copies with possible lag, and a read observes one or more copies under a chosen consistency model",
+      bindingId: "A1.3:a1-3-replication",
+      nodes: ["Write", "Copies", "Lag", "Read", "Consistency"],
+      variant: "replication-tradeoff-v1"
+    });
+
+    expect(model.variant).toBe("replication-tradeoff-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "write",
+      "copies",
+      "lag",
+      "read",
+      "consistency"
+    ]);
+    expect(model.foundation.label).toBe("Copies add resilience and coordination cost");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "replicas",
+      "lag",
+      "conflict",
+      "read-policy"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "write-path",
+      "replica-health",
+      "stale-read",
+      "consistency-choice"
+    ]);
+  });
+
+  it("models failure domains from process to host, zone, region and blast radius", () => {
+    const model = getLessonIllustrationModel({
+      id: "a1-4-failure-domains",
+      type: "illustration",
+      heading: "The failure-domain ladder",
+      alt: "A service spans process, host, zone and region boundaries, and each boundary changes blast radius and recovery requirements",
+      bindingId: "A1.4:a1-4-failure-domains",
+      nodes: ["Process", "Host", "Zone", "Region", "Recovery"],
+      variant: "failure-domain-ladder-v1"
+    });
+
+    expect(model.variant).toBe("failure-domain-ladder-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "process",
+      "host",
+      "zone",
+      "region",
+      "recovery"
+    ]);
+    expect(model.foundation.label).toBe("Redundancy only helps across the failure you are trying to survive");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "blast-radius",
+      "zone",
+      "region",
+      "survivor-capacity"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "failed-process",
+      "failed-host",
+      "failed-zone",
+      "failed-region"
+    ]);
+  });
+
   it("models Kubernetes networking as service, selector, endpoint set, pod and evidence", () => {
     const model = getLessonIllustrationModel({
       id: "d3-2-kubernetes-networking",

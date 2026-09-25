@@ -40,7 +40,11 @@ export type LessonIllustrationVariantV1 =
   | "ci-cd-pipeline-v1"
   | "reliability-patterns-v1"
   | "observability-control-v1"
-  | "disaster-recovery-system-v1";
+  | "disaster-recovery-system-v1"
+  | "capacity-system-v1"
+  | "queue-backpressure-v1"
+  | "replication-tradeoff-v1"
+  | "failure-domain-ladder-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -1249,6 +1253,123 @@ const DISASTER_RECOVERY_SYSTEM_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const CAPACITY_SYSTEM_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "capacity-system-v1",
+  title: "The capacity system",
+  stages: [
+    { id: "demand", label: "Demand", detail: "Work arrives at a rate that can change over time." },
+    { id: "service", label: "Service", detail: "Components process work at a finite service rate." },
+    { id: "bottleneck", label: "Bottleneck", detail: "The slowest constrained resource limits end-to-end throughput." },
+    { id: "queue", label: "Queue", detail: "When arrival rate exceeds service rate, waiting work grows and latency rises." },
+    { id: "headroom", label: "Headroom", detail: "Unused capacity gives the system room for bursts and recovery." }
+  ],
+  foundation: {
+    label: "Throughput is limited by the bottleneck",
+    detail: "Adding capacity outside the bottleneck does not remove the first constraint and can move the queue elsewhere."
+  },
+  callouts: [
+    { id: "arrival-rate", label: "Arrival rate", detail: "How quickly work enters the system." },
+    { id: "service-rate", label: "Service rate", detail: "How quickly the constrained component can complete work." },
+    { id: "saturation", label: "Saturation", detail: "A resource approaches its practical limit and leaves less room for bursts." },
+    { id: "headroom", label: "Headroom", detail: "Capacity kept unused enough to absorb expected variation and support recovery." }
+  ],
+  failureChecks: [
+    { id: "first-bottleneck", label: "1. First bottleneck", detail: "Which resource saturates first as demand increases?" },
+    { id: "queue-growth", label: "2. Queue growth", detail: "Does arrival rate exceed service rate at the constrained stage?" },
+    { id: "tail-latency", label: "3. Tail latency", detail: "How does waiting time change for the slowest requests?" },
+    { id: "recovery-capacity", label: "4. Recovery capacity", detail: "After a burst, is there enough spare capacity to drain accumulated work?" }
+  ]
+};
+
+const QUEUE_BACKPRESSURE_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "queue-backpressure-v1",
+  title: "The backpressure system",
+  stages: [
+    { id: "producer", label: "Producer", detail: "A producer creates work at some arrival rate." },
+    { id: "queue", label: "Queue", detail: "Waiting work accumulates when consumers cannot keep up." },
+    { id: "consumer", label: "Consumer", detail: "Workers process queued work at a finite rate." },
+    { id: "capacity", label: "Capacity", detail: "Worker count and downstream limits determine the sustainable service rate." },
+    { id: "backpressure", label: "Backpressure", detail: "The system slows, rejects or sheds work when admitting more would make overload worse." }
+  ],
+  foundation: {
+    label: "A queue absorbs rate mismatch; it does not create capacity",
+    detail: "Backpressure is a control response to limited downstream capacity, not a synonym for a queue."
+  },
+  callouts: [
+    { id: "arrival", label: "Arrival", detail: "Measure how fast producers create work." },
+    { id: "depth", label: "Queue depth", detail: "Waiting work is a direct signal of rate mismatch." },
+    { id: "service-rate", label: "Service rate", detail: "Measure how quickly consumers and dependencies can complete work." },
+    { id: "admission", label: "Admission control", detail: "Limit accepted work when overload would otherwise become unbounded." }
+  ],
+  failureChecks: [
+    { id: "rate-mismatch", label: "1. Rate mismatch", detail: "Is arrival rate higher than effective service rate?" },
+    { id: "queue-limit", label: "2. Queue limit", detail: "What happens when the queue reaches its safe capacity?" },
+    { id: "consumer-bottleneck", label: "3. Consumer bottleneck", detail: "Which resource prevents consumers from increasing service rate?" },
+    { id: "load-shedding", label: "4. Load shedding", detail: "What work should be delayed, rejected or dropped when capacity is exhausted?" }
+  ]
+};
+
+const REPLICATION_TRADEOFF_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "replication-tradeoff-v1",
+  title: "The replication trade-off",
+  stages: [
+    { id: "write", label: "Write", detail: "A logical write begins at one authority or write path." },
+    { id: "copies", label: "Copies", detail: "The system keeps additional copies to improve resilience, locality or read capacity." },
+    { id: "lag", label: "Lag", detail: "Copies may temporarily differ while changes propagate." },
+    { id: "read", label: "Read", detail: "A read can observe one replica, several replicas or a chosen read policy." },
+    { id: "consistency", label: "Consistency", detail: "The design chooses what freshness and agreement guarantees the application needs." }
+  ],
+  foundation: {
+    label: "Copies add resilience and coordination cost",
+    detail: "Replication can improve availability and locality, but it introduces propagation delay, conflicts, coordination and consistency choices."
+  },
+  callouts: [
+    { id: "replicas", label: "Replicas", detail: "Additional copies can spread reads or survive failure." },
+    { id: "lag", label: "Lag", detail: "A replica may temporarily trail the latest write." },
+    { id: "conflict", label: "Conflict", detail: "Independent writes can create divergent state that needs reconciliation." },
+    { id: "read-policy", label: "Read policy", detail: "The application decides whether stale, bounded-stale or strongly coordinated reads are acceptable." }
+  ],
+  failureChecks: [
+    { id: "write-path", label: "1. Write path", detail: "Where is the authoritative write accepted and acknowledged?" },
+    { id: "replica-health", label: "2. Replica health", detail: "Are copies current enough for the intended consistency and failover goals?" },
+    { id: "stale-read", label: "3. Stale read", detail: "Can a read legally return older state under the application's contract?" },
+    { id: "consistency-choice", label: "4. Consistency choice", detail: "Which consistency guarantee matters for this user action?" }
+  ]
+};
+
+const FAILURE_DOMAIN_LADDER_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "failure-domain-ladder-v1",
+  title: "The failure-domain ladder",
+  stages: [
+    { id: "process", label: "Process", detail: "The smallest unit can fail while its host and surrounding system remain healthy." },
+    { id: "host", label: "Host", detail: "A machine-level failure can remove many colocated workloads together." },
+    { id: "zone", label: "Zone", detail: "A shared facility or availability zone can fail as a larger domain." },
+    { id: "region", label: "Region", detail: "A regional failure can remove an entire geographic deployment boundary." },
+    { id: "recovery", label: "Recovery", detail: "Survivor capacity and data placement determine whether the service can continue." }
+  ],
+  foundation: {
+    label: "Redundancy only helps across the failure you are trying to survive",
+    detail: "Two replicas on one host do not protect against host failure; two zones do not automatically protect against a regional failure."
+  },
+  callouts: [
+    { id: "blast-radius", label: "Blast radius", detail: "How many users, workloads or dependencies fail together when one domain fails?" },
+    { id: "zone", label: "Zone", detail: "Separate a workload across independent zones when the failure model requires it." },
+    { id: "region", label: "Region", detail: "A region boundary changes the recovery design, data placement and survivor-capacity problem." },
+    { id: "survivor-capacity", label: "Survivor capacity", detail: "Remaining domains must have enough capacity to carry the load after a failure." }
+  ],
+  failureChecks: [
+    { id: "failed-process", label: "1. Process failure", detail: "Can the workload restart without affecting unrelated processes?" },
+    { id: "failed-host", label: "2. Host failure", detail: "How much service capacity disappears with one machine?" },
+    { id: "failed-zone", label: "3. Zone failure", detail: "Can the remaining zones carry traffic and required state?" },
+    { id: "failed-region", label: "4. Region failure", detail: "Can a surviving region provide enough capacity and access to required data?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1539,6 +1660,22 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "capacity-system-v1") {
+    return { ...CAPACITY_SYSTEM_VARIANT, title: block.heading };
+  }
+
+  if (block.variant === "queue-backpressure-v1") {
+    return { ...QUEUE_BACKPRESSURE_VARIANT, title: block.heading };
+  }
+
+  if (block.variant === "replication-tradeoff-v1") {
+    return { ...REPLICATION_TRADEOFF_VARIANT, title: block.heading };
+  }
+
+  if (block.variant === "failure-domain-ladder-v1") {
+    return { ...FAILURE_DOMAIN_LADDER_VARIANT, title: block.heading };
+  }
+
   if (block.variant === "kubernetes-networking-v1") {
     return {
       ...KUBERNETES_NETWORKING_VARIANT,
@@ -1599,7 +1736,11 @@ export function validateLessonIllustrationModel(
     model.variant !== "ci-cd-pipeline-v1" &&
     model.variant !== "reliability-patterns-v1" &&
     model.variant !== "observability-control-v1" &&
-    model.variant !== "disaster-recovery-system-v1"
+    model.variant !== "disaster-recovery-system-v1" &&
+    model.variant !== "capacity-system-v1" &&
+    model.variant !== "queue-backpressure-v1" &&
+    model.variant !== "replication-tradeoff-v1" &&
+    model.variant !== "failure-domain-ladder-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
