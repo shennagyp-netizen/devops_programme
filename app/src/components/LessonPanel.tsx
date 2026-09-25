@@ -18,6 +18,7 @@ import {
   setLocalTerminalToken
 } from "../data/localTerminalAgent";
 import { MotionIllustration } from "./MotionIllustration";
+import { LessonContentFeed } from "./LessonContentFeed";
 import { PodcastCoach } from "./PodcastCoach";
 import { AssessmentPanel } from "./AssessmentPanel";
 
@@ -282,6 +283,8 @@ export function LessonPanel({
       </div>
 
       <MotionIllustration lesson={lesson} />
+
+      {mode === "learn" ? <LessonContentFeed blocks={lesson.content.blocks} /> : null}
 
       <nav className="mode-tabs">
         {(
