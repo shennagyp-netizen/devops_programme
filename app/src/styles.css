@@ -343,3 +343,144 @@ textarea{width:100%;min-height:110px;resize:vertical;border:1px solid #2b385b;bo
     margin: 0;
   }
 }
+
+
+/* Reusable SVG animation system */
+.animation-stage-shell {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #2b385b;
+  border-radius: 20px;
+  background: #0b1124;
+  overflow: hidden;
+}
+
+.animation-stage {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 280px;
+}
+
+.animation-connection {
+  stroke: #46547a;
+  stroke-width: 5;
+  stroke-linecap: round;
+  opacity: .85;
+}
+
+.animation-node rect {
+  fill: #111a34;
+  stroke: #40558d;
+  stroke-width: 3;
+  transition: fill .2s ease, stroke .2s ease, transform .2s ease;
+}
+
+.animation-node-label {
+  fill: #eef2ff;
+  font-size: 24px;
+  font-weight: 700;
+  font-family: inherit;
+  pointer-events: none;
+}
+
+.animation-status-active rect {
+  fill: #26355f;
+  stroke: #91a7ff;
+  stroke-width: 5;
+}
+
+.animation-status-healthy rect {
+  stroke: #76e3a5;
+}
+
+.animation-status-warning rect {
+  stroke: #f2ce72;
+}
+
+.animation-status-failure rect {
+  fill: #2d1820;
+  stroke: #f28c9c;
+}
+
+.animation-status-disabled rect {
+  opacity: .5;
+}
+
+.animation-node-technical rect {
+  rx: 10;
+}
+
+.animation-node-rounded rect {
+  rx: 20;
+}
+
+.animation-packet circle {
+  fill: #91a7ff;
+  stroke: #eef2ff;
+  stroke-width: 3;
+}
+
+.animation-packet-label {
+  fill: #eef2ff;
+  font-size: 18px;
+  font-weight: 800;
+  font-family: inherit;
+}
+
+.animation-packet-idle {
+  opacity: 0;
+}
+
+.animation-packet-traveling {
+  opacity: 1;
+}
+
+.animation-packet-complete {
+  opacity: .85;
+}
+
+.animation-label {
+  fill: #aeb9d6;
+  font-size: 20px;
+  font-family: inherit;
+}
+
+.animation-accent-cyan .animation-connection {
+  stroke: #4fd1ff;
+}
+
+.animation-accent-cyan .animation-packet circle {
+  fill: #4fd1ff;
+}
+
+.animation-accent-violet .animation-connection {
+  stroke: #b59aff;
+}
+
+.animation-accent-violet .animation-packet circle {
+  fill: #b59aff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animation-node rect {
+    transition: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .animation-stage-shell {
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  .animation-stage {
+    min-height: 220px;
+  }
+
+  .animation-node-label {
+    font-size: 19px;
+  }
+}
