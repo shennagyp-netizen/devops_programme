@@ -1207,7 +1207,6 @@ export function validateLessonIllustrationModel(
     model.variant !== "docker-network-storage-v1" &&
     model.variant !== "kubernetes-reconciliation-v1" &&
     model.variant !== "docker-failure-loop-v1" &&
-    model.variant !== "kubernetes-reconciliation-v1" &&
     model.variant !== "kubernetes-service-path-v1" &&
     model.variant !== "kubernetes-config-storage-v1" &&
     model.variant !== "kubernetes-health-scaling-v1" &&
