@@ -928,45 +928,273 @@ Speaker B: Run one failure, read the real evidence, and make the workflow prove 
 
 EPISODE D4.4 — Infrastructure as Code
 
-Speaker A: Infrastructure becomes code when the intended environment is described declaratively and changes become reviewable.
+Speaker A: We have a CI/CD control path. Now we need to control infrastructure with the same discipline.
 
-Speaker B: Like architecture diagrams, but executable.
+Speaker B: Infrastructure as Code.
 
-Speaker A: Exactly, with the important addition that state and lifecycle matter.
+Speaker A: Exactly. And the visual is:
 
-Speaker A: Real-life analogy: building permits and construction plans. The document describes what should exist; construction changes reality.
+Speaker B: Intent -> Plan -> Apply -> State -> Drift.
 
-Speaker A: Real-life example: if a cloud environment can only be recreated by clicking through someone's memory, your infrastructure is a story, not a system.
+Speaker A: Five boundaries.
 
-Speaker A: Lab: define a small network or service in Terraform and inspect the plan before applying.
-Speaker B: Infrastructure as Code feels like programming infrastructure without pretending every server is a pet.
+Speaker B: So the code says what we want, the provider holds what exists, and the tool connects the two.
 
-Speaker A: That's a good instinct. Declarative configuration describes desired infrastructure. The tool figures out a plan to reach that state.
+Speaker A: Good. Keep those separate.
 
-Speaker B: Which is different from a shell script that blindly runs commands.
+Speaker B: Stage one: intent.
 
-Speaker A: Often, yes. Declarative tools can compare configuration, observed state, and recorded state.
+Speaker A: Declarative infrastructure code describes the resources and settings we want.
 
-Speaker B: Prediction. Someone changes a cloud resource manually and nobody updates the code.
+Speaker B: Network.
 
-Speaker A: What should you expect?
+Speaker A: Example.
 
-Speaker B: Drift. The desired configuration and actual infrastructure no longer agree.
+Speaker B: Subnet.
 
-Speaker A: Right. Then plan becomes valuable evidence. It can reveal a difference before the next apply turns into a surprise.
+Speaker A: Example.
 
-Speaker B: Real-life example?
+Speaker B: Database.
 
-Speaker A: A construction plan says there should be a wall in one place. Someone moved it last week without updating the drawings. The building exists, but the documentation and reality disagree.
+Speaker A: Example.
+
+Speaker B: The code is not the cloud resource itself.
+
+Speaker A: Exactly.
+
+Speaker B: Stage two: plan.
+
+Speaker A: The tool compares configuration with the information it has about existing resources and proposes changes.
+
+Speaker B: So plan is evidence before change.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction.
+
+Speaker A: I change one subnet property and run plan. The plan wants to destroy and recreate an entire network. Should I apply immediately?
+
+Speaker B: No. The plan contains unexpected blast radius. I stop and understand why the tool thinks replacement is required.
+
+Speaker A: Good.
+
+Speaker B: So a green plan is not always a safe plan.
+
+Speaker A: Correct. The question is whether the proposed change matches the intended change.
+
+Speaker B: Stage three: apply.
+
+Speaker A: Apply sends the chosen changes to the real provider.
+
+Speaker B: Cloud API.
+
+Speaker A: Exactly.
+
+Speaker B: That means provider behavior can still differ from our local expectations.
+
+Speaker A: Yes. Apply produces a new real-world state.
+
+Speaker B: Stage four: state.
+
+Speaker A: State is information Terraform uses to relate configuration to real resources and coordinate future changes.
+
+Speaker B: State is not the infrastructure.
+
+Speaker A: Correct.
+
+Speaker B: The cloud provider remains the authority for the actual resource.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction.
+
+Speaker A: Someone deletes a cloud resource manually. The Terraform state file still contains information about it. Does the resource still exist because the state says it does?
+
+Speaker B: No. State is coordination data. The provider reality wins.
+
+Speaker A: Good.
+
+Speaker B: Stage five: drift.
+
+Speaker A: Drift happens when the real resource changes outside the declared workflow or otherwise no longer matches the intended configuration.
+
+Speaker B: Manual console change.
+
+Speaker A: Common example.
+
+Speaker B: Another automation system.
+
+Speaker A: Another example.
+
+Speaker B: Provider-side behavior.
+
+Speaker A: Depending on the resource, yes.
+
+Speaker B: So plan becomes useful again.
+
+Speaker A: Exactly. Plan can expose differences before they become surprises.
+
+Speaker B: Prediction.
+
+Speaker A: Production storage was changed manually yesterday. The code was not updated. What should today's plan tell you?
+
+Speaker B: It should show a difference if the changed property is part of the tool's managed state and the provider exposes the current value.
+
+Speaker A: Good. If the tool cannot observe the change, the absence of a diff is not proof that no drift exists.
+
+Speaker B: Nice.
+
+Speaker A: That is important.
+
+Speaker B: Human example?
+
+Speaker A: A construction plan.
+
+Speaker B: The plan says where a wall should be.
+
+Speaker A: Right.
+
+Speaker B: The actual building is what exists.
+
+Speaker A: Exactly.
+
+Speaker B: State is the site record used to coordinate construction.
+
+Speaker A: Roughly.
+
+Speaker B: Drift is when someone moves the wall and does not update the plan.
+
+Speaker A: Good. The analogy stops there; real infrastructure has provider APIs, dependency graphs and lifecycle rules.
+
+Speaker B: Now the failure cases.
+
+Speaker A: Case one: a plan includes an unexpected replacement.
+
+Speaker B: Stop. Review the dependency and lifecycle reason before apply.
+
+Speaker A: Good.
+
+Speaker B: Case two: a manual change creates drift.
+
+Speaker A: Run plan and investigate.
+
+Speaker B: Case three: state is wrong or unavailable.
+
+Speaker A: Then safe recovery depends on the tool and backend. Do not invent a manual replacement workflow without understanding state and resource identity.
+
+Speaker B: Case four: someone changes production from the console every Friday.
+
+Speaker A: Then the code is no longer the complete source of desired intent.
+
+Speaker B: So the solution is not to pretend the console never existed.
+
+Speaker A: Right. Bring the change back into the managed workflow or explicitly define the boundary.
+
+Speaker B: Controlled experiment?
+
+Speaker A: Use a tiny local or disposable Terraform configuration.
+
+Speaker B: Run init.
+
+Speaker A: Good.
+
+Speaker B: Run plan and record the expected resources.
+
+Speaker A: Good.
+
+Speaker B: Apply.
+
+Speaker A: Good.
+
+Speaker B: Change one declared property.
+
+Speaker A: Run plan again.
+
+Speaker B: Predict the proposed change before reading the result.
+
+Speaker A: Excellent.
+
+Speaker B: Then, only in a safe lab that supports it, make one external change.
+
+Speaker A: Good.
+
+Speaker B: Run plan again and identify the drift.
+
+Speaker A: Good.
+
+Speaker B: Restore the intended state and prove plan returns clean.
+
+Speaker A: Exactly.
 
 Speaker B: Mac lab?
 
-Speaker A: Start with a tiny Terraform configuration. Run init and plan. Change one declared property. Then make one corresponding external change only if your chosen safe lab supports it. Run plan again and describe the drift.
+Speaker A: Keep the resource small.
 
-Speaker B: So state isn't the infrastructure itself.
+Speaker B: Write one resource declaration.
 
-Speaker A: Correct. That's a crucial distinction. State is information Terraform uses to understand what it believes exists and to coordinate changes. Your real infrastructure still lives in the provider.
+Speaker A: Good.
 
+Speaker B: Run plan before apply.
+
+Speaker A: Good.
+
+Speaker B: Apply.
+
+Speaker A: Good.
+
+Speaker B: Inspect the resulting provider resource.
+
+Speaker A: Good.
+
+Speaker B: Change one property outside the code when the lab makes that safe.
+
+Speaker A: Good.
+
+Speaker B: Run plan and explain the drift.
+
+Speaker A: Good.
+
+Speaker B: Restore and prove the intended state.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: What is desired intent?
+
+Speaker B: The infrastructure the code declares should exist.
+
+Speaker A: What does plan provide?
+
+Speaker B: Evidence of the proposed changes before apply.
+
+Speaker A: What is state?
+
+Speaker B: Coordination information the tool uses to relate declared resources to actual resources.
+
+Speaker A: Is state the infrastructure?
+
+Speaker B: No. The provider holds the real resources.
+
+Speaker A: What is drift?
+
+Speaker B: A difference between declared intent and actual infrastructure.
+
+Speaker A: Final challenge.
+
+Speaker B: Someone changed a production resource manually.
+
+Speaker A: Your model?
+
+Speaker B: Intent -> Plan -> Apply -> State -> Drift. I run plan, inspect the exact difference, determine whether the change is expected, and then restore or codify the desired state safely.
+
+Speaker A: Good.
+
+Speaker B: So IaC is not 'write Terraform and forget it.'
+
+Speaker A: It is a control loop that keeps declared intent and real infrastructure explainable.
+
+Speaker B: Run the plan before the apply, and treat unexpected changes as evidence.
 
 EPISODE D4.5 — Terraform Lifecycle
 
