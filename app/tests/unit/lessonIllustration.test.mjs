@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models CIDR as an explicit network boundary from address to verified range", () => {
+    const model = getLessonIllustrationModel({
+      id: "d1-5-cidr-model",
+      type: "illustration",
+      heading: "The subnet boundary",
+      alt: "An IP address is split by a CIDR prefix into network and host space, producing a defined range that can be verified",
+      bindingId: "D1.5:d1-5-cidr-model",
+      nodes: ["Address", "Prefix", "Boundary", "Range", "Verify"],
+      variant: "cidr-boundary-v1"
+    });
+
+    expect(model.variant).toBe("cidr-boundary-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "address",
+      "prefix",
+      "boundary",
+      "range",
+      "verify"
+    ]);
+    expect(model.foundation.label).toBe("CIDR describes a network boundary");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "network-bits",
+      "host-bits",
+      "block-size",
+      "segmentation"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "network-boundary",
+      "usable-range",
+      "same-subnet",
+      "route-fit"
+    ]);
+  });
+
   it("models networking from interface and link to IP, route and evidence", () => {
     const model = getLessonIllustrationModel({
       id: "d1-4-network-model",
