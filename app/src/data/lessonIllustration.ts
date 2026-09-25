@@ -30,6 +30,7 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
   | "kubernetes-failure-loop-v1";
+  | "git-production-workflow-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -904,6 +905,36 @@ const KUBERNETES_FAILURE_LOOP_VARIANT: LessonIllustrationModelV1 = {
     { id: "recovery-proof", label: "4. Recovery proof", detail: "After the repair, does the same real workload action succeed and remain stable?" }
   ]
 };
+
+const GIT_PRODUCTION_WORKFLOW_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "git-production-workflow-v1",
+  title: "The Git production workflow",
+  stages: [
+    { id: "working-tree", label: "Working tree", detail: "The local file state contains the proposed change, including any uncommitted work." },
+    { id: "staged", label: "Staged", detail: "The index records exactly what the next commit will contain." },
+    { id: "commit", label: "Commit", detail: "The commit gives the source change a durable identity and parent history." },
+    { id: "review", label: "Review", detail: "The reviewed change is compared against a known starting point before it becomes a release input." },
+    { id: "release", label: "Release", detail: "A release identifier points to the exact source state intended or deployed to production." }
+  ],
+  foundation: {
+    label: "A Git commit is an immutable release input with history",
+    detail: "A commit identity lets teams trace the reviewed source state that produced a release; repository state and running production state remain separate."
+  },
+  callouts: [
+    { id: "working-tree", label: "Working tree", detail: "Local edits can exist outside the intended release until they are staged and committed." },
+    { id: "staging", label: "Staging", detail: "The index is a precise boundary for what the next commit will contain." },
+    { id: "commit-identity", label: "Commit identity", detail: "The commit hash identifies one source snapshot and its parent history." },
+    { id: "review", label: "Review", detail: "Review makes the change explainable before it becomes an operational release input." }
+  ],
+  failureChecks: [
+    { id: "uncommitted-change", label: "1. Uncommitted change", detail: "Is the production-intended change actually represented by a committed source state?" },
+    { id: "wrong-stage", label: "2. Wrong staged content", detail: "Does the staged set contain exactly the change you intend to release?" },
+    { id: "history-identity", label: "3. History identity", detail: "Can the deployed source be traced to the exact reviewed commit rather than an ambiguous latest revision?" },
+    { id: "release-proof", label: "4. Release proof", detail: "Can the release and recovery path identify the known-good source state and prove the restored user path?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1114,6 +1145,13 @@ export function getLessonIllustrationModel(
   if (block.variant === "kubernetes-health-scaling-v1") {
     return {
       ...KUBERNETES_HEALTH_SCALING_VARIANT,
+      title: block.heading
+    };
+  }
+
+  if (block.variant === "git-production-workflow-v1") {
+    return {
+      ...GIT_PRODUCTION_WORKFLOW_VARIANT,
       title: block.heading
     };
   }
