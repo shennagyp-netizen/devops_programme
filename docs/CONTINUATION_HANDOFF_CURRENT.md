@@ -1905,12 +1905,10 @@ Merged PR #49:
 Merged PR #50:
 - D2.3 -> `http-exchange-v1`: Request -> Headers -> Route -> Response -> Evidence.
 - Merge commit: `b2932a7ee3ebe61e206f1f49f9da5943106a2727`.
-- Final PR #50 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #51:
 - D2.4 -> `tls-trust-v1`: Client -> Certificate -> Handshake -> Secure Session -> Evidence.
 - Merge commit: `faee8ec98812592b20c7b854bc506c47f86247e0`.
-- Final PR #51 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #52:
 - D2.5 -> `container-execution-v1`: Image -> Container -> Process -> Namespaces -> Host Kernel.
@@ -1919,24 +1917,19 @@ Merged PR #52:
 Merged PR #77:
 - D2.6 -> `docker-network-storage-v1`: Service -> Network -> Name -> Port -> Volume.
 - Merge commit: `cfa8718b193591be1a86770a43fe455b59b2bb7b`.
-- Refreshed PR #77 gate passed all programme contracts, full unit/integration tests, TypeScript and the Next.js production build.
-- The stale predecessor PR #71 was closed; newer Day-2 content was preserved when the validated D2.6 slice was rebased onto current main.
 
 Merged PR #78:
 - D2.7 -> `docker-failure-loop-v1`: Baseline -> Change -> Symptom -> Evidence -> Recovery.
 - Merge commit: `0d0c490b5a7f21f49f6d6ba25c763672cc5cd8ab`.
-- D2.7 is the Docker incident-drill capstone: known-good baseline, single controlled change, prediction, evidence at the correct boundary, restoration and real user-path proof.
-- Final PR #78 workflow passed the full programme gate on the merged head before merge.
-- **Day 2 Docker/TCP/DNS/HTTP/TLS block is now gold-standard through D2.7.**
-- Next content boundary: inspect the next lesson after D2.7 in the current 53-lesson programme source.
+- D2.7 is the Docker incident-drill capstone: single controlled change, prediction, evidence at the correct boundary, restoration and real user-path proof.
+- Final PR #78 workflow passed the full programme gate on the merged head.
 
-
-Active PR D3.1 scope:
-- D3.1 (Kubernetes Mental Model) is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `kubernetes-reconciliation-v1`.
-- Teaching model: Desired State -> Controller -> Observe -> Act -> Converge.
-- The existing D3.1 script already contains prediction, controlled pod deletion, impossible desired-state conditions, evidence, and recovery proof; the work here connects that script to a semantic visual model rather than replacing useful instructional content.
-- TDD/full-programme gate is required before merge.
+Merged PR #79:
+- D3.1 -> `kubernetes-reconciliation-v1`: Desired State -> Controller -> Observe -> Act -> Converge.
+- Merge commit: `cd7497c5bfa2f164f684eb3d46835000f3ac962a`.
+- D3.1 uses the existing prediction/reconciliation/failure content and now has a semantic visual model, authored lesson binding and dedicated TDD coverage.
+- Final PR #79 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- Next content boundary: **D3.2 — Kubernetes Networking**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
