@@ -21,7 +21,8 @@ export type LessonIllustrationVariantV1 =
   | "terminal-composition-v1"
   | "service-permission-model-v1"
   | "network-operating-model-v1"
-  | "cidr-boundary-v1";
+  | "cidr-boundary-v1"
+  | "routing-boundary-v1";
 
 export type LessonContentBlock =
   | {
