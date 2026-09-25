@@ -36,7 +36,8 @@ export type LessonIllustrationVariantV1 =
   | "iac-control-loop-v1"
   | "terraform-lifecycle-v1"
   | "cloud-primitives-v1"
-  | "scaling-control-loop-v1";
+  | "scaling-control-loop-v1"
+  | "database-scale-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -1123,6 +1124,37 @@ const SCALING_CONTROL_LOOP_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const DATABASE_SCALE_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "database-scale-v1",
+  title: "The database scaling path",
+  stages: [
+    { id: "query", label: "Query", detail: "Start with the workload shape: reads, writes, concurrency and data size." },
+    { id: "access-path", label: "Access Path", detail: "Indexes and query plans determine how much data the database must inspect." },
+    { id: "correctness", label: "Correctness", detail: "Transactions and concurrency control preserve application invariants while work happens in parallel." },
+    { id: "copies", label: "Copies", detail: "Replication adds copies for read scale, availability or locality, but copies can introduce lag and consistency choices." },
+    { id: "distribution", label: "Distribution", detail: "Partitioning or sharding divides data ownership or work, changing query scope and coordination." },
+    { id: "evidence", label: "Evidence", detail: "Query plans, latency, lock waits, replica freshness and user-path measurements show whether a scaling change actually helped." }
+  ],
+  foundation: {
+    label: "Capacity changes must preserve data correctness",
+    detail: "Database scaling is not only about throughput. The system must still preserve the business invariants that make reads and writes correct."
+  },
+  callouts: [
+    { id: "index", label: "Index", detail: "An index can reduce the data the database must inspect for a query, but it adds write and storage cost." },
+    { id: "transactions", label: "Transactions", detail: "Transactions define a unit of work whose correctness depends on the database's concurrency and isolation rules." },
+    { id: "replication", label: "Replication", detail: "A replica can improve read capacity or availability while introducing lag and read-consistency trade-offs." },
+    { id: "partitioning", label: "Partitioning", detail: "Partitioning divides data into regions so work can be scoped, but cross-partition queries and coordination can become more complex." }
+  ],
+  failureChecks: [
+    { id: "query-cost", label: "1. Query cost", detail: "What does the query plan inspect, and is the access path still appropriate as data grows?" },
+    { id: "write-correctness", label: "2. Write correctness", detail: "Do concurrent writes still preserve the required transaction and business invariants?" },
+    { id: "replica-freshness", label: "3. Replica freshness", detail: "Can this read tolerate replica lag, or does it require the newest committed value?" },
+    { id: "partition-scope", label: "4. Partition scope", detail: "Does the query touch one partition or coordinate across many, and what does that do to cost and latency?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1393,6 +1425,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "database-scale-v1") {
+    return {
+      ...DATABASE_SCALE_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1443,7 +1482,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "iac-control-loop-v1" &&
     model.variant !== "terraform-lifecycle-v1" &&
     model.variant !== "cloud-primitives-v1" &&
-    model.variant !== "scaling-control-loop-v1"
+    model.variant !== "scaling-control-loop-v1" &&
+    model.variant !== "database-scale-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
