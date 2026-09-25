@@ -10,8 +10,8 @@ describe("public marketing visual contract", () => {
     const page = await source("../../src/app/page.tsx");
 
     expect(page).toContain("<MarketingHeroIllustration />");
-    expect(page).toContain('aria-label="DevOps learning system illustration"');
-    expect(page).toContain('className="marketing-hero-illustration"');
+    expect(illustration).toContain('aria-label="DevOps learning system illustration"');
+    expect(illustration).toContain('className="marketing-hero-illustration"');
   });
 
   it("uses motion to explain the operating loop rather than as decoration only", async () => {
