@@ -1987,5 +1987,14 @@ Merged PR #66:
 - D4.2 now makes CI/CD a risk-control and evidence path rather than a YAML exercise.
 - Next content boundary: **D4.3 — GitHub Actions**.
 
+
+Merged PR #67:
+- D4.3 -> `github-actions-execution-v1`: Workflow -> Job -> Runner -> Steps -> Artifact.
+- Merge commit: `0376a9fa4406f6afb9d8baed1184c09c6bb0a2d2`.
+- GitHub Actions run **36151547242** passed successfully.
+- D4.3 now treats jobs as execution boundaries, runner state as part of evidence, logs as the primary failure evidence, cache and artifact as different concepts, and secrets as a protected boundary.
+- Controlled failure makes one step fail, diagnoses it from step logs, restores it, and proves workflow recovery.
+- Next content boundary: **D4.4 — Infrastructure as Code**.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
