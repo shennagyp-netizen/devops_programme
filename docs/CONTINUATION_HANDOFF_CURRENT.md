@@ -1873,5 +1873,14 @@ Merged PR #41:
 - Completed gold-standard sequence: B1.1, B1.2, B1.3, B1.4, B1.5, B2.1, B2.2, B2.3, B3.1, B3.2.
 - Next content boundary: **Intermediate D1.1 — first lesson of I-F1 Linux and Operating Systems**.
 
+
+Active PR #42 scope:
+- D1.1 (Intermediate Linux + Operating Systems) is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `linux-operating-model-v1`.
+- Teaching model: Application -> Process -> Kernel -> Resources -> Evidence.
+- The deeper script adds explicit process state, file descriptors, signals, execution context, evidence correlation and a safe disposable-process lab.
+- This is intentionally more systems-oriented than Beginner while preserving the same prediction -> operation -> failure -> evidence -> proof rhythm.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================

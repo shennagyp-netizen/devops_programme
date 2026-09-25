@@ -16,7 +16,8 @@ export type LessonIllustrationVariantV1 =
   | "backup-recovery-v1"
   | "queue-state-v1"
   | "incident-loop-v1"
-  | "process-diagnosis-v1";
+  | "process-diagnosis-v1"
+  | "linux-operating-model-v1";
 
 export type LessonContentBlock =
   | {
@@ -69,6 +70,30 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D1.1": {
+    version: 1,
+    blocks: [
+      {
+        id: "d1-1-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Linux operations become easier when you can explain the path from application work to process state, kernel-managed resources and the evidence exposed by the system."
+      },
+      {
+        id: "d1-1-linux-model",
+        type: "illustration",
+        heading: "The Linux operating model",
+        alt: "Application work runs as processes that request kernel-managed CPU, memory, files and network resources, which operators inspect as evidence",
+        bindingId: "D1.1:d1-1-linux-model",
+        nodes: ["Application", "Process", "Kernel", "Resources", "Evidence"],
+        variant: "linux-operating-model-v1",
+        caption:
+          "Trace the behavior from application work to the process and resources the kernel manages."
+      }
+    ]
+  },
+
   "B1.1": {
     version: 1,
     blocks: [
@@ -392,7 +417,8 @@ export function validateLessonContent(
         block.variant !== "backup-recovery-v1" &&
         block.variant !== "queue-state-v1" &&
         block.variant !== "incident-loop-v1" &&
-        block.variant !== "process-diagnosis-v1"
+        block.variant !== "process-diagnosis-v1" &&
+        block.variant !== "linux-operating-model-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }

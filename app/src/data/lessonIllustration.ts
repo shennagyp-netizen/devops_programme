@@ -11,7 +11,8 @@ export type LessonIllustrationVariantV1 =
   | "backup-recovery-v1"
   | "queue-state-v1"
   | "incident-loop-v1"
-  | "process-diagnosis-v1";
+  | "process-diagnosis-v1"
+  | "linux-operating-model-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -350,6 +351,36 @@ const PROCESS_DIAGNOSIS_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const LINUX_OPERATING_MODEL_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "linux-operating-model-v1",
+  title: "The Linux operating model",
+  stages: [
+    { id: "application", label: "Application", detail: "User-facing behavior becomes work that the operating system must execute." },
+    { id: "process", label: "Process", detail: "The application runs as one or more processes with identity and execution state." },
+    { id: "kernel", label: "Kernel", detail: "The kernel mediates process access to CPU time, memory, files, signals and networking." },
+    { id: "resources", label: "Resources", detail: "Processes consume, wait on and communicate through concrete system resources." },
+    { id: "evidence", label: "Evidence", detail: "Operators inspect process state, descriptors, logs and signals to understand what the machine is doing." }
+  ],
+  foundation: {
+    label: "The kernel mediates access to shared resources",
+    detail: "Applications do not directly own the machine's CPU, memory or devices; processes ask the kernel to provide controlled access."
+  },
+  callouts: [
+    { id: "process-state", label: "Process state", detail: "Running, waiting, stopped and exited states change which evidence is useful next." },
+    { id: "file-descriptors", label: "File descriptors", detail: "Processes use handles to work with files, sockets, pipes and standard input/output/error." },
+    { id: "signals", label: "Signals", detail: "Signals provide a process-control mechanism; the resulting behavior depends on how the process handles them." },
+    { id: "observability", label: "Inspection is evidence", detail: "ps, lsof, logs and similar tools expose different parts of the process and execution model." }
+  ],
+  failureChecks: [
+    { id: "process-identity", label: "1. Process identity", detail: "Which process actually owns the behavior you are investigating?" },
+    { id: "kernel-resource", label: "2. Kernel resource", detail: "Which CPU, memory, file or network resource is the process using or waiting on?" },
+    { id: "execution-context", label: "3. Execution context", detail: "Which user, environment, working directory and parent/supervisor shape the process behavior?" },
+    { id: "evidence-sequence", label: "4. Evidence sequence", detail: "Choose observations in an order that narrows the remaining hypotheses instead of collecting everything." }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -445,6 +476,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "linux-operating-model-v1") {
+    return {
+      ...LINUX_OPERATING_MODEL_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -470,7 +508,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "backup-recovery-v1" &&
     model.variant !== "queue-state-v1" &&
     model.variant !== "incident-loop-v1" &&
-    model.variant !== "process-diagnosis-v1"
+    model.variant !== "process-diagnosis-v1" &&
+    model.variant !== "linux-operating-model-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
