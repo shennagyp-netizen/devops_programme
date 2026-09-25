@@ -28,7 +28,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-reconciliation-v1"
   | "kubernetes-service-path-v1"
   | "kubernetes-config-storage-v1"
-  | "kubernetes-health-scaling-v1";
+  | "kubernetes-health-scaling-v1"
+  | "kubernetes-failure-loop-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -877,6 +878,36 @@ const KUBERNETES_HEALTH_SCALING_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const KUBERNETES_FAILURE_LOOP_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "kubernetes-failure-loop-v1",
+  title: "The Kubernetes failure loop",
+  stages: [
+    { id: "baseline", label: "Baseline", detail: "Prove the workload and real user path are healthy before introducing a fault." },
+    { id: "fault", label: "Fault", detail: "Change one controlled boundary so the resulting evidence remains interpretable." },
+    { id: "symptom", label: "Symptom", detail: "Record the exact Kubernetes state or user-visible behavior produced by the fault." },
+    { id: "evidence", label: "Evidence", detail: "Inspect the smallest useful sequence: description, events, logs, termination state and relevant dependencies." },
+    { id: "recovery", label: "Recovery", detail: "Repair one boundary and prove the original user path and stable workload state return." }
+  ],
+  foundation: {
+    label: "One controlled change keeps the evidence interpretable",
+    detail: "Failure drills are useful only when the baseline is known, the changed boundary is isolated and recovery is proven against the original behavior."
+  ],
+  callouts: [
+    { id: "crash-loop", label: "CrashLoopBackOff", detail: "Repeated container restarts with increasing backoff; the status identifies behavior, not root cause." },
+    { id: "image-pull", label: "ImagePullBackOff", detail: "The workload cannot successfully obtain or prepare the referenced image; inspect image reference, registry access, credentials and events." },
+    { id: "oom", label: "OOMKilled", detail: "The process was killed under memory pressure; inspect requests, limits, actual usage and application memory behavior." },
+    { id: "readiness", label: "Readiness failure", detail: "The workload is excluded from normal traffic; it does not by itself mean the process should restart." }
+  ],
+  failureChecks: [
+    { id: "baseline-proof", label: "1. Baseline proof", detail: "Can you prove the known-good workload and real user path before the fault?" },
+    { id: "fault-boundary", label: "2. Fault boundary", detail: "What single configuration, selector, image, probe or resource boundary changed?" },
+    { id: "evidence-sequence", label: "3. Evidence sequence", detail: "Which status, events, logs and workload evidence best separates the likely causes?" },
+    { id: "recovery-proof", label: "4. Recovery proof", detail: "After one repair, does the original workload state and user path return and remain stable?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1091,6 +1122,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "kubernetes-failure-loop-v1") {
+    return {
+      ...KUBERNETES_FAILURE_LOOP_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1133,7 +1171,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "kubernetes-reconciliation-v1" &&
     model.variant !== "kubernetes-service-path-v1" &&
     model.variant !== "kubernetes-config-storage-v1" &&
-    model.variant !== "kubernetes-health-scaling-v1"
+    model.variant !== "kubernetes-health-scaling-v1" &&
+    model.variant !== "kubernetes-failure-loop-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
