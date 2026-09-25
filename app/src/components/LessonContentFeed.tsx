@@ -72,7 +72,9 @@ export function LessonContentFeed({ blocks }: LessonContentFeedProps) {
                 ? "Video"
                 : block.type === "illustration"
                   ? "Visual"
-                  : "Read"}
+                  : block.type === "interactive-illustration"
+                    ? "Interactive visual"
+                    : "Read"}
             </button>
           ))}
         </nav>
@@ -107,6 +109,26 @@ export function LessonContentFeed({ blocks }: LessonContentFeedProps) {
                     </div>
                   ))}
                 </div>
+                {block.caption ? <p className="range">{block.caption}</p> : null}
+              </div>
+            ) : null}
+
+            {block.type === "interactive-illustration" ? (
+              <div
+                className="lesson-visual-card lesson-interactive-visual-card"
+                role="group"
+                aria-label={block.alt}
+                data-illustration-binding={block.bindingId}
+              >
+                <div className="lesson-visual-head">
+                  <span className="eyebrow">INTERACTIVE VISUAL</span>
+                  <h4>{block.heading}</h4>
+                </div>
+                <p className="lesson-content-copy">
+                  This visual is controlled by the lesson curriculum. Its
+                  learner actions and completion rules come from the bound
+                  illustration contract.
+                </p>
                 {block.caption ? <p className="range">{block.caption}</p> : null}
               </div>
             ) : null}
