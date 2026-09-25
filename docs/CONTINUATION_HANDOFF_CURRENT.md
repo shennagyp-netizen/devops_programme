@@ -1873,5 +1873,14 @@ Merged PR #40:
 - The Beginner course's 10 lessons are now all represented in the completed course: B1.1 remains the foundational lesson to upgrade next against the same visual/script standard.
 - Next content boundary: **B1.1 — The App Is Slow — Where Do We Look?**.
 
+
+Active PR #41 scope:
+- B1.1 is the final remaining Beginner lesson being upgraded to the script+illustration gold-standard.
+- New semantic illustration: `process-diagnosis-v1`.
+- Teaching model: Symptom -> Process -> Resource -> Dependency -> Proof.
+- The rewritten script makes low/high CPU explicitly non-diagnostic, teaches process identity/state, uses ps/lsof as evidence tools, includes a safe local failure/recovery, and ends with a proof-oriented incident challenge.
+- After PR #41 merges, all 10 Beginner lessons will share the gold-standard script+illustration contract.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
