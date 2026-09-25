@@ -11,10 +11,13 @@ const files = {
   contract: "../app/src/lib/progress-contract.ts",
   app: "../app/src/App.tsx",
   page: "../app/src/app/page.tsx",
+  learnPage: "../app/src/app/learn/page.tsx",
+  learnLayout: "../app/src/app/learn/layout.tsx",
   layout: "../app/src/app/layout.tsx",
   proxy: "../app/src/proxy.ts",
   signIn: "../app/src/app/sign-in/[[...sign-in]]/page.tsx",
   signUp: "../app/src/app/sign-up/[[...sign-up]]/page.tsx",
+  boundaryTest: "../app/tests/integration/public-learning-boundary.integration.test.mjs",
   gitignore: "../.gitignore"
 };
 
@@ -88,15 +91,30 @@ assert.match(content.app, /completeLearningItemAction/);
 assert.match(content.app, /UserButton/);
 assert.doesNotMatch(content.app, /getLearnerId|listCompletionHistory|\/api\/progress/);
 
-assert.match(content.page, /await auth\(\)/);
-assert.match(content.page, /listCompletionHistoryForUser/);
-assert.match(content.page, /redirect\("\/sign-in"\)/);
+assert.doesNotMatch(content.page, /await auth\(\)/);
+assert.match(content.page, /href="\/learn"/);
+assert.match(content.page, /DevOps/);
+
+assert.match(content.learnPage, /await auth\(\)/);
+assert.match(content.learnPage, /listCompletionHistoryForUser/);
+assert.match(content.learnPage, /redirect\("\/sign-in"\)/);
 
 assert.match(content.layout, /<body>/);
-assert.match(content.layout, /<ClerkProvider>/);
-assert.ok(content.layout.indexOf("<body>") < content.layout.indexOf("<ClerkProvider>"));
+assert.doesNotMatch(content.layout, /ClerkProvider/);
+
+assert.match(content.learnLayout, /<ClerkProvider>/);
 
 assert.match(content.proxy, /clerkMiddleware/);
+assert.match(content.proxy, /"\/learn\(\.\.\.\)"/);
+assert.match(content.proxy, /"\/sign-in\(\.\.\.\)"/);
+assert.match(content.proxy, /"\/sign-up\(\.\.\.\)"/);
+assert.doesNotMatch(content.proxy, /\/\(\(\?!_next/);
+
+assert.match(content.signIn, /<ClerkProvider>/);
+assert.match(content.signUp, /<ClerkProvider>/);
+assert.match(content.signIn, /fallbackRedirectUrl="\/learn"/);
+assert.match(content.signUp, /fallbackRedirectUrl="\/learn"/);
+assert.match(content.boundaryTest, /public marketing site and authenticated learner gateway boundary/);
 assert.match(content.signIn, /<SignIn/);
 assert.match(content.signUp, /<SignUp/);
 
