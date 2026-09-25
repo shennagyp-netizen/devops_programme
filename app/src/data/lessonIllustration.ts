@@ -38,7 +38,8 @@ export type LessonIllustrationVariantV1 =
   | "cloud-primitives-v1"
   | "scaling-control-loop-v1"
   | "database-scale-v1"
-  | "distributed-failure-v1";
+  | "distributed-failure-v1"
+  | "reliability-control-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -1185,6 +1186,37 @@ const DISTRIBUTED_FAILURE_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const RELIABILITY_CONTROL_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "reliability-control-v1",
+  title: "The reliability control path",
+  stages: [
+    { id: "failure", label: "Failure", detail: "A dependency becomes slow, unavailable or unreliable." },
+    { id: "timeout", label: "Timeout", detail: "The caller stops waiting after a bounded deadline instead of holding resources forever." },
+    { id: "retry-policy", label: "Retry Policy", detail: "Retries have an attempt budget, backoff and jitter so recovery work does not synchronize into a storm." },
+    { id: "load-control", label: "Load Control", detail: "Circuit breakers and backpressure reduce work sent to a dependency that cannot currently handle it." },
+    { id: "idempotent-outcome", label: "Idempotent Outcome", detail: "Repeated delivery is safe only when the operation's correctness model makes duplicates harmless or detectable." },
+    { id: "recovery", label: "Recovery", detail: "The dependency recovers and the system returns to the known-good user path without retry amplification." }
+  ],
+  foundation: {
+    label: "Every recovery mechanism changes load and correctness",
+    detail: "A retry creates more work, a timeout releases waiting resources, a circuit breaker stops calls, and idempotency controls duplicate side effects."
+  },
+  callouts: [
+    { id: "timeout", label: "Timeout", detail: "Bound waiting so one slow dependency cannot hold resources indefinitely." },
+    { id: "backoff-jitter", label: "Backoff + jitter", detail: "Spread retries over time and avoid many callers retrying at the same instant." },
+    { id: "circuit-breaker", label: "Circuit breaker", detail: "Temporarily stop calls to a failing dependency so the caller and dependency have room to recover." },
+    { id: "backpressure", label: "Backpressure", detail: "Limit incoming work so an overloaded service does not accept more work than it can process safely." }
+  ],
+  failureChecks: [
+    { id: "attempt-budget", label: "1. Attempt budget", detail: "How many attempts can one logical operation create, and what happens after the budget is exhausted?" },
+    { id: "retry-amplification", label: "2. Retry amplification", detail: "How much extra traffic does the retry policy create during a widespread failure?" },
+    { id: "duplicate-safety", label: "3. Duplicate safety", detail: "Can repeated delivery create a second charge, order or other incorrect side effect?" },
+    { id: "overload-protection", label: "4. Overload protection", detail: "Do circuit breaking and backpressure reduce load while the dependency is unhealthy?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1469,6 +1501,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "reliability-control-v1") {
+    return {
+      ...RELIABILITY_CONTROL_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1521,7 +1560,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "cloud-primitives-v1" &&
     model.variant !== "scaling-control-loop-v1" &&
     model.variant !== "database-scale-v1" &&
-    model.variant !== "distributed-failure-v1"
+    model.variant !== "distributed-failure-v1" &&
+    model.variant !== "reliability-control-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }

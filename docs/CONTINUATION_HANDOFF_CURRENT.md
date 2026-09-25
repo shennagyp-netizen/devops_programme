@@ -2053,5 +2053,14 @@ Active PR #57 scope:
 - The lab records what each service knows at each step before and after a controlled delay or lost response.
 - TDD/full-programme gate is required before merge.
 
+
+Active PR #58 scope:
+- D5.4 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `reliability-control-v1`.
+- Teaching model: Failure -> Timeout -> Retry Policy -> Load Control -> Idempotent Outcome -> Recovery.
+- The rewritten script teaches timeout bounds, retry amplification, exponential backoff, jitter, circuit breakers, backpressure and idempotent side effects as one control system.
+- The lab measures retry traffic, dependency load, circuit state and duplicate side effects rather than merely demonstrating APIs.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
