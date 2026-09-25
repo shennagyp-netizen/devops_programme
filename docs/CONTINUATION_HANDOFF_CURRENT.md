@@ -1855,5 +1855,14 @@ Merged PR #36:
 - Red-team caught the same authored-stream fallback risk before the final green revision; the B2.1 lesson registry was corrected rather than weakening the test.
 - Next content boundary: B2.2 — When "Everything Is Slow" Is Not Enough.
 
+
+Active PR #37 scope:
+- B2.2 is upgraded to the same script+illustration quality standard.
+- New semantic illustration: `observability-diagnosis-v1`.
+- Teaching model: Symptom -> Scope -> Service -> Dependency -> Proof.
+- Signal roles are explicit: metrics, logs, health checks and traces answer different questions.
+- The rewritten script deliberately separates correlation from proof and includes misleading-signal red-team cases.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
