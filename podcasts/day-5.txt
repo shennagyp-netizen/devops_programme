@@ -340,53 +340,180 @@ Speaker B: Run the lab, find the first bottleneck, move it once, and measure wha
 
 EPISODE D5.2 — Databases at Scale
 
-Speaker A: Databases become interesting when data volume, concurrency, availability, and geography grow.
-
-Speaker B: Transaction, index, MVCC, replication, partitioning, sharding.
-
-Speaker A: These are solutions to different problems, not a menu you order blindly.
-
-Speaker A: Think of a warehouse. An index is like a location system that lets workers find an item without searching every shelf. Replication is another stocked location. Partitioning divides inventory into manageable regions.
-
-Speaker A: Real-life example: a global retailer may keep data close to its customers while accepting certain consistency trade-offs for some workloads.
-
-Speaker A: Lab: identify a query bottleneck, inspect an index, and reason about what changes when the dataset is much larger.
-Speaker B: Databases are where “just scale it” goes to become complicated.
-
-Speaker A: Because correctness matters at the same time as capacity.
-
-Speaker B: Transactions, MVCC, replication, partitioning, sharding.
-
-Speaker A: Start with the invariant: your application needs a consistent way to read and change data according to its business rules.
-
-Speaker B: And replication gives more copies, but those copies can introduce lag and consistency choices.
-
-Speaker A: Correct.
-
-Speaker B: Real-life analogy?
-
-Speaker A: A warehouse keeps inventory records. If three branches each keep a copy, the copies are useful for local work, but now you have a synchronization problem. Two branches can believe they sold the last item.
-
-Speaker B: So more copies can create a coordination problem.
-
+Speaker A: Database scaling is where a simple sentence becomes dangerous.
+Speaker B: Just scale the database.
+Speaker A: Exactly. Scale what?
+Speaker B: Reads? Writes? Storage? Connections? Geographic access?
+Speaker A: Good. The visual today is:
+Speaker B: Workload -> Query -> Index -> Copies -> Partitions -> Evidence.
+Speaker A: And underneath it is one rule.
+Speaker B: Scaling changes capacity and correctness boundaries together.
 Speaker A: Exactly.
-
-Speaker B: Prediction. A replica is healthy but slightly behind. Can it always answer a read that requires the newest write?
-
-Speaker A: Not necessarily. You need to understand the consistency rules of that system.
-
-Speaker B: And sharding changes the question.
-
-Speaker A: Right. Now data ownership is distributed across partitions. Queries that span partitions can become more expensive or operationally complicated.
-
-Speaker B: Mac exercise?
-
-Speaker A: Draw one logical database, then add a read replica, then partition it. For each step, write what gets faster, what gets harder, and what new failure mode appears.
-
-Speaker B: So every scaling mechanism buys something and creates another responsibility.
-
-Speaker A: That's the mature way to think about it.
-
+Speaker B: Start with the workload.
+Speaker A: A database is serving some user operation.
+Speaker B: Place an order. Read an account. Search products.
+Speaker A: Each has a different access pattern and correctness requirement.
+Speaker B: So database design starts with application behavior, not the database product menu.
+Speaker A: Good.
+Speaker B: Prediction.
+Speaker A: The application is slow because a query scans a very large table. We add a read replica. Did we fix the original bottleneck?
+Speaker B: Not necessarily. If the query itself is expensive, adding another copy may simply give us more places to run the same expensive work.
+Speaker A: Exactly.
+Speaker B: So stage two is query.
+Speaker A: Before changing architecture, inspect what the application actually asks the database to do.
+Speaker B: Which rows?
+Speaker A: Which filters?
+Speaker B: Which joins?
+Speaker A: Which sort?
+Speaker B: How often?
+Speaker A: And how much data?
+Speaker B: That is query shape.
+Speaker A: Exactly.
+Speaker B: Stage three: index.
+Speaker A: An index is a structure that can make a useful access pattern much cheaper.
+Speaker B: Like a location system in a warehouse.
+Speaker A: Good. But every index has a cost.
+Speaker B: Storage.
+Speaker A: Yes.
+Speaker B: Write maintenance.
+Speaker A: Yes.
+Speaker B: More things for the database to keep current.
+Speaker A: Exactly.
+Speaker B: Prediction.
+Speaker A: We add an index for a very selective customer lookup. Should every write become faster too?
+Speaker B: No. The index helps the read pattern, but writes can become more expensive because the index also has to be maintained.
+Speaker A: Good.
+Speaker B: So an index is a trade-off, not free speed.
+Speaker A: Exactly.
+Speaker B: What is the evidence?
+Speaker A: Compare the query plan and latency before and after the index, using the same representative workload.
+Speaker B: So the index is justified by measured behavior.
+Speaker A: Yes.
+Speaker B: Stage four: copies.
+Speaker A: Replication creates additional database copies for availability, read capacity or other architectural goals.
+Speaker B: But the copies can lag.
+Speaker A: Exactly.
+Speaker B: Which creates a correctness question.
+Speaker A: Right. Ask whether the user needs the newest value or an eventually consistent value is acceptable.
+Speaker B: Prediction.
+Speaker A: The primary just accepted an order. A replica is healthy but two seconds behind. Can we always read the new order from that replica?
+Speaker B: No. The replica may not have applied the write yet.
+Speaker A: Good.
+Speaker B: So healthy replica and up-to-date replica are different claims.
+Speaker A: Exactly.
+Speaker B: Evidence?
+Speaker A: Measure replication lag and compare it with the application's consistency requirement.
+Speaker B: That is much stronger than saying replication is healthy.
+Speaker A: Yes.
+Speaker B: Stage five: partitions.
+Speaker A: When data gets too large or traffic grows, we may distribute it across partitions or shards.
+Speaker B: Now the system has to decide where each item belongs.
+Speaker A: Exactly.
+Speaker B: Partition key.
+Speaker A: One of the most important decisions.
+Speaker B: A good key spreads load and keeps common operations local.
+Speaker A: Right.
+Speaker B: A bad key can create a hot partition.
+Speaker A: Exactly.
+Speaker B: Prediction.
+Speaker A: We partition orders by customer ID, but one customer generates most of the traffic. What can happen?
+Speaker B: One partition can become hot while other partitions stay lightly loaded.
+Speaker A: Good.
+Speaker B: So adding more partitions does not automatically solve the imbalance.
+Speaker A: Exactly.
+Speaker B: Evidence?
+Speaker A: Measure per-partition traffic, storage size, latency and throttling rather than looking only at cluster totals.
+Speaker B: Another problem.
+Speaker A: Go on.
+Speaker B: A query needs data from many partitions.
+Speaker A: Then?
+Speaker B: Coordination and data movement can become expensive. The original scaling benefit can be weakened by cross-partition work.
+Speaker A: Exactly.
+Speaker B: So partitioning changes the application access pattern.
+Speaker A: Very often.
+Speaker B: Now transactions and MVCC.
+Speaker A: Transactions help preserve business invariants while multiple operations interact.
+Speaker B: MVCC can let readers and writers work with different versions of data without every read blocking every write.
+Speaker A: Correct. The exact implementation depends on the database.
+Speaker B: So when we scale, we cannot throw correctness away.
+Speaker A: Exactly.
+Speaker B: Human example?
+Speaker A: A warehouse with three branches.
+Speaker B: Each branch keeps a stock copy.
+Speaker A: Useful.
+Speaker B: But now two branches can both believe they sold the last item.
+Speaker A: Exactly. More copies created a coordination problem.
+Speaker B: So capacity increased while consistency became harder.
+Speaker A: That is the lesson.
+Speaker B: Let's build the failure matrix.
+Speaker A: Slow selective read.
+Speaker B: Inspect query shape and query plan before adding replicas.
+Speaker A: Replica answer is stale.
+Speaker B: Inspect replication lag and the application's consistency requirement.
+Speaker A: One partition is overloaded.
+Speaker B: Inspect partition-key distribution and per-partition traffic.
+Speaker A: Query spans many partitions.
+Speaker B: Inspect cross-partition work and whether the access pattern matches the partitioning strategy.
+Speaker A: Data becomes incorrect under concurrent writes.
+Speaker B: Inspect the transaction boundary, isolation behavior and application invariant.
+Speaker A: Good.
+Speaker B: Notice how each failure points to a different boundary.
+Speaker A: Exactly.
+Speaker B: Controlled lab?
+Speaker A: Start with a small database and one representative query.
+Speaker B: Record baseline latency and query plan.
+Speaker A: Good.
+Speaker B: Add an index.
+Speaker A: Predict the change.
+Speaker B: Measure again.
+Speaker A: Good.
+Speaker B: Then simulate a stale replica or use a test setup that exposes replication lag.
+Speaker A: Good.
+Speaker B: Measure the lag before deciding whether the replica can answer a freshness-sensitive request.
+Speaker A: Good.
+Speaker B: Then model one partitioning strategy.
+Speaker A: Good.
+Speaker B: Deliberately choose a skewed partition key in a safe environment.
+Speaker A: Predict the hot partition.
+Speaker B: Measure the imbalance.
+Speaker A: Then change the design and prove the load becomes more balanced.
+Speaker B: That is much stronger than memorizing index, replica and shard.
+Speaker A: Exactly.
+Speaker B: Mac lab?
+Speaker A: Record the workload.
+Speaker B: Query shape.
+Speaker A: Baseline evidence.
+Speaker B: Scaling change.
+Speaker A: Before/after evidence.
+Speaker B: Correctness requirement.
+Speaker A: Recovery or redesign proof.
+Speaker B: So the experiment log becomes:
+Speaker B: Bottleneck.
+Speaker A: Hypothesis.
+Speaker B: Scaling mechanism.
+Speaker A: Capacity result.
+Speaker B: Correctness trade-off.
+Speaker A: Evidence.
+Speaker B: Exactly.
+Speaker A: Recall.
+Speaker B: What does an index solve?
+Speaker A: A useful access pattern can become cheaper, at the cost of storage and write maintenance.
+Speaker B: What does replication add?
+Speaker A: More copies and possible availability/read-capacity benefits, plus lag and consistency considerations.
+Speaker B: What does partitioning add?
+Speaker A: Distributed data and load, but also partition-key decisions and possible cross-partition coordination.
+Speaker B: Why is a hot partition dangerous?
+Speaker A: One partition can become the bottleneck while overall cluster capacity looks healthy.
+Speaker B: What is the final evidence?
+Speaker A: Measured workload behavior plus explicit proof that the scaling change preserved the required correctness semantics.
+Speaker B: Final challenge.
+Speaker A: A database is slow.
+Speaker B: My method?
+Speaker A: Start with the workload and query shape. Prove the bottleneck. Choose the smallest scaling mechanism that addresses it. Measure the capacity result. Then measure the new correctness or coordination boundary.
+Speaker B: So database scaling is not 'make the database bigger.'
+Speaker A: Exactly.
+Speaker B: It is choosing which bottleneck to move, what new trade-off to accept, and what evidence proves the system is still correct.
+Speaker A: Run the lab and bring back the measurements.
 
 EPISODE D5.3 — Distributed Systems
 

@@ -970,6 +970,37 @@ const CLOUD_PRIMITIVES_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const DATABASE_SCALING_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "database-scaling-v1",
+  title: "The database scaling trade-off map",
+  stages: [
+    { id: "workload", label: "Workload", detail: "Start from the user operation and its correctness and latency requirements." },
+    { id: "query", label: "Query", detail: "Inspect access patterns before choosing a scaling mechanism." },
+    { id: "index", label: "Index", detail: "Use indexes to reduce work for supported access patterns, while accepting write and storage costs." },
+    { id: "copies", label: "Copies", detail: "Replication adds read capacity or availability options but introduces lag and consistency choices." },
+    { id: "partitions", label: "Partitions", detail: "Partitioning and sharding distribute data, but make placement and cross-partition operations more complex." },
+    { id: "evidence", label: "Evidence", detail: "Measure latency, query plans, replica lag, partition balance and correctness behavior before and after the change." }
+  ],
+  foundation: {
+    label: "Database scaling changes capacity and correctness boundaries together",
+    detail: "Scaling mechanisms solve different bottlenecks. Each one changes the operational and correctness model as well as capacity."
+  },
+  callouts: [
+    { id: "transactions", label: "Transactions + MVCC", detail: "Transactions preserve business invariants while MVCC allows readers and writers to coordinate without every read blocking every write." },
+    { id: "index", label: "Index", detail: "An index can make a selective read far cheaper, but it consumes storage and can add write maintenance cost." },
+    { id: "replication", label: "Replication", detail: "A replica can be healthy while still being behind the primary, creating a consistency choice for reads." },
+    { id: "partition-key", label: "Partition key", detail: "A good partition key spreads load and keeps common access paths local; a bad key can create a hot partition or expensive cross-partition work." }
+  ],
+  failureChecks: [
+    { id: "query-shape", label: "1. Query shape", detail: "What rows does the application actually ask for, and does the current plan scale with the data size?" },
+    { id: "stale-read", label: "2. Stale read", detail: "Can a replica answer the request with older data than the application's consistency requirement allows?" },
+    { id: "hot-partition", label: "3. Hot partition", detail: "Is one partition receiving a disproportionate share of traffic or data?" },
+    { id: "cross-partition", label: "4. Cross-partition work", detail: "Does the access pattern require coordination across multiple partitions that defeats the intended scaling benefit?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1205,6 +1236,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "database-scaling-v1") {
+    return {
+      ...DATABASE_SCALING_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1246,6 +1284,7 @@ export function validateLessonIllustrationModel(
     model.variant !== "kubernetes-reconciliation-v1" &&
     model.variant !== "docker-failure-loop-v1" &&
     model.variant !== "cloud-primitives-v1" &&
+    model.variant !== "database-scaling-v1" &&
     model.variant !== "kubernetes-service-path-v1" &&
     model.variant !== "kubernetes-config-storage-v1" &&
     model.variant !== "kubernetes-health-scaling-v1" &&

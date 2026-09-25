@@ -465,6 +465,41 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models database scaling as workload, query, index, copies, partitions and evidence", () => {
+    const model = getLessonIllustrationModel({
+      id: "d5-2-database-scale",
+      type: "illustration",
+      heading: "The database scaling trade-off map",
+      alt: "A database workload is analyzed through query shape, indexing, replication, partitioning and evidence about consistency and bottlenecks",
+      bindingId: "D5.2:d5-2-database-scale",
+      nodes: ["Workload", "Query", "Index", "Copies", "Partitions", "Evidence"],
+      variant: "database-scaling-v1"
+    });
+
+    expect(model.variant).toBe("database-scaling-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "workload",
+      "query",
+      "index",
+      "copies",
+      "partitions",
+      "evidence"
+    ]);
+    expect(model.foundation.label).toBe("Database scaling changes capacity and correctness boundaries together");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "transactions",
+      "index",
+      "replication",
+      "partition-key"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "query-shape",
+      "stale-read",
+      "hot-partition",
+      "cross-partition"
+    ]);
+  });
+
   it("models cloud primitives as workload, compute, network, state, identity and data services", () => {
     const model = getLessonIllustrationModel({
       id: "d4-6-cloud-primitives",
