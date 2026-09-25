@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored Git production workflow visual for D4.1", () => {
+    const lesson = allLessons.find((item) => item.id === "D4.1");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d4-1-git-production-workflow",
+      bindingId: "D4.1:d4-1-git-production-workflow",
+      variant: "git-production-workflow-v1"
+    });
+  });
+
   it("uses the authored Kubernetes failure-loop visual for D3.5", () => {
     const lesson = allLessons.find((item) => item.id === "D3.5");
     expect(lesson).toBeDefined();

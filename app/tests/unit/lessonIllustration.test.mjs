@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models Git production workflow as change, review, commit, release and recovery", () => {
+    const model = getLessonIllustrationModel({
+      id: "d4-1-git-production-workflow",
+      type: "illustration",
+      heading: "The production Git workflow",
+      alt: "A code change moves through review, commit, release identity, deployment evidence and rollback recovery",
+      bindingId: "D4.1:d4-1-git-production-workflow",
+      nodes: ["Change", "Review", "Commit", "Release", "Recovery"],
+      variant: "git-production-workflow-v1"
+    });
+
+    expect(model.variant).toBe("git-production-workflow-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "change",
+      "review",
+      "commit",
+      "release",
+      "recovery"
+    ]);
+    expect(model.foundation.label).toBe("Git history becomes operational evidence");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "branch",
+      "commit",
+      "release-tag",
+      "revert"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "change-trace",
+      "reviewed-change",
+      "release-identity",
+      "rollback-path"
+    ]);
+  });
+
   it("models Kubernetes failure diagnosis as baseline, fault, symptom, evidence and recovery", () => {
     const model = getLessonIllustrationModel({
       id: "d3-5-kubernetes-failure",
