@@ -1881,15 +1881,18 @@ Merged PR #44:
 - D1.3 -> `service-permission-model-v1`: Process -> Identity -> Resource -> Service -> Logs.
 - Merge commit: `de0a4893f272640f2d02b54dd45ecc397acc6bf2`.
 - Final PR #44 gate passed **347 tests**, all programme contracts, TypeScript and the Next.js production build.
-- Red-team caught a duplicate D1.3 model/validator registration during development; the duplicate was removed without weakening the tests.
 
 Merged PR #45:
 - D1.4 -> `network-operating-model-v1`: Interface -> Link -> IP -> Route -> Evidence.
 - Merge commit: `7ffa6edd1fd266fa0d3b585e674ae885c709b81a`.
 - CI run 36106220995 passed.
-- D1.4 separates MAC, IP, ARP and routing roles and keeps DNS outside the local link/IP model.
-- The controlled lab isolates one disposable network boundary and proves recovery.
-- Next content boundary: **D1.5 — IP Addresses, Subnets and CIDR**.
+
+Merged PR #46:
+- D1.5 -> `cidr-boundary-v1`: Address -> Prefix -> Boundary -> Range -> Verify.
+- Merge commit: `1d427a9c24e6b24954857f43eaf34981b5e67ebb`.
+- CI run 36106580796 passed.
+- D1.5 treats CIDR as a network-boundary design decision and teaches manual block/range reasoning before tool verification.
+- Next content boundary: **D1.6 — Routing, Gateways and NAT**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
