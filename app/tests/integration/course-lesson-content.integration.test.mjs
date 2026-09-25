@@ -60,6 +60,32 @@ describe("course lesson content integration", () => {
       expect(lesson.content.blocks[1].type, lesson.id).toBe("illustration");
     }
   });
+  it("keeps B1.2 and B1.3 semantic visuals in their own lesson streams", () => {
+    const b12 = allLessons.find((item) => item.id === "B1.2");
+    const b13 = allLessons.find((item) => item.id === "B1.3");
+
+    expect(b12?.content.blocks.map((block) => block.id)).toEqual([
+      "b1-2-problem",
+      "b1-2-request-path"
+    ]);
+    expect(b12?.content.blocks[1]).toMatchObject({
+      variant: "request-path-v1",
+      bindingId: "B1.2:b1-2-request-path"
+    });
+
+    expect(b13?.content.blocks.map((block) => block.id)).toEqual([
+      "b1-3-problem",
+      "b1-3-request-stack"
+    ]);
+    expect(b13?.content.blocks[1]).toMatchObject({
+      variant: "https-stack-v1",
+      bindingId: "B1.3:request-stack"
+    });
+
+    expect(b12?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
+    expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
+  });
+
   it("uses the authored container-boundary visual for B1.4", () => {
     const lesson = allLessons.find((item) => item.id === "B1.4");
     expect(lesson).toBeDefined();
