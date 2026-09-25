@@ -1971,5 +1971,12 @@ Current merge gate blocker — PR #88 / D2.6:
 - D3.1 already has the same strong semantic script+illustration structure on main and is not being rewritten merely to create churn.
 - Content audit found 29 lessons with explicit authored semantic illustration variants currently registered in `lessonContent.ts`; further work should target real gaps after the D2.6 gate recovers.
 
+
+Gold-standard coverage audit — 2026-09-25:
+- Explicit semantic illustration variants currently cover **29 lessons** in `app/src/data/lessonContent.ts`.
+- Covered: B1/B2/B3, D1.1-D1.6, D2.1-D2.7, D3.1-D3.5 and D4.1.
+- Identified next visual/script quality gaps: **D4.2-D4.6 and D5.1-D5.8**.
+- These are now the next quality targets unless a higher-priority red-team finding appears.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
