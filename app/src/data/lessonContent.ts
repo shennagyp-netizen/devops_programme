@@ -25,7 +25,8 @@ export type LessonIllustrationVariantV1 =
   | "routing-boundary-v1"
   | "transport-contract-v1"
   | "dns-resolution-v1"
-  | "http-exchange-v1";
+  | "http-exchange-v1"
+  | "tls-trust-v1";
 
 export type LessonContentBlock =
   | {
@@ -78,6 +79,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D2.4": {
+    version: 1,
+    blocks: [
+      {
+        id: "d2-4-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "HTTPS combines HTTP with TLS. The client must establish a protected session and validate the server identity before it should trust the connection as intended."
+      },
+      {
+        id: "d2-4-tls",
+        type: "illustration",
+        heading: "The HTTPS trust path",
+        alt: "A client checks a server certificate, completes a TLS handshake, establishes a protected session and interprets trust evidence",
+        bindingId: "D2.4:d2-4-tls",
+        nodes: ["Client", "Certificate", "Handshake", "Secure Session", "Evidence"],
+        variant: "tls-trust-v1",
+        caption:
+          "Separate certificate identity, cryptographic handshake and application behavior."
+      }
+    ]
+  },
+
+
   "D2.3": {
     version: 1,
     blocks: [
@@ -630,6 +656,7 @@ export function validateLessonContent(
         block.variant !== "routing-boundary-v1" &&
         block.variant !== "dns-resolution-v1" &&
         block.variant !== "http-exchange-v1" &&
+        block.variant !== "tls-trust-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);

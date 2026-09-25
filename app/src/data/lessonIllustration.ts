@@ -20,7 +20,8 @@ export type LessonIllustrationVariantV1 =
   | "routing-boundary-v1"
   | "transport-contract-v1"
   | "dns-resolution-v1"
-  | "http-exchange-v1";
+  | "http-exchange-v1"
+  | "tls-trust-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -629,6 +630,36 @@ const HTTP_EXCHANGE_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const TLS_TRUST_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "tls-trust-v1",
+  title: "The HTTPS trust path",
+  stages: [
+    { id: "client", label: "Client", detail: "The client wants a protected connection to a specific hostname." },
+    { id: "certificate", label: "Certificate", detail: "The server presents a certificate chain that lets the client evaluate endpoint identity against its trust configuration." },
+    { id: "handshake", label: "Handshake", detail: "TLS negotiates cryptographic parameters and establishes the session keys used to protect application traffic." },
+    { id: "secure-session", label: "Secure session", detail: "HTTP then travels inside the protected TLS session after the handshake succeeds." },
+    { id: "evidence", label: "Evidence", detail: "Hostname match, validity dates, trust chain and handshake outcome tell the client what the session actually proves." }
+  ],
+  foundation: {
+    label: "Encryption and authentication are related but not identical",
+    detail: "TLS protects the channel and provides mechanisms for authenticating the peer; a valid encrypted session is not the same claim as business trust in the site."
+  },
+  callouts: [
+    { id: "certificate-chain", label: "Certificate chain", detail: "The client validates a chain of certificates against trusted roots and the presented identity." },
+    { id: "hostname", label: "Hostname", detail: "The certificate must identify the hostname the client intended to reach." },
+    { id: "private-key", label: "Private key", detail: "The server proves control of the private key associated with the certificate during the TLS exchange." },
+    { id: "trust", label: "Trust", detail: "The client's trust store and validation rules determine whether the certificate identity is accepted." }
+  ],
+  failureChecks: [
+    { id: "identity-match", label: "1. Identity match", detail: "Does the certificate identify the hostname the client requested?" },
+    { id: "certificate-validity", label: "2. Certificate validity", detail: "Are the certificate dates, chain and trust relationships acceptable to the client?" },
+    { id: "handshake", label: "3. Handshake", detail: "Can the client and server complete the TLS negotiation and establish a protected session?" },
+    { id: "application-proof", label: "4. Application proof", detail: "After TLS succeeds, does the real HTTPS application request behave as expected?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -787,6 +818,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "tls-trust-v1") {
+    return {
+      ...TLS_TRUST_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -821,7 +859,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "routing-boundary-v1" &&
     model.variant !== "transport-contract-v1" &&
     model.variant !== "dns-resolution-v1" &&
-    model.variant !== "http-exchange-v1"
+    model.variant !== "http-exchange-v1" &&
+    model.variant !== "tls-trust-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }

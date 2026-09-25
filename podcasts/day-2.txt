@@ -910,65 +910,257 @@ Speaker B: Run the lab, change one application behavior, predict the response, r
 
 EPISODE D2.4 — TLS and HTTPS
 
-Speaker A: HTTPS combines HTTP with TLS. TLS provides cryptographic protection and server identity mechanisms.
+Speaker A: We have HTTP. Now we need to protect that application conversation.
 
-Speaker B: Real-life analogy?
+Speaker B: TLS.
 
-Speaker A: Imagine speaking to a person through a secure room with an identity badge at the door. The badge helps establish who you are talking to; the room protects the conversation from casual listeners.
+Speaker A: Right. And HTTPS is HTTP carried inside a TLS-protected connection.
 
-Speaker A: Certificates, certificate authorities, public/private keys, and the handshake make that possible.
+Speaker B: The picture is:
 
-Speaker B: So encryption is not the same as authentication.
+Speaker A: Client -> Certificate -> Handshake -> Secure Session -> Evidence.
 
-Speaker A: Exactly. You can encrypt data without correctly authenticating the endpoint. Secure systems care about both.
+Speaker B: So the certificate is not the entire TLS story.
 
-Speaker A: Real-life example: entering banking credentials into a fake website with a convincing logo. TLS is not a magic guarantee that the business itself is trustworthy; certificate validation is part of authenticating the endpoint.
+Speaker A: Correct. It is one part of the endpoint identity check.
 
-Speaker A: Lab: inspect the certificate chain of a real HTTPS site with browser tools and command-line tools.
-Speaker B: TLS is one of those topics where people say “encryption” and stop.
+Speaker B: Make a prediction.
 
-Speaker A: And then they wonder why certificate warnings are so serious.
+Speaker A: The connection is encrypted, but the certificate hostname does not match the hostname the client requested. Should the client trust the endpoint as intended?
 
-Speaker B: So TLS has more than secrecy.
-
-Speaker A: Yes. It also establishes cryptographic parameters and provides mechanisms for authenticating the endpoint through certificates and the trust system around them.
-
-Speaker B: Public key, private key, certificate authority.
-
-Speaker A: Right. You don't need to become a cryptographer this week, but you do need the mental model. Your client needs confidence that it established the secure session with the intended endpoint, not just with some random machine willing to encrypt traffic.
-
-Speaker B: Real-life version?
-
-Speaker A: Imagine walking into a secure building. The locked door protects the conversation inside, but the badge at reception helps you establish who you're actually talking to.
-
-Speaker B: And a lock without identity could protect my conversation with the wrong person.
+Speaker B: No. Encryption alone does not prove I reached the intended server.
 
 Speaker A: Exactly.
 
-Speaker B: Prediction pause. The certificate is valid cryptographically, but the hostname doesn't match. What should you think?
+Speaker B: That is the first big idea.
 
-Speaker A: Don't think “close enough.” Think authentication failure. The certificate may be valid for a different identity.
+Speaker A: Encryption and authentication are related, but they are not the same claim.
 
-Speaker B: And if the certificate is expired?
+Speaker B: Stage one: client.
 
-Speaker A: Again, evidence that the trust conditions were not met.
+Speaker A: The client wants a protected connection to a specific hostname.
 
-Speaker B: Banking example?
+Speaker B: So the hostname matters before the handshake is complete.
 
-Speaker A: A fake site can look visually identical to the real one. TLS doesn't promise that every business behind a valid certificate is morally good. It helps authenticate the endpoint according to the certificate and trust model.
+Speaker A: Yes. The client needs to know who it intended to reach.
 
-Speaker B: That's a distinction people miss.
+Speaker B: Stage two: certificate.
 
-Speaker A: Constantly.
+Speaker A: The server presents a certificate chain.
+
+Speaker B: The client checks whether that certificate identifies the requested hostname and whether the chain is trusted.
+
+Speaker A: Exactly.
+
+Speaker B: Dates matter too.
+
+Speaker A: Yes. Validity dates are part of the certificate checks.
+
+Speaker B: And the chain leads to a trusted root.
+
+Speaker A: Correct.
+
+Speaker B: What is the private key doing?
+
+Speaker A: The server proves control of the private key associated with the certificate during the TLS exchange.
+
+Speaker B: So a certificate file alone is not enough.
+
+Speaker A: Correct.
+
+Speaker B: Prediction.
+
+Speaker A: A certificate is mathematically valid, but it is issued for `other.example.com` and the client requested `api.example.com`. What should happen?
+
+Speaker B: The identity check should fail.
+
+Speaker A: Exactly.
+
+Speaker B: Stage three: handshake.
+
+Speaker A: During the TLS handshake, client and server negotiate cryptographic parameters and establish the session keys used to protect application traffic.
+
+Speaker B: So the handshake creates the protected channel.
+
+Speaker A: Yes, while also carrying the peer-authentication process.
+
+Speaker B: The exact handshake details get deep.
+
+Speaker A: They do. At Beginner and early Intermediate level, the key model is enough: validate identity, negotiate the cryptographic session, then carry HTTP inside it.
+
+Speaker B: Stage four: secure session.
+
+Speaker A: Once the handshake succeeds, HTTP can travel through the protected TLS session.
+
+Speaker B: So a 404 now means something different from a certificate failure.
+
+Speaker A: Exactly.
+
+Speaker B: A 404 means TLS already got far enough for an HTTP response.
+
+Speaker A: Correct.
+
+Speaker B: A certificate hostname error means the client rejected the secure endpoint identity before normal HTTP behavior.
+
+Speaker A: Good.
+
+Speaker B: That is the same layer-separation habit again.
+
+Speaker A: Exactly.
+
+Speaker B: Stage five: evidence.
+
+Speaker A: The client can inspect certificate identity, issuer, validity dates and handshake outcome.
+
+Speaker B: And then the HTTP response gives another layer of evidence.
+
+Speaker A: Right.
+
+Speaker B: So I should not stop at the green padlock.
+
+Speaker A: No. Understand what the client actually verified.
+
+Speaker B: Real-life example?
+
+Speaker A: Imagine entering a secure building.
+
+Speaker B: Locked door first.
+
+Speaker A: The lock protects the room.
+
+Speaker B: And a badge helps establish who is allowed at the door.
+
+Speaker A: Exactly. A locked room does not help if you entered the wrong building.
+
+Speaker B: Nice.
+
+Speaker A: Now make the failure cases.
+
+Speaker B: Expired certificate.
+
+Speaker A: The certificate's validity period is no longer acceptable.
+
+Speaker B: Wrong hostname.
+
+Speaker A: The certificate identity does not match the destination name the client requested.
+
+Speaker B: Untrusted issuer.
+
+Speaker A: The client cannot establish the expected trust chain.
+
+Speaker B: Private-key problem.
+
+Speaker A: The server may be unable to prove control of the key needed for the certificate.
+
+Speaker B: Handshake failure.
+
+Speaker A: The TLS negotiation cannot complete.
+
+Speaker B: And HTTP 500 after TLS succeeds.
+
+Speaker A: That is now an application-layer failure, not a certificate failure.
+
+Speaker B: Prediction pause.
+
+Speaker A: `curl` reaches the server, validates TLS, and receives HTTP 401. Is the TLS connection broken?
+
+Speaker B: No. TLS worked well enough to establish the protected session. The application returned an authentication-related HTTP response.
+
+Speaker A: Exactly.
+
+Speaker B: Another prediction.
+
+Speaker A: The browser shows a certificate warning before any HTTP page appears. Should I spend time debugging the API route first?
+
+Speaker B: No. The failure is earlier in the HTTPS trust path.
+
+Speaker A: Good.
+
+Speaker B: Controlled experiment?
+
+Speaker A: Use a disposable local HTTPS service or a local test certificate you control.
+
+Speaker B: First run with a certificate whose hostname matches the test name.
+
+Speaker A: Good.
+
+Speaker B: Verify the HTTPS request works when the client trusts the test setup.
+
+Speaker A: Good.
+
+Speaker B: Then deliberately use a certificate with the wrong hostname or a deliberately untrusted test certificate.
+
+Speaker A: Good.
+
+Speaker B: Predict the trust failure before observing it.
+
+Speaker A: Exactly.
+
+Speaker B: Restore the known-good certificate and prove the HTTPS application request works again.
+
+Speaker A: Good.
+
+Speaker B: So the experiment is not about making TLS fail randomly.
+
+Speaker A: It is about connecting one certificate condition to one visible failure and one recovery path.
 
 Speaker B: Mac lab?
 
-Speaker A: Inspect a real HTTPS certificate chain in your browser, then use command-line tooling to inspect the same endpoint. Don't just admire the certificate. Identify the subject, issuer, dates, and hostname relationship.
+Speaker A: Inspect the certificate chain of a real HTTPS endpoint.
 
-Speaker B: So the exercise is learning what the browser is quietly doing for me.
+Speaker B: Identify subject or hostname information, issuer and validity dates.
 
-Speaker A: Exactly. Once you understand it, HTTPS stops being a green padlock and becomes a sequence of verifiable steps.
+Speaker A: Good.
 
+Speaker B: Then inspect the same endpoint with command-line tooling.
+
+Speaker A: Good.
+
+Speaker B: Finally use a disposable local HTTPS service to create one controlled certificate mismatch.
+
+Speaker A: Good.
+
+Speaker B: Record which check failed and what the client reported.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: What does TLS provide?
+
+Speaker B: A protected cryptographic session and mechanisms for authenticating the peer.
+
+Speaker A: Why is encryption not the same as authentication?
+
+Speaker B: Encrypted traffic can still be connected to the wrong endpoint. Authentication checks whether the endpoint identity matches the expected trust model.
+
+Speaker A: What does a certificate do?
+
+Speaker B: It carries identity and public-key information that the client validates through its trust rules and certificate chain.
+
+Speaker A: Why does hostname matching matter?
+
+Speaker B: Because the client needs evidence that the certificate identifies the hostname it intended to reach.
+
+Speaker A: What does an HTTP 401 after successful TLS tell you?
+
+Speaker B: The protected session worked and the application returned an authentication-related HTTP response.
+
+Speaker A: Final challenge.
+
+Speaker B: A user says the HTTPS site is broken.
+
+Speaker A: Your model?
+
+Speaker B: Client -> Certificate -> Handshake -> Secure Session -> Evidence. I determine whether the failure is certificate identity, certificate validity, handshake, or application behavior after TLS.
+
+Speaker A: Good.
+
+Speaker B: So HTTPS is not a green padlock.
+
+Speaker A: It is a sequence of checks and cryptographic operations that produce evidence about identity and a protected session.
+
+Speaker B: Run the lab, make one safe certificate failure, restore it, and explain exactly which check changed.
 
 EPISODE D2.5 — Why Containers Exist
 

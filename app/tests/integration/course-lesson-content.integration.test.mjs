@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored TLS trust visual for D2.4", () => {
+    const lesson = allLessons.find((item) => item.id === "D2.4");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d2-4-tls",
+      bindingId: "D2.4:d2-4-tls",
+      variant: "tls-trust-v1"
+    });
+  });
+
   it("uses the authored HTTP exchange visual for D2.3", () => {
     const lesson = allLessons.find((item) => item.id === "D2.3");
     expect(lesson).toBeDefined();
