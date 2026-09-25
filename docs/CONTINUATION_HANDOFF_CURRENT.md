@@ -1581,3 +1581,40 @@ END VERCEL VISUAL VALIDATION DEPLOYMENT BOUNDARY
 
 
 Vercel Root Directory has been corrected to `app`; this commit exists only to trigger a fresh main deployment for the visual audit.
+
+
+============================================================
+VERCEL VISUAL GATE — CURRENT STATUS — 2026-09-25
+============================================================
+
+Vercel authorization is now working for team `shennagyp-8842` and project `devops-programme`.
+
+Verified project state:
+- Framework: Next.js
+- Repository: `shennagyp-netizen/devops_programme`
+- Application directory: `app/`
+- Root-level `vercel.json` workaround was removed.
+- Vercel Project Root Directory has been changed to `app` by project configuration.
+
+Deployment history:
+- Root deployment before correction: READY but served 404 because Vercel built the repository root without Next.js.
+- Repository-level workaround deployment: failed because Vercel framework detection still operated at the wrong project root and could not detect the `next` dependency.
+- Fresh main deployment after the project Root Directory correction: `dpl_GRybEmz1XwaMTZiyF5rKdRN3LQuA`, source commit `4c4e421f6cce99db248df735f57be06514dd6e71`, currently queued while Vercel processes the deployment.
+
+Visual validation status:
+- Not yet validated.
+- The production aliases currently redirect through Vercel SSO when accessed through the server-side fetch path.
+- A Vercel temporary share mechanism is available and must be used against the actual deployment URL when deployment protection is enabled.
+- Do not claim browser/UI validation until a rendered page is actually inspected.
+
+Required next gate:
+1. Confirm `dpl_GRybEmz1XwaMTZiyF5rKdRN3LQuA` reaches READY.
+2. Obtain temporary deployment access for that exact deployment URL if SSO protection is still enabled.
+3. Inspect `/`, `/animations`, individual animation routes, authentication routes and the learner surface in a real browser.
+4. Record visual findings before further curriculum-animation implementation.
+
+This section supersedes stale statements elsewhere that describe Vercel project access as unavailable. Access is now available; the remaining boundary is deployment readiness/protection and actual browser rendering.
+
+============================================================
+END VERCEL VISUAL GATE — CURRENT STATUS
+============================================================
