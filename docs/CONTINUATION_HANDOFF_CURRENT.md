@@ -8,7 +8,7 @@
 
 **Latest main architecture/content merge:** PR #62, commit `049d6ddeb8b3f7ec41eef59d4a88292f288de0dc` (D3.5 Kubernetes failure-loop script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #66 has merged to `main`.
+**Active content-quality branch:** none. PR #67 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1951,9 +1951,14 @@ Merged PR #65:
 Merged PR #66:
 - D4.2 -> `cicd-control-path-v1`: Source -> Validate -> Artifact -> Promote -> Verify.
 - Merge commit: `dcc336d2362def4a804e021bf8b1b6af7d59dfcd`.
-- D4.2 treats CI/CD as a risk-control system rather than vendor YAML, and makes artifact identity, provenance, promotion controls and runtime verification explicit.
 - Final PR #66 gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
-- Next content boundary: **D4.3 — GitHub Actions**.
+
+Merged PR #67:
+- D4.3 -> `github-actions-execution-v1`: Workflow -> Job -> Runner -> Steps -> Artifact.
+- Merge commit: `0376a9fa4406f6afb9d8baed1184c09c6bb0a2d2`.
+- D4.3 now teaches GitHub Actions as the executable layer over the CI/CD control model, with explicit runner context, step logs, artifact identity, cache-vs-artifact behavior and secret boundaries.
+- Final PR #67 gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
+- Next content boundary: **D4.4 — Infrastructure as Code**.
 
 
 Active PR #66 scope:
@@ -1973,6 +1978,7 @@ Active PR #67 scope:
 - The rewritten script distinguishes jobs as execution boundaries, runner context, step-level logs, cache versus artifact, and secret-handling boundaries.
 - Controlled failure makes one step fail, diagnoses it from step logs, restores it, and proves workflow recovery; artifact transfer is then used to reinforce cross-job identity.
 - TDD/full-programme gate is required before merge.
+
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
