@@ -1512,7 +1512,7 @@ Speaker A: Example.
 
 Speaker B: The workload is what we are trying to operate.
 
-Speaker A: Good.
+Speaker A: Good. Evidence question: what user behavior proves this workload is the capability we are discussing?
 
 Speaker B: Stage two: compute.
 
@@ -1532,7 +1532,7 @@ Speaker A: Another.
 
 Speaker B: Provider names change, but the engineering question is still: what execution capacity runs this workload?
 
-Speaker A: Exactly.
+Speaker A: Exactly. Evidence question: where does the workload run, what capacity is available, and what happens when demand exceeds it?
 
 Speaker B: Stage three: network.
 
@@ -1552,7 +1552,7 @@ Speaker A: Another.
 
 Speaker B: The provider can package them differently, but the architectural question is who can reach what and through which path.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Evidence question: can the workload reach the intended dependency on the actual network path?
 
 Speaker B: Prediction.
 
@@ -1584,7 +1584,7 @@ Speaker A: Depending on the design, yes.
 
 Speaker B: The question is: where does durable state live, who owns it, and how does its lifecycle differ from compute?
 
-Speaker A: Exactly.
+Speaker A: Exactly. Evidence question: replace the compute and verify that the intended data still exists.
 
 Speaker B: Prediction.
 
@@ -1612,7 +1612,7 @@ Speaker A: Yes.
 
 Speaker B: So identity is part of the architecture from the start.
 
-Speaker A: Correct. It is not a finishing security layer.
+Speaker A: Correct. It is not a finishing security layer. Evidence question: which identity made the request, which resource received it, and which policy allowed or denied it?
 
 Speaker B: Prediction.
 
@@ -1640,7 +1640,7 @@ Speaker A: Good.
 
 Speaker B: So replacing a database with a cache because both contain data would be a category mistake.
 
-Speaker A: Exactly.
+Speaker A: Exactly. Evidence question: which component is authoritative for the business state, and what happens when the cache is empty?
 
 Speaker B: A cache is not the authoritative business state unless the system is deliberately designed that way.
 
@@ -1664,7 +1664,7 @@ Speaker A: Perhaps.
 
 Speaker B: But the customer still owns architecture questions.
 
-Speaker A: Exactly. Capacity, access, dependencies, data lifecycle and cost do not disappear.
+Speaker A: Exactly. Capacity, access, dependencies, data lifecycle and cost do not disappear. Evidence means being able to name who operates each boundary and what proof you have that it works.
 
 Speaker B: Prediction.
 
