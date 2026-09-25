@@ -245,3 +245,48 @@ Verified on the latest branch gate:
 - Next.js production build.
 
 The next step is real curriculum use of an animated binding; the library itself does not choose that lesson or sequence.
+
+## Standalone preview surface — current
+
+The reusable animation library is now directly launchable without a course or lesson.
+
+User-facing development/inspection routes:
+
+- `/animations` — lists registered reusable capabilities
+- `/animations/[animationId]` — opens a selected capability
+
+The host component is:
+
+- `src/components/AnimationPlayground.tsx`
+
+Its responsibilities are deliberately narrow:
+
+- own a local preview clock
+- expose Play/Pause/Restart/Seek
+- pass the selected time into `AnimationStage`
+- render preview metadata.
+
+It must not own:
+
+- lesson sequence
+- curriculum bindings
+- learner progress
+- assessment state
+- PodcastCoach audio
+- production voice timing.
+
+Preview fixtures live in `src/animations/previewCues.ts`. They are development/demo timing fixtures, not curriculum bindings.
+
+The production lesson path remains authoritative through the actual PodcastCoach audio clock and the curriculum illustration-binding layer.
+
+The standalone route fails closed for unknown animation IDs.
+
+Current validation for this slice:
+- branch head: `7d9330dfb81ffdacb96440421c36038de87df9bf`
+- full programme gate: run `36089003221`, completed successfully
+- 44 test files
+- 310 tests
+- TypeScript typecheck
+- Next.js production build.
+
+Browser visual validation is still separate and is not claimed without an accessible preview.
