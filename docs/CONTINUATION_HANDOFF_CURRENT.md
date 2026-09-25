@@ -2026,12 +2026,13 @@ Merged PR #96:
 - Fresh Vercel validation for PR #96 remained blocked by build-rate-limit infrastructure.
 
 
-Active PR #97 scope:
-- D5.7 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `global-architecture-v1`.
-- Teaching model: Users -> Routing -> Regions -> Dependencies -> Capacity -> Recovery.
-- The short 303-word architecture note is replaced with a full failure-domain lesson covering regional loss, routing, survivor capacity, data placement, shared dependencies, deployment blast radius, controlled design experiments, recall and transfer.
-- Fresh Vercel validation may be blocked by the current build-rate-limit infrastructure condition.
-
 END CONTENT QUALITY OVERRIDE
 ============================================================
+
+Merged PR #97:
+- D5.7 -> `global-architecture-v1`: Users -> Routing -> Regions -> Dependencies -> Capacity -> Recovery.
+- Merge commit: `03f08276f24428967b46782c5fdb54e04a079118`.
+- D5.7 replaces the short architecture note with a full failure-domain lesson covering regional loss, survivor capacity, data placement, shared dependencies, deployment blast radius and recovery proof.
+- Vercel status for the source commit was **build-rate-limit infrastructure failure**; no green deployment claim is made from that status.
+- Next content boundary: **D5.8 — The Production Incident**.
+
