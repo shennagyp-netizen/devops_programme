@@ -76,6 +76,29 @@ Priority mutation cases include:
 
 Fixture mutations are preferred over destructive edits to the main source.
 
+
+
+## 4.1 Curriculum-to-illustration binding tests
+
+The curriculum-to-illustration relationship is an architectural contract and must be tested as a graph, not only as isolated animation components.
+
+Minimum coverage for the binding layer:
+
+- lesson content item resolves to an existing illustration binding
+- illustration binding resolves to an existing animation capability
+- every binding voice cue exists in the lesson's authored voice timeline
+- every binding animation event exists in the referenced animation
+- interactive lesson items resolve every interaction capability
+- required interaction steps are unique and ordered
+- required steps have reachable success/completion conditions
+- invalid bindings fail closed rather than falling back to a generic illustration
+- the same reusable animation may be bound by multiple lessons without lesson IDs entering the reusable animation definition
+- curriculum order remains authoritative over animation capability order.
+
+Red-team mutations should include missing bindings, stale animation IDs, unknown cue/event/interaction IDs, duplicate interaction order, bypassable required steps, impossible transitions and silent fallback attempts.
+
+Visual/browser validation remains separate from contract correctness. Passing binding and animation tests does not constitute browser visual validation.
+
 ## Runtime verification
 
 The canonical runtime task source is:
