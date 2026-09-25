@@ -536,53 +536,285 @@ Speaker B: Run the lab, break one boundary, and prove the Service path converges
 
 EPISODE D3.3 — Kubernetes Configuration and Storage
 
-Speaker A: Configuration and persistent data should not be confused with the container image.
+Speaker A: We have a Service path now.
 
-Speaker B: Because configuration changes more often than the image?
-
-Speaker A: Often, yes. ConfigMaps hold non-secret configuration. Secrets provide a mechanism for sensitive values, but security still depends on how those values are handled. Volumes provide storage behavior beyond the temporary container filesystem.
-
-Speaker A: Think of a theater production. The actors are the containers. The script configuration is separate. The stage props and persistent archive are another concern entirely.
-
-Speaker A: Real-life example: replacing an actor should not erase the production's historical records.
-
-Speaker A: Lab: mount configuration and persistent storage separately and observe what survives a container restart.
-Speaker B: Configuration and storage feel like two different kinds of “outside the container.”
-
-Speaker A: That's a good instinct. Configuration describes how the application should behave. Persistent storage is data the application needs to survive process replacement.
-
-Speaker B: ConfigMap for normal configuration. Secret for sensitive values.
-
-Speaker A: Yes, with the caveat that putting something in a Secret object doesn't automatically make your whole secret-handling process secure. Access control, transport, logging, and the way applications consume the value still matter.
-
-Speaker B: Right. Security isn't a magic type.
+Speaker B: Next comes a common operational mistake: putting everything inside the image or inside the Pod.
 
 Speaker A: Exactly.
 
-Speaker B: Theater analogy?
+Speaker B: The picture is:
 
-Speaker A: The actors can change without rewriting the script. Props and archived records are another thing entirely. You don't throw away the production's history because one actor left.
+Speaker A: Config -> Secret -> Mount -> Pod -> Persistence.
 
-Speaker B: Prediction. I restart a pod and a generated file disappears.
+Speaker B: Five boxes again, but this time about state and lifecycle.
 
-Speaker A: Where was that file stored?
+Speaker A: Right. Configuration, secrets and persistent data should not be treated as the same thing.
 
-Speaker B: If it lived only in the container's writable filesystem, I shouldn't assume it survives.
+Speaker B: Stage one: Config.
 
-Speaker A: Good. Now suppose the file is on a persistent volume.
+Speaker A: Non-secret configuration can change without rebuilding the application image.
 
-Speaker B: Then replacing the pod may leave the data available to the replacement, assuming the volume attachment and application behavior are correct.
+Speaker B: ConfigMap is one Kubernetes mechanism for that.
 
-Speaker A: Exactly. “Persistent” doesn't mean “immune to bugs.”
+Speaker A: Yes.
+
+Speaker B: So the image can stay the same while the environment-specific configuration changes.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction.
+
+Speaker A: The same application image runs in two environments, but each environment needs a different API endpoint. Should we build two images?
+
+Speaker B: No. Put the environment-specific endpoint in configuration and provide the correct value at runtime.
+
+Speaker A: Good.
+
+Speaker B: Stage two: Secret.
+
+Speaker A: Secrets need a different operational treatment because they contain sensitive values.
+
+Speaker B: Kubernetes Secret gives us an object and a mechanism for exposing the value.
+
+Speaker A: Correct. But the object type itself does not make the whole secret-handling process secure.
+
+Speaker B: We still need access control.
+
+Speaker A: Yes.
+
+Speaker B: Avoid leaking the value to logs.
+
+Speaker A: Yes.
+
+Speaker B: Protect transport and storage according to the platform's security model.
+
+Speaker A: Exactly.
+
+Speaker B: So a Secret is a boundary, not a magic security guarantee.
+
+Speaker A: Keep that sentence.
+
+Speaker B: Stage three: mount.
+
+Speaker A: Configuration and secrets are useful only when the application can actually consume them.
+
+Speaker B: Environment variable.
+
+Speaker A: One option.
+
+Speaker B: Mounted file.
+
+Speaker A: Another.
+
+Speaker B: The important thing is that the application expects a specific path or key.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction.
+
+Speaker A: The Secret exists and the Pod is running, but the application says a required token is missing.
+
+Speaker B: I check how the Pod exposes the Secret and how the application reads it before recreating the container.
+
+Speaker A: Good.
+
+Speaker B: So object existence is not proof of successful consumption.
+
+Speaker A: Exactly.
+
+Speaker B: Stage four: Pod.
+
+Speaker A: The Pod is where the application process consumes these values.
+
+Speaker B: But the Pod is still replaceable.
+
+Speaker A: Correct.
+
+Speaker B: So we should ask which state belongs to the Pod and which state must outlive it.
+
+Speaker A: Excellent.
+
+Speaker B: That leads to persistence.
+
+Speaker A: Stage five.
+
+Speaker B: A database writes important data.
+
+Speaker A: Where should that data live if the Pod can be replaced?
+
+Speaker B: In persistent storage with a lifecycle independent from one Pod instance.
+
+Speaker A: Exactly.
+
+Speaker B: PersistentVolume and PersistentVolumeClaim are Kubernetes mechanisms around that storage model.
+
+Speaker A: Yes. The exact storage behavior still depends on the storage class and environment.
+
+Speaker B: So persistent does not mean magically indestructible.
+
+Speaker A: Correct. It means the data lifecycle is designed to outlive the workload instance within the intended storage guarantees.
+
+Speaker B: Prediction.
+
+Speaker A: I write a file into the Pod's temporary writable filesystem. I replace the Pod.
+
+Speaker B: I should not assume the file survives.
+
+Speaker A: Good.
+
+Speaker B: If the file is on correctly configured persistent storage, then the replacement can use the same data, subject to attachment and application behavior.
+
+Speaker A: Exactly.
+
+Speaker B: Human example?
+
+Speaker A: A theater production.
+
+Speaker B: Actors change.
+
+Speaker A: The script can stay.
+
+Speaker B: Sensitive backstage notes need restricted handling.
+
+Speaker A: Good.
+
+Speaker B: And the archive is stored somewhere that survives when one actor leaves.
+
+Speaker A: Exactly. The analogy is about lifecycle separation, not literal Kubernetes behavior.
+
+Speaker B: Now make the failure matrix.
+
+Speaker A: Config value is wrong.
+
+Speaker B: Inspect the configuration object and the actual consumed value.
+
+Speaker A: Secret exists but the application cannot see it.
+
+Speaker B: Inspect Secret reference, mount or environment configuration, Pod spec and application expectations.
+
+Speaker A: Secret is present but appears in logs.
+
+Speaker B: That is a handling failure. Fix the logging path and access controls rather than calling the Secret object secure.
+
+Speaker A: Good.
+
+Speaker B: Data disappears after Pod replacement.
+
+Speaker A: Inspect whether the data lived only in the Pod filesystem or was backed by the intended persistent storage.
+
+Speaker B: So all four failures look like 'the app lost state,' but they are different boundaries.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction pause.
+
+Speaker A: ConfigMap value changes but the running application still behaves as before. What do you ask?
+
+Speaker B: Did the application consume the new value yet? Was the Pod restarted or reloaded as required? Which path does the application read?
+
+Speaker A: Good. Configuration lifecycle and application reload behavior are separate questions.
+
+Speaker B: Another.
+
+Speaker A: The database volume exists, but the replacement Pod cannot mount or use it.
+
+Speaker B: Persistent storage exists as an object, but the workload still needs a valid attachment, mount and application-compatible filesystem.
+
+Speaker A: Exactly.
 
 Speaker B: Mac lab?
 
-Speaker A: Mount configuration separately from persistent data. Change the configuration, restart the workload, and verify what changed. Then write data, replace the pod, and verify what survived.
+Speaker A: Put one non-secret setting in a ConfigMap.
 
-Speaker B: The lesson is to know which state belongs to the process and which state belongs to the workload.
+Speaker B: Consume it through a clear application path.
 
-Speaker A: That's the lesson. Containers and pods are allowed to be disposable. Your data may not be.
+Speaker A: Good.
 
+Speaker B: Put one test credential in a Secret.
+
+Speaker A: Consume it without printing the value.
+
+Speaker B: Good.
+
+Speaker A: Write a known record to persistent storage.
+
+Speaker B: Replace the Pod.
+
+Speaker A: Verify which values and data survived.
+
+Speaker B: Then deliberately break one boundary.
+
+Speaker A: Choose one.
+
+Speaker B: Wrong ConfigMap key.
+
+Speaker A: Good.
+
+Speaker B: Or missing Secret reference.
+
+Speaker A: Good.
+
+Speaker B: Or remove the persistent mount from the disposable test workload.
+
+Speaker A: Good.
+
+Speaker B: Predict the symptom before observing it.
+
+Speaker A: Exactly.
+
+Speaker B: Restore the configuration and prove the original behavior.
+
+Speaker A: Exactly.
+
+Speaker B: What should the evidence record contain?
+
+Speaker A: Source object. Consumed value path. Secret reference without exposing its value. Mount path. Storage claim. Pod before and after replacement. Recovery evidence.
+
+Speaker B: So the lesson is not ConfigMap versus Secret syntax.
+
+Speaker A: It is lifecycle design.
+
+Speaker B: Config can change independently.
+
+Speaker A: Secret handling has a security boundary.
+
+Speaker B: Mounts connect those values to the application.
+
+Speaker A: And persistent storage keeps important data beyond one Pod.
+
+Speaker B: Recall.
+
+Speaker A: What is ConfigMap for?
+
+Speaker B: A common Kubernetes mechanism for non-secret configuration.
+
+Speaker A: What is Secret for?
+
+Speaker B: A mechanism for sensitive values, with security still depending on permissions, transport, logging and handling.
+
+Speaker A: Why can a Secret exist while the application still fails?
+
+Speaker B: The Pod may not expose it where the application expects, or the application may read the wrong key or path.
+
+Speaker A: Why can data disappear after a Pod replacement?
+
+Speaker B: The data may have lived only in the Pod's temporary filesystem instead of intended persistent storage.
+
+Speaker A: Final challenge.
+
+Speaker B: The image is correct, the Pod starts, but configuration is wrong and database data disappears after replacement.
+
+Speaker A: Your model?
+
+Speaker B: Config -> Secret -> Mount -> Pod -> Persistence. I diagnose configuration source and consumption separately from secret handling and separately from persistent storage.
+
+Speaker A: Good.
+
+Speaker B: Kubernetes configuration and storage are not one feature.
+
+Speaker A: They are different lifecycles that meet inside a Pod.
+
+Speaker B: Run the lab, replace the Pod, break one boundary, and prove what should survive.
 
 EPISODE D3.4 — Kubernetes Health and Scaling
 

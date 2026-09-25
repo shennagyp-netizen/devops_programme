@@ -26,7 +26,8 @@ export type LessonIllustrationVariantV1 =
   | "docker-network-storage-v1"
   | "docker-failure-loop-v1"
   | "kubernetes-reconciliation-v1"
-  | "kubernetes-networking-v1";
+  | "kubernetes-networking-v1"
+  | "kubernetes-config-storage-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -814,6 +815,35 @@ const KUBERNETES_NETWORKING_VARIANT: LessonIllustrationModelV1 = {
     { id: "traffic-proof", label: "4. Traffic proof", detail: "Can a real request reach an expected backend, and what changes when a Pod is removed or becomes unready?" }
   ]
 };
+
+const KUBERNETES_CONFIG_STORAGE_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "kubernetes-config-storage-v1",
+  title: "Configuration, secrets and persistent data",
+  stages: [
+    { id: "config", label: "Config", detail: "Non-secret configuration declares values the workload can consume without rebuilding the image." },
+    { id: "secret", label: "Secret", detail: "Sensitive values use a separate Kubernetes object and access path, but safe handling still depends on permissions and application behavior." },
+    { id: "mount", label: "Mount", detail: "Configuration, secrets and storage reach the Pod through explicit environment or filesystem paths." },
+    { id: "pod", label: "Pod", detail: "The Pod consumes configuration and data while its containers remain disposable runtime units." },
+    { id: "persistence", label: "Persistence", detail: "Persistent storage keeps important data beyond one Pod instance when the storage design is correct." }
+  ],
+  foundation: {
+    label: "Configuration, secrets and persistent data have different lifecycles",
+    detail: "Configuration may change independently from the image; secrets require tighter handling; persistent data must survive workload replacement when the application requires it."
+  },
+  callouts: [
+    { id: "configmap", label: "ConfigMap", detail: "A common Kubernetes mechanism for non-secret configuration values." },
+    { id: "secret", label: "Secret", detail: "A Kubernetes resource for secret values; the object type alone does not make the entire secret-handling process secure." },
+    { id: "mount", label: "Mount path", detail: "The application only sees configuration or data where the Pod specification makes it available." },
+    { id: "volume", label: "Persistent volume", detail: "Persistent storage provides a lifecycle beyond one Pod when the workload and storage class are designed for it." }
+  ],
+  failureChecks: [
+    { id: "config-source", label: "1. Config source", detail: "Is the workload consuming the intended configuration object, key and value?" },
+    { id: "secret-consumption", label: "2. Secret consumption", detail: "Does the Pod receive the secret through the expected path, with appropriate access controls and without leaking it to logs?" },
+    { id: "mount-path", label: "3. Mount path", detail: "Does the application read the expected environment variable or filesystem path inside the Pod?" },
+    { id: "data-survival", label: "4. Data survival", detail: "After replacing the Pod, does the expected persistent data remain available and usable?" }
+  ]
+};
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1014,6 +1044,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "kubernetes-config-storage-v1") {
+    return {
+      ...KUBERNETES_CONFIG_STORAGE_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1054,7 +1091,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "docker-network-storage-v1" &&
     model.variant !== "docker-failure-loop-v1" &&
     model.variant !== "kubernetes-reconciliation-v1" &&
-    model.variant !== "kubernetes-networking-v1"
+    model.variant !== "kubernetes-networking-v1" &&
+    model.variant !== "kubernetes-config-storage-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }

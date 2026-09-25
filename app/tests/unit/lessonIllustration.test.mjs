@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models Kubernetes configuration and storage as separate lifecycles", () => {
+    const model = getLessonIllustrationModel({
+      id: "d3-3-kubernetes-config-storage",
+      type: "illustration",
+      heading: "Configuration, secrets and persistent data",
+      alt: "A Kubernetes workload receives configuration and secrets, mounts them into a Pod, and stores persistent data through a volume-backed storage boundary",
+      bindingId: "D3.3:d3-3-kubernetes-config-storage",
+      nodes: ["Config", "Secret", "Mount", "Pod", "Persistence"],
+      variant: "kubernetes-config-storage-v1"
+    });
+
+    expect(model.variant).toBe("kubernetes-config-storage-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "config",
+      "secret",
+      "mount",
+      "pod",
+      "persistence"
+    ]);
+    expect(model.foundation.label).toBe("Configuration, secrets and persistent data have different lifecycles");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "configmap",
+      "secret",
+      "mount",
+      "volume"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "config-source",
+      "secret-consumption",
+      "mount-path",
+      "data-survival"
+    ]);
+  });
+
   it("models Kubernetes networking as service, selector, endpoint set, pod and evidence", () => {
     const model = getLessonIllustrationModel({
       id: "d3-2-kubernetes-networking",
