@@ -2,14 +2,13 @@ import { describe, expect, it } from "vitest";
 import {
   buildDefaultLessonContent,
   getLessonContent,
-  validateLessonContent,
-  type LessonContent
+  validateLessonContent
 } from "../../src/data/lessonContent.ts";
 import { lessonsByCourse } from "../../src/data/courseLessons.ts";
 
 describe("lesson content stream contract", () => {
   it("supports an ordered text, illustration and video stream", () => {
-    const content: LessonContent = {
+    const content = {
       version: 1,
       blocks: [
         {
