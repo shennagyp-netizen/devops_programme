@@ -34,7 +34,7 @@ async function ensureMasterySchema() {
       CONSTRAINT "learner_mastery_attempts_attempt_ck" CHECK ("attempt_number" > 0),
       CONSTRAINT "learner_mastery_attempts_result_ck" CHECK ("reattempt_result" IN ('failed', 'pending', 'passed'))
     )
-  `);
+  `));
 
   await db.execute(sql.raw(`
     CREATE INDEX IF NOT EXISTS "learner_mastery_attempts_user_assignment_idx"
