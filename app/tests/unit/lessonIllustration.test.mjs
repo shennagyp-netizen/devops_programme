@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models Kubernetes health and scaling as startup, readiness, liveness, capacity and rollout", () => {
+    const model = getLessonIllustrationModel({
+      id: "d3-4-kubernetes-health-scaling",
+      type: "illustration",
+      heading: "The Kubernetes health and scaling path",
+      alt: "A workload starts, becomes ready for traffic, is kept alive by liveness checks, scales with resource and replica decisions, and rolls out a new version",
+      bindingId: "D3.4:d3-4-kubernetes-health-scaling",
+      nodes: ["Startup", "Readiness", "Liveness", "Capacity", "Rollout"],
+      variant: "kubernetes-health-scaling-v1"
+    });
+
+    expect(model.variant).toBe("kubernetes-health-scaling-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "startup",
+      "readiness",
+      "liveness",
+      "capacity",
+      "rollout"
+    ]);
+    expect(model.foundation.label).toBe("Running, ready and scalable are different states");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "startup-probe",
+      "readiness-probe",
+      "liveness-probe",
+      "resources"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "startup-state",
+      "traffic-state",
+      "restart-state",
+      "capacity-state"
+    ]);
+  });
+
   it("models Kubernetes configuration and storage as config, secret, mount, pod and persistence", () => {
     const model = getLessonIllustrationModel({
       id: "d3-3-kubernetes-config-storage",
