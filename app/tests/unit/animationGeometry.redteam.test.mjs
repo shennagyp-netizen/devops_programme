@@ -106,6 +106,22 @@ describe("animation geometry red team", () => {
     expect(failures).toContain("shape overlap");
   });
 
+  it("rejects a standalone label that overlaps a node", () => {
+    const definition = baseDefinition();
+    definition.primitives.push({
+      kind: "label",
+      id: "overlapping-label",
+      text: "Bad placement",
+      x: 120,
+      y: 220,
+      width: 180,
+      height: 40
+    });
+
+    const failures = validateAnimationDefinition(definition).failures.join(" ");
+    expect(failures).toContain("shape overlap");
+  });
+
   it("rejects labels that extend beyond the viewport", () => {
     const definition = baseDefinition();
     definition.primitives.push({
@@ -145,6 +161,22 @@ describe("animation geometry red team", () => {
 
     const failures = validateAnimationDefinition(definition).failures.join(" ");
     expect(failures).toContain("packet crosses shape");
+  });
+
+  it("rejects a connection that crosses a standalone label", () => {
+    const definition = baseDefinition();
+    definition.primitives.push({
+      kind: "label",
+      id: "blocking-label",
+      text: "Blocking",
+      x: 300,
+      y: 220,
+      width: 120,
+      height: 150
+    });
+
+    const failures = validateAnimationDefinition(definition).failures.join(" ");
+    expect(failures).toContain("connection crosses shape");
   });
 
   it("rejects a connection that crosses an unrelated node", () => {
