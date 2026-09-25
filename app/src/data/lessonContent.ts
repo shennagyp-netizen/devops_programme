@@ -34,7 +34,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-service-path-v1"
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
-  | "kubernetes-failure-loop-v1";
+  | "kubernetes-failure-loop-v1"
+  | "git-production-workflow-v1";
 
 export type LessonContentBlock =
   | {
@@ -87,6 +88,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D4.1": {
+    version: 1,
+    blocks: [
+      {
+        id: "d4-1-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Git becomes a production control layer when changes need review, durable identity, release traceability and a known recovery path."
+      },
+      {
+        id: "d4-1-git-workflow",
+        type: "illustration",
+        heading: "The Git production workflow",
+        alt: "A production change is isolated, reviewed, committed with identity, released with a stable version, and recoverable to a known-good state",
+        bindingId: "D4.1:d4-1-git-workflow",
+        nodes: ["Change", "Review", "Commit", "Release", "Recovery"],
+        variant: "git-production-workflow-v1",
+        caption:
+          "Connect source history to release identity and operational recovery."
+      }
+    ]
+  },
+
+
   "D3.5": {
     version: 1,
     blocks: [
@@ -873,6 +899,7 @@ export function validateLessonContent(
         block.variant !== "kubernetes-config-storage-v1" &&
         block.variant !== "kubernetes-health-scaling-v1" &&
         block.variant !== "kubernetes-failure-loop-v1" &&
+        block.variant !== "git-production-workflow-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);

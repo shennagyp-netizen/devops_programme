@@ -191,6 +191,21 @@ describe("course lesson content integration", () => {
     });
   });
 
+  it("uses the authored Git production workflow visual for D4.1", () => {
+    const lesson = allLessons.find((item) => item.id === "D4.1");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d4-1-git-workflow",
+      bindingId: "D4.1:d4-1-git-workflow",
+      variant: "git-production-workflow-v1"
+    });
+  });
+
   it("uses the authored Kubernetes health-scaling visual for D3.4", () => {
     const lesson = allLessons.find((item) => item.id === "D3.4");
     expect(lesson).toBeDefined();
