@@ -8,7 +8,7 @@
 
 **Latest main architecture/content merge:** PR #62, commit `049d6ddeb8b3f7ec41eef59d4a88292f288de0dc` (D3.5 Kubernetes failure-loop script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #65 has merged to `main`.
+**Active content-quality branch:** none. PR #66 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1946,10 +1946,14 @@ Merged PR #62:
 Merged PR #65:
 - D4.1 -> `git-production-workflow-v1`: Change -> Review -> Commit -> Release -> Recovery.
 - Merge commit: `6f42ff6fb143deca8fef328badb3424edab1c6b7`.
-- D4.1 now teaches production traceability, review as a control point, stable source/release identity and recovery without confusing repository state with deployed state.
-- Final PR #65 gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
-- Duplicate D2.6 PRs #63/#64 were closed because current `main` already contains the validated D2.6 implementation.
-- Next content boundary: **D4.2 — CI/CD Mental Model**.
+- D4.1 final gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
+
+Merged PR #66:
+- D4.2 -> `cicd-control-path-v1`: Source -> Validate -> Artifact -> Promote -> Verify.
+- Merge commit: `dcc336d2362def4a804e021bf8b1b6af7d59dfcd`.
+- D4.2 treats CI/CD as a risk-control system rather than vendor YAML, and makes artifact identity, provenance, promotion controls and runtime verification explicit.
+- Final PR #66 gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
+- Next content boundary: **D4.3 — GitHub Actions**.
 
 
 Active PR #66 scope:
@@ -1959,6 +1963,7 @@ Active PR #66 scope:
 - The rewritten script treats CI/CD as a risk-control path, explicitly distinguishes validation from production health, and makes artifact identity and provenance first-class evidence.
 - Controlled exercise removes one pipeline gate and asks the learner to explain the new risk before restoring the gate.
 - TDD/full-programme gate is required before merge.
+
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
