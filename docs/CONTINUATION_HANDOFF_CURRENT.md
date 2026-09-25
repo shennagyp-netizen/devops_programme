@@ -2028,5 +2028,13 @@ Merged PR #55:
 - D5.1 makes vertical/horizontal scaling, statelessness, shared state, queue/cache behavior, bottleneck movement and user-path proof one mechanism.
 - Next content boundary: **D5.2 — Databases at Scale**.
 
+
+Current content gate — PR #89 / D5.1 + D5.2:
+- Final GitHub Actions run **36168370580** is green across all programme contracts, **365 tests**, TypeScript and the Next.js production build.
+- The combined commit status still reports **Vercel: failure / build-rate-limit**.
+- Green-only main merge rule: **PR #89 is not being merged while the Vercel status is red**.
+- D5.1 and D5.2 implementation is otherwise complete and ready.
+- Next stacked content boundary: **D5.3 — Distributed Systems**.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
