@@ -1930,5 +1930,15 @@ Merged PR #55:
 - Final PR #55 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 - Next content boundary: **D3.2 — Kubernetes Networking**.
 
+
+Active PR #53 scope:
+- D2.6 rebased onto current `main` after main advanced during authoring.
+- New semantic illustration: `docker-network-storage-v1`.
+- Teaching model: Service -> Network -> Name -> Port -> Volume.
+- The rewritten script separates internal service discovery, internal container networking, published host ports and persistent database data.
+- Controlled failures break one boundary at a time: service-name resolution, published external access, then container recreation with volume persistence.
+- The rebased branch exists only to resolve history divergence; D2.6 content is unchanged.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
