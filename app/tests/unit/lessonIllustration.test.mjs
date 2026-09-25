@@ -295,6 +295,41 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models scaling as workload, capacity, distribution, shared state, bottleneck and evidence", () => {
+    const model = getLessonIllustrationModel({
+      id: "d5-1-scaling",
+      type: "illustration",
+      heading: "The scaling control path",
+      alt: "Rising workload meets capacity limits, is distributed across instances, constrained by shared state, and diagnosed through the active bottleneck and evidence",
+      bindingId: "D5.1:d5-1-scaling",
+      nodes: ["Workload", "Capacity", "Distribution", "Shared State", "Bottleneck", "Evidence"],
+      variant: "scaling-control-loop-v1"
+    });
+
+    expect(model.variant).toBe("scaling-control-loop-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "workload",
+      "capacity",
+      "distribution",
+      "shared-state",
+      "bottleneck",
+      "evidence"
+    ]);
+    expect(model.foundation.label).toBe("Scaling is a system property, not a server-size property");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "vertical",
+      "horizontal",
+      "stateless",
+      "buffer"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "first-limit",
+      "shared-state",
+      "moved-bottleneck",
+      "user-proof"
+    ]);
+  });
+
   it("models cloud architecture as workload, compute, network, state, identity and data services", () => {
     const model = getLessonIllustrationModel({
       id: "d4-6-cloud-primitives",
