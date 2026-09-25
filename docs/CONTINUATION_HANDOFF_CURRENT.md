@@ -2036,5 +2036,14 @@ Active PR #55 scope:
 - The lab now requires baseline capacity evidence, a controlled workload increase, one scaling change, and measurement of the next bottleneck.
 - TDD/full-programme gate is required before merge.
 
+
+Active PR #56 scope:
+- D5.2 is being upgraded to the script+illustration gold-standard.
+- New semantic illustration: `database-scale-v1`.
+- Teaching model: Query -> Access Path -> Correctness -> Copies -> Distribution -> Evidence.
+- The rewritten script treats indexes, transactions/concurrency, replication, partitioning and sharding as different mechanisms with different trade-offs.
+- The lab requires baseline query evidence, one index change, one replica/freshness check and one partition-scope comparison.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================

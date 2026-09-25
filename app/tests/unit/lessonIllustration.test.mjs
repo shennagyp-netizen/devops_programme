@@ -295,6 +295,41 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models database scaling as query path, correctness, copies, distribution and evidence", () => {
+    const model = getLessonIllustrationModel({
+      id: "d5-2-database-scale",
+      type: "illustration",
+      heading: "The database scaling path",
+      alt: "A database workload follows an access path, preserves transaction correctness, expands through copies or partitioning, and is evaluated with evidence",
+      bindingId: "D5.2:d5-2-database-scale",
+      nodes: ["Query", "Access Path", "Correctness", "Copies", "Distribution", "Evidence"],
+      variant: "database-scale-v1"
+    });
+
+    expect(model.variant).toBe("database-scale-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "query",
+      "access-path",
+      "correctness",
+      "copies",
+      "distribution",
+      "evidence"
+    ]);
+    expect(model.foundation.label).toBe("Capacity changes must preserve data correctness");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "index",
+      "transactions",
+      "replication",
+      "partitioning"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "query-cost",
+      "write-correctness",
+      "replica-freshness",
+      "partition-scope"
+    ]);
+  });
+
   it("models scaling as workload, capacity, distribution, shared state, bottleneck and evidence", () => {
     const model = getLessonIllustrationModel({
       id: "d5-1-scaling",
