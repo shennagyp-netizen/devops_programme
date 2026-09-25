@@ -54,6 +54,108 @@ describe("lesson illustration teaching model", () => {
     ]);
     expect(model.foundation).toBeUndefined();
   });
+  it("models reliability patterns as bounded work, retry policy, load and recovery evidence", () => {
+    const model = getLessonIllustrationModel({
+      id: "d5-4-reliability-patterns",
+      type: "illustration",
+      heading: "The reliability control loop",
+      alt: "A request reaches a dependency, a bounded timeout triggers a policy decision, retries create load, and recovery is measured",
+      bindingId: "D5.4:d5-4-reliability-patterns",
+      nodes: ["Request", "Timeout", "Policy", "Retry Load", "Recovery"],
+      variant: "reliability-patterns-v1"
+    });
+
+    expect(model.variant).toBe("reliability-patterns-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "request",
+      "timeout",
+      "policy",
+      "retry-load",
+      "recovery"
+    ]);
+    expect(model.foundation.label).toBe("Retries are new traffic");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "backoff-jitter",
+      "idempotency",
+      "circuit-breaker",
+      "backpressure"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "bounded-time",
+      "attempt-budget",
+      "load-effect",
+      "recovery-proof"
+    ]);
+  });
+
+  it("models observability as questions, signals, correlation, objectives and decisions", () => {
+    const model = getLessonIllustrationModel({
+      id: "d5-5-observability",
+      type: "illustration",
+      heading: "The observability decision path",
+      alt: "An operational question selects signals, signals are correlated, objectives define acceptable behavior, and the evidence drives a decision",
+      bindingId: "D5.5:d5-5-observability",
+      nodes: ["Question", "Signal", "Correlation", "Objective", "Decision"],
+      variant: "observability-control-v1"
+    });
+
+    expect(model.variant).toBe("observability-control-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "question",
+      "signal",
+      "correlation",
+      "objective",
+      "decision"
+    ]);
+    expect(model.foundation.label).toBe("Observability starts from a question");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "logs",
+      "metrics",
+      "traces",
+      "slo-budget"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "user-signal",
+      "service-signal",
+      "cross-signal",
+      "action"
+    ]);
+  });
+
+  it("models disaster recovery as assets, failure, restore, dependency verification and recovery objectives", () => {
+    const model = getLessonIllustrationModel({
+      id: "d5-6-disaster-recovery",
+      type: "illustration",
+      heading: "The recovery system",
+      alt: "A service maps critical assets through a failure to restore, dependency verification and proven recovery within RPO and RTO",
+      bindingId: "D5.6:d5-6-disaster-recovery",
+      nodes: ["Assets", "Failure", "Restore", "Dependencies", "Recovery"],
+      variant: "disaster-recovery-system-v1"
+    });
+
+    expect(model.variant).toBe("disaster-recovery-system-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "assets",
+      "failure",
+      "restore",
+      "dependencies",
+      "recovery"
+    ]);
+    expect(model.foundation.label).toBe("Recovery is a system, not a backup file");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "rpo",
+      "rto",
+      "restore-test",
+      "people-runbook"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "data",
+      "infrastructure",
+      "identity",
+      "user-proof"
+    ]);
+  });
+
 });
 
 
