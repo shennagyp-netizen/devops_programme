@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #52, commit `ffb17b61597e7a8b1e25139bcd634fba0719523c` (D2.5 container execution script + illustration quality slice).
+**Latest main architecture/content merge:** PR #53, commit `d1884d9443a7e2c2f8eff85822307604ea5d865d` (D2.6 Docker network/storage script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #52 has merged to `main`.
+**Active content-quality branch:** none. PR #53 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1911,23 +1911,18 @@ Merged PR #51:
 - D2.4 -> `tls-trust-v1`: Client -> Certificate -> Handshake -> Secure Session -> Evidence.
 - Merge commit: `faee8ec98812592b20c7b854bc506c47f86247e0`.
 - Final PR #51 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
-- D2.4 explicitly separates encryption, endpoint identity, certificate trust, handshake behavior and post-TLS HTTP evidence.
 
 Merged PR #52:
 - D2.5 -> `container-execution-v1`: Image -> Container -> Process -> Namespaces -> Host Kernel.
 - Merge commit: `ffb17b61597e7a8b1e25139bcd634fba0719523c`.
-- D2.5 rejects the “tiny VM” model and teaches image packaging, container lifecycle, main-process behavior, namespace isolation and the shared host kernel.
 - Final PR #52 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- Next content boundary: **D2.6 — Docker Networking and Storage**.
 
-
-Active PR #53 scope:
-- D2.6 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `docker-network-storage-v1`.
-- Teaching model: Service -> Network -> Name -> Port -> Volume.
-- The rewritten script separates internal service discovery, container-to-container connectivity, published host ports, and persistent data lifecycle.
-- Controlled failures break one boundary at a time and prove recovery; database volume persistence is verified across container recreation.
-- TDD/full-programme gate is required before merge.
+Merged PR #53:
+- D2.6 -> `docker-network-storage-v1`: Service -> Network -> Name -> Port -> Volume.
+- Merge commit: `d1884d9443a7e2c2f8eff85822307604ea5d865d`.
+- D2.6 separates internal service discovery, internal service ports, published host ports and persistent volumes, then uses controlled failures to distinguish their symptoms.
+- Final PR #53 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- Next content boundary: **D2.7 — Break Docker**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
