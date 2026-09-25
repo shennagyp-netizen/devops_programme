@@ -88,6 +88,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D5.2": {
+    version: 1,
+    blocks: [
+      {
+        id: "d5-2-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Database scaling is not one switch. Query shape, indexes, replication and partitioning solve different bottlenecks and change different correctness boundaries."
+      },
+      {
+        id: "d5-2-database-scale",
+        type: "illustration",
+        heading: "The database scaling trade-off map",
+        alt: "A database workload is analyzed through query shape, indexing, replication, partitioning and evidence about consistency and bottlenecks",
+        bindingId: "D5.2:d5-2-database-scale",
+        nodes: ["Workload", "Query", "Index", "Copies", "Partitions", "Evidence"],
+        variant: "database-scaling-v1",
+        caption:
+          "Scale the bottleneck you can prove, and record the correctness trade-off it introduces."
+      }
+    ]
+  },
+
+
   "D4.6": {
     version: 1,
     blocks: [
@@ -921,6 +946,7 @@ export function validateLessonContent(
         block.variant !== "kubernetes-reconciliation-v1" &&
         block.variant !== "docker-failure-loop-v1" &&
         block.variant !== "cloud-primitives-v1" &&
+        block.variant !== "database-scaling-v1" &&
         block.variant !== "kubernetes-service-path-v1" &&
         block.variant !== "kubernetes-config-storage-v1" &&
         block.variant !== "kubernetes-health-scaling-v1" &&
