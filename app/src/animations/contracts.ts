@@ -226,13 +226,14 @@ function validateMotionCustomization(
   }
 
   for (const key of ["travelMs", "emphasisMs", "settleMs"] as const) {
-    if (value[key] === undefined) continue;
-    if (!isFiniteNumber(value[key])) {
+    const raw = value[key];
+    if (raw === undefined) continue;
+    if (!isFiniteNumber(raw)) {
       failures.push(`${prefix}.${key} must be finite`);
       continue;
     }
     const limits = MOTION_LIMITS[key];
-    if (value[key] < limits.min || value[key] > limits.max) {
+    if (raw < limits.min || raw > limits.max) {
       failures.push(
         `${prefix}.${key} must be between ${limits.min} and ${limits.max}`
       );
