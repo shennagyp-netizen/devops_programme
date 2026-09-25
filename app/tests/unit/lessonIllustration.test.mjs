@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models service execution as process, identity, resource, lifecycle and logs", () => {
+    const model = getLessonIllustrationModel({
+      id: "d1-3-service-context",
+      type: "illustration",
+      heading: "The service execution context",
+      alt: "A service process runs with an identity and environment, accesses resources under permissions, follows a lifecycle, and leaves log evidence",
+      bindingId: "D1.3:d1-3-service-context",
+      nodes: ["Process", "Identity", "Resource", "Service", "Logs"],
+      variant: "service-permission-model-v1"
+    });
+
+    expect(model.variant).toBe("service-permission-model-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "process",
+      "identity",
+      "resource",
+      "service",
+      "logs"
+    ]);
+    expect(model.foundation.label).toBe("The running process has an execution context");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "user-group",
+      "permissions",
+      "environment",
+      "lifecycle"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "process-context",
+      "resource-access",
+      "service-startup",
+      "log-evidence"
+    ]);
+  });
+
   it("models safe delivery as a traceable path from change to verified release", () => {
     const model = getLessonIllustrationModel({
       id: "b2-1-safe-delivery",
