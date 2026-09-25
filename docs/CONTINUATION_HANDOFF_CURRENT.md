@@ -1901,6 +1901,7 @@ Merged PR #49:
 - D2.2 -> `dns-resolution-v1`: Name -> Resolver -> Cache -> Authority -> Freshness.
 - Merge commit: `79dd956303907480c20091debfcff2f0500661a8`.
 - Final PR #49 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
+- Red-team caught and corrected the DNS variant registration and a spoken-English complexity issue.
 
 Merged PR #50:
 - D2.3 -> `http-exchange-v1`: Request -> Headers -> Route -> Response -> Evidence.
@@ -1921,15 +1922,21 @@ Merged PR #77:
 Merged PR #78:
 - D2.7 -> `docker-failure-loop-v1`: Baseline -> Change -> Symptom -> Evidence -> Recovery.
 - Merge commit: `0d0c490b5a7f21f49f6d6ba25c763672cc5cd8ab`.
-- D2.7 is the Docker incident-drill capstone: single controlled change, prediction, evidence at the correct boundary, restoration and real user-path proof.
-- Final PR #78 workflow passed the full programme gate on the merged head.
+- Final PR #78 gate passed the full programme workflow.
 
 Merged PR #79:
 - D3.1 -> `kubernetes-reconciliation-v1`: Desired State -> Controller -> Observe -> Act -> Converge.
 - Merge commit: `cd7497c5bfa2f164f684eb3d46835000f3ac962a`.
-- D3.1 uses the existing prediction/reconciliation/failure content and now has a semantic visual model, authored lesson binding and dedicated TDD coverage.
+- D3.1 uses the existing reconciliation/failure script with a new semantic visual and binding contract.
 - Final PR #79 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- Next content boundary: **D3.2 — Kubernetes Networking**.
+
+Merged PR #80:
+- D3.2 -> `kubernetes-service-path-v1`: Service -> Selector -> Endpoints -> Pod -> Path.
+- Merge commit: `a0e372c77ca8c0706a22b4accf49f918805adebc`.
+- The stale predecessor PR #56 was closed. The validated D3.2 patch was carried onto current `main` without deleting D3.3–D3.5 material.
+- Final refreshed PR #80 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- D3.2 now teaches stable Service identity, selector matching, endpoint state, Pod readiness and controlled selector failure/recovery.
+- Next content boundary: **D3.3 — Kubernetes Configuration and Storage**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
