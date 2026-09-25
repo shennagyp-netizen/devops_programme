@@ -2038,14 +2038,6 @@ Merged PR #99:
 - Next outstanding mainline quality gap: **D3.2 — Kubernetes Networking** (PR #91 is open and main-based); D4.2 is also open as PR #92.
 
 
-Active PR #100 scope:
-- D3.2 is being ported cleanly onto the current `main` rather than merging the stale PR #91 lineage.
-- New semantic illustration: `kubernetes-networking-v1`.
-- Teaching model: Service -> Selector -> Endpoint set -> Pod -> Evidence.
-- The rewritten script separates stable Service identity, selector matching, endpoint membership, Pod readiness and real request proof.
-- Controlled labs delete a disposable Pod and deliberately break the Service selector, then restore and prove the request path.
-- Fresh current-head TDD/full-programme validation is required before merge.
-
 END CONTENT QUALITY OVERRIDE
 ============================================================
 
@@ -2053,6 +2045,15 @@ Merged PR #97:
 - D5.7 -> `global-architecture-v1`: Users -> Routing -> Regions -> Dependencies -> Capacity -> Recovery.
 - Merge commit: `03f08276f24428967b46782c5fdb54e04a079118`.
 - D5.7 replaces the short architecture note with a full failure-domain lesson covering regional loss, survivor capacity, data placement, shared dependencies, deployment blast radius and recovery proof.
-- Vercel status for the source commit was **build-rate-limit infrastructure failure**; no green deployment claim is made from that status.
+- Vercel status for the source commit was **build-rate-limit infrastructure failure**; no green deployment claim is made fr
+Merged PR #100:
+- D3.2 -> `kubernetes-networking-v1`: Service -> Selector -> Endpoint set -> Pod -> Evidence.
+- Merge commit: `f584bce305faa9ba58404122efe21e6f79bf9e9e`.
+- D3.2 replaces the legacy `kubernetes-service-path-v1` lesson identity with the full networking failure/evidence model.
+- Fresh current-main validation caught and corrected a duplicate legacy integration assertion before the final gate.
+- Final PR #100 gate passed **409 tests**, all programme contracts, TypeScript and the Next.js production build.
+- Stale PR #91 was closed unmerged after the clean current-main port landed.
+
+om that status.
 - Next content boundary: **D5.8 — The Production Incident**.
 
