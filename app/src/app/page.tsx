@@ -41,6 +41,8 @@ export default function HomePage() {
           <a href="#courses">Courses</a>
           <a href="#method">How it works</a>
           <a href="#projects">Projects</a>
+          <Link href="/sign-in">Sign in</Link>
+          <Link href="/sign-up">Create account</Link>
           <Link href="/learn">Learning gateway</Link>
         </div>
       </nav>
@@ -56,8 +58,11 @@ export default function HomePage() {
             repair it, and prove recovery.
           </p>
           <div className="marketing-actions">
-            <Link className="primary marketing-cta" href="/learn">
-              Enter the learning gateway
+            <Link className="primary marketing-cta" href="/sign-up">
+              Create your account
+            </Link>
+            <Link className="secondary marketing-cta" href="/sign-in">
+              Sign in
             </Link>
             <a className="secondary marketing-cta" href="#courses">
               Explore the programme
@@ -198,15 +203,15 @@ export default function HomePage() {
       <section className="marketing-final-cta">
         <div>
           <span className="eyebrow">READY TO WORK?</span>
-          <h2>Start with the gateway. Your progress is saved to your account.</h2>
+          <h2>Create an account once. Your progress stays with it.</h2>
           <p>
-            The public site explains the programme. The learning gateway is the
-            authenticated workspace where your completed lessons and evidence
-            belong to you.
+            The public site explains the programme. Create a first-party account to
+            enter the learning gateway and keep your completed lessons with your
+            own account.
           </p>
         </div>
-        <Link className="primary marketing-cta" href="/learn">
-          Enter the learning gateway
+        <Link className="primary marketing-cta" href="/sign-up">
+          Create your account
         </Link>
       </section>
 

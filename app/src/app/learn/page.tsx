@@ -1,16 +1,26 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import App from "../../App";
+import { requireCurrentUser } from "../../lib/server/auth";
 import { listCompletionHistoryForUser } from "../../lib/server/progress";
 
 export default async function LearnPage() {
-  const { userId } = await auth();
+  const user = await requireCurrentUser().catch((error) => {
+    if (error instanceof Error && error.message === "Authentication required.") {
+      return null;
+    }
+    throw error;
+  });
 
-  if (!userId) {
+  if (!user) {
     redirect("/sign-in");
   }
 
-  const completionHistory = await listCompletionHistoryForUser(userId);
+  const completionHistory = await listCompletionHistoryForUser(user.id);
 
-  return <App initialCompletionHistory={completionHistory} />;
+  return (
+    <App
+      currentUser={{ email: user.email }}
+      initialCompletionHistory={completionHistory}
+    />
+  );
 }

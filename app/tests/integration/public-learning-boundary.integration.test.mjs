@@ -6,45 +6,42 @@ function read(path) {
   return readFileSync(resolve(process.cwd(), path), "utf8");
 }
 
-describe("public marketing site and authenticated learner gateway boundary", () => {
+describe("public marketing site and first-party authenticated learner gateway boundary", () => {
   it("keeps the root route public and sends learners to an explicit gateway", () => {
     const page = read("src/app/page.tsx");
     const learn = read("src/app/learn/page.tsx");
-    
+
     expect(page).not.toContain("await auth()");
-    expect(page).toContain("href=\"/learn\"");
-    expect(page).toContain("DevOps");
-    expect(learn).toContain("await auth()");
-    expect(learn).toContain("redirect(\"/sign-in\")");
+    expect(page).toContain('href="/learn"');
+    expect(page).toContain('href="/sign-up"');
+    expect(learn).toContain("requireCurrentUser");
+    expect(learn).toContain('redirect("/sign-in")');
     expect(learn).toContain("listCompletionHistoryForUser");
   });
 
-  it("keeps Clerk scoped to authenticated surfaces instead of the public shell", () => {
+  it("keeps the public shell independent of first-party session state", () => {
     const layout = read("src/app/layout.tsx");
     const learnLayout = read("src/app/learn/layout.tsx");
-    const signIn = read("src/app/sign-in/[[...sign-in]]/page.tsx");
-    const signUp = read("src/app/sign-up/[[...sign-up]]/page.tsx");
 
-    expect(layout).not.toContain("ClerkProvider");
-    expect(learnLayout).toContain("<ClerkProvider>");
-    expect(signIn).toContain("<ClerkProvider>");
-    expect(signUp).toContain("<ClerkProvider>");
+    expect(layout).not.toContain("getCurrentUser");
+    expect(learnLayout).not.toContain("@clerk");
   });
 
-  it("protects only authenticated application paths in the request boundary", () => {
+  it("protects only the learner gateway in the request boundary", () => {
     const proxy = read("src/proxy.ts");
 
     expect(proxy).toContain('"/learn(.*)"');
-    expect(proxy).toContain('"/sign-in(.*)"');
-    expect(proxy).toContain('"/sign-up(.*)"');
-    expect(proxy).not.toContain('"/((?!_next');
+    expect(proxy).toContain("devops_session");
+    expect(proxy).not.toContain("clerk");
   });
 
-  it("uses the learner gateway as the authentication destination", () => {
+  it("uses first-party auth routes", () => {
     const signIn = read("src/app/sign-in/[[...sign-in]]/page.tsx");
     const signUp = read("src/app/sign-up/[[...sign-up]]/page.tsx");
 
-    expect(signIn).toContain('fallbackRedirectUrl="/learn"');
-    expect(signUp).toContain('fallbackRedirectUrl="/learn"');
+    expect(signIn).toContain("<AuthForm");
+    expect(signUp).toContain("<AuthForm");
+    expect(signIn).not.toContain("Clerk");
+    expect(signUp).not.toContain("Clerk");
   });
 });

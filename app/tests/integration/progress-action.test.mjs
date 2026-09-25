@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const authMock = vi.fn();
+const currentUserMock = vi.fn();
 const completeForUserMock = vi.fn();
 
-vi.mock("@clerk/nextjs/server", () => ({
-  auth: authMock
+vi.mock("../../src/lib/server/auth.ts", () => ({
+  requireCurrentUser: currentUserMock
 }));
 
 vi.mock("../../src/lib/server/progress.ts", () => ({
@@ -17,12 +17,12 @@ const { completeLearningItemAction } = await import(
 
 describe("completeLearningItemAction", () => {
   beforeEach(() => {
-    authMock.mockReset();
+    currentUserMock.mockReset();
     completeForUserMock.mockReset();
   });
 
   it("fails closed when the request is unauthenticated", async () => {
-    authMock.mockResolvedValue({ userId: null });
+    currentUserMock.mockRejectedValue(new Error("Authentication required."));
 
     await expect(
       completeLearningItemAction({
@@ -34,8 +34,11 @@ describe("completeLearningItemAction", () => {
     expect(completeForUserMock).not.toHaveBeenCalled();
   });
 
-  it("uses the authenticated Clerk user and never accepts a browser learner id", async () => {
-    authMock.mockResolvedValue({ userId: "user_123" });
+  it("uses the authenticated self-hosted user and ignores browser identity", async () => {
+    currentUserMock.mockResolvedValue({
+      id: "user_123",
+      email: "alice@example.com"
+    });
     completeForUserMock.mockResolvedValue({
       itemType: "lesson",
       itemId: "B1.2",
@@ -55,7 +58,10 @@ describe("completeLearningItemAction", () => {
   });
 
   it("forwards only the completion contract to the authenticated service", async () => {
-    authMock.mockResolvedValue({ userId: "user_456" });
+    currentUserMock.mockResolvedValue({
+      id: "user_456",
+      email: "bob@example.com"
+    });
     completeForUserMock.mockResolvedValue({
       itemType: "assignment",
       itemId: "I1",

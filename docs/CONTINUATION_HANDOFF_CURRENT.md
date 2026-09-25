@@ -1699,3 +1699,81 @@ Do not reintroduce root-level authentication solely to protect learner progress.
 ============================================================
 END PUBLIC PROGRAMME SITE + AUTHENTICATED LEARNER GATEWAY
 ============================================================
+
+
+============================================================
+36. FIRST-PARTY AUTHENTICATION — 2026-09-25
+============================================================
+
+The previous Clerk authentication architecture is replaced on this branch by application-owned authentication.
+
+Identity authority:
+- The application itself owns learner accounts.
+- PostgreSQL stores `auth_users`.
+- PostgreSQL stores `auth_sessions`.
+- There is no Clerk, Auth0, Firebase Auth, OAuth identity provider, or other external authentication service.
+
+Account model:
+- self-registration with email + password;
+- self sign-in with email + password;
+- normalized lowercase email is the unique account identifier;
+- password minimum length is 12 characters;
+- password hashes use Node.js scrypt with a random per-password salt;
+- plaintext passwords are never persisted;
+- malformed password hashes fail closed;
+- login returns one generic invalid-credentials message.
+
+Session model:
+- the server generates a 32-byte random opaque session token;
+- only SHA-256(token) is stored in PostgreSQL;
+- the browser receives the raw token only as the `httpOnly` `devops_session` cookie;
+- cookie uses SameSite=Lax, Secure in production, Path=/, and a 30-day maximum age;
+- PostgreSQL session rows have an explicit expiration timestamp;
+- logout deletes the current session row and clears the cookie.
+
+Learner gateway:
+- `/` = public programme website;
+- `/sign-up` = first-party account registration;
+- `/sign-in` = first-party account sign-in;
+- `/learn` = authenticated learner gateway;
+- `/learn` re-derives the current user from the server-side session and never trusts a browser user ID;
+- progress writes use the same first-party user ID through a Next.js Server Action;
+- the client receives only the learner email for account display, not the internal user ID.
+
+Request boundary:
+- `src/proxy.ts` protects `/learn(.*)` when there is no session cookie;
+- the `/learn` server page performs the authoritative database-backed session validation;
+- progress Server Actions independently re-check the current session;
+- a forged or stale cookie therefore cannot directly become a trusted learner identity.
+
+Database migration:
+- `app/drizzle/migrations/0001_self_hosted_auth.sql` creates the account/session tables and indexes;
+- `scripts/run-production-migrations.mjs` is an idempotent production migration gate;
+- the production Vercel build runs the migration gate before the application build;
+- a private `_devops_programme_migrations` table records applied SQL files;
+- production migration requires `DATABASE_URL`; preview/local builds skip the production migration gate.
+
+No external-email capability:
+- email verification is not implemented;
+- password-reset email is not implemented;
+- these are intentionally excluded because the requested authentication system has no external email service.
+
+TDD:
+- `app/tests/unit/auth-security.test.mjs` covers password hashing, unique salts, malformed hashes, and verification;
+- `app/tests/integration/auth-actions.integration.test.mjs` covers registration, login, generic credential errors, and logout redirect;
+- `app/tests/integration/auth-boundary.integration.test.mjs` rejects Clerk and verifies the first-party session boundary;
+- `app/tests/integration/public-learning-boundary.integration.test.mjs` protects the public site / learner gateway separation;
+- `app/tests/integration/progress-action.test.mjs` verifies progress ownership comes from the first-party authenticated user.
+
+Current verified branch gate before merge:
+- 48 test files;
+- 329 tests;
+- first-party auth contract passes;
+- self-hosted password security tests pass;
+- progress identity tests pass.
+
+IMPORTANT:
+Do not reintroduce Clerk or another external identity provider. The requested authentication architecture is intentionally first-party and database-backed.
+============================================================
+END FIRST-PARTY AUTHENTICATION
+============================================================

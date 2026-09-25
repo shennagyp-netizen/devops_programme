@@ -7,6 +7,7 @@ const files = {
   schema: "../app/src/lib/server/schema.ts",
   migration: "../app/drizzle/migrations/0000_learner_completions.sql",
   progress: "../app/src/lib/server/progress.ts",
+  auth: "../app/src/lib/server/auth.ts",
   action: "../app/src/app/actions/progress.ts",
   contract: "../app/src/lib/progress-contract.ts",
   app: "../app/src/App.tsx",
@@ -18,6 +19,11 @@ const files = {
   signIn: "../app/src/app/sign-in/[[...sign-in]]/page.tsx",
   signUp: "../app/src/app/sign-up/[[...sign-up]]/page.tsx",
   boundaryTest: "../app/tests/integration/public-learning-boundary.integration.test.mjs",
+  authSecurityTest: "../app/tests/unit/auth-security.test.mjs",
+  authActionsTest: "../app/tests/integration/auth-actions.integration.test.mjs",
+  authBoundaryTest: "../app/tests/integration/auth-boundary.integration.test.mjs",
+  migrationAuth: "../app/drizzle/migrations/0001_self_hosted_auth.sql",
+  migrationRunner: "../scripts/run-production-migrations.mjs",
   gitignore: "../.gitignore"
 };
 
@@ -47,19 +53,19 @@ const packageJson = JSON.parse(content.package);
 assert.equal(packageJson.scripts.dev, "npm run sync:podcasts && next dev");
 assert.equal(packageJson.scripts.start, "next start");
 assert.equal(packageJson.scripts.typecheck, "tsc -b");
+assert.match(packageJson.scripts.build, /db:migrate:production/);
 assert.equal(packageJson.engines.node, ">=20.9.0");
 assert.ok(packageJson.dependencies.next);
-assert.ok(packageJson.dependencies["@clerk/nextjs"]);
+assert.equal(packageJson.dependencies["@clerk/nextjs"], undefined);
 assert.equal(packageJson.dependencies.react, "19.2.8");
 assert.equal(packageJson.dependencies["react-dom"], "19.2.8");
 assert.equal(packageJson.dependencies.next, "16.3.6");
-assert.equal(packageJson.dependencies["@clerk/nextjs"], "7.9.4");
 assert.equal(packageJson.devDependencies.vite, undefined);
 assert.equal(packageJson.devDependencies["@vitejs/plugin-react"], undefined);
 
 assert.match(content.env, /DATABASE_URL=/);
-assert.match(content.env, /NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=/);
-assert.match(content.env, /CLERK_SECRET_KEY=/);
+assert.doesNotMatch(content.env, /CLERK_/);
+assert.match(content.env, /DATABASE_URL=/);
 assert.match(content.gitignore, /\.env\*\.local/);
 
 assert.match(content.schema, /userId\s*:\s*text\("user_id"\)/);
@@ -76,8 +82,8 @@ assert.match(content.progress, /orderBy\([\s\S]*completedAt/);
 assert.doesNotMatch(content.progress, /stdout|stderr|attempt|machineEnvelope/);
 
 assert.match(content.action, /"use server"/);
-assert.match(content.action, /await auth\(\)/);
-assert.match(content.action, /Authentication required/);
+assert.match(content.action, /requireCurrentUser/);
+assert.match(content.auth, /Authentication required/);
 assert.doesNotMatch(content.action, /learnerId/);
 
 for (const itemType of ["lesson", "assignment", "question", "project"]) {
@@ -88,35 +94,40 @@ assert.doesNotMatch(content.contract, /getLearnerId|localStorage|learnerId/);
 assert.match(content.app, /^"use client";/);
 assert.match(content.app, /initialCompletionHistory/);
 assert.match(content.app, /completeLearningItemAction/);
-assert.match(content.app, /UserButton/);
+assert.match(content.app, /logoutAction/);
 assert.doesNotMatch(content.app, /getLearnerId|listCompletionHistory|\/api\/progress/);
 
 assert.doesNotMatch(content.page, /await auth\(\)/);
 assert.match(content.page, /href="\/learn"/);
 assert.match(content.page, /DevOps/);
 
-assert.match(content.learnPage, /await auth\(\)/);
+assert.match(content.learnPage, /requireCurrentUser/);
 assert.match(content.learnPage, /listCompletionHistoryForUser/);
 assert.match(content.learnPage, /redirect\("\/sign-in"\)/);
 
 assert.match(content.layout, /<body>/);
 assert.doesNotMatch(content.layout, /ClerkProvider/);
 
-assert.match(content.learnLayout, /<ClerkProvider>/);
+assert.doesNotMatch(content.learnLayout, /ClerkProvider|@clerk/);
 
-assert.match(content.proxy, /clerkMiddleware/);
+assert.doesNotMatch(content.proxy, /clerk/i);
 assert.match(content.proxy, /"\/learn\(\.\*\)"/);
-assert.match(content.proxy, /"\/sign-in\(\.\*\)"/);
-assert.match(content.proxy, /"\/sign-up\(\.\*\)"/);
-assert.doesNotMatch(content.proxy, /\/\(\(\?!_next/);
+assert.match(content.proxy, /devops_session/);
 
-assert.match(content.signIn, /<ClerkProvider>/);
-assert.match(content.signUp, /<ClerkProvider>/);
-assert.match(content.signIn, /fallbackRedirectUrl="\/learn"/);
-assert.match(content.signUp, /fallbackRedirectUrl="\/learn"/);
-assert.match(content.boundaryTest, /public marketing site and authenticated learner gateway boundary/);
-assert.match(content.signIn, /<SignIn/);
-assert.match(content.signUp, /<SignUp/);
+assert.match(content.signIn, /<AuthForm/);
+assert.match(content.signUp, /<AuthForm/);
+assert.doesNotMatch(content.signIn, /Clerk|<SignIn/);
+assert.doesNotMatch(content.signUp, /Clerk|<SignUp/);
+assert.match(content.boundaryTest, /first-party authenticated learner gateway boundary/);
+
+assert.match(content.authSecurityTest, /hashes passwords without storing the plaintext/);
+assert.match(content.authActionsTest, /generic login error/);
+assert.match(content.authBoundaryTest, /no Clerk dependency/);
+assert.match(content.migrationAuth, /auth_users/);
+assert.match(content.migrationAuth, /auth_sessions/);
+assert.match(content.migrationRunner, /VERCEL_ENV !== "production"/);
+assert.match(content.migrationRunner, /DATABASE_URL/);
+assert.match(content.migrationRunner, /_devops_programme_migrations/);
 
 for (const obsolete of [
   "../app/vite.config.ts",
@@ -136,4 +147,4 @@ for (const obsolete of [
 }
 
 console.log("Learner progress/auth architecture contract: PASS");
-console.log("Single architecture: Next.js App Router + Clerk + Drizzle/PostgreSQL + Server Actions.");
+console.log("Single architecture: Next.js App Router + first-party sessions + Drizzle/PostgreSQL + Server Actions.");
