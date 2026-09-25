@@ -1,6 +1,6 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import { requireCurrentUser } from "./auth";
 import { getDb } from "./db";
@@ -49,6 +49,39 @@ function requireAttemptId(value: unknown) {
     throw new Error("attemptId must be a non-empty string.");
   }
   return value.trim();
+}
+
+
+export async function listMasteryAttemptsForUser(
+  userId: string,
+  lessonId: string,
+  assignmentId: string
+) {
+  await ensureMasterySchema();
+
+  const rows = await getDb()
+    .select()
+    .from(learnerMasteryAttempts)
+    .where(
+      and(
+        eq(learnerMasteryAttempts.userId, userId),
+        eq(learnerMasteryAttempts.lessonId, lessonId),
+        eq(learnerMasteryAttempts.assignmentId, assignmentId)
+      )
+    )
+    .orderBy(desc(learnerMasteryAttempts.attemptNumber), desc(learnerMasteryAttempts.createdAt));
+
+  return rows.map((row) => ({
+    id: row.id,
+    lessonId: row.lessonId,
+    assignmentId: row.assignmentId,
+    attemptNumber: row.attemptNumber,
+    failureClass: row.failureClass,
+    failedFields: JSON.parse(row.failedFields) as string[],
+    remediationMethods: JSON.parse(row.remediationMethods) as string[],
+    remediationCompleted: row.remediationCompleted,
+    reattemptResult: row.reattemptResult
+  }));
 }
 
 export async function createMasteryAttempt(
