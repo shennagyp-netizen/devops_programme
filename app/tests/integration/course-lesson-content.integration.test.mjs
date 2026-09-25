@@ -191,6 +191,21 @@ describe("course lesson content integration", () => {
     });
   });
 
+  it("uses the authored distributed-systems visual for D5.3", () => {
+    const lesson = allLessons.find((item) => item.id === "D5.3");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d5-3-distributed-systems",
+      bindingId: "D5.3:d5-3-distributed-systems",
+      variant: "distributed-partial-failure-v1"
+    });
+  });
+
   it("uses the authored database-scaling visual for D5.2", () => {
     const lesson = allLessons.find((item) => item.id === "D5.2");
     expect(lesson).toBeDefined();
