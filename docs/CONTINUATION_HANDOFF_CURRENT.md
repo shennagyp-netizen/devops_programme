@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #40, commit `7d8cf51cab91ba7eb41dedce19a1d1b6cab4135a` (B3.2 incident-loop capstone script + illustration quality slice).
+**Latest main architecture/content merge:** PR #41, commit `b8e8456d19be162c64850bdaa01f319101153885` (B1.1 process-diagnosis script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #40 has merged to `main`.
+**Active content-quality branch:** none. PR #41 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1847,40 +1847,31 @@ Merged PR #35:
 Merged PR #36:
 - B2.1 -> `delivery-pipeline-v1`: Change -> Review -> Test -> Artifact -> Deploy -> Verify.
 - Merge commit: `e5ff9ff66ca5f38276a082c3d61180ddce986c64`.
-- Release identity is the evidence spine; deployment success is not runtime health.
 
 Merged PR #37:
 - B2.2 -> `observability-diagnosis-v1`: Symptom -> Scope -> Service -> Dependency -> Proof.
 - Merge commit: `a5f77bda6927d01c7510cebbac272950b27db84a`.
-- Metrics, logs, health and traces have explicit diagnostic roles.
 
 Merged PR #38:
 - B2.3 -> `backup-recovery-v1`: Backup -> Restore -> Compatibility -> Verify -> Recover.
 - Merge commit: `55f43081f3aae067c66ae29e3e104da68e4d7a8e`.
-- RPO/RTO are explicit recovery constraints; restore is not treated as recovery proof.
 
 Merged PR #39:
 - B3.1 -> `queue-state-v1`: Producer -> Queue -> Consumer -> Outcome.
 - Merge commit: `f4fed3b13a019c9b9834bbef15f2a240f2a12362`.
-- Backpressure, queue depth, consumer throughput, retry, duplicate delivery, idempotency and dead-letter behavior are explicit boundaries.
 
 Merged PR #40:
 - B3.2 -> `incident-loop-v1`: Impact -> Scope -> Evidence -> Mitigate -> Recover -> Learn.
 - Merge commit: `7d8cf51cab91ba7eb41dedce19a1d1b6cab4135a`.
-- The Beginner capstone now explicitly separates active incident mitigation from later root-cause learning and requires stable user-path recovery proof.
-- Final PR #40 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- The gold-standard script+illustration sequence now covers **B1.2, B1.3, B1.4, B1.5, B2.1, B2.2, B2.3, B3.1 and B3.2**.
-- The Beginner course's 10 lessons are now all represented in the completed course: B1.1 remains the foundational lesson to upgrade next against the same visual/script standard.
-- Next content boundary: **B1.1 — The App Is Slow — Where Do We Look?**.
 
-
-Active PR #41 scope:
-- B1.1 is the final remaining Beginner lesson being upgraded to the script+illustration gold-standard.
-- New semantic illustration: `process-diagnosis-v1`.
-- Teaching model: Symptom -> Process -> Resource -> Dependency -> Proof.
-- The rewritten script makes low/high CPU explicitly non-diagnostic, teaches process identity/state, uses ps/lsof as evidence tools, includes a safe local failure/recovery, and ends with a proof-oriented incident challenge.
-- After PR #41 merges, all 10 Beginner lessons will share the gold-standard script+illustration contract.
-- TDD/full-programme gate is required before merge.
+Merged PR #41:
+- B1.1 -> `process-diagnosis-v1`: Symptom -> Process -> Resource -> Dependency -> Proof.
+- Merge commit: `b8e8456d19be162c64850bdaa01f319101153885`.
+- B1.1 now explicitly teaches process identity/state, resource-versus-wait diagnosis, dependency evidence, safe local failure/recovery, and proof.
+- Final PR #41 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- **All 10 Beginner lessons now meet the gold-standard script+illustration contract.**
+- Completed gold-standard sequence: B1.1, B1.2, B1.3, B1.4, B1.5, B2.1, B2.2, B2.3, B3.1, B3.2.
+- Next content boundary: **Intermediate D1.1 — first lesson of I-F1 Linux and Operating Systems**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
