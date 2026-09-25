@@ -1880,5 +1880,14 @@ Merged PR #43:
 - Final PR #43 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 - Next content boundary: **D1.3 — Processes, Services, Permissions and Logs**.
 
+
+Active PR #44 scope:
+- D1.3 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `service-permission-model-v1`.
+- Teaching model: Process -> Identity -> Resource -> Service -> Logs.
+- The rewritten script makes execution context explicit: user/group, permissions, environment, service supervision and log evidence.
+- Controlled failure uses a safe temporary permission boundary and verifies recovery.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================

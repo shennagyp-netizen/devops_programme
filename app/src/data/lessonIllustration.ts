@@ -13,7 +13,8 @@ export type LessonIllustrationVariantV1 =
   | "incident-loop-v1"
   | "process-diagnosis-v1"
   | "linux-operating-model-v1"
-  | "terminal-composition-v1";
+  | "terminal-composition-v1"
+  | "service-permission-model-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -412,6 +413,36 @@ const TERMINAL_COMPOSITION_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const SERVICE_PERMISSION_MODEL_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "service-permission-model-v1",
+  title: "The service execution context",
+  stages: [
+    { id: "process", label: "Process", detail: "A running service is still a process with state, parentage and resources." },
+    { id: "identity", label: "Identity", detail: "The process runs under a user/group and an environment that shape what it can do." },
+    { id: "resource", label: "Resource", detail: "Files, directories, sockets, credentials and devices are subject to access rules." },
+    { id: "service", label: "Service", detail: "A service manager or supervisor can control startup, restart, environment and lifecycle." },
+    { id: "logs", label: "Logs", detail: "The service leaves timestamped evidence that helps explain failures and lifecycle transitions." }
+  ],
+  foundation: {
+    label: "The running process has an execution context",
+    detail: "The same application code can behave differently when user identity, permissions, environment, working directory or supervision changes."
+  },
+  callouts: [
+    { id: "user-group", label: "User + group", detail: "File and resource access is evaluated in the process's identity context." },
+    { id: "permissions", label: "Permissions", detail: "A resource can exist and still be inaccessible to the process that needs it." },
+    { id: "environment", label: "Environment", detail: "PATH, variables, working directory and credentials can differ between a shell and a managed service." },
+    { id: "lifecycle", label: "Lifecycle", detail: "A service manager can start, stop, restart and supervise a process with its own context." }
+  ],
+  failureChecks: [
+    { id: "process-context", label: "1. Process context", detail: "Under which user, environment and parent/supervisor is the process running?" },
+    { id: "resource-access", label: "2. Resource access", detail: "Can that identity actually read, write, execute or bind the resource it needs?" },
+    { id: "service-startup", label: "3. Service startup", detail: "Does the managed startup path provide the same context as the development shell?" },
+    { id: "log-evidence", label: "4. Log evidence", detail: "What timestamped event proves where the lifecycle or permission failure occurred?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -521,6 +552,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "service-permission-model-v1") {
+    return {
+      ...SERVICE_PERMISSION_MODEL_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -548,7 +586,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "incident-loop-v1" &&
     model.variant !== "process-diagnosis-v1" &&
     model.variant !== "linux-operating-model-v1" &&
-    model.variant !== "terminal-composition-v1"
+    model.variant !== "terminal-composition-v1" &&
+    model.variant !== "service-permission-model-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }

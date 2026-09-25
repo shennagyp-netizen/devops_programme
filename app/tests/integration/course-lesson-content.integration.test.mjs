@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored service execution-context visual for D1.3", () => {
+    const lesson = allLessons.find((item) => item.id === "D1.3");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d1-3-service-context",
+      bindingId: "D1.3:d1-3-service-context",
+      variant: "service-permission-model-v1"
+    });
+  });
+
   it("uses the authored terminal-composition visual for D1.2", () => {
     const lesson = allLessons.find((item) => item.id === "D1.2");
     expect(lesson).toBeDefined();
