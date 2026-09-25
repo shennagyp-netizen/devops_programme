@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored CIDR boundary visual for D1.5", () => {
+    const lesson = allLessons.find((item) => item.id === "D1.5");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d1-5-cidr-model",
+      bindingId: "D1.5:d1-5-cidr-model",
+      variant: "cidr-boundary-v1"
+    });
+  });
+
   it("uses the authored network operating model visual for D1.4", () => {
     const lesson = allLessons.find((item) => item.id === "D1.4");
     expect(lesson).toBeDefined();
