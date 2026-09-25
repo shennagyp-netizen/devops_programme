@@ -1,5 +1,6 @@
 import type { CourseLesson } from "./courseLessons";
 import type { HandsOnTask } from "./handsOn";
+import { authoredRemediation } from "./authoredRemediation";
 
 export const REMEDIATION_METHODS = [
   "plain-language",
@@ -95,11 +96,35 @@ function primaryIllustration(lesson: CourseLesson) {
   };
 }
 
+function authoredPlan(lesson: CourseLesson, task: HandsOnTask, failure: RemediationFailure): RemediationPlan | null {
+  const authored = authoredRemediation[lesson.id];
+  if (!authored) return null;
+
+  const steps = Object.entries(authored.steps).map(([method, value]) => ({
+    id: `authored-${method}`,
+    method: method as RemediationMethod,
+    ...value
+  }));
+
+  return {
+    lessonId: lesson.id,
+    taskId: task.id,
+    target: authored.target,
+    failureClass: failure.failureClass,
+    steps,
+    reattemptRule:
+      "Complete the targeted micro-task, then retry the original assignment. The original evidence contract remains unchanged."
+  };
+}
+
 export function buildRemediationPlan(
   lesson: CourseLesson,
   task: HandsOnTask,
   failure: RemediationFailure
 ): RemediationPlan {
+  const authored = authoredPlan(lesson, task, failure);
+  if (authored) return authored;
+
   const illustration = primaryIllustration(lesson);
   const firstStep = task.steps[0] ?? lesson.objective;
   const recoveryStep = task.steps[task.steps.length - 1] ??
