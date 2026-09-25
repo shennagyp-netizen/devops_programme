@@ -30,7 +30,8 @@ export type LessonIllustrationVariantV1 =
   | "container-execution-v1"
   | "docker-network-storage-v1"
   | "docker-failure-loop-v1"
-  | "kubernetes-reconciliation-v1";
+  | "kubernetes-reconciliation-v1"
+  | "kubernetes-service-path-v1";
 
 export type LessonContentBlock =
   | {
@@ -83,6 +84,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D3.2": {
+    version: 1,
+    blocks: [
+      {
+        id: "d3-2-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Kubernetes networking becomes easier when Service identity, label selection, endpoint state and Pod lifecycle are treated as separate mechanisms."
+      },
+      {
+        id: "d3-2-kubernetes-networking",
+        type: "illustration",
+        heading: "The Kubernetes Service path",
+        alt: "A stable Service selects pods through labels, creates endpoints and routes client traffic to available pods",
+        bindingId: "D3.2:d3-2-kubernetes-networking",
+        nodes: ["Service", "Selector", "Endpoints", "Pod", "Path"],
+        variant: "kubernetes-service-path-v1",
+        caption:
+          "Follow the stable Service name to the current endpoint set instead of following Pod IPs."
+      }
+    ]
+  },
+
+
   "D3.1": {
     version: 1,
     blocks: [
@@ -765,6 +791,7 @@ export function validateLessonContent(
         block.variant !== "docker-network-storage-v1" &&
         block.variant !== "docker-failure-loop-v1" &&
         block.variant !== "kubernetes-reconciliation-v1" &&
+        block.variant !== "kubernetes-service-path-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
