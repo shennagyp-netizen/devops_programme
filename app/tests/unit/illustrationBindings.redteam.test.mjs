@@ -58,7 +58,9 @@ const context = {
       ]
     }
   ],
-  voiceCueIds: new Set(["request-start"])
+  voiceCueIds: new Set(["request-start"]),
+  expectedLessonId: "B1.2",
+  expectedContentIndex: 2
 };
 
 describe("curriculum illustration binding red team", () => {
