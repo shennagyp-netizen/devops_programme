@@ -1927,26 +1927,21 @@ Merged PR #78:
 Merged PR #79:
 - D3.1 -> `kubernetes-reconciliation-v1`: Desired State -> Controller -> Observe -> Act -> Converge.
 - Merge commit: `cd7497c5bfa2f164f684eb3d46835000f3ac962a`.
-- D3.1 uses the existing reconciliation/failure script with a new semantic visual and binding contract.
 - Final PR #79 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 
 Merged PR #80:
 - D3.2 -> `kubernetes-service-path-v1`: Service -> Selector -> Endpoints -> Pod -> Path.
 - Merge commit: `a0e372c77ca8c0706a22b4accf49f918805adebc`.
-- The stale predecessor PR #56 was closed. The validated D3.2 patch was carried onto current `main` without deleting D3.3–D3.5 material.
 - Final refreshed PR #80 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- D3.2 now teaches stable Service identity, selector matching, endpoint state, Pod readiness and controlled selector failure/recovery.
-- Next content boundary: **D3.3 — Kubernetes Configuration and Storage**.
+- D3.2 teaches stable Service identity, selector matching, endpoint state, Pod readiness and controlled selector failure/recovery.
 
-- PR #81 was closed as stale; D2.6 was already merged by PR #77, and the current `main` history through D3.2 must remain authoritative.
-
-
-Active PR #82 scope:
-- D3.3 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `kubernetes-config-storage-v1`.
-- Teaching model: Config -> Secret -> Mount -> Pod -> Persistence.
-- The existing D3.3 script now has a semantic visual matching its lifecycle separation: ConfigMap, Secret, application consumption, Pod replacement and persistent storage.
-- TDD/full-programme gate is required before merge.
+Merged PR #82:
+- D3.3 -> `kubernetes-config-storage-v1`: Config -> Secret -> Mount -> Pod -> Persistence.
+- Merge commit: `2a7c58e9f8ab25264744bd9d5de62286bcc7284c`.
+- D3.3 now has a semantic visual and explicit TDD binding around ConfigMap, Secret, application consumption and persistent storage lifecycle.
+- Final PR #82 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- PR #81 was closed as stale because D2.6 had already been merged upstream as PR #77.
+- Next content boundary: **D3.4 — Kubernetes Scaling and Bottlenecks**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
