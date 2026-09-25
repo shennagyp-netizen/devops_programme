@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored Kubernetes reconciliation visual for D3.1", () => {
+    const lesson = allLessons.find((item) => item.id === "D3.1");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d3-1-kubernetes-model",
+      bindingId: "D3.1:d3-1-kubernetes-model",
+      variant: "kubernetes-reconciliation-v1"
+    });
+  });
+
   it("uses the authored Docker failure-loop visual for D2.7", () => {
     const lesson = allLessons.find((item) => item.id === "D2.7");
     expect(lesson).toBeDefined();

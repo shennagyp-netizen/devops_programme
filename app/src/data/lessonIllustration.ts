@@ -24,7 +24,8 @@ export type LessonIllustrationVariantV1 =
   | "tls-trust-v1"
   | "container-execution-v1"
   | "docker-network-storage-v1"
-  | "docker-failure-loop-v1";
+  | "docker-failure-loop-v1"
+  | "kubernetes-reconciliation-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -753,6 +754,36 @@ const DOCKER_FAILURE_LOOP_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const KUBERNETES_RECONCILIATION_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "kubernetes-reconciliation-v1",
+  title: "The Kubernetes reconciliation loop",
+  stages: [
+    { id: "desired-state", label: "Desired State", detail: "A declaration describes the workload condition the system should keep trying to satisfy." },
+    { id: "controller", label: "Controller", detail: "A controller watches relevant resources and decides how to reduce the difference between desired and actual state." },
+    { id: "observe", label: "Observe", detail: "The control plane and node components report what resources, pods and conditions actually exist." },
+    { id: "act", label: "Act", detail: "The system creates, updates, replaces or removes resources to move reality toward the requested condition." },
+    { id: "converge", label: "Converge", detail: "The loop repeats until the state matches or an external constraint keeps the desired state blocked." }
+  ],
+  foundation: {
+    label: "Reconciliation is continuous, not a one-time command",
+    detail: "A Kubernetes declaration remains a target condition; control loops keep comparing actual state with that target after the initial change."
+  },
+  callouts: [
+    { id: "declaration", label: "Declaration", detail: "YAML or another API client expresses desired state; the running system is the object to inspect." },
+    { id: "actual-state", label: "Actual state", detail: "Pods, scheduling state, image pulls, readiness and node capacity describe what exists now." },
+    { id: "control-loop", label: "Control loop", detail: "Observe, compare and act repeat continuously rather than stopping after one successful API call." },
+    { id: "impossible-state", label: "Impossible state", detail: "A controller can keep trying while an image, resource, configuration or scheduling constraint prevents convergence." }
+  ],
+  failureChecks: [
+    { id: "replica-difference", label: "1. Replica difference", detail: "Does actual replica count differ from the requested count?" },
+    { id: "scheduling", label: "2. Scheduling", detail: "Can the cluster place the desired workload with the resources and constraints that exist?" },
+    { id: "readiness", label: "3. Readiness", detail: "Did the replacement process start and become Ready, or is it failing after creation?" },
+    { id: "recovery", label: "4. Recovery", detail: "After removing the blocker, does the control loop converge back to the expected healthy state?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -939,6 +970,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "kubernetes-reconciliation-v1") {
+    return {
+      ...KUBERNETES_RECONCILIATION_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -977,7 +1015,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "tls-trust-v1" &&
     model.variant !== "container-execution-v1" &&
     model.variant !== "docker-network-storage-v1" &&
-    model.variant !== "docker-failure-loop-v1"
+    model.variant !== "docker-failure-loop-v1" &&
+    model.variant !== "kubernetes-reconciliation-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }

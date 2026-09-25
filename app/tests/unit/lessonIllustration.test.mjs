@@ -329,6 +329,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models Kubernetes as a reconciliation loop from desired state to convergence", () => {
+    const model = getLessonIllustrationModel({
+      id: "d3-1-kubernetes-model",
+      type: "illustration",
+      heading: "The Kubernetes reconciliation loop",
+      alt: "Kubernetes compares desired workload state with actual state, controllers act on the difference, and the system observes again until it converges or remains blocked",
+      bindingId: "D3.1:d3-1-kubernetes-model",
+      nodes: ["Desired State", "Controller", "Observe", "Act", "Converge"],
+      variant: "kubernetes-reconciliation-v1"
+    });
+
+    expect(model.variant).toBe("kubernetes-reconciliation-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "desired-state",
+      "controller",
+      "observe",
+      "act",
+      "converge"
+    ]);
+    expect(model.foundation.label).toBe("Reconciliation is continuous, not a one-time command");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "declaration",
+      "actual-state",
+      "control-loop",
+      "impossible-state"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "replica-difference",
+      "scheduling",
+      "readiness",
+      "recovery"
+    ]);
+  });
+
   it("models Docker networking and storage as service, network, name, port and volume boundaries", () => {
     const model = getLessonIllustrationModel({
       id: "d2-6-docker-network-storage",

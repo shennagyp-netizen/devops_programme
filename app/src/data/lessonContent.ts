@@ -29,7 +29,8 @@ export type LessonIllustrationVariantV1 =
   | "tls-trust-v1"
   | "container-execution-v1"
   | "docker-network-storage-v1"
-  | "docker-failure-loop-v1";
+  | "docker-failure-loop-v1"
+  | "kubernetes-reconciliation-v1";
 
 export type LessonContentBlock =
   | {
@@ -82,6 +83,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D3.1": {
+    version: 1,
+    blocks: [
+      {
+        id: "d3-1-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Kubernetes is easier to reason about when you see it as a reconciliation system: a declared target is compared with actual state, controllers act on the difference, and the system observes again."
+      },
+      {
+        id: "d3-1-kubernetes-model",
+        type: "illustration",
+        heading: "The Kubernetes reconciliation loop",
+        alt: "Kubernetes compares desired workload state with actual state, controllers act on the difference, and the system observes again until it converges or remains blocked",
+        bindingId: "D3.1:d3-1-kubernetes-model",
+        nodes: ["Desired State", "Controller", "Observe", "Act", "Converge"],
+        variant: "kubernetes-reconciliation-v1",
+        caption:
+          "A declaration is a target condition; reconciliation is the repeated work of moving actual state toward it."
+      }
+    ]
+  },
+
+
   "D2.7": {
     version: 1,
     blocks: [
@@ -738,6 +764,7 @@ export function validateLessonContent(
         block.variant !== "container-execution-v1" &&
         block.variant !== "docker-network-storage-v1" &&
         block.variant !== "docker-failure-loop-v1" &&
+        block.variant !== "kubernetes-reconciliation-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
