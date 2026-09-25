@@ -632,63 +632,281 @@ Speaker B: Run the lab, compare resolvers, and explain why the answer is what th
 
 EPISODE D2.3 — HTTP
 
-Speaker A: HTTP gives applications a common language over a transport. Requests, responses, headers, status codes, bodies, cookies, and connection behavior all matter.
+Speaker A: We now know how names resolve and how transport reaches a service.
 
-Speaker B: So HTTP is not the network itself.
+Speaker B: Now we need the application conversation itself.
 
-Speaker A: Correct. It rides over transport and the underlying network path.
+Speaker A: HTTP.
 
-Speaker A: Think of a courier package. The network gets the package from city to city. HTTP is the information inside the package describing what the application wants.
+Speaker B: The picture is:
 
-Speaker A: A 404 is not the same thing as a TCP timeout. A 500 means something different from a DNS failure. Layer separation is your diagnostic superpower.
+Speaker A: Request -> Headers -> Route -> Response -> Evidence.
 
-Speaker A: Real-life example: ordering food online. DNS finds the restaurant system, TCP/TLS establishes communication, HTTP carries 'I want this order,' and the application responds with a result.
+Speaker B: So HTTP is not the network.
 
-Speaker B: That is much easier to remember than forty slides of status codes.
+Speaker A: Correct. HTTP is an application protocol carried over lower layers such as transport, and often TLS.
 
-Speaker A: We still need the status codes. We just gave them a job.
+Speaker B: Make a prediction.
 
-Speaker A: Lab: use curl to inspect headers, status codes, redirects, and a JSON API.
-Speaker B: HTTP is where application engineers feel at home.
+Speaker A: A server returns HTTP 404. Did the TCP connection fail?
 
-Speaker A: Which is exactly why I want you not to skip the layers underneath it.
+Speaker B: No. The client received an HTTP response. The application layer is telling us the requested resource was not found in that application's current routing/data context.
 
-Speaker B: Right. A browser request starts with naming, transport, security, then application behavior.
+Speaker A: Good. The exact meaning depends on the application, but the key point is that you have application-layer evidence.
 
-Speaker A: Usually. And each layer can fail independently.
+Speaker B: Stage one: request.
 
-Speaker B: So a 404 is not a network outage.
+Speaker A: An HTTP request has a method, a target path and headers, and may have a body.
 
-Speaker A: Correct. A 404 is an HTTP response from an HTTP server. That tells you quite a lot already.
+Speaker B: GET, POST, PUT, DELETE and others.
 
-Speaker B: And a 500 means the application or server encountered an internal problem.
+Speaker A: Yes. The method expresses the kind of operation the client is asking for.
 
-Speaker A: Usually, yes, though the precise source depends on the system generating it. The key is that you have received an HTTP response. You are no longer looking at a pure connectivity failure.
+Speaker B: And the path identifies what resource or route the client wants.
 
-Speaker B: Real-life example?
+Speaker A: Good.
 
-Speaker A: Order a meal online. DNS gets you to the restaurant's system. TCP gives you a reliable transport. TLS protects the connection. HTTP says, “I'd like this particular thing.” The application decides whether it exists, whether you're authorized, and whether it can complete the request.
+Speaker B: Stage two: headers.
 
-Speaker B: And a 401 versus 403?
+Speaker A: Headers carry metadata around the request and response.
 
-Speaker A: Different questions. One is about authentication context; the other is about permission to perform the action. Again, don't flatten the whole system into “the request failed.”
+Speaker B: Content type.
 
-Speaker B: Prediction. If curl gets a 301, did the network fail?
+Speaker A: Yes.
 
-Speaker A: No. You received an HTTP response telling you that the resource is elsewhere. curl can follow the redirect when instructed. The important lesson is that application protocols can intentionally tell you to make another request.
+Speaker B: Authorization context.
 
-Speaker B: So status codes are evidence.
+Speaker A: Yes.
 
-Speaker A: Exactly. They're the server talking back.
+Speaker B: Cache directives.
+
+Speaker A: Yes.
+
+Speaker B: Redirect information.
+
+Speaker A: Exactly.
+
+Speaker B: So headers are part of the protocol behavior, not just decoration.
+
+Speaker A: Correct.
+
+Speaker B: Another prediction.
+
+Speaker A: An API route is correct, but the request sends the wrong Content-Type. Can the application still return an error even though TCP and TLS are working?
+
+Speaker B: Yes. The lower layers can work while the application rejects the request shape.
+
+Speaker A: Exactly.
+
+Speaker B: Stage three: route.
+
+Speaker A: The server or application selects a handler for the request's host, method and path.
+
+Speaker B: This is application routing, not IP routing.
+
+Speaker A: Very important. Same word, different layer.
+
+Speaker B: So if `/orders/123` returns 404, I can investigate the application route before blaming the network.
+
+Speaker A: Exactly.
+
+Speaker B: Stage four: response.
+
+Speaker A: The server returns a status code, response headers and, when appropriate, a body.
+
+Speaker B: Status code becomes evidence.
+
+Speaker A: Yes. 2xx means success according to the application protocol contract. 3xx describes redirection. 4xx usually describes a problem with the request or its authorization context. 5xx usually indicates server-side failure.
+
+Speaker B: Usually.
+
+Speaker A: Yes. Different systems can use specific codes in different ways, so learn the standard meaning and then inspect the actual application's contract.
+
+Speaker B: That is more accurate than memorizing '404 means the server is broken.'
+
+Speaker A: Much more accurate.
+
+Speaker B: 404 and 500 are both HTTP responses.
+
+Speaker A: Exactly.
+
+Speaker B: A TCP timeout is not.
+
+Speaker A: Correct.
+
+Speaker B: A DNS failure is not.
+
+Speaker A: Correct.
+
+Speaker B: A TLS certificate error is not an HTTP response either.
+
+Speaker A: Exactly. That layer separation is one of the most useful habits in debugging.
+
+Speaker B: Prediction.
+
+Speaker A: curl receives 301. Did the server fail?
+
+Speaker B: Not necessarily. A 301 is an HTTP response telling the client that the resource has moved to another location.
+
+Speaker A: Good.
+
+Speaker B: If curl follows redirects, it can make another HTTP request.
+
+Speaker A: Exactly.
+
+Speaker B: What about 401 and 403?
+
+Speaker A: They are different application-layer signals. A 401 usually means the request lacks valid authentication credentials for the resource. A 403 says the server understood the request but is refusing access.
+
+Speaker B: So the actual authorization model still matters.
+
+Speaker A: Yes. Read the application's behavior and headers rather than turning codes into slogans.
+
+Speaker B: What about JSON?
+
+Speaker A: JSON is one possible representation carried in the HTTP message body. Content-Type helps tell the client how to interpret it.
+
+Speaker B: So `application/json` is protocol metadata.
+
+Speaker A: Exactly.
+
+Speaker B: Now make an incident.
+
+Speaker A: Users say the order page is broken.
+
+Speaker B: First question?
+
+Speaker A: What did the user actually receive?
+
+Speaker B: Browser status? API status? Response body? Timing?
+
+Speaker A: Good.
+
+Speaker B: Suppose curl gets 404 immediately.
+
+Speaker A: What does that change?
+
+Speaker B: I already know transport worked well enough to receive an HTTP response. I focus on the request path, host, method, application route and data.
+
+Speaker A: Good.
+
+Speaker B: Now change it: curl times out.
+
+Speaker A: Different path.
+
+Speaker B: I move down to route, transport and lower-layer evidence.
+
+Speaker A: Exactly.
+
+Speaker B: Now 500.
+
+Speaker A: What do you inspect?
+
+Speaker B: Application logs, request identifiers, server-side errors and the request itself.
+
+Speaker A: Good.
+
+Speaker B: So the same user sentence produces three completely different diagnostic paths.
+
+Speaker A: That is why HTTP status is valuable evidence.
+
+Speaker B: Controlled failure?
+
+Speaker A: Use a local HTTP service you control.
+
+Speaker B: Start with a known-good endpoint.
+
+Speaker A: Good.
+
+Speaker B: Change the route so the endpoint returns 404.
+
+Speaker A: Good.
+
+Speaker B: Predict the response before calling it.
+
+Speaker A: Good.
+
+Speaker B: Then restore the route and prove the user path works again.
+
+Speaker A: Exactly.
+
+Speaker B: Another experiment: keep the route correct but send the wrong method.
+
+Speaker A: Good.
+
+Speaker B: Predict a different application response, such as 405 when the server uses that standard signal.
+
+Speaker A: Exactly. The exact code is application-specific, but the experiment teaches method-aware routing.
+
+Speaker B: And headers?
+
+Speaker A: Send an intentionally wrong Content-Type to a local API endpoint and observe how the application reacts.
+
+Speaker B: So the learner sees that headers can change application behavior.
+
+Speaker A: Exactly.
 
 Speaker B: Mac lab?
 
-Speaker A: Use curl to inspect response headers, follow a redirect, and ask for a JSON endpoint. Read the headers before reading the body. Look for status, content type, location, caching, and any request identifiers.
+Speaker A: Use curl.
 
-Speaker B: It turns a black-box request into a conversation.
+Speaker B: First inspect status and response headers.
 
-Speaker A: That's what HTTP is. A structured conversation carried over lower layers.
+Speaker A: Good.
 
+Speaker B: Follow one redirect.
+
+Speaker A: Good.
+
+Speaker B: Query a JSON endpoint and inspect Content-Type.
+
+Speaker A: Good.
+
+Speaker B: Then introduce one controlled application-level failure.
+
+Speaker A: Good.
+
+Speaker B: Record the request, expected response, actual response and recovery.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: What layer does HTTP belong to?
+
+Speaker B: The application layer.
+
+Speaker A: What is the difference between an HTTP 404 and a TCP timeout?
+
+Speaker B: A 404 is an HTTP response from the application protocol. A timeout means the expected lower-level response did not arrive in time.
+
+Speaker A: What do headers do?
+
+Speaker B: They carry metadata that can affect or describe the request and response, such as content type, authorization context, caching and redirects.
+
+Speaker A: What does 301 tell you?
+
+Speaker B: The resource is being redirected; it is an application-level response, not a network failure.
+
+Speaker A: Why does 500 tell you more than 'the network is broken'?
+
+Speaker B: Because the server reached the HTTP layer and returned a server-side application error.
+
+Speaker A: Final challenge.
+
+Speaker B: Users say the order page is broken.
+
+Speaker A: Your first model?
+
+Speaker B: Request -> Headers -> Route -> Response -> Evidence. I inspect the actual HTTP response first, then move down to DNS, transport or TLS only when the HTTP evidence says the request never reached the application layer.
+
+Speaker A: Good.
+
+Speaker B: So HTTP makes the lower layers visible through an application conversation.
+
+Speaker A: Exactly.
+
+Speaker B: Run the lab, change one application behavior, predict the response, recover it, and explain what the status and headers proved.
 
 EPISODE D2.4 — TLS and HTTPS
 

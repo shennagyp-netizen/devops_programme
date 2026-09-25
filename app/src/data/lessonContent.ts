@@ -24,7 +24,8 @@ export type LessonIllustrationVariantV1 =
   | "cidr-boundary-v1"
   | "routing-boundary-v1"
   | "transport-contract-v1"
-  | "dns-resolution-v1";
+  | "dns-resolution-v1"
+  | "http-exchange-v1";
 
 export type LessonContentBlock =
   | {
@@ -77,6 +78,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D2.3": {
+    version: 1,
+    blocks: [
+      {
+        id: "d2-3-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "HTTP is an application protocol carried over lower network layers. Its method, path, headers, status and body give you different evidence than DNS, transport or TLS."
+      },
+      {
+        id: "d2-3-http",
+        type: "illustration",
+        heading: "The HTTP exchange",
+        alt: "An HTTP request carries method, path and headers to an application route that returns a status, headers and body for the client to interpret",
+        bindingId: "D2.3:d2-3-http",
+        nodes: ["Request", "Headers", "Route", "Response", "Evidence"],
+        variant: "http-exchange-v1",
+        caption:
+          "Read HTTP as a structured application conversation on top of lower layers."
+      }
+    ]
+  },
+
+
   "D2.2": {
     version: 1,
     blocks: [
@@ -603,6 +629,7 @@ export function validateLessonContent(
         block.variant !== "cidr-boundary-v1" &&
         block.variant !== "routing-boundary-v1" &&
         block.variant !== "dns-resolution-v1" &&
+        block.variant !== "http-exchange-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);

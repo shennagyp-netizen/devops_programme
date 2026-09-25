@@ -1909,5 +1909,14 @@ Merged PR #49:
 - Final PR #49 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
 - Next content boundary: **D2.3 — HTTP**.
 
+
+Active PR #50 scope:
+- D2.3 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `http-exchange-v1`.
+- Teaching model: Request -> Headers -> Route -> Response -> Evidence.
+- The rewritten script separates application-layer HTTP evidence from DNS, transport and TLS failures, and teaches status codes as evidence rather than slogans.
+- Controlled local failures cover 404/route behavior, method mismatch and request-header effects, followed by recovery proof.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
