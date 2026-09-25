@@ -1,7 +1,9 @@
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   check,
   index,
+  integer,
   pgTable,
   text,
   timestamp,
@@ -84,11 +86,11 @@ export const learnerMasteryAttempts = pgTable(
       .references(() => authUsers.id, { onDelete: "cascade" }),
     lessonId: text("lesson_id").notNull(),
     assignmentId: text("assignment_id").notNull(),
-    attemptNumber: text("attempt_number").notNull(),
+    attemptNumber: integer("attempt_number").notNull(),
     failureClass: text("failure_class").notNull(),
     failedFields: text("failed_fields").notNull().default("[]"),
     remediationMethods: text("remediation_methods").notNull().default("[]"),
-    remediationCompleted: text("remediation_completed").notNull().default("false"),
+    remediationCompleted: boolean("remediation_completed").notNull().default(false),
     reattemptResult: text("reattempt_result").notNull().default("pending"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
