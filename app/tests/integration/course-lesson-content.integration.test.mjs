@@ -60,6 +60,36 @@ describe("course lesson content integration", () => {
       expect(lesson.content.blocks[1].type, lesson.id).toBe("illustration");
     }
   });
+  it("uses the authored scaling control-loop visual for D5.1", () => {
+    const lesson = allLessons.find((item) => item.id === "D5.1");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d5-1-scaling",
+      bindingId: "D5.1:d5-1-scaling",
+      variant: "scaling-control-loop-v1"
+    });
+  });
+
+  it("uses the authored database-scale visual for D5.2", () => {
+    const lesson = allLessons.find((item) => item.id === "D5.2");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d5-2-database-scale",
+      bindingId: "D5.2:d5-2-database-scale",
+      variant: "database-scale-v1"
+    });
+  });
+
   it("uses the authored incident-loop visual for B3.2", () => {
     const lesson = allLessons.find((item) => item.id === "B3.2");
     expect(lesson).toBeDefined();
