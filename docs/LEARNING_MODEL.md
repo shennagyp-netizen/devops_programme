@@ -5,7 +5,9 @@
 Understand -> Predict -> Operate -> Break -> Diagnose -> Repair -> Recall -> Design
 
 Each concept can be represented as:
-textbook + podcast + co-teacher + motion + platform-specific lab + retrieval + deliberate failure + production design + assessment.
+ordered lesson content feed + podcast + co-teacher + motion + platform-specific lab + retrieval + deliberate failure + production design + assessment.
+
+The lesson content feed can interleave written explanation, visual/illustration blocks and video. Video is optional supporting content; the written lesson remains the complete mechanism explanation. The feed is separate from podcast timing and the audio synchronization contract.
 
 ## Human-first teaching
 
