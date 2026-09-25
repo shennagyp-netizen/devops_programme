@@ -1952,17 +1952,14 @@ Merged PR #84:
 - Merge commit: `e9858af68efe906a3e6c20c01e71e3b8c067c4b2`.
 - Final PR #84 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 - D3.5 now turns CrashLoopBackOff, ImagePullBackOff, OOMKilled, readiness failure and selector failure into one controlled diagnosis/recovery loop.
-- The illustration registry was rebuilt from green `main` before the final successful gate to eliminate a transient parser inconsistency.
-- **D3.1–D3.5 are now all gold-standard script+illustration units.**
-- Next content boundary: **D4.1 — Git as a Production Workflow**.
 
-
-Active D4.1 current-main port v2:
-- D4.1 is ported again from current `main` after D3.5 merged, so the continuation handoff retains the complete Kubernetes block.
-- Semantic illustration: `git-production-workflow-v1`.
-- Teaching model: Change -> Review -> Commit -> Release -> Recovery.
-- The existing D4.1 script already teaches source identity, release identity, repository-vs-runtime separation and recovery constraints.
-- TDD/full-programme gate is required before merge.
+Merged PR #86:
+- D4.1 -> `git-production-workflow-v1`: Change -> Review -> Commit -> Release -> Recovery.
+- Merge commit: `0b39d885b8623d8e396da986b1b282e1b593f774`.
+- The existing D4.1 production-workflow script now has a semantic visual and dedicated TDD binding on the post-D3.5 main lineage.
+- Final D4.1 gate passed all programme contracts, full unit/integration tests, TypeScript and the Next.js production build.
+- PR #85 was closed as stale after D3.5 changed the main lineage; D4.1 was safely re-ported as PR #86.
+- Next content boundary: **D4.2 — Continuous Integration and Quality Gates**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
