@@ -997,62 +997,394 @@ Speaker A: Run the design exercise, remove one region, and prove the surviving a
 
 EPISODE D5.8 — The Production Incident
 
-Speaker A: Final exercise. Latency rises. Error rate rises. Queue depth rises. Database CPU rises. Pods restart.
+Speaker A: This is the final incident exercise.
 
-Speaker B: That sounds less like an exam and more like a personal attack.
-
-Speaker A: It is a practical exam.
-
-Speaker A: In a real incident, you do not start by changing random settings. Observe. Form a hypothesis. Measure. Isolate. Reduce the impact. Recover. Then find root cause and prevent recurrence.
-
-Speaker A: Real-life analogy: emergency medicine. Triage first, stabilize the patient, then investigate the deeper cause.
-
-Speaker B: And the social lesson?
-
-Speaker A: During an incident, calm communication is part of the system. People need clear facts, ownership, timelines, and decisions. Panic is not an observability signal.
-
-Speaker A: Lab: given a dashboard and logs, identify the most likely failure, perform the minimum safe safer action, and explain why you chose it.
-
-Speaker B: So the final skill is not knowing every tool.
-
-Speaker A: Correct. It is knowing how to think when the tools disagree with your expectations.
-Speaker B: Production incident. No architecture diagram saves you when the phones start ringing.
-
-Speaker A: They help, but yes, the immediate problem is turning noise into a bounded diagnosis.
-
-Speaker B: Emergency medicine analogy.
-
-Speaker A: Triage. First determine what is failing, who is affected, and whether there is immediate danger. Then stabilize. Then investigate deeply.
-
-Speaker B: So safer action before root-cause perfection.
-
-Speaker A: Often, yes. You need to reduce harm while preserving enough evidence to understand what happened.
-
-Speaker B: Prediction. Latency doubles across one region. Error rate is rising. A deploy happened fifteen minutes ago.
-
-Speaker A: What's your first move?
-
-Speaker B: Don't immediately roll back just because the deploy is suspicious. First determine whether the affected population matches the deployment scope, compare the timing, inspect signals, and decide whether rollback is a safe safer action.
-
-Speaker A: Good. And if rollback is clearly the lowest-risk safer action?
-
-Speaker B: Do it, then keep investigating.
+Speaker B: The kind where every graph decides to look guilty?
 
 Speaker A: Exactly.
 
-Speaker B: “Panic is not an observability signal.”
+Speaker B: So the visual is:
 
-Speaker A: Please put that on the wall.
+Speaker A: Impact -> Diagnosis -> Mitigate -> Recover -> Root Cause -> Learn.
 
-Speaker B: Mac exercise?
+Speaker B: Six stages.
 
-Speaker A: Take a fictional incident and write the first ten minutes minute by minute. What do you observe? What hypothesis do you form? What is the least risky safer action? What evidence do you preserve? What tells you recovery succeeded?
+Speaker A: Six different questions.
 
-Speaker B: Then after recovery, postmortem.
+Speaker B: Start with impact.
 
-Speaker A: Right. Not a blame document. A learning document: what failed, why detection or safer action took time, what changes reduce recurrence, and what evidence would tell us the fix works.
+Speaker A: Users report that checkout is slow.
 
-Speaker B: So the final skill isn't knowing every tool.
+Speaker B: Latency is rising.
 
-Speaker A: It's staying rational while the system is not.
+Speaker A: Error rate is rising.
+
+Speaker B: Queue depth is rising.
+
+Speaker A: Database CPU is rising.
+
+Speaker B: Some application processes are restarting.
+
+Speaker A: Good. Now stop.
+
+Speaker B: Do not change anything yet.
+
+Speaker A: Right. First ask: who is affected, which action is failing, and how bad is it?
+
+Speaker B: That is impact.
+
+Speaker A: Yes.
+
+Speaker B: Next: diagnosis.
+
+Speaker A: Build the timeline.
+
+Speaker B: When did latency rise?
+
+Speaker A: When did errors rise?
+
+Speaker B: Did a deployment happen?
+
+Speaker A: Did traffic change?
+
+Speaker B: Did a dependency change?
+
+Speaker A: Good.
+
+Speaker B: Now make a prediction.
+
+Speaker A: A new release went out fifteen minutes before the incident. Is rollback automatically the first move?
+
+Speaker B: No. The release is a strong clue, but I still need to check scope, timing, runtime signals and the risk of rollback.
+
+Speaker A: Good.
+
+Speaker B: That is important.
+
+Speaker A: A clue is not proof.
+
+Speaker B: What if the affected users are only in one region and the release went to every region?
+
+Speaker A: Then the release may be only part of the story.
+
+Speaker B: I would compare the failure scope with the release scope.
+
+Speaker A: Exactly.
+
+Speaker B: Build competing hypotheses.
+
+Speaker A: Go.
+
+Speaker B: Hypothesis one: the new release increased database work.
+
+Speaker A: Good.
+
+Speaker B: Hypothesis two: traffic changed and the database reached a safe limit.
+
+Speaker A: Good.
+
+Speaker B: Hypothesis three: a shared dependency became slow.
+
+Speaker A: Good.
+
+Speaker B: Hypothesis four: the process restarts are a side effect, not the first cause.
+
+Speaker A: Excellent.
+
+Speaker B: Now mitigate.
+
+Speaker A: The system is still hurting users. What action has the smallest safe blast radius?
+
+Speaker B: Maybe reduce traffic to the failing region.
+
+Speaker A: Maybe.
+
+Speaker B: Maybe reduce worker concurrency.
+
+Speaker A: Maybe.
+
+Speaker B: Maybe pause a non-critical workload.
+
+Speaker A: Maybe.
+
+Speaker B: Maybe rollback the release.
+
+Speaker A: Maybe.
+
+Speaker B: The right action depends on evidence and risk.
+
+Speaker A: Exactly.
+
+Speaker B: So mitigation is not the same as diagnosis.
+
+Speaker A: Correct. You can reduce harm before every cause is known.
+
+Speaker B: But we should not destroy the evidence.
+
+Speaker A: Right. Preserve logs, timestamps, release identity and the state that helps explain the failure.
+
+Speaker B: Another prediction.
+
+Speaker A: We restart every worker process at once. Is that always safe?
+
+Speaker B: No. It can increase load on a shared dependency, create more retries, or remove useful evidence.
+
+Speaker A: Good.
+
+Speaker B: So a large action can make the incident larger.
+
+Speaker A: Exactly.
+
+Speaker B: Now recovery.
+
+Speaker A: How do we know recovery happened?
+
+Speaker B: The dashboard is green?
+
+Speaker A: Too weak.
+
+Speaker B: The command finished?
+
+Speaker A: Still too weak.
+
+Speaker B: The real user path works again.
+
+Speaker A: Good.
+
+Speaker B: Then we watch it for stability.
+
+Speaker A: Exactly.
+
+Speaker B: So recovery proof includes user behavior and the signals that matter to that behavior.
+
+Speaker A: Yes.
+
+Speaker B: Latency back near the known-good range.
+
+Speaker A: Good.
+
+Speaker B: Error rate back under the agreed limit.
+
+Speaker A: Good.
+
+Speaker B: Queue depth no longer growing.
+
+Speaker A: Good.
+
+Speaker B: Database load inside safe limits.
+
+Speaker A: Good.
+
+Speaker B: And one real checkout succeeds.
+
+Speaker A: Exactly.
+
+Speaker B: Now root cause.
+
+Speaker A: Only after the system is stable do we force the deeper explanation.
+
+Speaker B: Suppose the new release changed one query and increased database work.
+
+Speaker A: What evidence should support that story?
+
+Speaker B: The release identity, the query change, the timing, database behavior, affected requests, and the result of a safe test or rollback.
+
+Speaker A: Good.
+
+Speaker B: And if we cannot explain the whole chain?
+
+Speaker A: Say so. An incomplete explanation is better than a false one.
+
+Speaker B: That is important in a post-incident review.
+
+Speaker A: Very.
+
+Speaker B: Now learning.
+
+Speaker A: A postmortem should not stop at the incident ended.
+
+Speaker B: It should ask what will change.
+
+Speaker A: Detection.
+
+Speaker B: Tests.
+
+Speaker A: Capacity.
+
+Speaker B: Architecture.
+
+Speaker A: Runbooks.
+
+Speaker B: Deployment controls.
+
+Speaker A: Good.
+
+Speaker B: And every important action should lead to a test.
+
+Speaker A: Exactly.
+
+Speaker B: If the problem was a query plan, add a test that would catch the bad plan or a change that makes the plan safe.
+
+Speaker A: Good.
+
+Speaker B: If the problem was capacity, add a load test or a capacity alert tied to the real limit.
+
+Speaker A: Good.
+
+Speaker B: If the problem was a shared dependency, change the architecture or add a controlled failure test.
+
+Speaker A: Exactly.
+
+Speaker B: So learning is not a list of promises.
+
+Speaker A: It is a list of changes that can be checked.
+
+Speaker B: Human example?
+
+Speaker A: Emergency medicine.
+
+Speaker B: First triage.
+
+Speaker A: Then stabilize.
+
+Speaker B: Then diagnose.
+
+Speaker A: Then treat the deeper cause.
+
+Speaker B: Then learn from the case.
+
+Speaker A: Good. The details differ, but the order helps people avoid making the situation worse while searching for certainty.
+
+Speaker B: Now communication.
+
+Speaker A: Facts first.
+
+Speaker B: What we know.
+
+Speaker A: What we think.
+
+Speaker B: What we changed.
+
+Speaker A: What we will check next.
+
+Speaker B: And what we do not know yet.
+
+Speaker A: Exactly.
+
+Speaker B: Panic is not a useful system signal.
+
+Speaker A: Keep that sentence.
+
+Speaker B: Prediction pause.
+
+Speaker A: Latency doubles in one region. Error rate rises. A deploy happened fifteen minutes earlier. What is the first safe question?
+
+Speaker B: Does the affected population match the deploy scope?
+
+Speaker A: Good.
+
+Speaker B: Then compare timing and runtime signals.
+
+Speaker A: Good.
+
+Speaker B: Then choose the smallest action that reduces harm.
+
+Speaker A: Good.
+
+Speaker B: Another prediction.
+
+Speaker A: The queue stops growing after a mitigation, but checkout still fails. Are we recovered?
+
+Speaker B: No. The queue signal improved, but the user path is still broken.
+
+Speaker A: Exactly.
+
+Speaker B: Another.
+
+Speaker A: Checkout works once, then five minutes later latency rises again. Is recovery proven?
+
+Speaker B: Not yet. We need stable behavior over the recovery window that matters to the service.
+
+Speaker A: Good.
+
+Speaker B: Mac lab?
+
+Speaker A: Take a fictional production incident with these signals: rising latency, rising errors, growing queue depth, high database CPU and restarting workers.
+
+Speaker B: First write the user impact.
+
+Speaker A: Good.
+
+Speaker B: Then build a ten-minute timeline.
+
+Speaker A: Good.
+
+Speaker B: Write three or four competing hypotheses.
+
+Speaker A: Good.
+
+Speaker B: Choose the smallest safe action.
+
+Speaker A: Good.
+
+Speaker B: Predict the signals before the action.
+
+Speaker A: Good.
+
+Speaker B: Apply the action in the exercise model.
+
+Speaker A: Good.
+
+Speaker B: Prove recovery with the original user path and the key system signals.
+
+Speaker A: Good.
+
+Speaker B: Then write the root-cause evidence and one prevention test.
+
+Speaker A: Exactly.
+
+Speaker B: What should success look like?
+
+Speaker A: You can explain not only what happened, but why you chose each action, what the evidence proved, what stayed uncertain, and how the system becomes stronger after the incident.
+
+Speaker B: Recall.
+
+Speaker A: Why do we start with impact?
+
+Speaker B: Because the first job is to understand what users and business operations are losing.
+
+Speaker A: Why can mitigation happen before root-cause certainty?
+
+Speaker B: Because reducing harm can be more urgent than proving the full cause, as long as the action is safe and evidence is preserved.
+
+Speaker A: What proves recovery?
+
+Speaker B: Stable restoration of the real user path plus the signals that support that behavior.
+
+Speaker A: Why keep competing hypotheses?
+
+Speaker B: Because the first plausible explanation can be wrong, and incidents often combine several failures.
+
+Speaker A: What should learning produce?
+
+Speaker B: Concrete changes and tests that reduce the chance or impact of recurrence.
+
+Speaker A: Final challenge.
+
+Speaker B: Production is failing.
+
+Speaker A: Your model?
+
+Speaker B: Impact -> Diagnosis -> Mitigate -> Recover -> Root Cause -> Learn.
+
+Speaker A: And the rule?
+
+Speaker B: Reduce harm. Preserve evidence. Prove recovery. Then explain the cause and strengthen the system.
+
+Speaker A: Exactly.
+
+Speaker B: That is the skill we wanted from the whole programme.
+
+Speaker A: Stay calm enough to read the evidence, and disciplined enough to prove the recovery.
+
 
