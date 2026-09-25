@@ -8,7 +8,7 @@
 
 **Latest main architecture/content merge:** PR #62, commit `049d6ddeb8b3f7ec41eef59d4a88292f288de0dc` (D3.5 Kubernetes failure-loop script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #62 has merged to `main`.
+**Active content-quality branch:** none. PR #65 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1867,7 +1867,7 @@ Merged PR #40:
 Merged PR #41:
 - B1.1 -> `process-diagnosis-v1`: Symptom -> Process -> Resource -> Dependency -> Proof.
 - Merge commit: `b8e8456d19be162c64850bdaa01f319101153885`.
-- All 10 Beginner lessons now meet the gold-standard script+illustration contract.
+- All 10 Beginner lessons meet the gold-standard script+illustration contract.
 
 Merged PR #42:
 - D1.1 -> `linux-operating-model-v1`: Application -> Process -> Kernel -> Resources -> Evidence.
@@ -1920,46 +1920,36 @@ Merged PR #53:
 Merged PR #54:
 - D2.7 -> `docker-failure-loop-v1`: Baseline -> Change -> Symptom -> Evidence -> Recovery.
 - Merge commit: `03849b29c7d108797858fe2a91491d89bb91385e`.
-- Final PR #54 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- Day 2 is now gold-standard from D2.1 through D2.7.
+- Day 2 is gold-standard from D2.1 through D2.7.
 
 Merged PR #55:
 - D3.1 -> `kubernetes-reconciliation-v1`: Desired State -> Controller -> Observe -> Act -> Converge.
 - Merge commit: `a66a3abb9be8db6b867f85d1430b4dba35934af1`.
-- Final PR #55 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 
 Merged PR #59:
 - D3.2 -> `kubernetes-networking-v1`: Service -> Selector -> Endpoint set -> Pod -> Evidence.
 - Merge commit: `e634e8709a7cfe642b59c6f3966f700ea10947ab`.
-- Final PR #59 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 
 Merged PR #60:
 - D3.3 -> `kubernetes-config-storage-v1`: Config -> Secret -> Mount -> Pod -> Persistence.
 - Merge commit: `68ee5fb403fc0a729dcef2d26ad3da587abd247f`.
-- Final PR #60 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 
 Merged PR #61:
 - D3.4 -> `kubernetes-health-scaling-v1`: Startup -> Readiness -> Liveness -> Capacity -> Rollout.
 - Merge commit: `95bd718feb0344789fd6ce4cdb68dd9bb89f3cce`.
-- Final PR #61 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 
 Merged PR #62:
 - D3.5 -> `kubernetes-failure-loop-v1`: Baseline -> Fault -> Symptom -> Evidence -> Recovery.
 - Merge commit: `049d6ddeb8b3f7ec41eef59d4a88292f288de0dc`.
-- D3.5 now treats CrashLoopBackOff, ImagePullBackOff, OOMKilled, failed readiness and bad selectors as evidence clues rather than diagnoses.
-- The controlled lab uses one-fault-at-a-time exercises with a written prediction, evidence sequence and stable recovery proof.
-- Final PR #62 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- Day 3 is now gold-standard from D3.1 through D3.5.
-- Next content boundary: inspect the following Intermediate lesson after D3.5 in the current programme source.
+- Day 3 is gold-standard from D3.1 through D3.5.
 
-
-Active PR #65 scope:
-- D4.1 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `git-production-workflow-v1`.
-- Teaching model: Change -> Review -> Commit -> Release -> Recovery.
-- The rewritten script teaches production traceability, review as a control point, commit/release identity, and recovery without confusing Git history with deployment state.
-- The lab deliberately creates one local bad release, records its identity, and proves recovery to a known-good version.
-- TDD/full-programme gate is required before merge.
+Merged PR #65:
+- D4.1 -> `git-production-workflow-v1`: Change -> Review -> Commit -> Release -> Recovery.
+- Merge commit: `6f42ff6fb143deca8fef328badb3424edab1c6b7`.
+- D4.1 now teaches production traceability, review as a control point, stable source/release identity and recovery without confusing repository state with deployed state.
+- Final PR #65 gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
+- Duplicate D2.6 PRs #63/#64 were closed because current `main` already contains the validated D2.6 implementation.
+- Next content boundary: **D4.2 — CI/CD Mental Model**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
