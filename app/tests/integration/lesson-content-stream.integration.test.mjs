@@ -5,9 +5,9 @@ import { resolve } from "node:path";
 const source = (path) =>
   readFileSync(resolve(process.cwd(), path), "utf8");
 
-describe("lesson content feed integration contract", () => {
-  const feed = () => source("src/components/LessonContentFeed.tsx");
+const feed = () => source("src/components/LessonContentFeed.tsx");
 
+describe("lesson content feed integration contract", () => {
   it("renders the authored blocks in their input order", () => {
     const code = feed();
     const tick = String.fromCharCode(96);
