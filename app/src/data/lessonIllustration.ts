@@ -31,7 +31,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-health-scaling-v1"
   | "kubernetes-failure-loop-v1"
   | "git-production-workflow-v1"
-  | "cicd-control-path-v1";
+  | "cicd-control-path-v1"
+  | "github-actions-execution-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -966,6 +967,36 @@ const CICD_CONTROL_PATH_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const GITHUB_ACTIONS_EXECUTION_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "github-actions-execution-v1",
+  title: "The GitHub Actions execution model",
+  stages: [
+    { id: "workflow", label: "Workflow", detail: "The workflow file declares when automation runs and which jobs form the pipeline." },
+    { id: "job", label: "Job", detail: "A job groups related work and runs in one execution environment." },
+    { id: "runner", label: "Runner", detail: "The runner is the machine or execution environment where the job actually runs." },
+    { id: "steps", label: "Steps", detail: "Ordered steps run commands and actions, producing logs and outputs that explain the job result." },
+    { id: "artifact", label: "Artifact", detail: "A produced artifact can move the validated result to a later stage instead of rebuilding it silently." }
+  ],
+  foundation: {
+    label: "GitHub Actions encodes the pipeline; it does not replace the control model",
+    detail: "Workflow syntax is implementation detail; the durable model is still source, validation, artifact, promotion and verification."
+  },
+  callouts: [
+    { id: "runner", label: "Runner", detail: "The runner provides the execution environment, including operating system, installed tools and temporary state." },
+    { id: "cache", label: "Cache", detail: "A cache reuses data to make later work faster; it is not the authoritative build output." },
+    { id: "artifact", label: "Artifact", detail: "An artifact is a produced result that later jobs or humans may need to consume." },
+    { id: "secrets", label: "Secrets", detail: "Credentials and sensitive values should enter through secure runtime configuration, not source files or baked artifacts." }
+  ],
+  failureChecks: [
+    { id: "job-context", label: "1. Job context", detail: "Which runner, permissions, environment and dependencies does the job actually have?" },
+    { id: "step-log", label: "2. Step evidence", detail: "Which exact step failed, and what do its logs prove about the failure?" },
+    { id: "output-identity", label: "3. Output identity", detail: "Is the produced artifact or output the one intended for the next stage?" },
+    { id: "secret-boundary", label: "4. Secret boundary", detail: "Did any credential enter logs, source, cache or artifacts where it should not?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1201,6 +1232,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "github-actions-execution-v1") {
+    return {
+      ...GITHUB_ACTIONS_EXECUTION_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1246,7 +1284,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "kubernetes-health-scaling-v1" &&
     model.variant !== "kubernetes-failure-loop-v1" &&
     model.variant !== "git-production-workflow-v1" &&
-    model.variant !== "cicd-control-path-v1"
+    model.variant !== "cicd-control-path-v1" &&
+    model.variant !== "github-actions-execution-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
