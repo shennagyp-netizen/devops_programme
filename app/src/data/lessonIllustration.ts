@@ -5,7 +5,8 @@ export type LessonIllustrationVariantV1 =
   | "container-boundary-v1"
   | "request-path-v1"
   | "https-stack-v1"
-  | "repeatable-service-v1";
+  | "repeatable-service-v1"
+  | "delivery-pipeline-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -167,6 +168,35 @@ const REPEATABLE_SERVICE_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const DELIVERY_PIPELINE_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "delivery-pipeline-v1",
+  title: "The release path",
+  stages: [
+    { id: "change", label: "Change", detail: "Create a reviewable code change with a stable source identity." },
+    { id: "review", label: "Review", detail: "Another engineer can inspect what changed before it becomes a release." },
+    { id: "test", label: "Test", detail: "Automated checks provide evidence about the proposed change." },
+    { id: "artifact", label: "Artifact", detail: "Build one identifiable artifact that can be promoted through environments." },
+    { id: "deploy", label: "Deploy", detail: "Place that identified artifact into the target environment." },
+    { id: "verify", label: "Verify", detail: "Check runtime health and real user behavior after deployment." }
+  ],
+  foundation: {
+    label: "Release identity",
+    detail: "A fixed release identifier lets operators answer exactly what was built, tested and deployed."
+  },
+  callouts: [
+    { id: "build-once", label: "Build once, promote the artifact", detail: "Avoid rebuilding at deployment time when the delivery model depends on artifact identity." },
+    { id: "rollback-scope", label: "Rollback has scope", detail: "Application code can be reversible while database schema or data changes may require a different recovery plan." }
+  ],
+  failureChecks: [
+    { id: "known-change", label: "1. Known change?", detail: "Can you identify the exact source change that created this release?" },
+    { id: "tested-artifact", label: "2. Tested artifact?", detail: "Can you prove the deployed artifact is the one that passed the intended checks?" },
+    { id: "deployed-version", label: "3. Deployed version?", detail: "Can the running environment identify exactly which release is active?" },
+    { id: "runtime-health", label: "4. Runtime healthy?", detail: "Did the real service remain healthy after deployment?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -220,6 +250,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "delivery-pipeline-v1") {
+    return {
+      ...DELIVERY_PIPELINE_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -239,7 +276,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "container-boundary-v1" &&
     model.variant !== "request-path-v1" &&
     model.variant !== "https-stack-v1" &&
-    model.variant !== "repeatable-service-v1"
+    model.variant !== "repeatable-service-v1" &&
+    model.variant !== "delivery-pipeline-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
