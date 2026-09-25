@@ -35,7 +35,9 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
   | "kubernetes-failure-loop-v1"
-  | "git-production-workflow-v1";
+  | "git-production-workflow-v1"
+  | "scaling-control-loop-v1"
+  | "database-scale-v1";
 
 export type LessonContentBlock =
   | {
@@ -88,6 +90,56 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D5.1": {
+    version: 1,
+    blocks: [
+      {
+        id: "d5-1-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Scaling is a system decision. More servers help only when the constrained part of the workload can use the added capacity."
+      },
+      {
+        id: "d5-1-scaling",
+        type: "illustration",
+        heading: "The scaling control path",
+        alt: "Rising workload meets capacity limits, is distributed across instances, constrained by shared state, and diagnosed through the active bottleneck and evidence",
+        bindingId: "D5.1:d5-1-scaling",
+        nodes: ["Workload", "Capacity", "Distribution", "Shared State", "Bottleneck", "Evidence"],
+        variant: "scaling-control-loop-v1",
+        caption:
+          "Find the first constrained dependency before deciding how to scale."
+      }
+    ]
+  },
+
+
+  "D5.2": {
+    version: 1,
+    blocks: [
+      {
+        id: "d5-2-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Database scaling must improve capacity without breaking correctness. Indexes, transactions, replication and partitioning solve different problems and create different trade-offs."
+      },
+      {
+        id: "d5-2-database-scale",
+        type: "illustration",
+        heading: "The database scaling path",
+        alt: "A database workload follows an access path, preserves transaction correctness, expands through copies or partitioning, and is evaluated with evidence",
+        bindingId: "D5.2:d5-2-database-scale",
+        nodes: ["Query", "Access Path", "Correctness", "Copies", "Distribution", "Evidence"],
+        variant: "database-scale-v1",
+        caption:
+          "Choose the database mechanism from the workload and correctness constraint, then measure the trade-off."
+      }
+    ]
+  },
+
+
   "D4.1": {
     version: 1,
     blocks: [
@@ -900,6 +952,8 @@ export function validateLessonContent(
         block.variant !== "kubernetes-health-scaling-v1" &&
         block.variant !== "kubernetes-failure-loop-v1" &&
         block.variant !== "git-production-workflow-v1" &&
+        block.variant !== "scaling-control-loop-v1" &&
+        block.variant !== "database-scale-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);

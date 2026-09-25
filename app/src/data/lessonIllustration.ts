@@ -30,7 +30,9 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
   | "kubernetes-failure-loop-v1"
-  | "git-production-workflow-v1";
+  | "git-production-workflow-v1"
+  | "scaling-control-loop-v1"
+  | "database-scale-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -939,6 +941,68 @@ const GIT_PRODUCTION_WORKFLOW_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+const SCALING_CONTROL_LOOP_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "scaling-control-loop-v1",
+  title: "The scaling control path",
+  stages: [
+    { id: "workload", label: "Workload", detail: "Traffic and work demand arrive over time, often with peaks and bursts." },
+    { id: "capacity", label: "Capacity", detail: "Each component has a finite capacity that can be increased vertically, horizontally or through a different design." },
+    { id: "distribution", label: "Distribution", detail: "Load balancers, queues and partitioning distribute work across available capacity." },
+    { id: "shared-state", label: "Shared State", detail: "Databases, locks, sessions and other shared dependencies can limit the benefit of adding more workers." },
+    { id: "bottleneck", label: "Bottleneck", detail: "The first constrained dependency becomes the active limit for end-to-end throughput or latency." },
+    { id: "evidence", label: "Evidence", detail: "Metrics, traces, latency and user-path measurements show whether the scaling change actually improved the system." }
+  ],
+  foundation: {
+    label: "Scaling is a system property, not a server-size property",
+    detail: "More instances help only when the constrained part of the dependency graph has available parallel capacity."
+  },
+  callouts: [
+    { id: "vertical", label: "Vertical scaling", detail: "Make one unit larger; the system keeps one primary capacity unit but with more resources." },
+    { id: "horizontal", label: "Horizontal scaling", detail: "Add more units and distribute work when the workload and dependencies allow parallelism." },
+    { id: "stateless", label: "Stateless service", detail: "When requests do not depend on private in-memory state in one instance, horizontal distribution is easier." },
+    { id: "buffer", label: "Buffering", detail: "Caches and queues can absorb bursts, but every buffer has a capacity limit and adds another dependency." }
+  ],
+  failureChecks: [
+    { id: "first-limit", label: "1. First limit", detail: "Which resource or dependency saturates first as workload increases?" },
+    { id: "shared-state", label: "2. Shared state", detail: "Does a database, lock, session or other shared resource prevent more workers from adding useful capacity?" },
+    { id: "moved-bottleneck", label: "3. Moved bottleneck", detail: "After scaling one component, which dependency became the new end-to-end constraint?" },
+    { id: "user-proof", label: "4. User proof", detail: "Did latency, throughput or the real user path improve after the scaling change?" }
+  ]
+};
+
+
+const DATABASE_SCALE_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "database-scale-v1",
+  title: "The database scaling path",
+  stages: [
+    { id: "query", label: "Query", detail: "Start with the workload shape: reads, writes, concurrency and data size." },
+    { id: "access-path", label: "Access Path", detail: "Indexes and query plans determine how much data the database must inspect." },
+    { id: "correctness", label: "Correctness", detail: "Transactions and concurrency control preserve application invariants while work happens in parallel." },
+    { id: "copies", label: "Copies", detail: "Replication adds copies for read scale, availability or locality, but copies can introduce lag and consistency choices." },
+    { id: "distribution", label: "Distribution", detail: "Partitioning or sharding divides data ownership or work, changing query scope and coordination." },
+    { id: "evidence", label: "Evidence", detail: "Query plans, latency, lock waits, replica freshness and user-path measurements show whether a scaling change actually helped." }
+  ],
+  foundation: {
+    label: "Capacity changes must preserve data correctness",
+    detail: "Database scaling is not only about throughput. The system must still preserve the business invariants that make reads and writes correct."
+  },
+  callouts: [
+    { id: "index", label: "Index", detail: "An index can reduce the data the database must inspect for a query, but it adds write and storage cost." },
+    { id: "transactions", label: "Transactions", detail: "Transactions define a unit of work whose correctness depends on the database's concurrency and isolation rules." },
+    { id: "replication", label: "Replication", detail: "A replica can improve read capacity or availability while introducing lag and read-consistency trade-offs." },
+    { id: "partitioning", label: "Partitioning", detail: "Partitioning divides data into regions so work can be scoped, but cross-partition queries and coordination can become more complex." }
+  ],
+  failureChecks: [
+    { id: "query-cost", label: "1. Query cost", detail: "What does the query plan inspect, and is the access path still appropriate as data grows?" },
+    { id: "write-correctness", label: "2. Write correctness", detail: "Do concurrent writes still preserve the required transaction and business invariants?" },
+    { id: "replica-freshness", label: "3. Replica freshness", detail: "Can this read tolerate replica lag, or does it require the newest committed value?" },
+    { id: "partition-scope", label: "4. Partition scope", detail: "Does the query touch one partition or coordinate across many, and what does that do to cost and latency?" }
+  ]
+};
+
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1167,6 +1231,14 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "scaling-control-loop-v1") {
+    return { ...SCALING_CONTROL_LOOP_VARIANT, title: block.heading };
+  }
+
+  if (block.variant === "database-scale-v1") {
+    return { ...DATABASE_SCALE_VARIANT, title: block.heading };
+  }
+
   return genericModel(block);
 }
 
@@ -1211,7 +1283,9 @@ export function validateLessonIllustrationModel(
     model.variant !== "kubernetes-config-storage-v1" &&
     model.variant !== "kubernetes-health-scaling-v1" &&
     model.variant !== "kubernetes-failure-loop-v1" &&
-    model.variant !== "git-production-workflow-v1"
+    model.variant !== "git-production-workflow-v1" &&
+    model.variant !== "scaling-control-loop-v1" &&
+    model.variant !== "database-scale-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
