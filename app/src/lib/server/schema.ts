@@ -1,4 +1,5 @@
-import { check, pgTable, text, timestamp, uniqueIndex, uuid, sql } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { check, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 export const learnerProgressHistory = pgTable(
   "learner_progress_history",
