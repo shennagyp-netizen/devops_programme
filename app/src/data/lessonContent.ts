@@ -32,7 +32,8 @@ export type LessonIllustrationVariantV1 =
   | "docker-failure-loop-v1"
   | "kubernetes-reconciliation-v1"
   | "kubernetes-service-path-v1"
-  | "kubernetes-config-storage-v1";
+  | "kubernetes-config-storage-v1"
+  | "kubernetes-health-scaling-v1";
 
 export type LessonContentBlock =
   | {
@@ -85,6 +86,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D3.4": {
+    version: 1,
+    blocks: [
+      {
+        id: "d3-4-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Kubernetes health and scaling become clear when startup, readiness, liveness, capacity and rollout are treated as different system states."
+      },
+      {
+        id: "d3-4-kubernetes-health-scaling",
+        type: "illustration",
+        heading: "The Kubernetes health and scaling path",
+        alt: "A workload starts, becomes ready for traffic, is kept alive by liveness checks, scales with resource and replica decisions, and rolls out a new version",
+        bindingId: "D3.4:d3-4-kubernetes-health-scaling",
+        nodes: ["Startup", "Readiness", "Liveness", "Capacity", "Rollout"],
+        variant: "kubernetes-health-scaling-v1",
+        caption:
+          "Separate initialization, traffic readiness, restart health and capacity during rollout."
+      }
+    ]
+  },
+
+
   "D3.3": {
     version: 1,
     blocks: [
@@ -819,6 +845,7 @@ export function validateLessonContent(
         block.variant !== "kubernetes-reconciliation-v1" &&
         block.variant !== "kubernetes-service-path-v1" &&
         block.variant !== "kubernetes-config-storage-v1" &&
+        block.variant !== "kubernetes-health-scaling-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
