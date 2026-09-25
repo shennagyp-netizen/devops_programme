@@ -1876,6 +1876,41 @@ Merged PR #105:
 - Advanced A1.1-A1.6 now all have explicit semantic visual contracts.
 - Next Advanced boundary: **A2.1-A2.3 — dependency failure, retry storms and partial network failure**.
 
+
+Active PR #89 scope:
+- D2.6 authored visual/test contracts already exist on current `main`.
+- This branch restores the rewritten D2.6 script as the canonical podcast teaching unit.
+- Teaching model: Service -> Network -> Name -> Port -> Volume.
+- The script separates internal service discovery, internal service ports, published host ports and persistent data lifecycle.
+- Controlled failures isolate service-name resolution, published-port access and persistence across container recreation.
+- Vercel validation is required; GitHub Actions is currently not exposing a run for this branch.
+- TDD/content contracts remain authoritative: the D2.6 tests are already present on `main`.
+
+
+Current content-quality batch (PR #93):
+- D2.6 rewritten podcast: `Service -> Network -> Name -> Port -> Volume`.
+- D3.5 prediction layer strengthened without changing its existing `kubernetes-failure-loop-v1` visual/model/tests.
+- D3.5 now has explicit prediction pauses for CrashLoopBackOff, ImagePullBackOff, OOMKilled, readiness failure and Service-selector failure.
+- PR #93 is currently blocked by Vercel build-rate-limit infrastructure; no code/test failure is claimed from that status.
+
+
+Active PR #52 scope:
+- D2.6 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `docker-network-storage-v1`.
+- Teaching model: Service -> Network -> Name -> Port -> Volume.
+- The rewritten script separates internal service discovery, internal service ports, published host ports and persistent volume lifecycle.
+- Controlled failures distinguish name-resolution failure, published-port failure and container recreation with persistent data.
+- TDD/full-programme gate is required before merge.
+
+
+Active PR #53 scope:
+- D2.6 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `docker-network-storage-v1`.
+- Teaching model: Service -> Network -> Name -> Port -> Volume.
+- The rewritten script separates internal service discovery, internal service ports, published host ports and persistent volumes.
+- Controlled failures isolate a bad database hostname, a bad published port and container recreation with a persistent volume.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
 
