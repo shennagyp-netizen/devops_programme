@@ -92,7 +92,7 @@ assert.doesNotMatch(content.contract, /getLearnerId|localStorage|learnerId/);
 assert.match(content.app, /^"use client";/);
 assert.match(content.app, /initialCompletionHistory/);
 assert.match(content.app, /completeLearningItemAction/);
-assert.match(content.app, /UserButton/);
+assert.match(content.app, /logoutAction/);
 assert.doesNotMatch(content.app, /getLearnerId|listCompletionHistory|\/api\/progress/);
 
 assert.doesNotMatch(content.page, /await auth\(\)/);
