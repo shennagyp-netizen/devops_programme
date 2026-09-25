@@ -30,6 +30,11 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
   | "kubernetes-failure-loop-v1"
+  | "cloud-primitives-v1"
+  | "database-scaling-v1"
+  | "distributed-partial-failure-v1"
+  | "global-architecture-v1"
+  | "production-incident-v1"
   | "git-production-workflow-v1";
 
 export type LessonIllustrationStageV1 = {
