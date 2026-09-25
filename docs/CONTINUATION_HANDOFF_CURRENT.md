@@ -1955,5 +1955,13 @@ Merged PR #86:
 - D4.1 teaches branch/diff review, commit identity, release identity, repository-vs-runtime state and recovery/revert boundaries.
 - Next authored boundary: **D4.2 — CI/CD Mental Model**.
 
+
+Active PR #57 scope:
+- D4.2 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `ci-cd-pipeline-v1`.
+- Teaching model: Source -> Validate -> Artifact -> Promote -> Verify.
+- The existing spoken script already teaches the same evidence-chain model; the new illustration makes source identity, risk gates, artifact identity, promotion controls and runtime proof visually explicit.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
