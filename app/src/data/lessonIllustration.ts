@@ -760,36 +760,6 @@ const DOCKER_FAILURE_LOOP_VARIANT: LessonIllustrationModelV1 = {
 };
 
 
-const KUBERNETES_RECONCILIATION_VARIANT: LessonIllustrationModelV1 = {
-  version: 1,
-  variant: "kubernetes-reconciliation-v1",
-  title: "The Kubernetes reconciliation loop",
-  stages: [
-    { id: "desired-state", label: "Desired State", detail: "A Kubernetes object declares the state the workload should have." },
-    { id: "controller", label: "Controller", detail: "A controller owns a reconciliation loop that compares desired and actual state and decides what action is needed." },
-    { id: "observe", label: "Observe", detail: "The system observes current objects, health, scheduling state and other facts about actual state." },
-    { id: "act", label: "Act", detail: "The controller creates, updates or removes resources to reduce the difference between desired and actual state." },
-    { id: "converge", label: "Converge", detail: "Repeated observation and action move the system toward the desired state when that state is feasible." }
-  ],
-  foundation: {
-    label: "Kubernetes is a reconciliation system",
-    detail: "YAML describes desired state, but controllers continuously observe and act so the real system can converge toward that state."
-  },
-  callouts: [
-    { id: "desired-state", label: "Desired state", detail: "The specification says what should exist, not how to perform every individual repair." },
-    { id: "controller", label: "Controller", detail: "Controllers implement control loops that respond to differences between desired and actual state." },
-    { id: "actual-state", label: "Actual state", detail: "Running pods, scheduling, image state and health checks are part of the observed system." },
-    { id: "feasibility", label: "Feasibility", detail: "Reconciliation can keep trying while the desired state remains impossible because of an image, resource, configuration or scheduling problem." }
-  ],
-  failureChecks: [
-    { id: "specification", label: "1. Specification", detail: "Is the desired state actually what you intended to declare?" },
-    { id: "controller-action", label: "2. Controller action", detail: "What controller is responsible, and what action did it take after observing the difference?" },
-    { id: "replacement-health", label: "3. Replacement health", detail: "Did the new or updated resource become scheduled, running and ready?" },
-    { id: "feasibility", label: "4. Feasibility", detail: "If the controller keeps acting, what evidence shows the desired state itself is currently impossible to satisfy?" }
-  ]
-};
-
-
 const KUBERNETES_SERVICE_PATH_VARIANT: LessonIllustrationModelV1 = {
   version: 1,
   variant: "kubernetes-service-path-v1",
@@ -936,6 +906,36 @@ const GIT_PRODUCTION_WORKFLOW_VARIANT: LessonIllustrationModelV1 = {
     { id: "review-scope", label: "2. Review scope", detail: "Does the diff match the intended change and its evidence?" },
     { id: "release-identity", label: "3. Release identity", detail: "Can the running release be traced to the exact reviewed source state?" },
     { id: "recovery-path", label: "4. Recovery path", detail: "Can the source and deployment system return to a known-good operational state without hiding history?" }
+  ]
+};
+
+
+const KUBERNETES_RECONCILIATION_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "kubernetes-reconciliation-v1",
+  title: "The Kubernetes control loop",
+  stages: [
+    { id: "desired", label: "Desired State", detail: "A declared workload says what should exist and how it should behave." },
+    { id: "controller", label: "Controller", detail: "Controllers watch observed state and take actions to move the cluster toward the desired state." },
+    { id: "scheduler", label: "Scheduler", detail: "The scheduler chooses a suitable node for pods that need placement." },
+    { id: "pod", label: "Pod", detail: "A pod is the unit Kubernetes schedules; its containers share the pod's execution context." },
+    { id: "node", label: "Node", detail: "A node runs the pod through a container runtime while reporting observed state back to the control plane." }
+  ],
+  foundation: {
+    label: "Kubernetes continuously reconciles desired state with observed state",
+    detail: "Kubernetes is not a one-time deployment command; controllers repeatedly observe state and act to move the system toward the declared goal."
+  },
+  callouts: [
+    { id: "api", label: "API server", detail: "The API server is the control-plane entry point through which Kubernetes objects are stored and observed." },
+    { id: "controller", label: "Controller", detail: "A controller watches relevant objects and performs reconciliation actions when actual state differs from desired state." },
+    { id: "scheduler", label: "Scheduler", detail: "The scheduler selects a node for an unscheduled pod based on current cluster constraints and policy." },
+    { id: "pod-node", label: "Pod on node", detail: "A pod is scheduled onto a node; the node then runs its containers and reports status." }
+  ],
+  failureChecks: [
+    { id: "desired-state", label: "1. Desired state", detail: "What object and specification say the workload should exist, and with what parameters?" },
+    { id: "reconciliation", label: "2. Reconciliation", detail: "Which controller should notice and act when observed state differs from the specification?" },
+    { id: "placement", label: "3. Placement", detail: "Why is the pod pending, and what scheduling constraint or resource condition prevents placement?" },
+    { id: "observed-state", label: "4. Observed state", detail: "What do pod, node and controller status show about what the cluster actually did?" }
   ]
 };
 
@@ -1205,8 +1205,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "tls-trust-v1" &&
     model.variant !== "container-execution-v1" &&
     model.variant !== "docker-network-storage-v1" &&
-    model.variant !== "docker-failure-loop-v1" &&
     model.variant !== "kubernetes-reconciliation-v1" &&
+    model.variant !== "docker-failure-loop-v1" &&
     model.variant !== "kubernetes-service-path-v1" &&
     model.variant !== "kubernetes-config-storage-v1" &&
     model.variant !== "kubernetes-health-scaling-v1" &&
