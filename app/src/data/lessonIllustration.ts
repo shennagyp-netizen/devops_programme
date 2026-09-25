@@ -35,7 +35,8 @@ export type LessonIllustrationVariantV1 =
   | "github-actions-execution-v1"
   | "iac-control-loop-v1"
   | "terraform-lifecycle-v1"
-  | "cloud-primitives-v1";
+  | "cloud-primitives-v1"
+  | "scaling-control-loop-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -1091,6 +1092,37 @@ const CLOUD_PRIMITIVES_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const SCALING_CONTROL_LOOP_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "scaling-control-loop-v1",
+  title: "The scaling control path",
+  stages: [
+    { id: "workload", label: "Workload", detail: "Traffic and work demand arrive over time, often with peaks and bursts." },
+    { id: "capacity", label: "Capacity", detail: "Each component has a finite capacity that can be increased vertically, horizontally or through a different design." },
+    { id: "distribution", label: "Distribution", detail: "Load balancers, queues and partitioning distribute work across available capacity." },
+    { id: "shared-state", label: "Shared State", detail: "Databases, locks, sessions and other shared dependencies can limit the benefit of adding more workers." },
+    { id: "bottleneck", label: "Bottleneck", detail: "The first constrained dependency becomes the active limit for end-to-end throughput or latency." },
+    { id: "evidence", label: "Evidence", detail: "Metrics, traces, latency and user-path measurements show whether the scaling change actually improved the system." }
+  ],
+  foundation: {
+    label: "Scaling is a system property, not a server-size property",
+    detail: "More instances help only when the constrained part of the dependency graph has available parallel capacity."
+  ],
+  callouts: [
+    { id: "vertical", label: "Vertical scaling", detail: "Make one unit larger; the system keeps one primary capacity unit but with more resources." },
+    { id: "horizontal", label: "Horizontal scaling", detail: "Add more units and distribute work when the workload and dependencies allow parallelism." },
+    { id: "stateless", label: "Stateless service", detail: "When requests do not depend on private in-memory state in one instance, horizontal distribution is easier." },
+    { id: "buffer", label: "Buffering", detail: "Caches and queues can absorb bursts, but every buffer has a capacity limit and adds another dependency." }
+  ],
+  failureChecks: [
+    { id: "first-limit", label: "1. First limit", detail: "Which resource or dependency saturates first as workload increases?" },
+    { id: "shared-state", label: "2. Shared state", detail: "Does a database, lock, session or other shared resource prevent more workers from adding useful capacity?" },
+    { id: "moved-bottleneck", label: "3. Moved bottleneck", detail: "After scaling one component, which dependency became the new end-to-end constraint?" },
+    { id: "user-proof", label: "4. User proof", detail: "Did latency, throughput or the real user path improve after the scaling change?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1354,6 +1386,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "scaling-control-loop-v1") {
+    return {
+      ...SCALING_CONTROL_LOOP_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1403,7 +1442,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "github-actions-execution-v1" &&
     model.variant !== "iac-control-loop-v1" &&
     model.variant !== "terraform-lifecycle-v1" &&
-    model.variant !== "cloud-primitives-v1"
+    model.variant !== "cloud-primitives-v1" &&
+    model.variant !== "scaling-control-loop-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
