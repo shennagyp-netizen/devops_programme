@@ -37,7 +37,10 @@ export type LessonIllustrationVariantV1 =
   | "global-architecture-v1"
   | "production-incident-v1"
   | "git-production-workflow-v1"
-  | "ci-cd-pipeline-v1";
+  | "ci-cd-pipeline-v1"
+  | "reliability-patterns-v1"
+  | "observability-control-v1"
+  | "disaster-recovery-system-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -1158,6 +1161,94 @@ const CI_CD_PIPELINE_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const RELIABILITY_PATTERNS_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "reliability-patterns-v1",
+  title: "The reliability control loop",
+  stages: [
+    { id: "request", label: "Request", detail: "A caller starts work against a dependency whose response time and availability are uncertain." },
+    { id: "timeout", label: "Timeout", detail: "A bounded wait prevents one slow dependency from consuming unlimited caller resources." },
+    { id: "policy", label: "Policy", detail: "The client decides whether to retry, fail fast, open a circuit, or apply another protection." },
+    { id: "retry-load", label: "Retry load", detail: "Retries are new traffic and can increase pressure on an already failing dependency." },
+    { id: "recovery", label: "Recovery", detail: "Recovery is proven when user-visible behavior returns without creating a second overload." }
+  ],
+  foundation: {
+    label: "Retries are new traffic",
+    detail: "A retry policy changes system load during failure. Timeout, backoff, jitter, idempotency and backpressure must be designed together."
+  },
+  callouts: [
+    { id: "backoff-jitter", label: "Backoff + jitter", detail: "Increase the delay between attempts and vary it so many callers do not retry at the same instant." },
+    { id: "idempotency", label: "Idempotency", detail: "Repeated delivery or retry must not create an incorrect final state." },
+    { id: "circuit-breaker", label: "Circuit breaker", detail: "Stop sending work to a dependency that is repeatedly failing so the failure can recover." },
+    { id: "backpressure", label: "Backpressure", detail: "Limit admission when downstream processing capacity is lower than incoming work." }
+  ],
+  failureChecks: [
+    { id: "bounded-time", label: "1. Bounded time", detail: "What is the timeout, and what resource does it protect?" },
+    { id: "attempt-budget", label: "2. Attempt budget", detail: "How many retries can one logical operation create?" },
+    { id: "load-effect", label: "3. Load effect", detail: "What happens to dependency traffic when many callers retry together?" },
+    { id: "recovery-proof", label: "4. Recovery proof", detail: "Did the dependency recover and did the caller remain stable after the protection changed?" }
+  ]
+};
+
+const OBSERVABILITY_CONTROL_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "observability-control-v1",
+  title: "The observability decision path",
+  stages: [
+    { id: "question", label: "Question", detail: "Start from an operational question such as 'Are users experiencing tail latency?'" },
+    { id: "signal", label: "Signal", detail: "Choose logs, metrics or traces that can answer that question at the needed resolution." },
+    { id: "correlation", label: "Correlation", detail: "Compare independent signals across time, route, dependency and workload instead of trusting one graph." },
+    { id: "objective", label: "Objective", detail: "Use SLI and SLO definitions to distinguish normal variation from unacceptable service behavior." },
+    { id: "decision", label: "Decision", detail: "The evidence should change an operational action, alert, investigation or reliability priority." }
+  ],
+  foundation: {
+    label: "Observability starts from a question",
+    detail: "Instrumentation is useful only when it improves a decision. A dashboard full of signals is not the same thing as diagnostic evidence."
+  },
+  callouts: [
+    { id: "logs", label: "Logs", detail: "Events and context recorded at points in execution." },
+    { id: "metrics", label: "Metrics", detail: "Numeric behavior over time, including rate, errors, latency and saturation." },
+    { id: "traces", label: "Traces", detail: "A request's path and timing across components." },
+    { id: "slo-budget", label: "SLO + error budget", detail: "A target for service behavior plus the amount of unreliability the service can spend before reliability work becomes urgent." }
+  ],
+  failureChecks: [
+    { id: "user-signal", label: "1. User signal", detail: "What user-visible behavior are you trying to measure?" },
+    { id: "service-signal", label: "2. Service signal", detail: "Which service metric or event is closest to that behavior?" },
+    { id: "cross-signal", label: "3. Cross-signal", detail: "Which independent signal could disprove your first explanation?" },
+    { id: "action", label: "4. Action", detail: "What decision changes because the evidence changed?" }
+  ]
+};
+
+const DISASTER_RECOVERY_SYSTEM_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "disaster-recovery-system-v1",
+  title: "The recovery system",
+  stages: [
+    { id: "assets", label: "Assets", detail: "Map the data, application, infrastructure, configuration, identity and dependencies required for the service." },
+    { id: "failure", label: "Failure", detail: "Define the failure domain and which assets become unavailable or inconsistent." },
+    { id: "restore", label: "Restore", detail: "Recreate the required assets from backups, replicas, infrastructure definitions and runbooks." },
+    { id: "dependencies", label: "Dependencies", detail: "Restore identity, network, secrets, application compatibility and other dependencies needed by the service." },
+    { id: "recovery", label: "Recovery", detail: "Prove the real user path returns within the required RPO and RTO, then keep the recovered system stable." }
+  ],
+  foundation: {
+    label: "Recovery is a system, not a backup file",
+    detail: "A backup can be valid while the recovery environment still lacks infrastructure, credentials, compatible software or a tested runbook."
+  },
+  callouts: [
+    { id: "rpo", label: "RPO", detail: "Maximum acceptable data loss measured over the recovery point." },
+    { id: "rto", label: "RTO", detail: "Maximum acceptable time to restore the required service behavior." },
+    { id: "restore-test", label: "Restore test", detail: "A real restore exercise proves the recovery path exists; backup creation alone does not." },
+    { id: "people-runbook", label: "People + runbook", detail: "Recovery also depends on access, clear procedures, decisions and people who can execute them under pressure." }
+  ],
+  failureChecks: [
+    { id: "data", label: "1. Data", detail: "Can the required data be recovered with acceptable loss?" },
+    { id: "infrastructure", label: "2. Infrastructure", detail: "Can the service infrastructure be recreated in the recovery environment?" },
+    { id: "identity", label: "3. Identity", detail: "Can the restored service obtain required credentials, secrets and access?" },
+    { id: "user-proof", label: "4. User proof", detail: "Can the real service action succeed within the stated RPO/RTO constraints?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1484,7 +1575,10 @@ export function validateLessonIllustrationModel(
     model.variant !== "kubernetes-health-scaling-v1" &&
     model.variant !== "kubernetes-failure-loop-v1" &&
     model.variant !== "git-production-workflow-v1" &&
-    model.variant !== "ci-cd-pipeline-v1"
+    model.variant !== "ci-cd-pipeline-v1" &&
+    model.variant !== "reliability-patterns-v1" &&
+    model.variant !== "observability-control-v1" &&
+    model.variant !== "disaster-recovery-system-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
