@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored Kubernetes health-scaling visual for D3.4", () => {
+    const lesson = allLessons.find((item) => item.id === "D3.4");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d3-4-kubernetes-health-scaling",
+      bindingId: "D3.4:d3-4-kubernetes-health-scaling",
+      variant: "kubernetes-health-scaling-v1"
+    });
+  });
+
   it("uses the authored Kubernetes config-storage visual for D3.3", () => {
     const lesson = allLessons.find((item) => item.id === "D3.3");
     expect(lesson).toBeDefined();

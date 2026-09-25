@@ -1943,5 +1943,14 @@ Merged PR #82:
 - PR #81 was closed as stale because D2.6 had already been merged upstream as PR #77.
 - Next content boundary: **D3.4 — Kubernetes Scaling and Bottlenecks**.
 
+
+Active D3.4 current-main port:
+- D3.4 is upgraded to the script+illustration gold-standard on the current `main` lineage.
+- New semantic illustration: `kubernetes-health-scaling-v1`.
+- Teaching model: Startup -> Readiness -> Liveness -> Capacity -> Rollout.
+- The existing D3.4 script already matches this mechanism model and includes controlled health/scaling failures and recovery proof.
+- This branch deliberately ports only D3.4 changes onto current `main`; it does not reuse the older D3.4 branch history containing stale predecessor merges.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
