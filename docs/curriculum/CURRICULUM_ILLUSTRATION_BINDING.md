@@ -287,3 +287,37 @@ animation library
     -> decides curriculum behavior
 
 Any future feature that weakens this separation is an architectural regression.
+
+## 12. Standalone preview host is not curriculum
+
+The animation library now has a standalone preview surface for development, visual inspection and reusable-capability demonstrations.
+
+Routes:
+
+- `/animations`
+- `/animations/[animationId]`
+
+The preview host is intentionally outside the curriculum path. It may own a local preview clock and preview cue fixture so a reusable animation can be played, paused, restarted and sought without a lesson session.
+
+This does **not** change production timing ownership.
+
+Production curriculum timing remains:
+
+PodcastCoach actual audio clock
+  -> authored lesson cue
+  -> curriculum illustration binding
+  -> animation event
+  -> deterministic runtime
+  -> renderer
+
+Preview cue fixtures are not curriculum content, are not learner evidence, and are not a substitute for actual aligned audio.
+
+The standalone routes must not require:
+
+- Clerk learner authentication
+- learner completion/progress state
+- lesson selection
+- curriculum content
+- PodcastCoach ownership.
+
+The reusable animation definition and deterministic runtime therefore remain independently usable, while the curriculum remains the only authority for instructional use inside lessons.
