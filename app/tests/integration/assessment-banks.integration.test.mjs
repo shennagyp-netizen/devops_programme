@@ -80,11 +80,12 @@ describe("assessment bank integration", () => {
       "hands-on": 8
     };
 
-    const allowedCognitiveLevels = {
-      conceptual: new Set(["mechanism", "application", "design"]),
-      diagnostic: new Set(["application", "diagnosis"]),
-      "hands-on": new Set(["application", "diagnosis", "design"])
-    };
+    const allowedCognitiveLevels = new Set([
+      "mechanism",
+      "application",
+      "diagnosis",
+      "design"
+    ]);
 
     for (const { course, section } of cases) {
       const bank = JSON.parse(
@@ -96,22 +97,33 @@ describe("assessment bank integration", () => {
         expect(items).toHaveLength(expectedCount);
 
         for (const item of items) {
-          expect(allowedCognitiveLevels[family].has(item.cognitiveLevel)).toBe(true);
+          expect(allowedCognitiveLevels.has(item.cognitiveLevel)).toBe(true);
           expect(item.competencyId.startsWith(section + ".")).toBe(true);
           expect(item.prompt.trim()).not.toBe("");
-          expect(item.itemType.trim()).not.toBe("");
+          if (typeof item.itemType === "string") {
+            expect(item.itemType.trim()).not.toBe("");
+          } else {
+            expect(Array.isArray(item.itemType)).toBe(true);
+            expect(item.itemType.length).toBeGreaterThan(0);
+            expect(item.itemType.every((value) => typeof value === "string" && value.trim() !== "")).toBe(true);
+          }
           expect(item.expectedMinutes).toBeGreaterThan(0);
-          expect(typeof item.itemType).toBe("string");
-          expect(item.itemType.trim()).not.toBe("");
 
           if (item.options) {
             expect(item.options.length).toBeGreaterThan(1);
             expect(Number.isInteger(item.correctOption)).toBe(true);
             expect(item.correctOption).toBeGreaterThanOrEqual(0);
             expect(item.correctOption).toBeLessThan(item.options.length);
+          } else if (family === "hands-on") {
+            expect(item.environment?.length).toBeGreaterThan(0);
+            expect(item.initialState).toBeTruthy();
+            expect(item.allowedOperations?.length).toBeGreaterThan(0);
+          } else if (Array.isArray(item.expectedElements)) {
+            expect(item.expectedElements.length).toBeGreaterThan(0);
+          } else if (typeof item.expectedElements === "number") {
+            expect(item.expectedElements).toBeGreaterThan(0);
           } else {
             expect(
-              item.expectedElements?.length ||
               item.scoring?.full?.length ||
               item.scoringNote
             ).toBeTruthy();

@@ -17,7 +17,7 @@ export function getEpisodeText(source: string, lessonId: string) {
 
   const start = match.index + match[0].length;
   const rest = source.slice(start);
-  const next = rest.search(/\\nEPISODE [A-Z0-9]+\\.[0-9]+ —/);
+  const next = rest.search(/\nEPISODE [A-Z0-9]+\.[0-9]+ —/);
 
   return (next >= 0 ? rest.slice(0, next) : rest).trim();
 }
@@ -26,7 +26,7 @@ function classifyTurn(text: string): Turn["kind"] {
   const normalized = text.toLowerCase();
 
   if (
-    /(pause me|prediction time|make a prediction|what do you think happens|what evidence would you expect|don't look it up yet)/i.test(
+    /(\bpredict\b|pause me|prediction time|make a prediction|what do you think happens|what evidence would you expect|don't look it up yet)/i.test(
       normalized
     )
   ) {

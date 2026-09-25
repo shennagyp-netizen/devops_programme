@@ -1,0 +1,63 @@
+import { describe, expect, it } from "vitest";
+import { lessonsByCourse } from "../../src/data/courseLessons.ts";
+import { validateLessonContent } from "../../src/data/lessonContent.ts";
+
+describe("course lesson content integration", () => {
+  const allLessons = Object.values(lessonsByCourse).flat();
+
+  it("attaches a content stream to every course lesson", () => {
+    expect(allLessons.length).toBeGreaterThan(0);
+    for (const lesson of allLessons) {
+      expect(lesson.content, lesson.id).toBeDefined();
+      expect(lesson.content.version, lesson.id).toBe(1);
+      expect(lesson.content.blocks.length, lesson.id).toBeGreaterThan(0);
+    }
+  });
+
+  it("keeps every current lesson content stream valid", () => {
+    for (const lesson of allLessons) {
+      expect(validateLessonContent(lesson.content), lesson.id).toEqual({
+        valid: true,
+        failures: []
+      });
+    }
+  });
+
+  it("keeps content ids unique inside each lesson", () => {
+    for (const lesson of allLessons) {
+      const ids = lesson.content.blocks.map((block) => block.id);
+      expect(new Set(ids).size, lesson.id).toBe(ids.length);
+    }
+  });
+
+  it("does not accidentally create the same object instance for separate generated lessons", () => {
+    const lessonsWithContent = allLessons.filter((lesson) => lesson.id !== "B1.4");
+    expect(lessonsWithContent.length).toBeGreaterThan(2);
+
+    for (let index = 1; index < lessonsWithContent.length; index += 1) {
+      expect(lessonsWithContent[index].content).not.toBe(
+        lessonsWithContent[index - 1].content
+      );
+    }
+  });
+
+  it("keeps the explicit authored video only where it is intended", () => {
+    const videoLessons = allLessons.filter((lesson) =>
+      lesson.content.blocks.some((block) => block.type === "video")
+    );
+
+    expect(videoLessons.map((lesson) => lesson.id)).toEqual(["B1.4"]);
+    expect(videoLessons[0].content.blocks.at(-1)).toMatchObject({
+      id: "b1-4-video",
+      type: "video",
+      status: "draft"
+    });
+  });
+
+  it("preserves text-first and illustration-second default ordering", () => {
+    for (const lesson of allLessons.filter((item) => item.id !== "B1.4")) {
+      expect(lesson.content.blocks[0].type, lesson.id).toBe("text");
+      expect(lesson.content.blocks[1].type, lesson.id).toBe("illustration");
+    }
+  });
+});

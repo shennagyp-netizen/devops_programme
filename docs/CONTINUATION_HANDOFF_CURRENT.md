@@ -203,6 +203,66 @@ Every hands-on lesson should make clear:
 - how to recover
 - what proves recovery.
 
+## 4.2 CONTINUOUS CO-TEACHER VOICE — CURRENT
+
+The spoken layer is now explicitly a continuous co-teacher attached to the active lesson.
+
+Current UI contract:
+- there is no separate top-level Listen/co-teacher lesson mode
+- `PodcastCoach` remains mounted while the learner switches between Learn, Do, Recall, Design and Assessment
+- the voice/transcript control is a persistent lesson layer
+- real aligned audio drives transcript position and authored prediction/lab/recall pauses
+- authored learner-action cues pause speech deliberately; they do not terminate the lesson voice session
+- the learner can resume the same voice session after completing the relevant action
+- the learner may explicitly pause or seek
+- browser autoplay restrictions may require one initial user gesture
+- changing lesson resets the voice session for the new lesson.
+
+This is different from the old implementation, where the co-teacher appeared only under a separate `listen` mode and its flow stopped at the lab. That old interaction is superseded.
+
+Video/content-feed rule:
+- video is a content block inside the ordered lesson feed
+- video does not own the learner's voice session
+- the continuous co-teacher remains the primary spoken companion while the learner reads, watches or operates
+- authored video may have its own cues, but it must not create a second competing spoken-session architecture.
+
+TDD coverage:
+- `app/tests/integration/lesson-voice-continuity.integration.test.mjs` rejects the separate listen mode and verifies the persistent co-teacher source contract.
+- `app/tests/integration/lesson-content-stream.integration.test.mjs` verifies ordered rendering, draft-video safety, captions/transcript behavior, navigation, IntersectionObserver cleanup and the absence of a second voice owner.
+- `app/tests/integration/course-lesson-content.integration.test.mjs` verifies that every current course lesson receives a valid content stream with stable per-lesson ids.
+- `app/tests/unit/lessonContent.redteam.test.mjs` covers malformed payloads, unsafe media, draft/published source rules, accessibility metadata, durations and cue boundaries.
+- `app/tests/unit/podcastSync.redteam.test.mjs` covers manifest security, duplicate identities, timeline ordering, cue boundaries and fail-closed loading.
+- `app/tests/unit/podcastsRaw.test.mjs` covers episode extraction and deterministic speaker-turn classification.
+- `app/tests/integration/lesson-panel.integration.test.mjs` verifies completion/evidence boundaries and lesson-mode invariants.
+
+## 4.1 ORDERED LESSON CONTENT STREAM
+
+The lesson presentation now supports an ordered content stream.
+
+Current implementation:
+- `app/src/data/lessonContent.ts` is the authoritative lesson-content contract.
+- `LessonContentFeed` renders the stream as a vertical reading/visual/video feed with a content index and smooth scrolling.
+- Supported block types are text, illustration and video.
+- Video supports draft/published status, root-relative or HTTPS media sources, posters, captions, transcripts, duration and authored timing cues.
+- Draft video slots do not load missing assets.
+- `CourseLesson.content` carries the resolved content stream.
+- B1.4 currently contains an explicit draft video authoring slot; no real video asset is claimed or loaded.
+- Podcast/co-teacher synchronization remains a separate contract driven by real audio timing manifests.
+- Required instructional meaning must remain available in written lesson content even when no video is published.
+
+Tests:
+- `app/tests/unit/lessonContent.test.mjs` covers the baseline content contract.
+- Red-team content tests extend that baseline with security and malformed-input boundaries.
+
+Validation state:
+- The canonical programme gate completed green on current branch head `10e8efc572465c7f4feb4d68e184a7d6f3db7d00`.
+- The full unit/integration suite completed green with 209 tests across 26 test files.
+- Content, assessment, diagnostics, project, platform, hands-on, beginner/intermediate/advanced/programme completeness, runtime verification and authenticated progress architecture contracts all completed green.
+- TypeScript typecheck and the Next.js production build completed green.
+- The assessment bank contract now accepts the authored diagnostic response shape where `itemType` is a string or non-empty string array and `expectedElements` is a positive count or string list; this matches the existing authored pilot banks and is explicitly validated.
+- The project contract checker was corrected to inspect intermediate project mappings in `courseLessons.ts`; the hands-on contract checker was corrected so its JavaScript template literals parse correctly.
+- Live browser/visual verification is not yet validated because the connected Vercel account exposes no project/team deployment access in this session. No preview browser result is claimed.
+
 ============================================================
 5. PROJECT CONTRACT
 ============================================================

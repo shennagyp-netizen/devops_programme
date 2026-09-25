@@ -232,6 +232,34 @@ Hands-on work must explain:
 
 ---
 
+
+# 4.1 Lesson content stream
+
+Teaching assets are represented as an ordered lesson content stream rather than as one fixed media type.
+
+Supported first-class content blocks currently include:
+- text
+- illustration
+- video
+
+The stream is rendered as a vertical learning feed with an authored content index. A learner can read and inspect visuals in sequence, and video can appear between explanatory sections rather than replacing the written lesson.
+
+Video blocks may define:
+- published media source
+- poster
+- captions
+- transcript
+- duration
+- authored timing cues
+
+Published media sources must be root-relative or HTTPS URLs. Draft video blocks may have no source and render as an authoring slot rather than a broken player.
+
+The written lesson remains the complete instructional explanation. Video is an additional teaching asset and must not become the only place where a required mechanism is explained.
+
+The content stream is separate from the podcast/co-teacher synchronization contract. Podcast timing remains driven by the actual aligned audio manifest.
+
+When a content block contract changes, update its validator, tests and authoring documentation together.
+
 # 5. Project contract
 
 Projects are continuous operating environments, not final homework.
@@ -399,7 +427,7 @@ This does not mean the entire B1.2 failure/recovery exercise is machine verified
 
 # 10. Podcast standard
 
-The spoken lesson is two engineers working through a problem, not a narrated textbook.
+The spoken lesson is two engineers working through a problem, not a narrated textbook. It is a continuous co-teacher layer attached to the whole learner session, not a separate Listen mode.
 
 Required style:
 - natural contractions
@@ -423,6 +451,8 @@ Learning rhythm:
 problem -> competing hypotheses -> mental model -> prediction -> operation -> failure -> evidence -> diagnosis -> repair -> recall -> transfer -> challenge
 
 Audio timing must come from actual aligned audio. Never estimate timing from word count.
+
+The voice session remains active across the lesson's content feed and learner modes. Authored prediction, lab and recall cues are deliberate learner-action boundaries: speech pauses, the learner acts, and the same voice session resumes. Switching from Learn to Do/Recall/Design/Assessment must not destroy the voice session.
 
 Current authored spoken content covers 53 lessons. Production aligned audio is not yet complete.
 

@@ -59,7 +59,7 @@ assert.match(content.env, /NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=/);
 assert.match(content.env, /CLERK_SECRET_KEY=/);
 assert.match(content.gitignore, /\.env\*\.local/);
 
-assert.match(content.schema, /userId\("user_id"\)/);
+assert.match(content.schema, /userId\s*:\s*text\("user_id"\)/);
 assert.match(content.schema, /learner_progress_history_user_item_uq/);
 assert.match(content.schema, /item_type IN/);
 assert.doesNotMatch(content.schema, /learnerId/);

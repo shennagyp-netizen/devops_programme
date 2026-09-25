@@ -16,13 +16,13 @@ export type AssessmentItem = {
   family: AssessmentFamily;
   difficulty: DifficultyBand;
   cognitiveLevel: CognitiveLevel;
-  itemType: string;
+  itemType: string | string[];
   expectedMinutes: number;
   competencyId: string;
   prompt: string;
   options?: string[];
   correctOption?: number;
-  expectedElements?: string[];
+  expectedElements?: string[] | number;
   scoring?: {
     full?: string[];
     partial?: string[];

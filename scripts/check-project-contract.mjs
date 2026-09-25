@@ -9,7 +9,7 @@ const intermediateLessonsPath = path.join(root, "app", "src", "data", "curriculu
 const projectsPath = path.join(root, "app", "src", "data", "projects.ts");
 
 const lessons = await readFile(lessonsPath, "utf8");
-const intermediateLessons = await readFile(intermediateLessonsPath, "utf8");
+const curriculum = await readFile(intermediateLessonsPath, "utf8");
 const projects = await readFile(projectsPath, "utf8");
 
 let failed = false;
@@ -22,7 +22,7 @@ const lessonProjectIds = new Set(
   [...lessons.matchAll(/projectId:\s*"([^"]+)"/g)].map((match) => match[1])
 );
 
-for (const projectId of [...intermediateLessons.matchAll(/return\s+"(I[1-3])"/g)].map((match) => match[1])) {
+for (const projectId of [...lessons.matchAll(/return\s+"(I[1-3])"/g)].map((match) => match[1])) {
   lessonProjectIds.add(projectId);
 }
 
@@ -52,7 +52,7 @@ for (const projectId of projectIds) {
 
 const intermediateProjectIds = ["I1", "I2", "I3"];
 const allIntermediateLessonIds = [
-  ...intermediateLessons.matchAll(/"id":\s*"(D\d+\.\d+)"/g)
+  ...curriculum.matchAll(/"id":\s*"(D\d+\.\d+)"/g)
 ].map((match) => match[1]);
 
 if (allIntermediateLessonIds.length !== 32) {

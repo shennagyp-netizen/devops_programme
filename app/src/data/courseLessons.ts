@@ -1,5 +1,6 @@
 import type { Lesson } from "./curriculum";
 import type { CourseLevel, PlatformId } from "./programme";
+import { getLessonContent, type LessonContent } from "./lessonContent";
 import { lessons as intermediateCore } from "./curriculum";
 
 export type CourseLesson = Lesson & {
@@ -10,6 +11,7 @@ export type CourseLesson = Lesson & {
   humanExample: string;
   podcastStatus: "script-ready" | "authoring";
   platformCommands: Partial<Record<PlatformId, string>>;
+  content: LessonContent;
 };
 
 const withIntermediateMetadata = (lesson: Lesson): CourseLesson => ({
@@ -24,7 +26,13 @@ const withIntermediateMetadata = (lesson: Lesson): CourseLesson => ({
     macos: lesson.lab.command,
     linux: lesson.lab.command,
     windows: "Use the Windows adapter for the same observation."
-  }
+  },
+  content: getLessonContent({
+    id: lesson.id,
+    title: lesson.title,
+    objective: lesson.objective,
+    humanExample: exampleForIntermediate(lesson.id)
+  })
 });
 
 function sectionForIntermediate(id: string) {
@@ -396,6 +404,12 @@ function lesson(input: LessonAuthoringInput): CourseLesson {
       linux: input.command,
       windows: "Use the Windows adapter for the same observation."
     },
+    content: getLessonContent({
+      id: input.id,
+      title: input.title,
+      objective: input.objective,
+      humanExample: input.example
+    }),
     lab: {
       objective: input.objective,
       command: input.command,

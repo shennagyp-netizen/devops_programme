@@ -131,6 +131,34 @@ for (const file of files) {
       console.error(`${file.rel}: item ${item.id} has non-positive expectedMinutes`);
     }
 
+    const validItemType =
+      (typeof item.itemType === "string" && item.itemType.trim() !== "") ||
+      (Array.isArray(item.itemType) &&
+        item.itemType.length > 0 &&
+        item.itemType.every(
+          (value) => typeof value === "string" && value.trim() !== ""
+        ));
+
+    if (!validItemType) {
+      failed = true;
+      console.error(`${file.rel}: item ${item.id} has invalid itemType`);
+    }
+
+    if (
+      item.expectedElements !== undefined &&
+      !(
+        (Array.isArray(item.expectedElements) &&
+          item.expectedElements.length > 0 &&
+          item.expectedElements.every(
+            (value) => typeof value === "string" && value.trim() !== ""
+          )) ||
+        (Number.isInteger(item.expectedElements) && item.expectedElements > 0)
+      )
+    ) {
+      failed = true;
+      console.error(`${file.rel}: item ${item.id} has invalid expectedElements`);
+    }
+
     if (item.family === "hands-on") {
       for (const field of handsOnFields) {
         if (!Array.isArray(item[field]) && field !== "initialState" && field !== "resetStrategy") {
