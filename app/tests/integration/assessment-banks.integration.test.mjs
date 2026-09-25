@@ -100,9 +100,9 @@ describe("assessment bank integration", () => {
           expect(allowedCognitiveLevels.has(item.cognitiveLevel)).toBe(true);
           expect(item.competencyId.startsWith(section + ".")).toBe(true);
           expect(item.prompt.trim()).not.toBe("");
+          expect(typeof item.itemType).toBe("string");
           expect(item.itemType.trim()).not.toBe("");
           expect(item.expectedMinutes).toBeGreaterThan(0);
-          expect(typeof item.itemType).toBe("string");
           expect(item.itemType.trim()).not.toBe("");
 
           if (item.options) {
