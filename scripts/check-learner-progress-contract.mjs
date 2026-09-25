@@ -7,6 +7,7 @@ const files = {
   schema: "../app/src/lib/server/schema.ts",
   migration: "../app/drizzle/migrations/0000_learner_completions.sql",
   progress: "../app/src/lib/server/progress.ts",
+  auth: "../app/src/lib/server/auth.ts",
   action: "../app/src/app/actions/progress.ts",
   contract: "../app/src/lib/progress-contract.ts",
   app: "../app/src/App.tsx",
@@ -80,7 +81,7 @@ assert.doesNotMatch(content.progress, /stdout|stderr|attempt|machineEnvelope/);
 
 assert.match(content.action, /"use server"/);
 assert.match(content.action, /requireCurrentUser/);
-assert.match(content.action, /Authentication required/);
+assert.match(content.auth, /Authentication required/);
 assert.doesNotMatch(content.action, /learnerId/);
 
 for (const itemType of ["lesson", "assignment", "question", "project"]) {
