@@ -15,7 +15,8 @@ export type LessonIllustrationVariantV1 =
   | "linux-operating-model-v1"
   | "terminal-composition-v1"
   | "service-permission-model-v1"
-  | "network-operating-model-v1";
+  | "network-operating-model-v1"
+  | "cidr-boundary-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -474,6 +475,36 @@ const NETWORK_OPERATING_MODEL_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const CIDR_BOUNDARY_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "cidr-boundary-v1",
+  title: "The subnet boundary",
+  stages: [
+    { id: "address", label: "Address", detail: "Start with the full IPv4 address you need to place in a network." },
+    { id: "prefix", label: "Prefix", detail: "CIDR states how many leading bits belong to the network portion." },
+    { id: "boundary", label: "Boundary", detail: "The prefix length creates a block boundary that divides network and host space." },
+    { id: "range", label: "Range", detail: "From the boundary you can derive the network, broadcast where applicable, and usable host range." },
+    { id: "verify", label: "Verify", detail: "Check whether two addresses share a subnet and whether the planned topology fits the available ranges." }
+  ],
+  foundation: {
+    label: "CIDR describes a network boundary",
+    detail: "The slash is not decoration: it states how many address bits define the network portion."
+  },
+  callouts: [
+    { id: "network-bits", label: "Network bits", detail: "The prefix length identifies the leading bits used to define the network." },
+    { id: "host-bits", label: "Host bits", detail: "The remaining IPv4 bits determine the addresses available within the block." },
+    { id: "block-size", label: "Block size", detail: "A prefix produces a predictable block size and boundary pattern that can be reasoned through manually." },
+    { id: "segmentation", label: "Segmentation", detail: "Smaller prefixes can divide a larger address space into clearer failure and access boundaries." }
+  ],
+  failureChecks: [
+    { id: "network-boundary", label: "1. Network boundary", detail: "Can you calculate the actual network address for the given prefix?" },
+    { id: "usable-range", label: "2. Usable range", detail: "Can you state the address range available for hosts under the chosen addressing rules?" },
+    { id: "same-subnet", label: "3. Same subnet", detail: "Do two addresses actually share the same network boundary?" },
+    { id: "route-fit", label: "4. Route fit", detail: "Does the subnet design match the routing and segmentation decisions you intend to make?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -597,6 +628,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "cidr-boundary-v1") {
+    return {
+      ...CIDR_BOUNDARY_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -626,7 +664,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "linux-operating-model-v1" &&
     model.variant !== "terminal-composition-v1" &&
     model.variant !== "service-permission-model-v1" &&
-    model.variant !== "network-operating-model-v1"
+    model.variant !== "network-operating-model-v1" &&
+    model.variant !== "cidr-boundary-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
