@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #46, commit `1d427a9c24e6b24954857f43eaf34981b5e67ebb` (D1.5 CIDR boundary script + illustration quality slice).
+**Latest main architecture/content merge:** PR #47, commit `417cf8ec4ce899623f705708e839214591ac1acb` (D1.6 routing-boundary script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #46 has merged to `main`.
+**Active content-quality branch:** none. PR #47 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1891,17 +1891,16 @@ Merged PR #46:
 - D1.5 -> `cidr-boundary-v1`: Address -> Prefix -> Boundary -> Range -> Verify.
 - Merge commit: `1d427a9c24e6b24954857f43eaf34981b5e67ebb`.
 - CI run 36106580796 passed.
-- D1.5 treats CIDR as a network-boundary design decision and teaches manual block/range reasoning before tool verification.
-- Next content boundary: **D1.6 — Routing, Gateways and NAT**.
+- D1.5 teaches CIDR as a network-boundary design decision and requires manual range reasoning before tool verification.
 
-
-Active PR #47 scope:
-- D1.6 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `routing-boundary-v1`.
-- Teaching model: Destination -> Route -> Next hop -> Boundary -> Evidence.
-- The rewritten script separates route selection, gateway/next-hop behavior, NAT and access control, and explicitly teaches return-path evidence.
-- Controlled failure changes one disposable route, predicts the affected destination, then restores and proves recovery.
-- TDD/full-programme gate is required before merge.
+Merged PR #47:
+- D1.6 -> `routing-boundary-v1`: Destination -> Route -> Next hop -> Boundary -> Evidence.
+- Merge commit: `417cf8ec4ce899623f705708e839214591ac1acb`.
+- Final PR #47 gate passed **369 tests**, all programme contracts, TypeScript and the Next.js production build.
+- A red-team typecheck failure caught the missing `routing-boundary-v1` entry in the shared lesson-content variant union; the type contract was corrected rather than suppressed.
+- D1.6 now separates route selection, gateway/next-hop behavior, NAT and access control, and explicitly teaches return-path evidence.
+- **Day 1 is now gold-standard from D1.1 through D1.6.**
+- Next content boundary: **D2.1** (first lesson of the next Intermediate curriculum block).
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
