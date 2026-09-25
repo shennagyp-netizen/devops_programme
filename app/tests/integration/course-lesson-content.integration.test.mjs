@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored HTTP exchange visual for D2.3", () => {
+    const lesson = allLessons.find((item) => item.id === "D2.3");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d2-3-http",
+      bindingId: "D2.3:d2-3-http",
+      variant: "http-exchange-v1"
+    });
+  });
+
   it("uses the authored DNS resolution visual for D2.2", () => {
     const lesson = allLessons.find((item) => item.id === "D2.2");
     expect(lesson).toBeDefined();
