@@ -59,6 +59,40 @@ describe("lesson illustration teaching model", () => {
 
 
 
+  it("models observability as a diagnosis path from vague symptom to correlated proof", () => {
+    const model = getLessonIllustrationModel({
+      id: "b2-2-observability",
+      type: "illustration",
+      heading: "From symptom to evidence",
+      alt: "A vague slow-service report becomes scoped evidence across request latency, service signals, dependency signals and proof",
+      bindingId: "B2.2:b2-2-observability",
+      nodes: ["Symptom", "Scope", "Service", "Dependency", "Proof"],
+      variant: "observability-diagnosis-v1"
+    });
+
+    expect(model.variant).toBe("observability-diagnosis-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "symptom",
+      "scope",
+      "service",
+      "dependency",
+      "proof"
+    ]);
+    expect(model.foundation.label).toBe("Signals answer different questions");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "metrics",
+      "logs",
+      "health",
+      "traces"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "scope-question",
+      "correlated-change",
+      "alternative-cause",
+      "recovery-proof"
+    ]);
+  });
+
   it("models safe delivery as a traceable path from change to verified release", () => {
     const model = getLessonIllustrationModel({
       id: "b2-1-safe-delivery",

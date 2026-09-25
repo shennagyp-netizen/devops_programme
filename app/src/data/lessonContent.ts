@@ -11,7 +11,8 @@ export type LessonIllustrationVariantV1 =
   | "request-path-v1"
   | "https-stack-v1"
   | "repeatable-service-v1"
-  | "delivery-pipeline-v1";
+  | "delivery-pipeline-v1"
+  | "observability-diagnosis-v1";
 
 export type LessonContentBlock =
   | {
@@ -64,6 +65,30 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "B2.2": {
+    version: 1,
+    blocks: [
+      {
+        id: "b2-2-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "A report such as 'everything is slow' is only a symptom. Observability gives us different kinds of evidence so we can scope the problem, compare competing causes and prove recovery."
+      },
+      {
+        id: "b2-2-observability",
+        type: "illustration",
+        heading: "From symptom to evidence",
+        alt: "A vague slow-service report becomes scoped evidence across request latency, service signals, dependency signals and proof",
+        bindingId: "B2.2:b2-2-observability",
+        nodes: ["Symptom", "Scope", "Service", "Dependency", "Proof"],
+        variant: "observability-diagnosis-v1",
+        caption:
+          "Use the signal that answers the next useful question; do not collect dashboards without a diagnostic purpose."
+      }
+    ]
+  },
+
   "B2.1": {
     version: 1,
     blocks: [
@@ -262,7 +287,8 @@ export function validateLessonContent(
         block.variant !== "request-path-v1" &&
         block.variant !== "https-stack-v1" &&
         block.variant !== "repeatable-service-v1" &&
-        block.variant !== "delivery-pipeline-v1"
+        block.variant !== "delivery-pipeline-v1" &&
+        block.variant !== "observability-diagnosis-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }

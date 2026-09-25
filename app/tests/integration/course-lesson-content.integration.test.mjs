@@ -60,6 +60,21 @@ describe("course lesson content integration", () => {
       expect(lesson.content.blocks[1].type, lesson.id).toBe("illustration");
     }
   });
+  it("uses the authored observability visual for B2.2", () => {
+    const lesson = allLessons.find((item) => item.id === "B2.2");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "b2-2-observability",
+      bindingId: "B2.2:b2-2-observability",
+      variant: "observability-diagnosis-v1"
+    });
+  });
+
   it("uses the authored safe-delivery visual for B2.1", () => {
     const lesson = allLessons.find((item) => item.id === "B2.1");
     expect(lesson).toBeDefined();

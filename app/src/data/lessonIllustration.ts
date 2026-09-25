@@ -6,7 +6,8 @@ export type LessonIllustrationVariantV1 =
   | "request-path-v1"
   | "https-stack-v1"
   | "repeatable-service-v1"
-  | "delivery-pipeline-v1";
+  | "delivery-pipeline-v1"
+  | "observability-diagnosis-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -197,6 +198,36 @@ const DELIVERY_PIPELINE_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const OBSERVABILITY_DIAGNOSIS_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "observability-diagnosis-v1",
+  title: "From symptom to evidence",
+  stages: [
+    { id: "symptom", label: "Symptom", detail: "Start with the user-visible complaint without assuming its cause." },
+    { id: "scope", label: "Scope", detail: "Separate which users, requests, time window or endpoint are actually affected." },
+    { id: "service", label: "Service", detail: "Compare latency, request rate, CPU, memory and focused health signals." },
+    { id: "dependency", label: "Dependency", detail: "Correlate the service signal with database, network or other dependency evidence." },
+    { id: "proof", label: "Proof", detail: "Test the strongest hypothesis, remove the controlled fault and verify recovery." }
+  ],
+  foundation: {
+    label: "Signals answer different questions",
+    detail: "Metrics show measured values over time; logs show events; health checks answer a focused state question; traces show where one request spent time."
+  },
+  callouts: [
+    { id: "metrics", label: "Metrics", detail: "How much? When did it change? How is the value distributed?" },
+    { id: "logs", label: "Logs", detail: "What event or message did the system record?" },
+    { id: "health", label: "Health", detail: "Is the process alive or ready for the decision this check controls?" },
+    { id: "traces", label: "Traces", detail: "Where did this request spend its time across the system?" }
+  ],
+  failureChecks: [
+    { id: "scope-question", label: "1. Scope the symptom", detail: "Which endpoint, users, requests and time window are actually affected?" },
+    { id: "correlated-change", label: "2. Correlate the signals", detail: "Which independent signals changed together rather than merely looking alarming?" },
+    { id: "alternative-cause", label: "3. Challenge the hypothesis", detail: "What plausible alternative could produce the same symptom?" },
+    { id: "recovery-proof", label: "4. Prove recovery", detail: "After the controlled change, did the same user-visible behavior return to the known-good state?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -257,6 +288,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "observability-diagnosis-v1") {
+    return {
+      ...OBSERVABILITY_DIAGNOSIS_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -277,7 +315,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "request-path-v1" &&
     model.variant !== "https-stack-v1" &&
     model.variant !== "repeatable-service-v1" &&
-    model.variant !== "delivery-pipeline-v1"
+    model.variant !== "delivery-pipeline-v1" &&
+    model.variant !== "observability-diagnosis-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
