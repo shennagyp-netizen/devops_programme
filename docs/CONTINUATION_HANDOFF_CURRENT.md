@@ -1972,5 +1972,14 @@ Current content-quality batch (PR #93):
 - D3.5 now has explicit prediction pauses for CrashLoopBackOff, ImagePullBackOff, OOMKilled, readiness failure and Service-selector failure.
 - PR #93 is currently blocked by Vercel build-rate-limit infrastructure; no code/test failure is claimed from that status.
 
+
+Active PR #52 scope:
+- D2.6 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `docker-network-storage-v1`.
+- Teaching model: Service -> Network -> Name -> Port -> Volume.
+- The rewritten script separates internal service discovery, internal service ports, published host ports and persistent volume lifecycle.
+- Controlled failures distinguish name-resolution failure, published-port failure and container recreation with persistent data.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
