@@ -67,7 +67,7 @@ describe("lesson content stream contract", () => {
 
     expect(result.valid).toBe(false);
     expect(result.failures.join(" ")).toContain("duplicate block id");
-    expect(result.failures.join(" ")).toContain("published video source");
+    expect(result.failures.join(" ")).toContain("video source is invalid");
 
     const protocolRelative = validateLessonContent({
       version: 1,
