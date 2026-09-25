@@ -77,7 +77,7 @@ const definition = {
   }
 };
 
-const cues: AnimationTimedCueV1[] = [
+const cues = [
   {
     voiceCueId: "request",
     startMs: 1000,
