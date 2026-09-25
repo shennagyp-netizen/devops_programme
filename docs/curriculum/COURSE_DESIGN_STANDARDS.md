@@ -294,6 +294,28 @@ Invalid authored bindings fail closed. Missing animations, unknown cues/events/i
 
 This binding contract must be covered by unit, integration and red-team tests, plus programme completeness checks. Browser visual validation is a separate evidence category.
 
+# 4.3 Script + illustration co-authoring standard
+
+The spoken script and its primary illustration are one teaching unit. They must be authored and reviewed together.
+
+Required teaching relationship:
+- the script names the problem and establishes a prediction
+- the illustration shows the literal mechanism needed to make that prediction
+- the narration and visual must use the same nouns for the same system objects
+- a controlled failure must be visible as a change in a real mechanism, not only a change in decorative status
+- diagnosis must move through the smallest evidence-bearing layer that can separate plausible causes
+- recovery must return the visual to a provable healthy state
+- the final proof must be consistent with the mechanism taught.
+
+Illustrations should prefer concrete system models such as process boundaries, request paths, storage lifecycles, control loops, queues, dependency chains and failure domains. Generic `Problem -> Mechanism -> Evidence` visuals are acceptable only as a temporary fallback for lessons that do not yet have an authored semantic model.
+
+An authored semantic illustration may declare a named visual variant and render through a reusable component. The lesson content contract remains authoritative for when the visual appears; the renderer must not invent curriculum sequence from lesson IDs.
+
+Voice cue classification must fail closed enough to avoid turning incidental technical vocabulary into learner pauses. In particular, a sentence that merely mentions a prediction is not itself a prediction prompt.
+
+These rules require unit/integration tests and red-team tests. A lesson does not meet the gold-standard content gate until its script, illustration and learner interaction sequence are technically consistent.
+
+
 # 5. Project contract
 
 Projects are continuous operating environments, not final homework.
