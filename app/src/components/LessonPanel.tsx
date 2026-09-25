@@ -571,6 +571,29 @@ export function LessonPanel({
                     verificationLevel: handsOnTask.verificationLevel,
                     evidencePayload: { ...handsOnEvidence }
                   });
+                  void recordMasteryAttemptAction({
+                    lessonId: lesson.id,
+                    taskId: handsOnTask.id,
+                    outcome: "failure",
+                    stage: plan.stage,
+                    summary: validation.failures.join(" ")
+                  })
+                    .then((stored) => {
+                      if (stored.attemptNumber !== attempt) {
+                        const authoritativePlan = getMasteryPlan(
+                          lesson,
+                          handsOnTask,
+                          validation.failures,
+                          stored.attemptNumber - 1
+                        );
+                        setMasteryAttempts(stored.attemptNumber);
+                        setMasteryPlan(authoritativePlan);
+                      }
+                    })
+                    .catch(() => {
+                      // Local evidence remains available if server mastery history is temporarily unavailable.
+                    });
+
                   return;
                 }
 
