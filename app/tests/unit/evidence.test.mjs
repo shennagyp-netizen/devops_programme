@@ -93,12 +93,12 @@ describe("evidence ledger", () => {
     const invalid = recordMachineVerification({
       course: "beginner",
       projectId: "B1",
-      task: task!,
+      task: task,
       envelope: {
         schemaVersion: 1,
-        taskId: task!.taskId,
-        contractVersion: task!.contractVersion,
-        lessonId: task!.lessonId,
+        taskId: task.taskId,
+        contractVersion: task.contractVersion,
+        lessonId: task.lessonId,
         platform: "linux",
         verificationLevel: "machine-verified",
         verificationSource: "local-runner",
@@ -120,12 +120,12 @@ describe("evidence ledger", () => {
     const valid = recordMachineVerification({
       course: "beginner",
       projectId: "B1",
-      task: task!,
+      task: task,
       envelope: {
         schemaVersion: 1,
-        taskId: task!.taskId,
-        contractVersion: task!.contractVersion,
-        lessonId: task!.lessonId,
+        taskId: task.taskId,
+        contractVersion: task.contractVersion,
+        lessonId: task.lessonId,
         platform: "linux",
         verificationLevel: "machine-verified",
         verificationSource: "local-runner",
@@ -135,7 +135,7 @@ describe("evidence ledger", () => {
         environmentFingerprint: "fingerprint",
         startedAt: "2026-09-24T10:00:00.000Z",
         completedAt: "2026-09-24T10:01:00.000Z",
-        stepResults: task!.steps.map((step, index) => ({
+        stepResults: task.steps.map((step, index) => ({
           stepId: step.id,
           startedAt: `2026-09-24T10:00:0${index}.000Z`,
           completedAt: `2026-09-24T10:00:1${index}.000Z`,
@@ -164,12 +164,12 @@ describe("evidence ledger", () => {
     const result = recordMachineVerification({
       course: "beginner",
       projectId: "B1",
-      task: task!,
+      task: task,
       envelope: {
         schemaVersion: 1,
-        taskId: task!.taskId,
-        contractVersion: task!.contractVersion,
-        lessonId: task!.lessonId,
+        taskId: task.taskId,
+        contractVersion: task.contractVersion,
+        lessonId: task.lessonId,
         platform: "linux",
         verificationLevel: "machine-verified",
         verificationSource: "ssh-runner",
@@ -185,7 +185,7 @@ describe("evidence ledger", () => {
         environmentFingerprint: "fingerprint",
         startedAt: "2026-09-24T10:00:00.000Z",
         completedAt: "2026-09-24T10:01:00.000Z",
-        stepResults: task!.steps.map((step) => ({
+        stepResults: task.steps.map((step) => ({
           stepId: step.id,
           startedAt: "2026-09-24T10:00:01.000Z",
           completedAt: "2026-09-24T10:00:02.000Z",
