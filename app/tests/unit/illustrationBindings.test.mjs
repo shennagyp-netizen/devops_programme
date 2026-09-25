@@ -9,6 +9,7 @@ const staticBlock = {
   type: "illustration",
   heading: "Request path",
   alt: "A request path from client to service",
+  bindingId: "B1.1:b1-1-mechanism",
   nodes: ["Client", "Service"]
 };
 
@@ -97,7 +98,8 @@ describe("curriculum illustration binding v1", () => {
       binding,
       {
         ...staticBlock,
-        id: "http-flow"
+        id: "http-flow",
+        bindingId: "B1.2:http-flow"
       },
       {
         animationDefinitions: [animationDefinition],
