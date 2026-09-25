@@ -343,3 +343,13 @@ The repository-level Vercel workaround was intentionally removed. The correct pr
 - Build/Install/Output: auto-detected defaults.
 
 No animation implementation work should proceed past this visual gate until the corrected deployment is reachable and visually inspected.
+
+
+## 2026-09-25 Vercel deployment gate — READY, visual access still protected
+
+The corrected Vercel project Root Directory is `app`, and deployment `dpl_GRybEmz1XwaMTZiyF5rKdRN3LQuA` is READY from `main` commit `4c4e421f6cce99db248df735f57be06514dd6e71`.
+
+This confirms the deployment configuration is now correct enough for Next.js to build and deploy.
+
+Visual browser validation remains unclaimed because Vercel SSO/deployment protection redirects the generated deployment URL. The connector can issue a temporary share URL, but the available fetch path cannot retain the required SSO cookie. Do not mark the visual gate green until a browser can render the deployment.
+

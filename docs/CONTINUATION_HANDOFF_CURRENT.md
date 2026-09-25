@@ -1618,3 +1618,32 @@ This section supersedes stale statements elsewhere that describe Vercel project 
 ============================================================
 END VERCEL VISUAL GATE — CURRENT STATUS
 ============================================================
+
+
+============================================================
+VERCEL VISUAL GATE — READY DEPLOYMENT CONFIRMED — 2026-09-25
+============================================================
+
+The Vercel Project Root Directory correction is now proven by a successful deployment.
+
+Verified:
+- Project: `devops-programme`
+- Framework: Next.js
+- Vercel Project Root Directory: `app`
+- READY deployment: `dpl_GRybEmz1XwaMTZiyF5rKdRN3LQuA`
+- Deployment URL: `devops-programme-17mn4801j-shennagyp-8842.vercel.app`
+- Source: `main`, commit `4c4e421f6cce99db248df735f57be06514dd6e71`
+
+Build behavior is now correct. The prior 404/root-build problem is resolved; the successful deployment is the first deployment produced from the corrected application root.
+
+Browser visual validation remains **Not yet validated** because the deployment is protected by Vercel SSO. The Vercel connector can generate a temporary share URL, but the available server-side fetch cannot persist the SSO cookie required to complete the share flow. No UI result is inferred from this protected response.
+
+Next gate:
+- provide browser-level access to the READY deployment (or disable Deployment Protection for the deployment/project);
+- inspect the actual rendered application;
+- record visual findings;
+- only then continue the curriculum-animation implementation.
+
+============================================================
+END VERCEL VISUAL GATE — READY DEPLOYMENT CONFIRMED
+============================================================
