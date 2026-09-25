@@ -33,7 +33,9 @@ describe("curriculum illustration binding v1", () => {
     );
 
     expect(validateCurriculumIllustrationBinding(binding, staticBlock, {
-      animationDefinitions: []
+      animationDefinitions: [],
+      expectedLessonId: "B1.1",
+      expectedContentIndex: 1
     })).toEqual({
       valid: true,
       failures: []
@@ -103,7 +105,9 @@ describe("curriculum illustration binding v1", () => {
       },
       {
         animationDefinitions: [animationDefinition],
-        voiceCueIds: new Set(["request-start", "request-arrives"])
+        voiceCueIds: new Set(["request-start", "request-arrives"]),
+        expectedLessonId: "B1.2",
+        expectedContentIndex: 1
       }
     );
 
