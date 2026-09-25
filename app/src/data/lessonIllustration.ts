@@ -23,7 +23,8 @@ export type LessonIllustrationVariantV1 =
   | "http-exchange-v1"
   | "tls-trust-v1"
   | "container-execution-v1"
-  | "docker-network-storage-v1";
+  | "docker-network-storage-v1"
+  | "docker-failure-loop-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -722,6 +723,36 @@ const DOCKER_NETWORK_STORAGE_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const DOCKER_FAILURE_LOOP_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "docker-failure-loop-v1",
+  title: "The controlled Docker failure loop",
+  stages: [
+    { id: "baseline", label: "Baseline", detail: "Start from a known-good Docker stack and record the evidence that proves it works." },
+    { id: "change", label: "Change", detail: "Change exactly one variable or boundary so the experiment has a clear cause." },
+    { id: "symptom", label: "Symptom", detail: "Predict the visible failure before observing it." },
+    { id: "evidence", label: "Evidence", detail: "Inspect the process, logs, network, configuration or storage state that can distinguish the leading hypotheses." },
+    { id: "recovery", label: "Recovery", detail: "Restore the known-good state and prove that the original behavior returns." }
+  ],
+  foundation: {
+    label: "Change one boundary, predict one symptom, collect evidence, then recover",
+    detail: "A controlled failure is an experiment: one change, one prediction, one observation, and one recovery proof."
+  },
+  callouts: [
+    { id: "single-change", label: "One change", detail: "Do not change several variables at once; otherwise the symptom cannot be tied to one cause." },
+    { id: "prediction", label: "Prediction", detail: "State what you expect to see before running the failing experiment." },
+    { id: "evidence", label: "Evidence", detail: "Use logs, process state, network state, configuration and storage state to separate hypotheses." },
+    { id: "recovery-proof", label: "Recovery proof", detail: "Restoring the setting is not enough; verify that the known-good user path works again." }
+  ],
+  failureChecks: [
+    { id: "process", label: "1. Process", detail: "Is the main container process running, restarting or exiting?" },
+    { id: "network", label: "2. Network", detail: "Can the expected service name, internal port and published path still reach the right process?" },
+    { id: "configuration", label: "3. Configuration", detail: "Did one environment variable, command or mounted file change the behavior?" },
+    { id: "storage", label: "4. Storage", detail: "Does the expected volume exist, contain the right data and attach to the new container?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -901,6 +932,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "docker-failure-loop-v1") {
+    return {
+      ...DOCKER_FAILURE_LOOP_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -938,7 +976,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "http-exchange-v1" &&
     model.variant !== "tls-trust-v1" &&
     model.variant !== "container-execution-v1" &&
-    model.variant !== "docker-network-storage-v1"
+    model.variant !== "docker-network-storage-v1" &&
+    model.variant !== "docker-failure-loop-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }

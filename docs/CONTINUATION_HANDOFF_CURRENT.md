@@ -1929,5 +1929,14 @@ Merged PR #77:
 - Final refreshed PR #77 gate passed all programme contracts, full unit/integration tests, TypeScript and the Next.js production build.
 - Next content boundary: **D2.7 — Break Docker**.
 
+
+Active PR #54 scope:
+- D2.7 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `docker-failure-loop-v1`.
+- Teaching model: Baseline -> Change -> Symptom -> Evidence -> Recovery.
+- The rewritten script turns Docker failure into a controlled experiment across hostname, published port, configuration, permissions, readiness and resource failures.
+- Every experiment requires one change, a prediction, evidence, restoration and recovery proof.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
