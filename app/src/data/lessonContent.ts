@@ -141,6 +141,12 @@ export function validateLessonContent(
       }
       if (!Array.isArray(block.nodes) || block.nodes.length === 0) {
         failures.push(`illustration block ${block.id} needs nodes`);
+      } else if (
+        block.nodes.some(
+          (node) => typeof node !== "string" || !node.trim()
+        )
+      ) {
+        failures.push(`illustration block ${block.id} needs non-empty string nodes`);
       }
       continue;
     }
@@ -154,8 +160,14 @@ export function validateLessonContent(
       failures.push(`video block ${block.id} needs a heading`);
     }
 
-    if (block.status === "published" && !isSafeMediaSource(block.src)) {
-      failures.push(`published video source is invalid for block ${block.id}`);
+    if (
+      block.src !== "" &&
+      !isSafeMediaSource(block.src)
+    ) {
+      failures.push(`video source is invalid for block ${block.id}`);
+    }
+    if (block.status === "published" && !block.src) {
+      failures.push(`published video source is missing for block ${block.id}`);
     }
 
     if (
