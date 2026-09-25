@@ -8,6 +8,7 @@ async function source(path) {
 describe("public marketing visual contract", () => {
   it("places a purpose-built systems illustration in the hero", async () => {
     const page = await source("../../src/app/page.tsx");
+    const illustration = await source("../../src/components/MarketingHeroIllustration.tsx");
 
     expect(page).toContain("<MarketingHeroIllustration />");
     expect(illustration).toContain('aria-label="DevOps learning system illustration"');
