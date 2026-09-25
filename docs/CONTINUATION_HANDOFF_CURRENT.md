@@ -1850,6 +1850,16 @@ Active Advanced A1.1-A1.4 scope:
 - Unit and integration tests lock exact visual identity and semantic model behavior.
 - TDD/full-programme gate is required before merge.
 
+Merged PR #104:
+- A1.1 -> `capacity-system-v1`: Demand -> Service -> Bottleneck -> Queue -> Headroom.
+- A1.2 -> `queue-backpressure-v1`: Producer -> Queue -> Consumer -> Capacity -> Backpressure.
+- A1.3 -> `replication-tradeoff-v1`: Write -> Copies -> Lag -> Read -> Consistency.
+- A1.4 -> `failure-domain-ladder-v1`: Process -> Host -> Zone -> Region -> Recovery.
+- Merge commit: `28a131dc4d1f0ed00b7de883682e329d6af88423`.
+- Final PR #104 gate passed **424 tests**, 50 test files, all programme contracts, TypeScript and the Next.js production build.
+- Advanced scripts were already long-form; this batch upgraded their semantic visual contract without artificial script inflation.
+- Next Advanced boundary: **A1.5-A1.6 — global traffic routing and data locality**.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
 
@@ -1867,5 +1877,5 @@ Merged PR #100:
 - Stale PR #91 was closed unmerged after the clean current-main port landed.
 
 om that status.
-- Next content boundary: remaining quality audit across the full 53-lesson programme. Short-script audit now shows D1.5 as the shortest remaining authored lesson at about 946 words; no sub-400-word concept notes remain.
+- Next content boundary: **A1.5-A1.6 — global traffic routing and data locality**.
 
