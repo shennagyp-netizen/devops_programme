@@ -2003,5 +2003,12 @@ Active PR #95 scope:
 - The old ~360-word concept note has been replaced with a full mechanism-first lesson covering query plans, index trade-offs, replication lag/consistency, partition keys, cross-partition work, controlled experiments, recall and transfer.
 - Fresh Vercel validation may be blocked by the current build-rate-limit infrastructure condition.
 
+
+Merged PR #95:
+- Merge commit: `4da8a0cf865e644ffdd2f490e1b45581e32d397a`.
+- D5.2 now uses `database-scaling-v1`: Workload -> Query -> Index -> Copies -> Partitions -> Evidence.
+- The old short concept note was replaced with a full lesson covering query shape, index trade-offs, replication lag/consistency, partition keys, cross-partition work, controlled experiments, recall and transfer.
+- Fresh Vercel validation for PR #95 remained blocked by build-rate-limit infrastructure; this is not claimed as green.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
