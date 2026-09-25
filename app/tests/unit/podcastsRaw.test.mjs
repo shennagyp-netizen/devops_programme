@@ -62,6 +62,16 @@ describe("podcast raw-script parsing contract", () => {
     ]);
   });
 
+  it("recognizes natural lab transition phrases", () => {
+    const turns = parseTurns(
+      "Speaker A: Now the lab.\n" +
+      "Speaker B: Lab time. Start with the normal request.",
+      "B1.2"
+    );
+
+    expect(turns.map((turn) => turn.kind)).toEqual(["lab", "lab"]);
+  });
+
   it("does not turn incidental mentions of prediction into learner pauses", () => {
     const turns = parseTurns(
       "Speaker A: Now we have a concrete prediction.\n" +
