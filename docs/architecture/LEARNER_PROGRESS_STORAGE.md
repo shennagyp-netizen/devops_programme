@@ -14,7 +14,7 @@ There is exactly one persistent completion row for that combination.
 
 ## Authoritative architecture
 
-The learner-facing application is a Next.js App Router application with Clerk authentication, Drizzle ORM, and PostgreSQL.
+The learner-facing application is a Next.js App Router application with first-party email/password authentication, Drizzle ORM, and PostgreSQL.
 
 The normal completion path is:
 
@@ -92,7 +92,7 @@ Completion is append-once and idempotent.
 
 When a learner completes an item:
 
-1. Clerk supplies the authenticated user ID.
+1. The first-party session supplies the authenticated database user ID.
 2. The Server Action validates the completion input.
 3. Drizzle inserts one row.
 4. PostgreSQL ignores a duplicate user/item completion.
@@ -145,18 +145,21 @@ Terminal output remains transient UI state and is discarded after the current ve
 
 ## Authentication and user management
 
-Authentication is handled by Clerk.
+Authentication and user management are implemented inside the application. There is no external identity provider.
 
 The application uses:
 
-- Clerk sign-up
-- Clerk sign-in
-- Clerk session state
-- Clerk `UserButton`
+- first-party email/password registration
+- first-party email/password sign-in
+- a server-issued opaque session token in an `httpOnly` cookie named `devops_session`
+- PostgreSQL-backed session records with expiry
+- server-side logout that revokes the current session.
 
-The `UserButton` supplies account management and sign-out without a custom user-management API.
+Passwords are never stored as plaintext. They are hashed with Node's scrypt implementation and a random per-password salt. Sessions store only a SHA-256 hash of the opaque session token.
 
-Clerk is therefore the identity authority. PostgreSQL stores the application-specific learning history keyed by the Clerk user ID.
+The application is the identity authority for learner accounts. PostgreSQL stores the account, session, and application-specific learning history.
+
+Email verification and password-reset email are intentionally not part of this no-external-auth architecture. They require an email delivery service and are a separate future capability.
 
 ## Files
 
@@ -188,8 +191,7 @@ Required runtime configuration:
 
 ```text
 DATABASE_URL=...
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
-CLERK_SECRET_KEY=...
+
 ```
 
 Secrets must never be committed.
