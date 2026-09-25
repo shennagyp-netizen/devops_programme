@@ -555,7 +555,7 @@ export function LessonPanel({
 
             {masteryCheckpoint ? (
               <div className="content-card">
-                <span className="eyebrow">MASTERy PROOF CHECK</span>
+                <span className="eyebrow">MASTERY PROOF CHECK</span>
                 <h4>Predict before you submit</h4>
                 <p>{masteryCheckpoint.prompt}</p>
                 <div className="difficulty-grid">
