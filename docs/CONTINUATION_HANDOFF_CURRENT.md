@@ -1980,5 +1980,13 @@ Merged PR #93:
 - Fresh Vercel validation for PR #93 was blocked by the platform's build-rate-limit status; this is recorded as infrastructure-blocked, not green.
 - Existing main content/test contracts for D2.6 and D3.5 remain intact.
 
+
+Active PR #94 scope:
+- D4.6 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `cloud-primitives-v1`.
+- Teaching model: Workload -> Compute -> Network -> State -> Identity -> Data Services.
+- The rewritten D4.6 script now ends each primitive with an observable evidence question instead of leaving the lesson at architecture vocabulary.
+- TDD/full-programme gate is required; Vercel build-rate-limit infrastructure may block fresh validation.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
