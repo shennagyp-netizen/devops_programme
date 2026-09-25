@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored Docker network-storage visual for D2.6", () => {
+    const lesson = allLessons.find((item) => item.id === "D2.6");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d2-6-docker-network-storage",
+      bindingId: "D2.6:d2-6-docker-network-storage",
+      variant: "docker-network-storage-v1"
+    });
+  });
+
   it("uses the authored container execution visual for D2.5", () => {
     const lesson = allLessons.find((item) => item.id === "D2.5");
     expect(lesson).toBeDefined();
