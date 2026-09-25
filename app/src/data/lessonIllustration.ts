@@ -27,7 +27,8 @@ export type LessonIllustrationVariantV1 =
   | "docker-failure-loop-v1"
   | "kubernetes-reconciliation-v1"
   | "kubernetes-service-path-v1"
-  | "kubernetes-config-storage-v1";
+  | "kubernetes-config-storage-v1"
+  | "kubernetes-health-scaling-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -846,6 +847,36 @@ const KUBERNETES_CONFIG_STORAGE_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const KUBERNETES_HEALTH_SCALING_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "kubernetes-health-scaling-v1",
+  title: "The Kubernetes health and scaling path",
+  stages: [
+    { id: "startup", label: "Startup", detail: "A workload initializes its process and dependencies before it can be considered ready." },
+    { id: "readiness", label: "Readiness", detail: "Readiness decides whether the workload should be included in the ready traffic path." },
+    { id: "liveness", label: "Liveness", detail: "Liveness helps detect a running process that is no longer healthy enough to keep without restart." },
+    { id: "capacity", label: "Capacity", detail: "Resource requests, limits and replica count shape scheduling and available capacity." },
+    { id: "rollout", label: "Rollout", detail: "A version change replaces old replicas with new ones while health and capacity signals continue to matter." }
+  ],
+  foundation: {
+    label: "Running, ready and scalable are different states",
+    detail: "A process can be alive without being ready for traffic, and a ready workload can still lack enough capacity for current demand."
+  },
+  callouts: [
+    { id: "startup-probe", label: "Startup", detail: "Startup behavior gives a workload time to initialize before other health decisions should dominate." },
+    { id: "readiness-probe", label: "Readiness", detail: "Readiness removes a workload from normal traffic when it should stay alive but is not ready to serve." },
+    { id: "liveness-probe", label: "Liveness", detail: "Liveness addresses whether a running workload should be restarted when it becomes stuck or unhealthy." },
+    { id: "resources", label: "Requests + limits", detail: "Resource requests and limits affect scheduling and protection; they are part of the capacity design, not decoration." }
+  ],
+  failureChecks: [
+    { id: "startup-state", label: "1. Startup state", detail: "Is the workload still initializing, or is startup genuinely failing?" },
+    { id: "traffic-state", label: "2. Traffic state", detail: "Is the workload ready to receive traffic, and what evidence controls that decision?" },
+    { id: "restart-state", label: "3. Restart state", detail: "Is the process alive but wedged, causing liveness failures or repeated restarts?" },
+    { id: "capacity-state", label: "4. Capacity state", detail: "Do resource requests, limits and replica count provide enough healthy capacity for the workload?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1053,6 +1084,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "kubernetes-health-scaling-v1") {
+    return {
+      ...KUBERNETES_HEALTH_SCALING_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1094,7 +1132,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "docker-failure-loop-v1" &&
     model.variant !== "kubernetes-reconciliation-v1" &&
     model.variant !== "kubernetes-service-path-v1" &&
-    model.variant !== "kubernetes-config-storage-v1"
+    model.variant !== "kubernetes-config-storage-v1" &&
+    model.variant !== "kubernetes-health-scaling-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
