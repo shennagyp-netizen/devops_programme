@@ -294,63 +294,341 @@ Speaker A: Exactly. Make the local service fail, predict the signal, recover it,
 
 EPISODE D2.2 — DNS
 
-Speaker A: DNS maps names to information. It is a distributed naming system, not a magical Internet phonebook stored in one server.
+Speaker A: Yesterday we separated IP, transport and application behavior.
 
-Speaker B: People usually remember DNS only when a website stops working.
+Speaker B: Today we deal with the thing that turns a human-friendly name into network information.
 
-Speaker A: Which is unfortunate because DNS is everywhere.
+Speaker A: DNS.
 
-Speaker A: Think of a hotel reservation system. You remember the hotel name; a backend system resolves that name into a concrete destination. DNS does something analogous for network names.
+Speaker B: And the picture is:
 
-Speaker A: Learn recursive resolvers, authoritative servers, A and AAAA records, CNAME, TTL, caching, and negative answers.
+Speaker A: Name -> Resolver -> Cache -> Authority -> Freshness.
 
-Speaker B: Joke: DNS is proof that humans invented names because remembering eight groups of numbers was emotionally unacceptable.
+Speaker B: So DNS is not one server.
 
-Speaker A: Technically accurate enough to be dangerous.
+Speaker A: Correct. It is a distributed naming system.
 
-Speaker A: Real-life example: changing a DNS record is not always instantly visible everywhere because cached information can live according to TTL.
+Speaker B: Make a prediction.
 
-Speaker A: Lab: use dig to inspect a real domain. Ask the resolver different questions and observe record types and TTL.
-Speaker B: DNS seems simple until someone says “it must be DNS” and then starts restarting things.
+Speaker A: I change a DNS A record. One machine still receives the old address. Does that automatically prove the authoritative DNS server is broken?
 
-Speaker A: Yes. DNS is a distributed naming system, and diagnosis gets easier when you know which part of that system answered your question.
-
-Speaker B: Resolver first.
-
-Speaker A: Usually. A recursive resolver may answer from cache or go ask authoritative servers on your behalf. The authoritative server holds the authoritative data for a zone.
-
-Speaker B: So when I use dig, I'm not necessarily talking directly to the owner of the domain.
-
-Speaker A: Correct. That's why you should know what server you are asking.
-
-Speaker B: TTL is the part everyone vaguely remembers.
-
-Speaker A: Think of a shop posting a new opening time. You don't want every customer calling the shop every thirty seconds, so information is cached for a while. TTL is part of the mechanism that tells caches how long the answer may be retained.
-
-Speaker B: And negative answers can be cached too.
-
-Speaker A: Right. Which is why “I fixed the DNS record” does not necessarily mean every client immediately sees the new answer.
-
-Speaker B: Prediction pause. I change an A record, and one machine still gets the old address. Do I immediately conclude the DNS server is broken?
-
-Speaker A: No. First ask which resolver that machine uses, whether the answer is cached, what TTL applies, and whether the client has its own caching behavior.
-
-Speaker B: So you trace the path of the answer.
+Speaker B: No. The machine may be using a resolver that still has the older answer cached.
 
 Speaker A: Exactly.
 
-Speaker B: Real-life example?
+Speaker B: So the first question is: which resolver actually answered me?
 
-Speaker A: Hotel reservations. You update the booking information at the hotel, but a travel site may still show the old room count for a while because it cached the previous answer. The exact mechanics differ, but the operational idea is the same: information can have freshness rules.
+Speaker A: Good. That is the beginning of the evidence path.
+
+Speaker B: Stage one: name.
+
+Speaker A: The application starts with a name such as a hostname.
+
+Speaker B: The application does not need to know the final IP before asking DNS.
+
+Speaker A: Right. It asks the naming system for the information associated with the name and record type it needs.
+
+Speaker B: Stage two: resolver.
+
+Speaker A: Most clients normally query a recursive resolver.
+
+Speaker B: The resolver may already know the answer.
+
+Speaker A: Or it may need to do more work and query authoritative DNS servers.
+
+Speaker B: So when I use dig, the server answering my query may be a resolver rather than the authoritative server for the domain.
+
+Speaker A: Exactly.
+
+Speaker B: That distinction matters when diagnosing a changed record.
+
+Speaker A: Very much.
+
+Speaker B: Stage three: cache.
+
+Speaker A: A resolver can keep answers in cache for a period controlled by TTL and its caching policy.
+
+Speaker B: So changing the authoritative record does not mean every resolver instantly changes its answer.
+
+Speaker A: Correct.
+
+Speaker B: And the cache is useful because the resolver does not need to repeat the whole lookup every time.
+
+Speaker A: Exactly. Caching reduces repeated work and improves response time.
+
+Speaker B: Prediction.
+
+Speaker A: Two clients use different recursive resolvers. The authoritative record changed five minutes ago. Can the clients temporarily receive different answers?
+
+Speaker B: Yes, depending on cache state, TTL and resolver behavior.
+
+Speaker A: Good.
+
+Speaker B: So different DNS answers do not automatically mean one server is lying.
+
+Speaker A: Correct. You have to compare which resolver answered and whether its cache is fresh enough.
+
+Speaker B: Stage four: authority.
+
+Speaker A: Authoritative servers hold the configured DNS data for a zone.
+
+Speaker B: So if I want to know the authoritative answer, I need to inspect the authoritative side rather than only the local recursive cache.
+
+Speaker A: Exactly.
+
+Speaker B: Which gives us another diagnostic question.
+
+Speaker A: Go on.
+
+Speaker B: Does the authoritative server have the value I expect?
+
+Speaker A: Good.
+
+Speaker B: If yes, and my resolver gives me an older value, caching becomes a stronger explanation.
+
+Speaker A: Exactly.
+
+Speaker B: What about record types?
+
+Speaker A: Different record types answer different questions.
+
+Speaker B: A maps a name to IPv4 address information.
+
+Speaker A: Yes.
+
+Speaker B: AAAA maps a name to IPv6 address information.
+
+Speaker A: Yes.
+
+Speaker B: CNAME points one name at another canonical name.
+
+Speaker A: Exactly.
+
+Speaker B: So asking for the wrong record type can produce an answer that looks confusing even though DNS is working correctly.
+
+Speaker A: Good.
+
+Speaker B: Another prediction.
+
+Speaker A: A name has both A and AAAA records. One client prefers IPv6 and another uses IPv4. Can the two clients behave differently even when DNS is healthy?
+
+Speaker B: Yes. They may receive or prefer different address families and then take different network paths.
+
+Speaker A: Good.
+
+Speaker B: So DNS answers are inputs to later networking decisions.
+
+Speaker A: Exactly.
+
+Speaker B: Stage five: freshness.
+
+Speaker A: TTL helps determine how long a resolver may retain an answer before it should refresh it.
+
+Speaker B: So TTL is part of the freshness contract.
+
+Speaker A: Exactly.
+
+Speaker B: What about negative answers?
+
+Speaker A: Negative answers such as a name not existing can also be cached according to DNS rules.
+
+Speaker B: Which means I can fix a missing record and still see the old negative result for a while.
+
+Speaker A: Correct.
+
+Speaker B: That is a very good incident trap.
+
+Speaker A: It is.
+
+Speaker B: So DNS diagnosis is not just: run nslookup.
+
+Speaker A: Right. Start with the question.
+
+Speaker B: Which name? Which record type? Which resolver? What does it return? What does the authoritative server say? What freshness rules apply?
+
+Speaker A: Exactly.
+
+Speaker B: Let us make an incident.
+
+Speaker A: You changed `api.example.com` from one IPv4 address to another.
+
+Speaker B: My laptop still gets the old address.
+
+Speaker A: What is your first test?
+
+Speaker B: Query the resolver my laptop is actually using and inspect the TTL on the answer.
+
+Speaker A: Good.
+
+Speaker B: Then ask an authoritative server for the same record.
+
+Speaker A: Good.
+
+Speaker B: If the authoritative answer is new but the recursive resolver answer is old, I have strong evidence of caching.
+
+Speaker A: Exactly.
+
+Speaker B: If both are old, I investigate the authoritative data or whether the change reached the intended DNS zone.
+
+Speaker A: Good.
+
+Speaker B: That is much better than waiting and hoping.
+
+Speaker A: Evidence first.
+
+Speaker B: Controlled experiment?
+
+Speaker A: Use a disposable local DNS environment or a test domain you control.
+
+Speaker B: Query the current record.
+
+Speaker A: Good.
+
+Speaker B: Change the test record.
+
+Speaker A: Good.
+
+Speaker B: Query through the resolver and record the answer plus TTL.
+
+Speaker A: Good.
+
+Speaker B: Query authoritative data where available.
+
+Speaker A: Good.
+
+Speaker B: Restore the original record.
+
+Speaker A: Good.
+
+Speaker B: Then verify the final state after the relevant cache window or with a deliberately isolated test environment.
+
+Speaker A: Exactly. The point is to observe freshness behavior safely, not to change a production domain and hope everyone notices.
+
+Speaker B: Good.
+
+Speaker A: What about `dig`?
+
+Speaker B: It lets me ask DNS focused questions and see the server response, record type, answer and timing information.
+
+Speaker A: Yes.
+
+Speaker B: So I can make the query itself explicit.
+
+Speaker A: Exactly.
+
+Speaker B: `dig example.com A`.
+
+Speaker A: Good.
+
+Speaker B: `dig example.com AAAA`.
+
+Speaker A: Good.
+
+Speaker B: `dig example.com CNAME`.
+
+Speaker A: Good.
+
+Speaker B: And I can ask a specific resolver by specifying the server.
+
+Speaker A: Exactly. That is useful when two clients appear to disagree.
+
+Speaker B: Prediction pause.
+
+Speaker A: The authoritative server shows the new A record. Resolver one still shows the old address. Resolver two shows the new one. What does that suggest?
+
+Speaker B: Different cache state or refresh timing between the two resolvers.
+
+Speaker A: Good.
+
+Speaker B: Another one.
+
+Speaker A: A query for a missing name returns a negative answer on one resolver even after the record was created. What do you investigate?
+
+Speaker B: Negative caching, resolver identity and the freshness period before changing anything else.
+
+Speaker A: Exactly.
 
 Speaker B: Mac lab?
 
-Speaker A: Ask for A, AAAA, and CNAME records with dig. Look at TTLs. Ask a specific resolver. Then change nothing. Just observe. The goal is to stop treating DNS as one invisible black box called “the Internet.”
+Speaker A: Ask for A, AAAA and CNAME records with dig.
 
-Speaker B: That's probably the real skill.
+Speaker B: Record which resolver answered.
 
-Speaker A: Yes. Name the component. Ask it a precise question. Read the answer.
+Speaker A: Good.
 
+Speaker B: Record the TTL.
+
+Speaker A: Good.
+
+Speaker B: Ask a specific resolver and compare the answer.
+
+Speaker A: Good.
+
+Speaker B: Where practical, compare with authoritative data.
+
+Speaker A: Good.
+
+Speaker B: Then create one safe change in a disposable DNS environment.
+
+Speaker A: Good.
+
+Speaker B: Predict the cache behavior before you query again.
+
+Speaker A: Exactly.
+
+Speaker B: Then restore the original value and prove the expected final answer.
+
+Speaker A: Good.
+
+Speaker B: What should success look like?
+
+Speaker A: You can explain why a resolver answered the way it did without saying simply, 'DNS is slow.'
+
+Speaker B: I should be able to name the resolver, record type, authoritative answer, cache state and TTL.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: What is DNS?
+
+Speaker B: A distributed naming system that maps names to information through resolvers, authoritative servers and cached answers.
+
+Speaker A: What does a recursive resolver do?
+
+Speaker B: It answers client queries, often from cache, or performs the work needed to get the answer from authoritative DNS servers.
+
+Speaker A: What does an authoritative server provide?
+
+Speaker B: The authoritative DNS data for its zone.
+
+Speaker A: What is TTL?
+
+Speaker B: A freshness control that helps determine how long a resolver may retain an answer before refreshing it.
+
+Speaker A: Why can two clients see different answers?
+
+Speaker B: They may use different resolvers or have different cache state, and the answers may still be within their freshness rules.
+
+Speaker A: Why can a fixed NXDOMAIN or other negative result persist?
+
+Speaker B: Negative answers can also be cached.
+
+Speaker A: Final challenge.
+
+Speaker B: I changed a DNS record. My laptop still gets the old address.
+
+Speaker A: Your model?
+
+Speaker B: Name -> Resolver -> Cache -> Authority -> Freshness. I identify the resolver, inspect the record type and TTL, compare the cached answer with authoritative data, and then decide whether cache freshness explains the difference.
+
+Speaker A: Good.
+
+Speaker B: So DNS problems are often answer-path problems.
+
+Speaker A: Exactly.
+
+Speaker B: Run the lab, compare resolvers, and explain why the answer is what the client sees.
 
 EPISODE D2.3 — HTTP
 

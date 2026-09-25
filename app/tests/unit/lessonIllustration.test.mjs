@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models DNS as a naming path from query to resolver, authority and freshness", () => {
+    const model = getLessonIllustrationModel({
+      id: "d2-2-dns",
+      type: "illustration",
+      heading: "The DNS answer path",
+      alt: "A DNS name is queried through a resolver that may use cached data or ask authoritative servers, with record type and TTL shaping the answer",
+      bindingId: "D2.2:d2-2-dns",
+      nodes: ["Name", "Resolver", "Cache", "Authority", "Freshness"],
+      variant: "dns-resolution-v1"
+    });
+
+    expect(model.variant).toBe("dns-resolution-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "name",
+      "resolver",
+      "cache",
+      "authority",
+      "freshness"
+    ]);
+    expect(model.foundation.label).toBe("DNS is a distributed naming system");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "recursive-resolver",
+      "authoritative-server",
+      "record-types",
+      "ttl-cache"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "resolver-used",
+      "record-type",
+      "authoritative-data",
+      "freshness"
+    ]);
+  });
+
   it("models TCP and UDP as distinct transport contracts", () => {
     const model = getLessonIllustrationModel({
       id: "d2-1-transport",

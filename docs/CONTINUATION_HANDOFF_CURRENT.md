@@ -1902,5 +1902,14 @@ Merged PR #48:
 - Final PR #48 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 - Next content boundary: **D2.2 — DNS**.
 
+
+Active PR #49 scope:
+- D2.2 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `dns-resolution-v1`.
+- Teaching model: Name -> Resolver -> Cache -> Authority -> Freshness.
+- The rewritten script distinguishes recursive resolvers from authoritative servers, positive and negative caching, record types, TTL and resolver-specific answers.
+- Controlled testing uses a disposable DNS environment/test domain and proves recovery/final state.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
