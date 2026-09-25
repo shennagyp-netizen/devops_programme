@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored Kubernetes Service path visual for D3.2", () => {
+    const lesson = allLessons.find((item) => item.id === "D3.2");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d3-2-kubernetes-networking",
+      bindingId: "D3.2:d3-2-kubernetes-networking",
+      variant: "kubernetes-service-path-v1"
+    });
+  });
+
   it("uses the authored Kubernetes reconciliation visual for D3.1", () => {
     const lesson = allLessons.find((item) => item.id === "D3.1");
     expect(lesson).toBeDefined();
