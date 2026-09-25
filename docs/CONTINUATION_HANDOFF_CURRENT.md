@@ -1920,5 +1920,14 @@ Merged PR #52:
 - Final PR #52 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 - Next content boundary: **D2.6 — Docker Networking and Storage**.
 
+
+Active PR #53 scope:
+- D2.6 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `docker-network-storage-v1`.
+- Teaching model: Service -> Network -> Name -> Port -> Volume.
+- The rewritten script separates internal service discovery, container-to-container connectivity, published host ports, and persistent data lifecycle.
+- Controlled failures break one boundary at a time and prove recovery; database volume persistence is verified across container recreation.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
