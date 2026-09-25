@@ -1578,3 +1578,6 @@ Visual validation remains blocked until the Vercel project Root Directory is set
 ============================================================
 END VERCEL VISUAL VALIDATION DEPLOYMENT BOUNDARY
 ============================================================
+
+
+Vercel Root Directory has been corrected to `app`; this commit exists only to trigger a fresh main deployment for the visual audit.
