@@ -4,7 +4,8 @@ export type LessonIllustrationVariantV1 =
   | "causal-flow-v1"
   | "container-boundary-v1"
   | "request-path-v1"
-  | "https-stack-v1";
+  | "https-stack-v1"
+  | "repeatable-service-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -138,6 +139,34 @@ const HTTPS_STACK_VARIANT: LessonIllustrationModelV1 = {
   failureChecks: []
 };
 
+
+const REPEATABLE_SERVICE_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "repeatable-service-v1",
+  title: "The repeatable service contract",
+  stages: [
+    { id: "image", label: "Image", detail: "The application and runtime pieces are packaged into a repeatable starting artifact." },
+    { id: "configuration", label: "Configuration", detail: "Environment-specific values are supplied at runtime; secrets are handled separately." },
+    { id: "runtime", label: "Runtime", detail: "The process starts with the dependencies and data it needs to operate." },
+    { id: "health", label: "Health", detail: "A focused readiness signal says when real traffic can be accepted." },
+    { id: "user-path", label: "User path", detail: "A real application action proves more than a process being alive." }
+  ],
+  foundation: {
+    label: "Persistent data has its own lifecycle",
+    detail: "Replacing a container should not destroy important application data."
+  },
+  callouts: [
+    { id: "config-secrets", label: "Config ≠ secrets", detail: "Normal environment values can be documented; credentials and other secrets need tighter handling." },
+    { id: "startup-contract", label: "Startup is a contract", detail: "A new engineer should be able to follow the same path without private knowledge from the previous operator." }
+  ],
+  failureChecks: [
+    { id: "configuration-loaded", label: "1. Configuration loaded?", detail: "Confirm the process received the values it actually needs." },
+    { id: "process-running", label: "2. Process running?", detail: "A running process proves life, not readiness." },
+    { id: "service-ready", label: "3. Service ready?", detail: "Confirm dependencies and readiness conditions are satisfied before sending traffic." },
+    { id: "user-path-works", label: "4. User path works?", detail: "Verify one real application action against known-good data." }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -184,6 +213,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "repeatable-service-v1") {
+    return {
+      ...REPEATABLE_SERVICE_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -202,7 +238,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "causal-flow-v1" &&
     model.variant !== "container-boundary-v1" &&
     model.variant !== "request-path-v1" &&
-    model.variant !== "https-stack-v1"
+    model.variant !== "https-stack-v1" &&
+    model.variant !== "repeatable-service-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
