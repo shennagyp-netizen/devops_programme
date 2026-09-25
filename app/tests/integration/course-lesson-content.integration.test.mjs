@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored CI/CD control-path visual for D4.2", () => {
+    const lesson = allLessons.find((item) => item.id === "D4.2");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d4-2-cicd",
+      bindingId: "D4.2:d4-2-cicd",
+      variant: "cicd-control-path-v1"
+    });
+  });
+
   it("uses the authored Git production workflow visual for D4.1", () => {
     const lesson = allLessons.find((item) => item.id === "D4.1");
     expect(lesson).toBeDefined();

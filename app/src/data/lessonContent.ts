@@ -35,7 +35,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
   | "kubernetes-failure-loop-v1"
-  | "git-production-workflow-v1";
+  | "git-production-workflow-v1"
+  | "cicd-control-path-v1";
 
 export type LessonContentBlock =
   | {
@@ -88,6 +89,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D4.2": {
+    version: 1,
+    blocks: [
+      {
+        id: "d4-2-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "CI/CD is a controlled path from source to running software. The pipeline should make validation, artifact identity, promotion and runtime verification visible."
+      },
+      {
+        id: "d4-2-cicd",
+        type: "illustration",
+        heading: "The CI/CD control path",
+        alt: "A source change is validated, built into an identified artifact, promoted through controlled environments and verified after deployment",
+        bindingId: "D4.2:d4-2-cicd",
+        nodes: ["Source", "Validate", "Artifact", "Promote", "Verify"],
+        variant: "cicd-control-path-v1",
+        caption:
+          "Design the control model first; the vendor's YAML is only one implementation."
+      }
+    ]
+  },
+
+
   "D4.1": {
     version: 1,
     blocks: [
@@ -900,6 +926,7 @@ export function validateLessonContent(
         block.variant !== "kubernetes-health-scaling-v1" &&
         block.variant !== "kubernetes-failure-loop-v1" &&
         block.variant !== "git-production-workflow-v1" &&
+        block.variant !== "cicd-control-path-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);

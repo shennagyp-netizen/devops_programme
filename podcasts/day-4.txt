@@ -290,45 +290,323 @@ EPISODE D4.2 — CI/CD Mental Model
 
 Speaker A: CI/CD is a controlled path from source code to running software.
 
-Speaker B: The path is more important than the YAML.
+Speaker B: So the pipeline is more important than the YAML syntax.
 
-Speaker A: Exactly. Source enters, tests run, an artifact is built, security and policy checks run, and deployment is promoted through environments.
+Speaker A: Exactly. The visual is:
 
-Speaker A: Real-life analogy: an airport. You do not let every passenger directly onto the runway. There are identity checks, screening, gates, and controlled movement.
+Speaker B: Source -> Validate -> Artifact -> Promote -> Verify.
 
-Speaker B: So production is the runway.
+Speaker A: That is the control path.
 
-Speaker A: Correct. You want fewer surprises there.
+Speaker B: Not a vendor diagram.
 
-Speaker A: Lab: design the pipeline on paper first, then implement a minimal GitHub Actions workflow.
-Speaker B: CI/CD seems obvious until teams make it a pile of scripts.
+Speaker A: Correct. Tools change. The control questions stay.
 
-Speaker A: The clean model is simple. Source change goes through automated checks, produces a reproducible artifact, and moves through controlled environments.
+Speaker B: Stage one: source.
 
-Speaker B: So the artifact is important because we don't want production rebuilding something different.
+Speaker A: A known source change starts the pipeline.
 
-Speaker A: Exactly. Build once, promote the artifact when appropriate. That keeps the thing you tested close to the thing you deploy.
+Speaker B: Commit identity.
 
-Speaker B: Airport analogy?
+Speaker A: Yes. The pipeline should know exactly what source triggered it.
 
-Speaker A: A passenger goes through identity and security checks before boarding. You don't repeat a completely different identity check after the plane takes off. The analogy isn't perfect, but it captures staged gates.
+Speaker B: Stage two: validate.
 
-Speaker B: Prediction. Tests pass, but deployment fails because the runtime environment is different.
+Speaker A: Automated tests, security checks and policy checks run here.
 
-Speaker A: Good. CI success is evidence about the build and test environment. It isn't proof that every production dependency is healthy.
+Speaker B: So a green check is evidence about a specific set of controls.
 
-Speaker B: So environment drift can exist even with green tests.
+Speaker A: Exactly.
+
+Speaker B: That means every gate should answer a real risk question.
+
+Speaker A: Good.
+
+Speaker B: A test that exists only because the pipeline template includes it is not automatically useful.
+
+Speaker A: Right. Good CI/CD design is about risk control, not checkbox collection.
+
+Speaker B: Prediction.
+
+Speaker A: All unit tests pass. Can we say production is healthy?
+
+Speaker B: No. We have evidence about the tested source and environment. Production dependencies, configuration and runtime state can still differ.
+
+Speaker A: Exactly.
+
+Speaker B: Stage three: artifact.
+
+Speaker A: The build produces a concrete artifact.
+
+Speaker B: Container image.
+
+Speaker A: Perhaps.
+
+Speaker B: Compiled package.
+
+Speaker A: Perhaps.
+
+Speaker B: Static bundle.
+
+Speaker A: Exactly.
+
+Speaker B: The important property is identity.
+
+Speaker A: Yes. We need to know which artifact passed the intended checks.
+
+Speaker B: So build once and promote the artifact when the delivery model depends on stable artifact identity.
+
+Speaker A: Exactly.
+
+Speaker B: If we rebuild during deployment, the result can differ because build inputs changed.
+
+Speaker A: Correct.
+
+Speaker B: Dependencies, base image, compiler, tool version, build flags.
+
+Speaker A: Good.
+
+Speaker B: So build-once is not a religious rule.
+
+Speaker A: No. It is a control against silent artifact drift.
+
+Speaker B: Stage four: promote.
+
+Speaker A: The artifact moves through environments under explicit controls.
+
+Speaker B: Test.
+
+Speaker A: Yes.
+
+Speaker B: Staging.
+
+Speaker A: Yes.
+
+Speaker B: Production.
+
+Speaker A: Exactly. The names can change, but the principle is that the path to higher-risk environments becomes more controlled.
+
+Speaker B: Approval gate?
+
+Speaker A: Maybe.
+
+Speaker B: Automated policy?
+
+Speaker A: Maybe.
+
+Speaker B: Canary or gradual rollout?
+
+Speaker A: Maybe. The right controls depend on the system and its risk.
+
+Speaker B: Prediction.
+
+Speaker A: Staging is green, production is still broken. What does that tell you?
+
+Speaker B: The environment or runtime context differs in a way the existing checks did not cover.
+
+Speaker A: Exactly. It does not automatically mean the pipeline is useless.
+
+Speaker B: It means the evidence boundary was incomplete.
+
+Speaker A: Good.
+
+Speaker B: Stage five: verify.
+
+Speaker A: Deployment completion is not the same as service health.
+
+Speaker B: We need runtime evidence.
+
+Speaker A: Yes.
+
+Speaker B: Health signal.
+
+Speaker A: Good.
+
+Speaker B: Error rate.
+
+Speaker A: Good.
+
+Speaker B: One real user path.
+
+Speaker A: Exactly.
+
+Speaker B: So the pipeline ends in a running system, not in a green job summary.
+
+Speaker A: That is the idea.
+
+Speaker B: Human example?
+
+Speaker A: An airport.
+
+Speaker B: I knew that was coming.
+
+Speaker A: A passenger does not go directly from street to runway. Identity, security, boarding and controlled movement reduce risk at separate points.
+
+Speaker B: Source is identity.
+
+Speaker A: Roughly.
+
+Speaker B: Validation is security checks.
+
+Speaker A: Roughly.
+
+Speaker B: Promotion is moving through controlled gates.
+
+Speaker A: Exactly.
+
+Speaker B: And verification is knowing the flight actually departed safely.
+
+Speaker A: The analogy stops there. Do not use it to explain software mechanics.
+
+Speaker B: Fair.
+
+Speaker A: Now create a pipeline failure.
+
+Speaker B: Tests pass.
+
+Speaker A: Good.
+
+Speaker B: Artifact builds.
+
+Speaker A: Good.
+
+Speaker B: Production deployment starts.
+
+Speaker A: Good.
+
+Speaker B: The service returns errors because production has a configuration value missing.
+
+Speaker A: What does the pipeline need to learn?
+
+Speaker B: The validation path did not test the production configuration contract.
+
+Speaker A: Exactly.
+
+Speaker B: So the fix is not necessarily 'add another random test.'
+
+Speaker A: Right. Add evidence at the correct boundary.
+
+Speaker B: Another failure.
+
+Speaker A: The tested artifact has digest A. Production is running digest B.
+
+Speaker B: Artifact identity is broken.
+
+Speaker A: Exactly.
+
+Speaker B: We should stop and explain why before trusting any later evidence.
+
+Speaker A: Good.
+
+Speaker B: Another.
+
+Speaker A: The pipeline reports success, but the application returns 500 for real users.
+
+Speaker B: Runtime verification is insufficient or missing.
+
+Speaker A: Exactly.
+
+Speaker B: So CI/CD is really an evidence chain.
+
+Speaker A: Yes.
+
+Speaker B: Source identity.
+
+Speaker A: Validation evidence.
+
+Speaker B: Artifact identity.
+
+Speaker A: Promotion evidence.
+
+Speaker B: Runtime proof.
 
 Speaker A: Exactly.
 
 Speaker B: Mac lab?
 
-Speaker A: Sketch your own pipeline for one small app: commit, validation, artifact, staging, production. For each stage, write what evidence it should produce and what failure it can catch. Then deliberately remove one gate and explain what new risk appears.
+Speaker A: Draw the pipeline before writing YAML.
 
-Speaker B: That is more useful than learning one vendor pipeline by button names.
+Speaker B: Source.
 
-Speaker A: Vendors change. The control model survives.
+Speaker A: Good.
 
+Speaker B: Validation gates.
+
+Speaker A: Good.
+
+Speaker B: Artifact.
+
+Speaker A: Good.
+
+Speaker B: Staging or promotion controls.
+
+Speaker A: Good.
+
+Speaker B: Runtime verification.
+
+Speaker A: Good.
+
+Speaker B: For every stage, write two things.
+
+Speaker A: What risk does this stage control?
+
+Speaker B: And what evidence proves the stage passed?
+
+Speaker A: Exactly.
+
+Speaker B: Then remove one gate.
+
+Speaker A: Good.
+
+Speaker B: Explain what new risk appears.
+
+Speaker A: Good.
+
+Speaker B: Then add the gate back.
+
+Speaker A: Good.
+
+Speaker B: Then implement the smallest GitHub Actions workflow that expresses the same model.
+
+Speaker A: Excellent. Learn the control system first and the syntax second.
+
+Speaker B: Recall.
+
+Speaker A: What is the durable CI/CD model?
+
+Speaker B: Source -> Validate -> Artifact -> Promote -> Verify.
+
+Speaker A: Why is artifact identity important?
+
+Speaker B: So the thing we deploy can be matched to the thing that passed validation.
+
+Speaker A: Does a green test run prove production health?
+
+Speaker B: No. Production can differ in configuration, dependencies and runtime state.
+
+Speaker A: What should every pipeline gate answer?
+
+Speaker B: A real risk question and an evidence question.
+
+Speaker A: Why is build-once useful?
+
+Speaker B: It reduces the chance that deployment silently creates a different artifact from the one that was tested.
+
+Speaker A: Final challenge.
+
+Speaker B: Design CI/CD for one small application.
+
+Speaker A: Your model?
+
+Speaker B: Source -> Validate -> Artifact -> Promote -> Verify. I can identify the source commit, the checks that passed, the artifact identity, the promotion evidence and the runtime proof.
+
+Speaker A: Good.
+
+Speaker B: So CI/CD is not a YAML file.
+
+Speaker A: It is a risk-control path from source change to proven running software.
+
+Speaker B: Run the lab. Remove one gate. Explain what risk appears. Then restore the evidence.
 
 EPISODE D4.3 — GitHub Actions
 

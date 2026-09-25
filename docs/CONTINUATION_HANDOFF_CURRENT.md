@@ -1951,5 +1951,14 @@ Merged PR #65:
 - Duplicate D2.6 PRs #63/#64 were closed because current `main` already contains the validated D2.6 implementation.
 - Next content boundary: **D4.2 — CI/CD Mental Model**.
 
+
+Active PR #66 scope:
+- D4.2 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `cicd-control-path-v1`.
+- Teaching model: Source -> Validate -> Artifact -> Promote -> Verify.
+- The rewritten script treats CI/CD as a risk-control path, explicitly distinguishes validation from production health, and makes artifact identity and provenance first-class evidence.
+- Controlled exercise removes one pipeline gate and asks the learner to explain the new risk before restoring the gate.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
