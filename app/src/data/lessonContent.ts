@@ -22,7 +22,8 @@ export type LessonIllustrationVariantV1 =
   | "service-permission-model-v1"
   | "network-operating-model-v1"
   | "cidr-boundary-v1"
-  | "routing-boundary-v1";
+  | "routing-boundary-v1"
+  | "transport-contract-v1";
 
 export type LessonContentBlock =
   | {
@@ -75,6 +76,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D2.1": {
+    version: 1,
+    blocks: [
+      {
+        id: "d2-1-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "IP can reach a host without proving that the expected service is reachable. Transport adds ports and a delivery contract, and TCP and UDP make different trade-offs."
+      },
+      {
+        id: "d2-1-transport",
+        type: "illustration",
+        heading: "The transport contract",
+        alt: "An endpoint selects TCP or UDP for a port, with different delivery behavior and evidence at the transport layer",
+        bindingId: "D2.1:d2-1-transport",
+        nodes: ["Endpoint", "Port", "Transport", "Delivery", "Evidence"],
+        variant: "transport-contract-v1",
+        caption:
+          "Separate host reachability, service reachability, transport behavior and application response."
+      }
+    ]
+  },
+
+
   "D1.6": {
     version: 1,
     blocks: [
@@ -549,7 +575,8 @@ export function validateLessonContent(
         block.variant !== "service-permission-model-v1" &&
         block.variant !== "network-operating-model-v1" &&
         block.variant !== "cidr-boundary-v1" &&
-        block.variant !== "routing-boundary-v1"
+        block.variant !== "routing-boundary-v1" &&
+        block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }
