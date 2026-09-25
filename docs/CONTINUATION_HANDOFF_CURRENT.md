@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #51, commit `faee8ec98812592b20c7b854bc506c47f86247e0` (D2.4 TLS trust script + illustration quality slice).
+**Latest main architecture/content merge:** PR #52, commit `ffb17b61597e7a8b1e25139bcd634fba0719523c` (D2.5 container execution script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #51 has merged to `main`.
+**Active content-quality branch:** none. PR #52 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1896,13 +1896,11 @@ Merged PR #47:
 Merged PR #48:
 - D2.1 -> `transport-contract-v1`: Endpoint -> Port -> Transport -> Delivery -> Evidence.
 - Merge commit: `7b9244616e707037c074fe3c1032f13aaa94ab58`.
-- Final PR #48 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 
 Merged PR #49:
 - D2.2 -> `dns-resolution-v1`: Name -> Resolver -> Cache -> Authority -> Freshness.
 - Merge commit: `79dd956303907480c20091debfcff2f0500661a8`.
 - Final PR #49 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
-- Red-team caught and corrected a missing DNS variant in the lesson-content type/validator and one harder spoken-English word.
 
 Merged PR #50:
 - D2.3 -> `http-exchange-v1`: Request -> Headers -> Route -> Response -> Evidence.
@@ -1914,17 +1912,13 @@ Merged PR #51:
 - Merge commit: `faee8ec98812592b20c7b854bc506c47f86247e0`.
 - Final PR #51 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
 - D2.4 explicitly separates encryption, endpoint identity, certificate trust, handshake behavior and post-TLS HTTP evidence.
-- GitHub's draft-review mutation was blocked, but closing PR #51 completed the merge successfully with the validated head; no implementation changes were needed.
-- Next content boundary: **D2.5 — Why Containers Exist**.
 
-
-Active PR #52 scope:
-- D2.5 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `container-execution-v1`.
-- Teaching model: Image -> Container -> Process -> Namespaces -> Host Kernel.
-- The rewritten script separates image packaging, container lifecycle, process behavior, namespace isolation and the shared host kernel, explicitly rejecting the “tiny VM” model.
-- Controlled failure changes only the main process command, predicts the stopped container state, then restores and proves recovery.
-- TDD/full-programme gate is required before merge.
+Merged PR #52:
+- D2.5 -> `container-execution-v1`: Image -> Container -> Process -> Namespaces -> Host Kernel.
+- Merge commit: `ffb17b61597e7a8b1e25139bcd634fba0719523c`.
+- D2.5 rejects the “tiny VM” model and teaches image packaging, container lifecycle, main-process behavior, namespace isolation and the shared host kernel.
+- Final PR #52 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- Next content boundary: **D2.6 — Docker Networking and Storage**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
