@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #34, commit `ead42af0fdd8f6437ec71849cb2ffd6f8125cc4d` (B1.2/B1.3 network script + illustration quality slice).
+**Latest main architecture/content merge:** PR #35, commit `0eae3678c22641e3db2802f24689554278d0280c` (B1.5 repeatability script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #34 has merged to `main`.
+**Active content-quality branch:** none. PR #35 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1840,13 +1840,14 @@ Do not scale the animation catalogue before the script+illustration quality gate
 - The final PR #34 programme gate passed 342 tests, all contract checks, TypeScript typecheck and the Next.js production build.
 
 
-Active PR #35 scope:
-- B1.5 is being upgraded to the same script+illustration quality standard.
-- New semantic illustration: `repeatable-service-v1`.
+Merged PR #35:
+- merge commit: `0eae3678c22641e3db2802f24689554278d0280c`
+- B1.5 now uses the `repeatable-service-v1` semantic illustration.
 - Teaching model: Image -> Configuration -> Runtime -> Health -> User path, with persistent data as an independent lifecycle.
-- The rewritten script explicitly distinguishes process running from service readiness and health from real user-path proof.
+- B1.5 script explicitly teaches repeatability as an operating contract rather than a one-time successful startup.
 - Controlled failures cover missing configuration, dependency readiness, misleading health checks and persistence across container replacement.
-- TDD is required before merge; the branch must finish the full programme gate.
+- Final PR #35 gate passed all programme contracts, the complete test suite, TypeScript and the Next.js production build.
+- Next content boundary: B2.1 — From Code Change to Safe Delivery.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
