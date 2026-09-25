@@ -1911,5 +1911,14 @@ Merged PR #50:
 - Final PR #50 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
 - Next content boundary: **D2.4 — TLS and HTTPS**.
 
+
+Active PR #51 scope:
+- D2.4 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `tls-trust-v1`.
+- Teaching model: Client -> Certificate -> Handshake -> Secure Session -> Evidence.
+- The rewritten script separates encryption from authentication, hostname identity, certificate trust, handshake behavior and post-TLS HTTP evidence.
+- Controlled failure uses a disposable/local HTTPS setup with a certificate mismatch, then restores and proves the HTTPS request.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
