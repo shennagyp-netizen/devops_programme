@@ -177,7 +177,6 @@ Current authored scope:
 ---
 
 # 3. Section contract
-
 Every section is a competency boundary.
 
 A complete section must provide:
@@ -259,6 +258,38 @@ The written lesson remains the complete instructional explanation. Video is an a
 The content stream is separate from the podcast/co-teacher synchronization contract. Podcast timing remains driven by the actual aligned audio manifest.
 
 When a content block contract changes, update its validator, tests and authoring documentation together.
+
+
+
+# 4.2 Curriculum-to-illustration binding
+
+The curriculum is the authoritative source for instructional order and intent. Reusable animations are implementation capabilities, not a second curriculum.
+
+Required ownership chain:
+
+Curriculum -> ordered lesson content -> illustration binding -> animation capability -> deterministic runtime -> renderer.
+
+The ordered lesson content stream determines which teaching asset appears and where it appears. A lesson must reference a reusable animation through a strict illustration binding rather than embedding animation implementation.
+
+A binding must be able to declare:
+- stable binding identity
+- reusable animation identity
+- authored voice-cue-to-animation-event mappings
+- ordered learner interaction steps when applicable
+- required completion steps
+- explicit success/completion conditions.
+
+The current normative contract is docs/curriculum/CURRICULUM_ILLUSTRATION_BINDING.md.
+
+The animation library must never decide lesson sequence, what the learner should see next, or which instructional step follows an event. It may expose capabilities such as selecting, inspecting, sending, failing and recovering; the curriculum decides which capabilities are used and in what order.
+
+Voice synchronization remains driven by the actual aligned podcast audio clock. The binding maps authored lesson cues to animation events. Do not derive timing from word count, estimated speech duration, or a second animation timer.
+
+Interactive illustration progression must be explicit and curriculum-driven. Required steps must be ordered unless the curriculum explicitly declares free-order behavior.
+
+Invalid authored bindings fail closed. Missing animations, unknown cues/events/interactions, duplicate step order, unreachable required interactions, missing success conditions or silent generic fallbacks are content/programme contract failures.
+
+This binding contract must be covered by unit, integration and red-team tests, plus programme completeness checks. Browser visual validation is a separate evidence category.
 
 # 5. Project contract
 
@@ -357,7 +388,6 @@ Not yet complete as certification infrastructure:
 - controlled item exposure.
 
 ---
-
 # 8. Hands-on standard
 
 Every lesson resolves to a hands-on task.
@@ -537,8 +567,7 @@ Examples:
 - wrong section ID
 - duplicate item ID
 - orphan diagnostic
-- invalid remediation lesson
-- wrong project mapping
+- invalid remediation lesson- wrong project mapping
 - missing Windows adapter
 - missing podcast
 - invalid audio cue
