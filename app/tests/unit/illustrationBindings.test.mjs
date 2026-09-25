@@ -13,6 +13,14 @@ const staticBlock = {
   nodes: ["Client", "Service"]
 };
 
+const animatedBlock = {
+  id: "http-flow",
+  type: "interactive-illustration",
+  heading: "Request flow",
+  alt: "Interactive request flow",
+  bindingId: "B1.2:http-flow"
+};
+
 const animationDefinition = {
   id: "http-request",
   events: [
@@ -99,9 +107,7 @@ describe("curriculum illustration binding v1", () => {
     const result = validateCurriculumIllustrationBinding(
       binding,
       {
-        ...staticBlock,
-        id: "http-flow",
-        bindingId: "B1.2:http-flow"
+        ...animatedBlock
       },
       {
         animationDefinitions: [animationDefinition],
