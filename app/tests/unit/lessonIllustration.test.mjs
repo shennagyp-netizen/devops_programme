@@ -1469,6 +1469,74 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models global traffic as user, routing, region, capacity and failover evidence", () => {
+    const model = getLessonIllustrationModel({
+      id: "a1-5-global-traffic",
+      type: "illustration",
+      heading: "The global traffic system",
+      alt: "Users are routed to regions with health and capacity constraints, and failover depends on survivor capacity and routing evidence",
+      bindingId: "A1.5:a1-5-global-traffic",
+      nodes: ["Users", "Routing", "Regions", "Capacity", "Failover"],
+      variant: "global-traffic-v1"
+    });
+
+    expect(model.variant).toBe("global-traffic-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "users",
+      "routing",
+      "regions",
+      "capacity",
+      "failover"
+    ]);
+    expect(model.foundation.label).toBe("Routing is only safe when the survivor can carry the load");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "health",
+      "latency",
+      "capacity",
+      "drain"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "route-choice",
+      "regional-health",
+      "survivor-capacity",
+      "failover-proof"
+    ]);
+  });
+
+  it("models data locality as user, region, data, latency and consistency evidence", () => {
+    const model = getLessonIllustrationModel({
+      id: "a1-6-data-locality",
+      type: "illustration",
+      heading: "The data-locality trade-off",
+      alt: "A user accesses data across regional boundaries where distance changes latency, cross-region cost and consistency behavior",
+      bindingId: "A1.6:a1-6-data-locality",
+      nodes: ["User", "Region", "Data", "Latency", "Consistency"],
+      variant: "data-locality-v1"
+    });
+
+    expect(model.variant).toBe("data-locality-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "user",
+      "region",
+      "data",
+      "latency",
+      "consistency"
+    ]);
+    expect(model.foundation.label).toBe("Distance is part of the consistency and latency budget");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "local-read",
+      "cross-region",
+      "write-locality",
+      "consistency"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "request-region",
+      "data-region",
+      "latency-cost",
+      "consistency-fit"
+    ]);
+  });
+
   it("models failure domains from process to host, zone, region and blast radius", () => {
     const model = getLessonIllustrationModel({
       id: "a1-4-failure-domains",
