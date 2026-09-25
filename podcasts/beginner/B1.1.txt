@@ -1,475 +1,505 @@
 EPISODE B1.1 — The App Is Slow — Where Do We Look?
 
-Speaker A: The support team just sent us one sentence.
+Speaker A: Support sent us one sentence.
 
-Speaker B: Let me guess. "The app is slow."
+Speaker B: The app is slow.
 
-Speaker A: Exactly. That makes the diagnosis easier to test.
+Speaker A: Good. That gives us a symptom.
 
-Speaker A: Let's keep that tied to the actual problem.
+Speaker B: Not a cause.
 
-Speaker B: That's not much to work with.
+Speaker A: Exactly. Before we touch the system, let's make the symptom smaller.
 
-Speaker A: It is enough to start. It is not enough to diagnose.
-
-Speaker B: So where do we begin?
-
-Speaker A: First, we slow ourselves down. Not the app. Us.
-
-Speaker B: Fair.
-
-Speaker A: Tell me what "the app is slow" actually says.
-
-Speaker B: A user waited too long.
-
-Speaker A: Good. That's the user-facing symptom. What does it not tell us?
-
-Speaker B: Which part is slow.
-
-Speaker A: Right. It doesn't tell us if the CPU is busy. It doesn't tell us if memory is under pressure. It doesn't tell us if one process is stuck. It doesn't tell us if the app is waiting on a file, a database, or a network call.
-
-Speaker B: So the first mistake is treating the symptom as the cause.
-
-Speaker A: That's the first one.
-
-Speaker B: What's the second one?
-
-Speaker A: Picking a layer because it feels familiar.
-
-Speaker B: I do that.
-
-Speaker A: Everybody does. Application engineer sees a slow page and checks the application. Network engineer sees a timeout and checks the network. Database engineer sees a slow query and checks the database. Sometimes they're all right. Sometimes the problem is one layer lower.
-
-Speaker B: Or higher.
-
-Speaker A: Exactly. We can check that without changing everything.
-
-Speaker A: Now say what evidence would confirm that.
-
-Speaker B: Okay. Let's build the machine from the bottom.
-
-Speaker A: Good. A normal application is not floating in space. It runs as one or more processes. The operating system gives those processes CPU time, memory, file access, network access and other services.
-
-Speaker B: So the process is the running thing.
-
-Speaker A: Yes. The program on disk is not the same thing as the running process.
-
-Speaker B: Like a recipe is not the same as a cook who is using the recipe.
-
-Speaker A: That's a good one. The recipe is the program. The cook doing the work is closer to the process.
-
-Speaker B: And the operating system is the kitchen manager?
-
-Speaker A: More or less. It decides who gets access to shared resources and it keeps the system moving.
-
-Speaker B: I like that. The kitchen manager is probably angry already.
-
-Speaker A: Linux usually is.
-
-Speaker B: Okay. What does Linux actually manage for a process?
-
-Speaker A: CPU time. Memory. Files. Sockets. Signals. Process IDs. Permissions. There is more, but those are enough for our first model.
-
-Speaker B: Process ID is just an ID number.
-
-Speaker A: Yes. It lets us identify the process when we inspect or control it.
-
-Speaker B: And a socket is a network endpoint.
-
-Speaker A: Right. Your process may open a socket, listen on a port, connect to another service, or hold several connections at once.
-
-Speaker B: Which means one process can look healthy and still be stuck waiting on the network.
-
-Speaker A: Exactly. That's why "CPU is low" is not good news by itself.
-
-Speaker B: Wait. Why not?
-
-Speaker A: Imagine the application is waiting for a database response. CPU can be very low because the process is not doing much work. The user can still be waiting five seconds.
-
-Speaker B: So low CPU can happen when the app is healthy and when the app is stuck.
-
-Speaker A: Yes. Now we have a concrete prediction.
-
-Speaker A: That gives us a useful next test.
-
-Speaker B: Same metric, different causes.
-
-Speaker A: Now you're thinking like an operator.
-
-Speaker B: Don't say that too early.
-
-Speaker A: Fair.
-
-Speaker B: Let's make this real. Say it is a clinic system. Someone at reception says the patient screen takes ten seconds to open.
-
-Speaker A: Good. What do you ask?
-
-Speaker B: Is it one user or everybody?
-
-Speaker A: Good. Keep the recovery condition in the plan.
-
-Speaker B: Did it start today?
+Speaker B: One user or everyone?
 
 Speaker A: Good.
 
-Speaker B: Is only that screen slow, or all screens?
+Speaker B: One screen or every screen?
 
 Speaker A: Good.
 
-Speaker B: Did traffic go up?
+Speaker B: One machine or several?
 
-Speaker A: Yes.
+Speaker A: Good.
 
-Speaker B: Did we deploy anything?
+Speaker B: Did it start after a change?
 
-Speaker A: Yes.
+Speaker A: Good.
 
-Speaker B: Is the database slow?
+Speaker B: So our first lesson is not Linux commands.
 
-Speaker A: Maybe. Notice what you are doing. You're not fixing anything yet. You're trying to separate the possible causes.
+Speaker A: It is learning how to ask a question that separates possible causes.
 
-Speaker B: So the first tool is really the question.
+Speaker B: That should be the first box in the picture.
+
+Speaker A: Symptom.
+
+Speaker B: Then Process.
+
+Speaker A: Resource.
+
+Speaker B: Dependency.
+
+Speaker A: Proof.
+
+Speaker B: Nice. Let's use that path.
+
+Speaker A: Start with a concrete case. A clinic worker says the patient screen takes ten seconds to open.
+
+Speaker B: What do we know?
+
+Speaker A: A user waited ten seconds.
+
+Speaker B: What do we not know?
+
+Speaker A: Whether the web application is slow, one process is blocked, the machine is under pressure, the application is waiting on a database, or the network path is slow.
+
+Speaker B: So we have competing hypotheses.
 
 Speaker A: Exactly.
 
-Speaker B: That sounds simple.
+Speaker B: Make a prediction.
 
-Speaker A: It is simple. It is also easy to forget when someone is standing behind you saying, "Why is it still broken?"
+Speaker A: The screen is slow, but CPU usage on the application machine is low. Does that prove the machine is healthy?
 
-Speaker B: That's the real production timer.
+Speaker B: No.
 
-Speaker A: Nothing makes a CPU graph more exciting than somebody watching over your shoulder.
+Speaker A: Why?
 
-Speaker B: Let's go back to the machine.
+Speaker B: The process could be waiting for a database, storage, a lock, or another network service.
 
-Speaker A: Good. A process has a state. It can be running, waiting, sleeping, stopped, or gone. The exact states are more detailed in Linux, but the key idea is that the process can be alive without doing useful work at this exact moment.
+Speaker A: Good. Low CPU can mean healthy idleness or expensive waiting.
 
-Speaker B: So if I run ps, I'm asking Linux to show me process state.
+Speaker B: So CPU is evidence, not a verdict.
 
-Speaker A: Yes. Try:
+Speaker A: Exactly.
+
+Speaker B: Now the second box: Process.
+
+Speaker A: A program is stored code. A process is that program running with state and resources.
+
+Speaker B: So when I debug a slow service, I want to know which process is actually doing the work.
+
+Speaker A: Yes.
+
+Speaker B: Not just the application.
+
+Speaker A: Correct. That name is often too broad.
+
+Speaker B: What does the operating system manage for a process?
+
+Speaker A: CPU time, memory, files, sockets, signals, permissions and other resources.
+
+Speaker B: And a process has an identity.
+
+Speaker A: A process ID, or PID.
+
+Speaker B: So the first operational question can be: Which process am I looking at?
+
+Speaker A: Exactly.
+
+Speaker B: First command?
+
+Speaker A: Try:
 
 Speaker A: ps aux | head
 
-Speaker B: And then I look for my process.
+Speaker B: What am I looking for?
 
-Speaker A: Right. Don't just look at the numbers. Look at which process is actually using CPU and memory.
+Speaker A: A process you recognize, its state, and useful resource numbers. Do not try to memorize every column.
 
-Speaker B: What about lsof?
+Speaker B: What does process state mean?
 
-Speaker A: lsof is useful when you want to know what files and network endpoints a process has open. For this lesson, think of it as a way to ask, "What outside thing is this process connected to?"
+Speaker A: It tells you something about what the process is doing at that moment. A process can be running, waiting, stopped, or gone. Linux exposes more detailed states, but the operational idea is simple: alive does not always mean working.
 
-Speaker B: So ps answers "what is running?" and lsof can help answer "what does it have open?"
-
-Speaker A: Exactly.
-
-Speaker B: Pause me for a second.
-
-Speaker A: Okay.
-
-Speaker B: Before I tell you the answer, what do you think happens if I start a long-running process in a terminal and then close the terminal?
-
-Speaker A: Don't look it up yet. Predict it.
-
-Speaker B: My first thought is the process dies.
-
-Speaker A: That may happen, but I don't want you to memorize a yes or no answer. Tell me what you would inspect to know why it happened.
-
-Speaker B: The process relationship to the terminal. Maybe its session. Maybe signals.
-
-Speaker A: Good. That's the skill. We care about the mechanism.
-
-Speaker B: So if my prediction is wrong, that's useful.
-
-Speaker A: Very useful.
-
-Speaker B: Let's say the process stays alive. Then the terminal was not the real owner of the process lifetime.
-
-Speaker A: Right. And if it dies, we ask what signal or session behavior caused that.
-
-Speaker B: This is a better way to learn Linux than memorizing commands.
-
-Speaker A: Commands are just tools for asking the machine questions.
-
-Speaker B: That's actually a good line.
-
-Speaker A: Don't get attached to it.
-
-Speaker B: Fine.
-
-Speaker A: Now let's look at memory.
-
-Speaker B: Everyone loves the memory chart.
-
-Speaker A: Especially when it turns red.
-
-Speaker B: Red means panic.
-
-Speaker A: No. Red means look closer.
-
-Speaker B: Right.
-
-Speaker A: A process has its own address space. The operating system manages physical memory and virtual memory for the system. The details get deep, but for our first operational model, the useful point is this: one process can use a lot of memory, many processes can share the machine, and the machine can start reclaiming or running low.
-
-Speaker B: So if a service grows in memory over time, I should look for the process that owns that growth.
-
-Speaker A: Yes. And ask whether the growth is expected.
-
-Speaker B: Cache can look like memory usage.
-
-Speaker A: Exactly.
-
-Speaker B: Another trap.
-
-Speaker A: There are many.
-
-Speaker B: That's comforting.
-
-Speaker A: It should be. Good operations is mostly learning which simple-looking observation can lie to you.
-
-Speaker B: What about files?
-
-Speaker A: Processes can open files. They can read them, write them, wait on them, and keep file descriptors open.
-
-Speaker B: File descriptors. The term sounds much harder than it is.
-
-Speaker A: They are basically handles the process uses to talk to something.
-
-Speaker B: File, socket, pipe?
-
-Speaker A: Yes. Standard input, standard output, standard error are the famous three.
-
-Speaker B: And a pipe connects one process to another.
-
-Speaker A: Right. The shell can take the output of one process and connect it to the input of another.
-
-Speaker B: Which is why commands can be combined.
-
-Speaker A: Exactly.
-
-Speaker B: So the shell is another process.
+Speaker B: So a process can exist while doing very little CPU work.
 
 Speaker A: Yes.
 
-Speaker B: It asks the kernel to start other processes.
+Speaker B: Because it may be waiting.
 
-Speaker A: Correct.
+Speaker A: Exactly.
 
-Speaker B: So the shell is not the operating system.
+Speaker B: Now the third box: Resource.
 
-Speaker A: Right. That sounds obvious now, but this distinction matters when you debug.
+Speaker A: Ask what the process is consuming or waiting for.
 
-Speaker B: Why?
-
-Speaker A: Because you want to know who actually owns an action. The shell can start a process. The kernel manages the process. The process can open a socket. A service can supervise the process. These are different roles.
-
-Speaker B: So "who owns this?" is another good question.
-
-Speaker A: Very good question.
-
-Speaker B: I almost said "exactly."
-
-Speaker A: Please don't.
-
-Speaker B: Fair.
-
-Speaker A: Let's make the failure harder.
-
-Speaker B: Finally.
-
-Speaker A: The support team says the page is slow. CPU is only twenty percent. Memory looks normal. The application process is running. What do you do next?
-
-Speaker B: Check the network.
-
-Speaker A: Maybe. Why?
-
-Speaker B: Because the app could be waiting on another service.
-
-Speaker A: Good. What evidence would you want?
-
-Speaker B: Request timing. Network connection state. Logs. Maybe a trace if we have one.
+Speaker B: CPU.
 
 Speaker A: Good.
 
-Speaker B: So even though today's lesson is Linux, I should not stay trapped inside Linux.
+Speaker B: Memory.
 
-Speaker A: Exactly. The goal is not to stare at one tool. The goal is to move down and up the system until the evidence points somewhere.
+Speaker A: Good.
 
-Speaker B: That sounds like a ladder.
+Speaker B: Files and storage.
 
-Speaker A: It is. But don't climb every step every time.
+Speaker A: Good.
 
-Speaker B: Start with the smallest observation that separates the likely causes.
+Speaker B: Network sockets.
 
-Speaker A: Yes.
+Speaker A: Good.
 
-Speaker B: What does that look like in practice?
+Speaker B: Locks and other synchronization.
 
-Speaker A: Start with something like:
+Speaker A: Right. The point is not to collect every metric. Find the next observation that separates the likely causes.
 
-Speaker A: "Is the problem local to one process, local to one machine, or spread across the service?"
+Speaker B: Give me a trap.
 
-Speaker B: Then inspect the process.
+Speaker A: The process uses very high CPU.
 
-Speaker A: Right.
+Speaker B: That means the app is broken.
 
-Speaker B: Then inspect its connections.
+Speaker A: Not necessarily.
 
-Speaker A: Right.
-
-Speaker B: Then move outward if the evidence says to.
+Speaker B: Maybe the workload really increased.
 
 Speaker A: Exactly.
 
-Speaker B: This is basically debugging by narrowing the space.
+Speaker B: So high CPU can be normal for a busy service.
 
-Speaker A: Yes. Don't search the whole universe. Ask one question that cuts the possibilities down.
+Speaker A: Yes.
+
+Speaker B: Another trap: CPU is only five percent.
+
+Speaker A: That can still be a serious problem.
+
+Speaker B: Because the process might be waiting on a dependency.
+
+Speaker A: Exactly.
+
+Speaker B: So both high and low CPU need context.
+
+Speaker A: That is the habit.
+
+Speaker B: What about memory?
+
+Speaker A: Memory tells you how much memory is being used, but again, context matters. A cache can make memory usage look large. A process can grow unexpectedly. A machine can be under pressure even when one process looks normal.
+
+Speaker B: So memory is another signal, not another verdict.
+
+Speaker A: Exactly.
+
+Speaker B: Now the dependency box.
+
+Speaker A: Sometimes the process is waiting on something outside itself.
+
+Speaker B: Database.
+
+Speaker A: Maybe.
+
+Speaker B: Network API.
+
+Speaker A: Maybe.
+
+Speaker B: File system.
+
+Speaker A: Maybe.
+
+Speaker B: Lock held by another process.
+
+Speaker A: Good.
+
+Speaker B: So a slow application does not always mean the application process is doing too much work.
+
+Speaker A: Correct. It may be waiting.
+
+Speaker B: How do I inspect what the process has open?
+
+Speaker A: Try:
+
+Speaker A: lsof -i -P -n | head
+
+Speaker B: So now I'm looking at network endpoints.
+
+Speaker A: Yes. lsof can also show open files and other descriptors.
+
+Speaker B: A file descriptor is basically a handle a process uses to work with something.
+
+Speaker A: Good enough for today.
+
+Speaker B: File, socket, pipe.
+
+Speaker A: Exactly.
+
+Speaker B: So ps helps me ask what is running, and lsof helps me ask what it has open.
+
+Speaker A: That's a useful first model.
+
+Speaker B: Make another prediction.
+
+Speaker A: The application process is healthy, but its response time is ten seconds. ps shows low CPU. lsof shows a connection to the database. Where should you look next?
+
+Speaker B: The database path.
+
+Speaker A: Why?
+
+Speaker B: Because the evidence suggests the process is waiting on a dependency rather than using CPU to do the work.
+
+Speaker A: Good. Notice the wording again.
+
+Speaker B: Suggests.
+
+Speaker A: We still need proof.
+
+Speaker B: Right.
+
+Speaker A: That gives us the final box: Proof.
+
+Speaker B: What does proof mean here?
+
+Speaker A: An observation or safe experiment that separates the leading hypotheses.
+
+Speaker B: So not just another dashboard.
+
+Speaker A: Correct.
+
+Speaker B: Example?
+
+Speaker A: Suppose the API is slow and you suspect the database.
+
+Speaker B: I might compare request latency with database latency.
+
+Speaker A: Good.
+
+Speaker B: Or inspect one slow request and see where its time went.
+
+Speaker A: Good.
+
+Speaker B: Or use a controlled local failure where I own the system.
+
+Speaker A: Exactly.
+
+Speaker B: And after the change, I verify the same user behavior.
+
+Speaker A: Yes. Recovery is part of proof.
+
+Speaker B: Let's make a safe failure.
+
+Speaker A: Use a local test service you control.
+
+Speaker B: Stop it.
+
+Speaker A: Observe the process disappear or the dependent connection fail.
+
+Speaker B: Start it again.
+
+Speaker A: Then verify the original request works.
+
+Speaker B: So I get three states: known good, deliberate failure, recovered.
+
+Speaker A: Exactly.
+
+Speaker B: And I know what evidence should change.
+
+Speaker A: That is much better than randomly killing processes.
+
+Speaker B: Good.
+
+Speaker A: We are not practicing destruction. We are practicing causal reasoning.
+
+Speaker B: What about the terminal example?
+
+Speaker A: Good one.
+
+Speaker B: Start a long-running process from a terminal, then close the terminal. Does the process always die?
+
+Speaker A: Do not memorize yes or no.
+
+Speaker B: So what should I inspect?
+
+Speaker A: The relationship between the process and its terminal session, and the signals or supervision involved.
+
+Speaker B: Because the exact outcome depends on how the process was started and what is supervising it.
+
+Speaker A: Exactly.
+
+Speaker B: That's a better answer than closing the terminal kills the process.
+
+Speaker A: Much better.
+
+Speaker B: So a wrong prediction is useful when it makes me ask a better question.
+
+Speaker A: Yes. Prediction is not a test of confidence. It is a way to make the mechanism visible.
 
 Speaker B: Human example?
 
 Speaker A: Your house lights stop working.
 
-Speaker B: The classic electrician story.
+Speaker B: Check one bulb.
 
-Speaker A: You don't open the wall first. You check whether one bulb is out, one room is out, the whole house is out, or the street is out.
+Speaker A: Then one room.
 
-Speaker B: Because each observation points to a different layer.
+Speaker B: Then the whole house.
 
-Speaker A: Exactly. One bulb suggests one bulb. One room suggests a local circuit. The whole house suggests a bigger problem. The street being dark points outside your house.
+Speaker A: Then the street.
 
-Speaker B: And the mistake would be changing the bulb while the whole street is dark.
+Speaker B: Each observation changes the likely fault domain.
 
-Speaker A: Very good.
+Speaker A: Exactly.
 
-Speaker B: That's basically what people do in production.
+Speaker B: And changing the bulb while the whole street is dark is a terrible diagnosis.
 
-Speaker A: All the time.
+Speaker A: Right.
 
-Speaker B: Okay. Bring it back to Linux.
+Speaker B: So Linux debugging is the same habit at a different scale.
 
-Speaker A: One application process slow? Inspect that process. Every service on the host slow? Inspect the host. Several machines show the same problem? Move outward. The same application is slow only when it calls another service? Now the dependency matters.
+Speaker A: That is the connection.
 
-Speaker B: So the machine gives us facts, but we have to choose the right question.
+Speaker B: Let's make the incident slightly harder.
+
+Speaker A: The support team says the page is slow. CPU is normal. Memory is normal. The process is running. One endpoint is affected. A database call happens on that endpoint.
+
+Speaker B: My next move is not restart.
+
+Speaker A: Correct.
+
+Speaker B: I compare that endpoint's timing with the database timing.
+
+Speaker A: Good.
+
+Speaker B: Then I inspect the process's open network endpoints.
+
+Speaker A: Good.
+
+Speaker B: Then I choose one observation that could prove the leading hypothesis.
+
+Speaker A: Exactly.
+
+Speaker B: If the database is slow and the endpoint recovers when the local test database is restored, I have stronger evidence.
+
+Speaker A: Good. Do not overclaim: you have evidence for the local experiment, not necessarily proof of production root cause.
+
+Speaker B: Right.
+
+Speaker A: Technical accuracy includes knowing what your evidence does not prove.
+
+Speaker B: I like that rule.
+
+Speaker A: Keep it.
+
+Speaker B: Lab time?
+
+Speaker A: Now the lab.
+
+Speaker B: Step one: run ps aux | head.
 
 Speaker A: Yes.
 
-Speaker B: Mac lab?
-
-Speaker A: Now you do it.
-
-Speaker A: Open a terminal. Run:
-
-Speaker A: ps aux | head
-
-Speaker A: Then look for a process you recognize.
-
-Speaker A: Next run:
-
-Speaker A: lsof -i -P -n | head
-
-Speaker A: You are not trying to understand every column. Find one listening socket or one network connection.
-
-Speaker A: Pause here. Before you run the next command, predict what you think you will see.
-
-Speaker B: And if I don't know what a column means?
-
-Speaker A: That's fine. Pick one column. Find out what it means. Don't try to learn the entire command at once.
-
-Speaker B: That's much friendlier.
-
-Speaker A: It also works.
-
-Speaker B: What should count as a successful lab?
-
-Speaker A: You should be able to answer four things without reading the notes.
-
-Speaker A: What process are you looking at?
-
-Speaker A: What resource is it using?
-
-Speaker A: What network or file endpoints does it have open?
-
-Speaker A: And what observation would make you look somewhere else?
-
-Speaker B: So "I ran ps" is not success.
-
-Speaker A: Correct. Running a command is not competence. Understanding the evidence is.
-
-Speaker B: That's a good rule for the whole course.
-
-Speaker A: It is.
-
-Speaker B: Let's do recall.
-
-Speaker A: No notes.
-
-Speaker B: I'm ready.
-
-Speaker A: Question one. What is the difference between a program and a process?
-
-Speaker B: The program is the stored code. The process is that code running with state and resources.
+Speaker B: Identify one process you understand.
 
 Speaker A: Good.
 
-Speaker B: Question two.
-
-Speaker A: What does the kernel do for a process?
-
-Speaker B: It manages access to CPU, memory, files, network and other system resources.
+Speaker B: Step two: run lsof -i -P -n | head.
 
 Speaker A: Good.
 
-Speaker B: Question three.
+Speaker B: Identify one network endpoint.
+
+Speaker A: Good.
+
+Speaker B: Step three: pick one process and predict what you would expect to change if its dependency became unavailable.
+
+Speaker A: Good.
+
+Speaker B: Step four: in a safe local environment, stop that dependency.
+
+Speaker A: Good.
+
+Speaker B: Observe the failure.
+
+Speaker A: Good.
+
+Speaker B: Restart the dependency.
+
+Speaker A: Good.
+
+Speaker B: Verify the original path recovers.
+
+Speaker A: Exactly.
+
+Speaker B: What should I record?
+
+Speaker A: The symptom.
+
+Speaker B: The process identity.
+
+Speaker A: The resource or waiting evidence.
+
+Speaker B: The dependency evidence.
+
+Speaker A: The controlled change.
+
+Speaker B: The failure.
+
+Speaker A: The recovery proof.
+
+Speaker B: So I ran ps is not success.
+
+Speaker A: Correct.
+
+Speaker B: I found the process, predicted a failure, caused it safely, and proved recovery is much stronger.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: What is the difference between a program and a process?
+
+Speaker B: A program is stored code. A process is that code running with state and resources.
 
 Speaker A: Why is CPU usage alone not a diagnosis?
 
-Speaker B: Because a process can be slow while waiting on memory, disk, a lock, or another service. High or low CPU can have several causes.
+Speaker B: Because high CPU can be normal, and low CPU can still happen while a process waits on a dependency.
+
+Speaker A: What can ps help you ask?
+
+Speaker B: What processes exist, what state they are in, and some useful resource information.
+
+Speaker A: What can lsof help you ask?
+
+Speaker B: What files, sockets or other endpoints a process has open.
+
+Speaker A: What is the goal of the final proof?
+
+Speaker B: To use evidence or a safe controlled experiment to separate the likely causes and then verify the original behavior recovers.
+
+Speaker A: Final challenge.
+
+Speaker B: Someone says the app is slow.
+
+Speaker A: Your first move?
+
+Speaker B: Scope the symptom.
+
+Speaker A: Then?
+
+Speaker B: Identify the relevant process.
+
+Speaker A: Then?
+
+Speaker B: Decide whether it is consuming a resource or waiting on a dependency.
+
+Speaker A: Then?
+
+Speaker B: Choose the smallest observation that separates the leading hypotheses.
+
+Speaker A: And after any safe change?
+
+Speaker B: Prove the user-visible behavior recovered.
 
 Speaker A: Good.
 
-Speaker B: Question four.
+Speaker B: So the lesson is not learn ps.
 
-Speaker A: What is a file descriptor?
+Speaker A: It is move from symptom to process to evidence.
 
-Speaker B: A handle a process uses to work with things like files, sockets and pipes.
-
-Speaker A: Good.
-
-Speaker B: Question five.
-
-Speaker A: What should you do before changing a production system?
-
-Speaker B: Get an observation that separates the likely causes.
-
-Speaker A: Good.
-
-Speaker B: Now the practical challenge.
-
-Speaker A: Yes. Imagine your B1 application is slow for ten seconds, but only for some users.
-
-Speaker B: What do I know?
-
-Speaker A: Almost nothing.
-
-Speaker B: Great.
+Speaker B: Process. Resource. Dependency. Proof.
 
 Speaker A: Exactly.
 
-Speaker B: So I start with the smallest useful questions.
+Speaker B: Now we have a way to start an incident without guessing.
 
-Speaker A: Right. Is it tied to one server? One endpoint? One user group? One dependency? One time window?
+Speaker A: And that is the skill we take into every later course.
 
-Speaker B: Then I choose a measurement that can separate those cases.
-
-Speaker A: That's the skill I want you to keep.
-
-Speaker B: Not "know Linux commands."
-
-Speaker A: Know how the system works, then use the commands to ask it good questions.
-
-Speaker B: Okay. That I can work with.
-
-Speaker A: Good. Now run the lab. Then come back and tell me what the machine actually said.
-
-Speaker B: And not what I hoped it said.
-
-Speaker A: Exactly.
+Speaker B: Run the lab. Read the evidence. Then explain what the machine actually said.

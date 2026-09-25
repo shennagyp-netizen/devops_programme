@@ -15,7 +15,8 @@ export type LessonIllustrationVariantV1 =
   | "observability-diagnosis-v1"
   | "backup-recovery-v1"
   | "queue-state-v1"
-  | "incident-loop-v1";
+  | "incident-loop-v1"
+  | "process-diagnosis-v1";
 
 export type LessonContentBlock =
   | {
@@ -68,6 +69,30 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "B1.1": {
+    version: 1,
+    blocks: [
+      {
+        id: "b1-1-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "A report such as 'the app is slow' is a symptom, not a diagnosis. Start with the user-visible behavior, identify the running process, inspect resource and dependency evidence, and prove which hypothesis survives."
+      },
+      {
+        id: "b1-1-process-diagnosis",
+        type: "illustration",
+        heading: "From symptom to process evidence",
+        alt: "A slow application symptom is narrowed to a process, resource or dependency and then verified with evidence",
+        bindingId: "B1.1:b1-1-process-diagnosis",
+        nodes: ["Symptom", "Process", "Resource", "Dependency", "Proof"],
+        variant: "process-diagnosis-v1",
+        caption:
+          "Use the smallest observation that separates the likely causes."
+      }
+    ]
+  },
+
   "B3.2": {
     version: 1,
     blocks: [
@@ -366,7 +391,8 @@ export function validateLessonContent(
         block.variant !== "observability-diagnosis-v1" &&
         block.variant !== "backup-recovery-v1" &&
         block.variant !== "queue-state-v1" &&
-        block.variant !== "incident-loop-v1"
+        block.variant !== "incident-loop-v1" &&
+        block.variant !== "process-diagnosis-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }
