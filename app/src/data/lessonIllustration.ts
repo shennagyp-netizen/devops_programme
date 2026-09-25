@@ -30,7 +30,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
   | "kubernetes-failure-loop-v1"
-  | "git-production-workflow-v1";
+  | "git-production-workflow-v1"
+  | "cicd-control-path-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -935,6 +936,36 @@ const GIT_PRODUCTION_WORKFLOW_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const CICD_CONTROL_PATH_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "cicd-control-path-v1",
+  title: "The CI/CD control path",
+  stages: [
+    { id: "source", label: "Source", detail: "A known source change enters the delivery system." },
+    { id: "validate", label: "Validate", detail: "Automated tests, security checks and policy checks produce evidence about the proposed change." },
+    { id: "artifact", label: "Artifact", detail: "The build creates an identifiable artifact that can be promoted without silently changing the thing that passed validation." },
+    { id: "promote", label: "Promote", detail: "The same release can move through controlled environments with explicit approvals or policy gates." },
+    { id: "verify", label: "Verify", detail: "Deployment is followed by runtime checks and real user-path evidence." }
+  ],
+  foundation: {
+    label: "A pipeline is a control system, not a YAML file",
+    detail: "The exact CI/CD vendor can change; the durable model is how source, validation, artifacts, promotion and verification control risk."
+  },
+  callouts: [
+    { id: "gates", label: "Gates", detail: "Each gate should answer a real risk question rather than exist only because the pipeline template contains it." },
+    { id: "build-once", label: "Build once", detail: "When artifact identity matters, promote the tested artifact rather than silently rebuilding different output during deployment." },
+    { id: "environment", label: "Environment", detail: "A green CI run proves the tested environment behaved correctly; it does not prove production dependencies are healthy." },
+    { id: "provenance", label: "Provenance", detail: "Source commit, build inputs, artifact identity and deployment target should remain traceable." }
+  ],
+  failureChecks: [
+    { id: "source-identity", label: "1. Source identity", detail: "Can the pipeline identify exactly which source change triggered the run?" },
+    { id: "validation-evidence", label: "2. Validation evidence", detail: "Which tests, security checks and policies passed, and what risk does each gate address?" },
+    { id: "artifact-identity", label: "3. Artifact identity", detail: "Can the deployed artifact be matched to the one that passed validation?" },
+    { id: "runtime-proof", label: "4. Runtime proof", detail: "Did the deployed service remain healthy and complete the real user path?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1163,6 +1194,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "cicd-control-path-v1") {
+    return {
+      ...CICD_CONTROL_PATH_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1207,7 +1245,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "kubernetes-config-storage-v1" &&
     model.variant !== "kubernetes-health-scaling-v1" &&
     model.variant !== "kubernetes-failure-loop-v1" &&
-    model.variant !== "git-production-workflow-v1"
+    model.variant !== "git-production-workflow-v1" &&
+    model.variant !== "cicd-control-path-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
