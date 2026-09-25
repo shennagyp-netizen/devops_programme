@@ -413,6 +413,37 @@ Not yet complete as certification infrastructure:
 - controlled item exposure.
 
 ---
+# 7.5 Mastery remediation standard
+
+A learner who fails an assignment must receive a different teaching path before retrying the same assignment.
+
+Every failure path must:
+1. preserve the original competency target
+2. classify the likely failure boundary
+3. explain the target again from a different angle
+4. give a smaller micro-task that isolates the gap
+5. require the learner to state or observe the expected result
+6. return to the original assignment
+7. advance to a different explanation method after repeated failure.
+
+Minimum explanation modalities for important mechanisms:
+- plain language
+- analogy mapped back to the literal system
+- mechanism explanation
+- worked example
+- counterexample
+- visual/mechanism tracing.
+
+The remediation layer must never quietly lower the competency standard. It changes the teaching route, not the mastery requirement.
+
+A failed assignment must not become:
+- "read the lesson again"
+- "try again"
+- "watch a video"
+- or an easier unrelated question.
+
+Those actions may appear inside a remediation path only when paired with a targeted explanation, micro-task and reattempt.
+
 # 8. Hands-on standard
 
 Every lesson resolves to a hands-on task.
