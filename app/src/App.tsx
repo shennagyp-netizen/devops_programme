@@ -13,13 +13,16 @@ import { projectsByCourse } from "./data/projects";
 import { ProjectPanel } from "./components/ProjectPanel";
 import { completeLearningItemAction } from "./app/actions/progress";
 import type { CompletionRecord } from "./lib/progress-contract";
+import type { MasteryAttemptRecord } from "./lib/mastery-contract";
 
 export default function App({
   currentUser,
-  initialCompletionHistory
+  initialCompletionHistory,
+  initialMasteryHistory
 }: {
   currentUser: { email: string };
   initialCompletionHistory: CompletionRecord[];
+  initialMasteryHistory: MasteryAttemptRecord[];
 }) {
   const [course, setCourse] = useState<CourseLevel>("intermediate");
   const [platform, setPlatform] = useState<PlatformId>("macos");
@@ -249,6 +252,7 @@ export default function App({
           onEvidenceRecorded={() => setEvidenceVersion((value) => value + 1)}
           progressReady={true}
           progressSaving={progressBusyId === l.id}
+          initialMasteryHistory={initialMasteryHistory}
           onMaster={() => void completeLesson(l.id)}
         />
       </main>
