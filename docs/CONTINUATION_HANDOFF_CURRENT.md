@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #53, commit `d1884d9443a7e2c2f8eff85822307604ea5d865d` (D2.6 Docker network/storage script + illustration quality slice).
+**Latest main architecture/content merge:** PR #54, commit `03849b29c7d108797858fe2a91491d89bb91385e` (D2.7 controlled Docker failure script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #53 has merged to `main`.
+**Active content-quality branch:** none. PR #54 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1905,7 +1905,6 @@ Merged PR #49:
 Merged PR #50:
 - D2.3 -> `http-exchange-v1`: Request -> Headers -> Route -> Response -> Evidence.
 - Merge commit: `b2932a7ee3ebe61e206f1f49f9da5943106a2727`.
-- Final PR #50 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #51:
 - D2.4 -> `tls-trust-v1`: Client -> Certificate -> Handshake -> Secure Session -> Evidence.
@@ -1915,23 +1914,18 @@ Merged PR #51:
 Merged PR #52:
 - D2.5 -> `container-execution-v1`: Image -> Container -> Process -> Namespaces -> Host Kernel.
 - Merge commit: `ffb17b61597e7a8b1e25139bcd634fba0719523c`.
-- Final PR #52 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 
 Merged PR #53:
 - D2.6 -> `docker-network-storage-v1`: Service -> Network -> Name -> Port -> Volume.
 - Merge commit: `d1884d9443a7e2c2f8eff85822307604ea5d865d`.
-- D2.6 separates internal service discovery, internal service ports, published host ports and persistent volumes, then uses controlled failures to distinguish their symptoms.
-- Final PR #53 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- Next content boundary: **D2.7 — Break Docker**.
 
-
-Active PR #54 scope:
-- D2.7 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `docker-failure-loop-v1`.
-- Teaching model: Baseline -> Change -> Symptom -> Evidence -> Recovery.
-- The rewritten script turns Docker failure into a controlled experiment across hostname, published port, configuration, permissions, readiness and resource failures.
-- Every experiment requires one change, a prediction, evidence, restoration and recovery proof.
-- TDD/full-programme gate is required before merge.
+Merged PR #54:
+- D2.7 -> `docker-failure-loop-v1`: Baseline -> Change -> Symptom -> Evidence -> Recovery.
+- Merge commit: `03849b29c7d108797858fe2a91491d89bb91385e`.
+- D2.7 turns Docker troubleshooting into controlled experimentation: one change, one prediction, evidence, restoration and recovery proof.
+- Final PR #54 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- **Day 2 is now gold-standard from D2.1 through D2.7.**
+- Next content boundary: **D3.1** (first lesson of the next Intermediate curriculum block).
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
