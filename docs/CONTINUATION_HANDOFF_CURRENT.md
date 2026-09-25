@@ -1860,6 +1860,14 @@ Merged PR #104:
 - Advanced scripts were already long-form; this batch upgraded their semantic visual contract without artificial script inflation.
 - Next Advanced boundary: **A1.5-A1.6 — global traffic routing and data locality**.
 
+
+Active Advanced A1.5-A1.6 scope:
+- A1.5 now uses `global-traffic-v1`: Users -> Routing -> Regions -> Capacity -> Failover.
+- A1.6 now uses `data-locality-v1`: User -> Region -> Data -> Latency -> Consistency.
+- Existing long-form Advanced scripts remain intact; the batch adds explicit semantic visual contracts, causal evidence and trade-off boundaries.
+- Unit and integration tests lock exact visual identity and model behavior.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
 

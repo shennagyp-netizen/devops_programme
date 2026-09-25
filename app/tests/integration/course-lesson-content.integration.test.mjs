@@ -672,6 +672,28 @@ describe("course lesson content integration", () => {
     });
   });
 
+  it("uses the authored global-traffic visual for A1.5", () => {
+    const lesson = allLessons.find((item) => item.id === "A1.5");
+    expect(lesson).toBeDefined();
+    const illustration = lesson.content.blocks.find((block) => block.type === "illustration");
+    expect(illustration).toMatchObject({
+      id: "a1-5-global-traffic",
+      bindingId: "A1.5:a1-5-global-traffic",
+      variant: "global-traffic-v1"
+    });
+  });
+
+  it("uses the authored data-locality visual for A1.6", () => {
+    const lesson = allLessons.find((item) => item.id === "A1.6");
+    expect(lesson).toBeDefined();
+    const illustration = lesson.content.blocks.find((block) => block.type === "illustration");
+    expect(illustration).toMatchObject({
+      id: "a1-6-data-locality",
+      bindingId: "A1.6:a1-6-data-locality",
+      variant: "data-locality-v1"
+    });
+  });
+
   it("uses the authored failure-domain ladder for A1.4", () => {
     const lesson = allLessons.find((item) => item.id === "A1.4");
     expect(lesson).toBeDefined();
