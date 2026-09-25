@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #36, commit `e5ff9ff66ca5f38276a082c3d61180ddce986c64` (B2.1 safe-delivery script + illustration quality slice).
+**Latest main architecture/content merge:** PR #37, commit `a5f77bda6927d01c7510cebbac272950b27db84a` (B2.2 observability diagnosis script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #36 has merged to `main`.
+**Active content-quality branch:** none. PR #37 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1852,17 +1852,17 @@ Merged PR #36:
 - Teaching model: Change -> Review -> Test -> Artifact -> Deploy -> Verify, with release identity as the evidence spine.
 - B2.1 explicitly distinguishes deployment success from runtime health and treats rollback as a system-level recovery decision.
 - Final PR #36 gate passed **347 tests**, all programme contracts, TypeScript and the Next.js production build.
-- Red-team caught the same authored-stream fallback risk before the final green revision; the B2.1 lesson registry was corrected rather than weakening the test.
-- Next content boundary: B2.2 — When "Everything Is Slow" Is Not Enough.
+- Red-team caught the authored-stream fallback risk before the final green revision; the B2.1 lesson registry was corrected rather than weakening the test.
 
-
-Active PR #37 scope:
-- B2.2 is upgraded to the same script+illustration quality standard.
-- New semantic illustration: `observability-diagnosis-v1`.
+Merged PR #37:
+- merge commit: `a5f77bda6927d01c7510cebbac272950b27db84a`
+- B2.2 uses the `observability-diagnosis-v1` semantic illustration.
 - Teaching model: Symptom -> Scope -> Service -> Dependency -> Proof.
-- Signal roles are explicit: metrics, logs, health checks and traces answer different questions.
-- The rewritten script deliberately separates correlation from proof and includes misleading-signal red-team cases.
-- TDD/full-programme gate is required before merge.
+- Metrics, logs, health checks and traces are explicitly taught as different evidence types answering different questions.
+- The rewritten script distinguishes correlation from proof and includes misleading-signal cases.
+- Final PR #37 gate passed **347 tests**, all programme contracts, TypeScript and the Next.js production build.
+- Red-team again caught the authored-stream fallback risk during development; B2.2 was explicitly registered in the lesson content source instead of weakening the integration test.
+- Next content boundary: B2.3 — Backups Are Not the Same as Recovery.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
