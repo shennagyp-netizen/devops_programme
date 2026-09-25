@@ -14,7 +14,8 @@ export type LessonIllustrationVariantV1 =
   | "process-diagnosis-v1"
   | "linux-operating-model-v1"
   | "terminal-composition-v1"
-  | "service-permission-model-v1";
+  | "service-permission-model-v1"
+  | "network-operating-model-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -443,6 +444,36 @@ const SERVICE_PERMISSION_MODEL_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const NETWORK_OPERATING_MODEL_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "network-operating-model-v1",
+  title: "The network operating model",
+  stages: [
+    { id: "interface", label: "Interface", detail: "A host participates in a network through one or more physical or virtual interfaces." },
+    { id: "link", label: "Link", detail: "Local-link mechanisms move frames between interfaces and resolve local neighbors." },
+    { id: "ip", label: "IP", detail: "Network-layer addressing identifies destinations and enables communication across networks." },
+    { id: "route", label: "Route", detail: "The host chooses where traffic should go for the destination address." },
+    { id: "evidence", label: "Evidence", detail: "Interface state, addresses, neighbor information and routes expose different parts of the path." }
+  ],
+  foundation: {
+    label: "Different layers answer different questions",
+    detail: "MAC, IP, route, port and DNS are not interchangeable identifiers; each belongs to a different part of the request path."
+  },
+  callouts: [
+    { id: "mac", label: "MAC address", detail: "A local-link identifier associated with a network interface." },
+    { id: "arp", label: "ARP", detail: "On IPv4 local networks, ARP helps map a local IP address to a link-layer address." },
+    { id: "gateway", label: "Default gateway", detail: "A route decision can send traffic toward a next hop when the destination is not local." },
+    { id: "interface-address", label: "Interface address", detail: "Hosts can have multiple interfaces and addresses; one machine is not always one IP." }
+  ],
+  failureChecks: [
+    { id: "interface-state", label: "1. Interface state", detail: "Is the expected interface present and able to participate in the network?" },
+    { id: "local-link", label: "2. Local link", detail: "Can the host resolve and reach the expected local neighbor when local delivery is required?" },
+    { id: "ip-addressing", label: "3. IP addressing", detail: "Does the host have the expected address and network context?" },
+    { id: "route-selection", label: "4. Route selection", detail: "Does the routing table send traffic toward the intended destination?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -559,6 +590,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "network-operating-model-v1") {
+    return {
+      ...NETWORK_OPERATING_MODEL_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -587,7 +625,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "process-diagnosis-v1" &&
     model.variant !== "linux-operating-model-v1" &&
     model.variant !== "terminal-composition-v1" &&
-    model.variant !== "service-permission-model-v1"
+    model.variant !== "service-permission-model-v1" &&
+    model.variant !== "network-operating-model-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }

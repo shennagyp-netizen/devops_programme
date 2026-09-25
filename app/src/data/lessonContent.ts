@@ -19,7 +19,8 @@ export type LessonIllustrationVariantV1 =
   | "process-diagnosis-v1"
   | "linux-operating-model-v1"
   | "terminal-composition-v1"
-  | "service-permission-model-v1";
+  | "service-permission-model-v1"
+  | "network-operating-model-v1";
 
 export type LessonContentBlock =
   | {
@@ -72,6 +73,30 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D1.4": {
+    version: 1,
+    blocks: [
+      {
+        id: "d1-4-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Networking becomes easier to troubleshoot when each layer has a clear question: is the interface active, can the local link deliver, does the host have the right IP context, and does routing point toward the destination?"
+      },
+      {
+        id: "d1-4-network-model",
+        type: "illustration",
+        heading: "The network operating model",
+        alt: "A networked host uses an interface and local link to reach an IP destination through routing, with each layer producing different evidence",
+        bindingId: "D1.4:d1-4-network-model",
+        nodes: ["Interface", "Link", "IP", "Route", "Evidence"],
+        variant: "network-operating-model-v1",
+        caption:
+          "MAC, IP, route and port answer different questions in the same request path."
+      }
+    ]
+  },
+
   "D1.3": {
     version: 1,
     blocks: [
@@ -470,7 +495,8 @@ export function validateLessonContent(
         block.variant !== "process-diagnosis-v1" &&
         block.variant !== "linux-operating-model-v1" &&
         block.variant !== "terminal-composition-v1" &&
-        block.variant !== "service-permission-model-v1"
+        block.variant !== "service-permission-model-v1" &&
+        block.variant !== "network-operating-model-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }

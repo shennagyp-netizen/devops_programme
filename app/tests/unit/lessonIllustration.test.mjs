@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models networking from interface and link to IP, route and evidence", () => {
+    const model = getLessonIllustrationModel({
+      id: "d1-4-network-model",
+      type: "illustration",
+      heading: "The network operating model",
+      alt: "A networked host uses an interface and local link to reach an IP destination through routing, with each layer producing different evidence",
+      bindingId: "D1.4:d1-4-network-model",
+      nodes: ["Interface", "Link", "IP", "Route", "Evidence"],
+      variant: "network-operating-model-v1"
+    });
+
+    expect(model.variant).toBe("network-operating-model-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "interface",
+      "link",
+      "ip",
+      "route",
+      "evidence"
+    ]);
+    expect(model.foundation.label).toBe("Different layers answer different questions");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "mac",
+      "arp",
+      "gateway",
+      "interface-address"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "interface-state",
+      "local-link",
+      "ip-addressing",
+      "route-selection"
+    ]);
+  });
+
   it("models service execution as process, identity, resource, lifecycle and logs", () => {
     const model = getLessonIllustrationModel({
       id: "d1-3-service-context",

@@ -945,74 +945,311 @@ Speaker A: Run the lab, break one context boundary safely, and prove recovery.
 
 EPISODE D1.4 — What Is a Network?
 
+Speaker A: Networking gets easier when each layer has a clear question.
 
-
-Speaker A: Now we rebuild networking from the ground up.
-
-Speaker B: I know IP addresses, but the layers around them have always felt like a group project where nobody introduced themselves.
-
-Speaker A: Start at the link layer. Ethernet moves frames. MAC addresses identify interfaces on a local link. Switches move frames inside a LAN. ARP helps map local IP addresses to MAC addresses.
-
-Speaker A: Real-life analogy: an apartment building. The apartment number matters after the building is known. Local delivery needs local addressing.
-
-Speaker A: Then IP gives network-level addressing. Do not confuse MAC, IP, and a TCP port.
-
-Speaker B: So if DNS is broken, the Ethernet cable can still be perfectly healthy.
-
-Speaker A: Correct. Different layer, different failure.
-
-Speaker A: Lab: inspect your Mac's interfaces, addresses, gateway and nearby network information.
-Speaker B: Okay. Networking from first principles. No shortcuts.
-
-Speaker A: Good. Forget the cloud for a minute. Imagine two machines on the same Ethernet network.
-
-Speaker B: They need some way to identify each other.
-
-Speaker A: At the local link, they use hardware-level addressing such as MAC addresses. Ethernet frames move across the local network. Switches learn where devices live and forward frames accordingly.
-
-Speaker B: And IP hasn't happened yet?
-
-Speaker A: Not in the sense that matters for this discussion. Different layers answer different questions. Ethernet is concerned with moving frames on a local link. IP is concerned with addressing and routing between networks.
-
-Speaker B: So if I keep saying “the IP address identifies the machine,” I'm already simplifying too much.
-
-Speaker A: A lot too much. Interfaces have addresses. A machine can have several interfaces. Virtual interfaces exist. Containers have their own network contexts. And the same host can participate in several networks.
-
-Speaker B: This is where ARP comes in?
-
-Speaker A: On IPv4 local networks, ARP helps discover the link-layer address associated with a local IP address. The important thing is the question it answers: “I know the local IP. Which hardware address should receive this frame?”
-
-Speaker B: That's actually clean.
-
-Speaker A: Most networking becomes cleaner when you phrase each protocol as a question.
-
-Speaker B: Real-life analogy.
-
-Speaker A: Apartment building. You might know a person lives in apartment 12. To get the envelope into the building, you still need the building's entrance and a local delivery path. One address doesn't answer every routing question.
-
-Speaker B: Back to the literal model: IP addresses are for network-level delivery. MAC addresses are for local link delivery.
-
-Speaker A: Exactly. And a TCP port is neither of those. A port identifies an application endpoint on a host.
-
-Speaker B: Three different things that beginners mash together.
-
-Speaker A: Constantly.
-
-Speaker B: Prediction. If DNS fails but I already know the server's IP, can I still connect?
-
-Speaker A: Potentially, yes. And that simple thought experiment is powerful. A DNS failure doesn't automatically mean Ethernet, IP routing, or TCP is broken.
-
-Speaker B: So troubleshooting starts by separating layers.
+Speaker B: Instead of one giant thing called the network.
 
 Speaker A: Exactly.
 
+Speaker B: The picture today is Interface -> Link -> IP -> Route -> Evidence.
+
+Speaker A: Good. Start with the interface.
+
+Speaker B: The host can have physical or virtual interfaces.
+
+Speaker A: Correct.
+
+Speaker B: So one machine is not automatically one network identity.
+
+Speaker A: Right. A host can have multiple interfaces and addresses.
+
+Speaker B: Which already makes 'the machine's IP' too simple.
+
+Speaker A: Exactly.
+
+Speaker B: Stage two: Link.
+
+Speaker A: On an Ethernet network, local delivery uses frames and link-layer addressing.
+
+Speaker B: MAC address.
+
+Speaker A: Yes. A MAC address identifies a local-link interface.
+
+Speaker B: And switches move frames inside a local network.
+
+Speaker A: Good.
+
+Speaker B: So if the Ethernet or local-link path is broken, IP routing might be perfectly configured and still not help.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction.
+
+Speaker A: You know the server's IP address, but the local interface is down. Can the host send normal traffic to that server?
+
+Speaker B: No. The lower-level participation is already broken.
+
+Speaker A: Good.
+
+Speaker B: Stage three: IP.
+
+Speaker A: IP provides network-level addressing and allows traffic to move between networks.
+
+Speaker B: So MAC is local-link context, IP is network-level context.
+
+Speaker A: Exactly.
+
+Speaker B: And TCP port comes later.
+
+Speaker A: Correct. Do not collapse MAC, IP and port into one thing.
+
+Speaker B: What about ARP?
+
+Speaker A: On IPv4 local networks, ARP helps answer a specific question: I know the local IP address. Which link-layer address should receive the frame?
+
+Speaker B: So ARP connects an IP-layer fact to a local-link destination.
+
+Speaker A: That's a useful way to remember it.
+
+Speaker B: Prediction.
+
+Speaker A: The host knows the destination IP. DNS is irrelevant because we already have the IP. The host still cannot reach the local next hop. Where do you look?
+
+Speaker B: Local link or neighbor resolution, not DNS.
+
+Speaker A: Exactly.
+
+Speaker B: Stage four: Route.
+
+Speaker A: Once the host has an address, it still needs a route.
+
+Speaker B: The routing table decides where traffic goes.
+
+Speaker A: Right.
+
+Speaker B: If the destination is on the local network, delivery can stay local.
+
+Speaker A: Yes.
+
+Speaker B: If it is remote, traffic may go through a gateway or another next hop.
+
+Speaker A: Exactly.
+
+Speaker B: So the gateway is a route decision, not the destination service.
+
+Speaker A: Correct.
+
+Speaker B: Another prediction.
+
+Speaker A: DNS works. The server IP is correct. The local interface is up. But the routing table sends traffic the wrong way. What should you expect?
+
+Speaker B: The name resolution looks healthy, but packets may still never reach the destination.
+
+Speaker A: Good.
+
+Speaker B: So a DNS success does not prove the network path.
+
+Speaker A: Exactly.
+
+Speaker B: Now the evidence box.
+
+Speaker A: Each layer exposes different evidence.
+
+Speaker B: Interface state.
+
+Speaker A: Good.
+
+Speaker B: IP addresses.
+
+Speaker A: Good.
+
+Speaker B: Neighbor information.
+
+Speaker A: Good.
+
+Speaker B: Routes.
+
+Speaker A: Good.
+
+Speaker B: And later we can inspect transport ports and application protocols.
+
+Speaker A: Exactly.
+
+Speaker B: So network debugging should ask which layer's claim is still unproven.
+
+Speaker A: Yes.
+
+Speaker B: Let's make the analogy.
+
+Speaker A: Think about an apartment building.
+
+Speaker B: Interface is the building entrance.
+
+Speaker A: Reasonable.
+
+Speaker B: Link is the local hallway.
+
+Speaker A: Good.
+
+Speaker B: IP is the building and apartment address.
+
+Speaker A: Good enough as an analogy.
+
+Speaker B: Route is the path to the right building.
+
+Speaker A: Yes.
+
+Speaker B: But the analogy stops there.
+
+Speaker A: Please.
+
+Speaker B: No tiny packets walking down the hallway.
+
+Speaker A: Thank you.
+
+Speaker B: Another question: why is DNS not part of today's picture?
+
+Speaker A: DNS can provide address information, but it is a separate naming system. Today's model assumes we are already reasoning about the network path to an address.
+
+Speaker B: So DNS can fail while Ethernet and routing are healthy.
+
+Speaker A: Exactly.
+
+Speaker B: And Ethernet can fail while DNS still works.
+
+Speaker A: Exactly.
+
+Speaker B: Different failure, different evidence.
+
+Speaker A: That is the lesson.
+
+Speaker B: Let's make a safe failure.
+
+Speaker A: Use your own machine or a disposable network namespace if your lab provides one.
+
+Speaker B: First record the known-good interface state and route.
+
+Speaker A: Good.
+
+Speaker B: Then make one controlled local network change.
+
+Speaker A: Such as temporarily disabling a disposable virtual interface or changing only the test environment's route.
+
+Speaker B: Observe which layer changes first.
+
+Speaker A: Exactly.
+
+Speaker B: Restore the original state.
+
+Speaker A: Then verify the same destination is reachable again.
+
+Speaker B: So the evidence has three states: known good, controlled failure, recovered.
+
+Speaker A: Correct.
+
+Speaker B: What should I not do?
+
+Speaker A: Do not change DNS, routes, firewall rules and application settings at the same time.
+
+Speaker B: Because then we lose causality.
+
+Speaker A: Exactly.
+
+Speaker B: Pause.
+
+Speaker A: Go ahead.
+
+Speaker B: Make a prediction. The cable is fine, the interface is up, and the IP address is correct. The destination is remote. What should I check before blaming the application?
+
+Speaker A: What do you think?
+
+Speaker B: The route.
+
+Speaker A: Good.
+
+Speaker B: If the route is correct, then move toward transport and application evidence.
+
+Speaker A: Exactly.
+
+Speaker B: One more prediction. The route is wrong, but DNS returns the correct IP.
+
+Speaker A: What does DNS prove?
+
+Speaker B: Only that the naming lookup produced that address. It does not prove the packet path is correct.
+
+Speaker A: Excellent.
+
 Speaker B: Mac lab?
 
-Speaker A: Inspect your interfaces. Write down the IP addresses, the interface names, and the default route. Then look at the local network information your Mac exposes. Finally, use a known destination and ask yourself which layer each command is testing.
+Speaker A: Inspect your network interfaces.
 
-Speaker B: And I shouldn't just run ten commands and stare at them.
+Speaker B: Record interface names and addresses.
 
-Speaker A: Right. Before every command, say, “I'm testing this hypothesis.” That's how a terminal becomes an instrument instead of a slot machine.
+Speaker A: Good.
+
+Speaker B: Inspect the default route.
+
+Speaker A: Good.
+
+Speaker B: Inspect nearby network or neighbor information your platform exposes.
+
+Speaker A: Good.
+
+Speaker B: Pick one known destination and say which layer each command is testing.
+
+Speaker A: Good.
+
+Speaker B: Then make one safe failure in a disposable context.
+
+Speaker A: Good.
+
+Speaker B: Observe the failure.
+
+Speaker A: Good.
+
+Speaker B: Restore the known-good state.
+
+Speaker A: And verify recovery.
+
+Speaker B: Recall.
+
+Speaker A: What is a MAC address used for in our simplified model?
+
+Speaker B: Local-link identification for an interface.
+
+Speaker A: What does IP provide?
+
+Speaker B: Network-level addressing and a basis for routing between networks.
+
+Speaker A: What does ARP answer on an IPv4 local network?
+
+Speaker B: Which link-layer address corresponds to a local IP address.
+
+Speaker A: What does a route tell the host?
+
+Speaker B: Where to send traffic for a destination address.
+
+Speaker A: Why do we separate layers during diagnosis?
+
+Speaker B: Because each layer produces different evidence and a failure at one layer does not automatically prove another layer is broken.
+
+Speaker A: Final challenge.
+
+Speaker B: A server name resolves, the interface is up, the IP is correct, but the destination is unreachable.
+
+Speaker A: Your model?
+
+Speaker B: Check the local link and neighbor state when relevant, then the route, then move upward to transport and application evidence.
+
+Speaker A: Good.
+
+Speaker B: So the network is not one thing.
+
+Speaker A: It is a set of layers that cooperate to move data, each with its own mechanism and evidence.
+
+Speaker B: That makes troubleshooting much less mysterious.
+
+Speaker A: Run the lab, name the layer, and explain the evidence.
 
 
 EPISODE D1.5 — IP Addresses, Subnets and CIDR
