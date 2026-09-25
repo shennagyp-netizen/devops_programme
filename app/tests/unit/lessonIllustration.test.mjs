@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models Kubernetes configuration and storage as config, secret, mount, pod and persistence", () => {
+    const model = getLessonIllustrationModel({
+      id: "d3-3-kubernetes-config-storage",
+      type: "illustration",
+      heading: "The Kubernetes configuration and storage path",
+      alt: "Configuration and secrets are provided to a pod through defined consumption paths while persistent data lives outside the pod lifecycle",
+      bindingId: "D3.3:d3-3-kubernetes-config-storage",
+      nodes: ["Config", "Secret", "Mount", "Pod", "Persistence"],
+      variant: "kubernetes-config-storage-v1"
+    });
+
+    expect(model.variant).toBe("kubernetes-config-storage-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "config",
+      "secret",
+      "mount",
+      "pod",
+      "persistence"
+    ]);
+    expect(model.foundation.label).toBe("Configuration, secret handling and data persistence have different lifecycles");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "configmap",
+      "secret-boundary",
+      "consumption-path",
+      "persistent-volume"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "config-consumption",
+      "secret-consumption",
+      "mount",
+      "data-lifecycle"
+    ]);
+  });
+
   it("models Kubernetes networking as Service, Selector, Endpoints, Pod and Path", () => {
     const model = getLessonIllustrationModel({
       id: "d3-2-kubernetes-networking",
