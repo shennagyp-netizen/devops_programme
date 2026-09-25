@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { LessonContentBlock } from "../data/lessonContent";
+import { LessonIllustration } from "./LessonIllustration";
 
 type LessonContentFeedProps = {
   blocks: LessonContentBlock[];
@@ -95,20 +96,17 @@ export function LessonContentFeed({ blocks }: LessonContentFeedProps) {
             ) : null}
 
             {block.type === "illustration" ? (
-              <div className="lesson-visual-card" role="img" aria-label={block.alt}>
+              <div
+                className="lesson-visual-card"
+                role="img"
+                aria-label={block.alt}
+                data-illustration-variant={block.variant ?? "causal-flow-v1"}
+              >
                 <div className="lesson-visual-head">
                   <span className="eyebrow">VISUAL EXPLANATION</span>
                   <h4>{block.heading}</h4>
                 </div>
-                <div className="lesson-visual-flow">
-                  {block.nodes.map((node, index) => (
-                    <div className="lesson-visual-node" key={`${block.id}-${node}`}>
-                      <span className="pulse-dot" />
-                      <strong>{node}</strong>
-                      {index < block.nodes.length - 1 ? <span className="lesson-visual-arrow">→</span> : null}
-                    </div>
-                  ))}
-                </div>
+                <LessonIllustration block={block} />
                 {block.caption ? <p className="range">{block.caption}</p> : null}
               </div>
             ) : null}
