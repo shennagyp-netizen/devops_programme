@@ -1164,57 +1164,251 @@ Speaker B: Run the lab, make one safe certificate failure, restore it, and expla
 
 EPISODE D2.5 — Why Containers Exist
 
-Speaker A: A container is an isolated process environment, not a virtual machine.
+Speaker A: We have now seen processes, services, networks and HTTPS.
 
-Speaker B: So the container is the apartment, and the process is the person living inside it?
+Speaker B: So why add containers?
 
-Speaker A: A reasonable analogy. The important technical difference is that containers share the host kernel rather than emulating a full guest kernel.
+Speaker A: Because we want a more repeatable execution environment without creating a full virtual machine for every application.
 
-Speaker A: Images package filesystem layers and metadata. Containers are running instances created from those images.
+Speaker B: The picture is:
 
-Speaker A: Real-life example: a food-delivery kitchen may have standardized stations and ingredients. You do not redesign the entire building every time a new order arrives. You create a repeatable working environment.
+Speaker A: Image -> Container -> Process -> Namespaces -> Host Kernel.
 
-Speaker B: And that is why 'works on my machine' starts becoming less persuasive.
+Speaker B: That immediately sounds different from 'tiny virtual machine.'
+
+Speaker A: Good. That difference is the main idea of this lesson.
+
+Speaker B: Stage one: image.
+
+Speaker A: An image packages a filesystem and metadata used to create a container.
+
+Speaker B: So the image is not the running application.
+
+Speaker A: Correct. It is the package used to create the running environment.
+
+Speaker B: It can contain the application files, runtime pieces and startup information.
 
 Speaker A: Exactly.
 
-Speaker A: Lab: build an image, run it, inspect its filesystem and process, and compare the image definition with the live container.
-Speaker B: Containers. Let's kill one misconception immediately: a container is not a tiny virtual machine.
+Speaker B: Stage two: container.
 
-Speaker A: Good. A container is an isolated process environment using the host kernel. That distinction explains a lot of behavior.
+Speaker A: A container is a running instance created from an image.
 
-Speaker B: So the image is the packaged filesystem and metadata, and the container is the running instance.
+Speaker B: So the container is the execution environment, while the image is the package.
 
-Speaker A: That's a useful working model.
+Speaker A: Exactly.
 
-Speaker B: What problem are we buying with that isolation?
+Speaker B: Prediction.
 
-Speaker A: Repeatability, packaging, dependency boundaries, and a clearer execution environment. Not perfect isolation, not a new physical computer.
+Speaker A: I build one image and start two containers from it. Do I now have two copies of the image file?
 
-Speaker B: Real-life example?
+Speaker B: No. The image is the shared source package for both containers. Each container has its own runtime state.
 
-Speaker A: A commercial kitchen with standardized stations. You can replace one station without rebuilding the entire restaurant. The environment is repeatable.
+Speaker A: Good.
 
-Speaker B: And “works on my machine” becomes harder to defend because the environment is described.
+Speaker B: Stage three: process.
 
-Speaker A: Exactly. Though containers don't magically eliminate configuration bugs. They just make more of the environment explicit and reproducible.
+Speaker A: A container runs a process. The main process is central to the container lifecycle.
 
-Speaker B: Prediction. My container exits immediately after I start it. Does that mean Docker is broken?
+Speaker B: Which means a container can stop because its main process exits.
 
-Speaker A: No. First ask what the main process did. Containers are tied to their main process lifecycle. If that process exits, the container normally stops.
+Speaker A: Exactly.
 
-Speaker B: So I should inspect the command and logs before blaming the runtime.
+Speaker B: So if `docker run` starts a container and it exits immediately, Docker itself may be working correctly.
+
+Speaker A: Yes. First ask what the main process did.
+
+Speaker B: That is different from saying, 'the container crashed.'
+
+Speaker A: Exactly. The process may have finished normally.
+
+Speaker B: Prediction.
+
+Speaker A: I run a container whose command prints one line and exits. What should I expect?
+
+Speaker B: The container should normally stop after the process exits.
+
+Speaker A: Good.
+
+Speaker B: If I expected a long-running service, then my command or startup design is probably wrong.
+
+Speaker A: Exactly.
+
+Speaker B: Stage four: namespaces.
+
+Speaker A: Linux namespaces give processes isolated views of parts of the operating system.
+
+Speaker B: Process view.
 
 Speaker A: Yes.
 
+Speaker B: Network view.
+
+Speaker A: Yes.
+
+Speaker B: Mount or filesystem view.
+
+Speaker A: Yes. The exact isolation depends on the namespaces and runtime configuration in use.
+
+Speaker B: So two containers can have different views of processes and network interfaces even while using the same kernel.
+
+Speaker A: Exactly.
+
+Speaker B: Stage five: host kernel.
+
+Speaker A: Containers share the host kernel.
+
+Speaker B: That is the major difference from a traditional virtual machine.
+
+Speaker A: Correct. A virtual machine normally boots a guest operating system with its own kernel. A container uses the host kernel while isolating the application process environment.
+
+Speaker B: So a container is not a computer inside a computer.
+
+Speaker A: Not in the virtual-machine sense.
+
+Speaker B: Real-life analogy?
+
+Speaker A: Think of a building with separate apartments.
+
+Speaker B: Each apartment has its own space and view.
+
+Speaker A: Yes. But they still share the building's core structure and utilities.
+
+Speaker B: It is not the same as giving each apartment its own building.
+
+Speaker A: Exactly. The analogy is imperfect, but it helps separate isolation from a second operating system.
+
+Speaker B: Why does this help DevOps?
+
+Speaker A: It makes more of the execution environment explicit and repeatable: application files, runtime dependencies, startup command and network configuration can be packaged and recreated.
+
+Speaker B: So 'works on my machine' becomes less useful.
+
+Speaker A: Often. But containers do not remove configuration problems.
+
+Speaker B: Right. A container can still have the wrong environment variable, wrong port, wrong file path or wrong command.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction.
+
+Speaker A: The image builds successfully, but the container exits immediately. Is the image necessarily broken?
+
+Speaker B: No. The main process may be exiting, or the startup command may be wrong for a long-running service.
+
+Speaker A: Good.
+
+Speaker B: Another one.
+
+Speaker A: The process expects `/app/config.json`, but the file is not in the container. What should I inspect?
+
+Speaker B: The image contents, working directory, mounts and configuration path.
+
+Speaker A: Good.
+
+Speaker B: Another.
+
+Speaker A: The process can see its own network interface but not the host's normal process list. Is that surprising?
+
+Speaker B: No. Namespace isolation can give it a different process and network view.
+
+Speaker A: Exactly.
+
+Speaker B: Controlled failure?
+
+Speaker A: Build a tiny container with a known command.
+
+Speaker B: Start it and prove the process is running.
+
+Speaker A: Good.
+
+Speaker B: Then change only the main command so the process exits immediately.
+
+Speaker A: Predict the container state.
+
+Speaker B: Stopped.
+
+Speaker A: Good.
+
+Speaker B: Inspect the logs and process command.
+
+Speaker A: Good.
+
+Speaker B: Restore the original command and prove the container stays running again.
+
+Speaker A: Exactly.
+
+Speaker B: Second experiment: run a container that writes a known file to its own filesystem.
+
+Speaker A: Good.
+
+Speaker B: Remove the container and create a new one from the same image.
+
+Speaker A: What should you expect?
+
+Speaker B: The runtime state from the old container should not automatically appear in the new container unless it was stored in a volume or another persistent storage mechanism.
+
+Speaker A: Good. That prepares you for the next lesson.
+
 Speaker B: Mac lab?
 
-Speaker A: Build a small image. Run it. Inspect the image layers and the container process. Then deliberately make the command exit. Watch what happens. You're learning the relationship among image, container, and process, not just learning docker run syntax.
+Speaker A: Build a small image.
 
-Speaker B: Which is why the motion diagram says Image → Container → Process.
+Speaker B: Run it.
 
-Speaker A: Exactly. The picture is a memory aid for a causal relationship.
+Speaker A: Inspect the image and the running container.
 
+Speaker B: Identify the main process and its command.
+
+Speaker A: Good.
+
+Speaker B: Then deliberately make the process exit.
+
+Speaker A: Observe the container lifecycle.
+
+Speaker B: Restore it.
+
+Speaker A: Prove it runs again.
+
+Speaker B: Then inspect the isolated process or network view with the tools your platform provides.
+
+Speaker A: Exactly. You are learning the relationship among image, container, process, namespaces and host kernel.
+
+Speaker B: Recall.
+
+Speaker A: What is an image?
+
+Speaker B: A package of filesystem content and metadata used to create containers.
+
+Speaker A: What is a container?
+
+Speaker B: A running instance with an isolated process environment created from an image.
+
+Speaker A: Why does a container exit when the main process exits?
+
+Speaker B: The container lifecycle normally follows its main process.
+
+Speaker A: What do namespaces do?
+
+Speaker B: They isolate views such as processes, networking and mounts without creating a second kernel.
+
+Speaker A: What kernel does a normal Linux container use?
+
+Speaker B: The host kernel.
+
+Speaker A: Final challenge.
+
+Speaker B: A container starts and stops immediately.
+
+Speaker A: Your model?
+
+Speaker B: Image -> Container -> Process -> Namespaces -> Host Kernel. I inspect the main command first, then logs and filesystem/configuration state, and I do not assume Docker needs repair just because the container stopped.
+
+Speaker A: Good.
+
+Speaker B: So the container is an operating boundary around a process, not a tiny virtual machine.
+
+Speaker A: Exactly. Build one, break one safely, recover it, and explain what the host kernel is still doing.
 
 EPISODE D2.6 — Docker Networking and Storage
 
