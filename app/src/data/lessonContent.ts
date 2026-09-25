@@ -35,7 +35,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
   | "kubernetes-failure-loop-v1"
-  | "git-production-workflow-v1";
+  | "git-production-workflow-v1"
+  | "ci-cd-pipeline-v1";
 
 export type LessonContentBlock =
   | {
@@ -88,6 +89,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D4.2": {
+    version: 1,
+    blocks: [
+      {
+        id: "d4-2-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "CI/CD is a controlled evidence path from a known source change to validated software, an identified artifact, controlled promotion and proven runtime behavior."
+      },
+      {
+        id: "d4-2-ci-cd",
+        type: "illustration",
+        heading: "The CI/CD control path",
+        alt: "A source change is validated, built into an identified artifact, promoted through controlled environments and verified in the running system",
+        bindingId: "D4.2:d4-2-ci-cd",
+        nodes: ["Source", "Validate", "Artifact", "Promote", "Verify"],
+        variant: "ci-cd-pipeline-v1",
+        caption:
+          "Treat every stage as a risk control with explicit evidence."
+      }
+    ]
+  },
+
+
   "D4.1": {
     version: 1,
     blocks: [
