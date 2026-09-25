@@ -28,7 +28,8 @@ export type LessonIllustrationVariantV1 =
   | "http-exchange-v1"
   | "tls-trust-v1"
   | "container-execution-v1"
-  | "docker-network-storage-v1";
+  | "docker-network-storage-v1"
+  | "docker-failure-loop-v1";
 
 export type LessonContentBlock =
   | {
@@ -81,6 +82,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D2.7": {
+    version: 1,
+    blocks: [
+      {
+        id: "d2-7-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Controlled failure turns Docker from a command vocabulary into an evidence-based operating skill. Change one boundary, predict the symptom, collect evidence, then prove recovery."
+      },
+      {
+        id: "d2-7-break-docker",
+        type: "illustration",
+        heading: "The controlled Docker failure loop",
+        alt: "A known-good Docker stack is changed in one place, a predicted symptom is observed, evidence identifies the boundary, and the system is restored",
+        bindingId: "D2.7:d2-7-break-docker",
+        nodes: ["Baseline", "Change", "Symptom", "Evidence", "Recovery"],
+        variant: "docker-failure-loop-v1",
+        caption:
+          "The experiment is only complete when the system is restored and the original user path is proven again."
+      }
+    ]
+  },
+
+
   "D2.6": {
     version: 1,
     blocks: [
@@ -711,6 +737,7 @@ export function validateLessonContent(
         block.variant !== "tls-trust-v1" &&
         block.variant !== "container-execution-v1" &&
         block.variant !== "docker-network-storage-v1" &&
+        block.variant !== "docker-failure-loop-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
