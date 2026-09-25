@@ -80,8 +80,8 @@ describe("continuous voice architecture", () => {
     expect(podcastCoach).toContain("Math.round(audio.currentTime * 1000)");
     expect(podcastCoach).toContain("findCurrentTurnId(audioManifest, timeMs)");
     expect(podcastCoach).toContain("findActiveCue(audioManifest, timeMs)");
-    expect(podcastCoach).not.toMatch(/words?\\.length/);
-    expect(podcastCoach).not.toMatch(/text\\.length/);
+    expect(podcastCoach).not.toMatch(/words?\.length/);
+    expect(podcastCoach).not.toMatch(/text\.length/);
     expect(podcastCoach).not.toContain("setTimeout");
   });
 
@@ -134,7 +134,7 @@ describe("continuous voice architecture", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
 
     expect(podcastCoach).not.toMatch(/Math\.max\(1,.*text/i);
-    expect(podcastCoach).not.toMatch(/text\\.split\\(/);
+    expect(podcastCoach).not.toMatch(/text\.split\(/);
     expect(podcastCoach).not.toMatch(/wordsPerMinute/i);
     expect(podcastCoach).not.toMatch(/averageSpeakingRate/i);
   });
