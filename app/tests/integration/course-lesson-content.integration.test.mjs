@@ -594,6 +594,51 @@ describe("course lesson content integration", () => {
     });
   });
 
+  it("uses the authored reliability-patterns visual for D5.4", () => {
+    const lesson = allLessons.find((item) => item.id === "D5.4");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d5-4-reliability-patterns",
+      bindingId: "D5.4:d5-4-reliability-patterns",
+      variant: "reliability-patterns-v1"
+    });
+  });
+
+  it("uses the authored observability-control visual for D5.5", () => {
+    const lesson = allLessons.find((item) => item.id === "D5.5");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d5-5-observability",
+      bindingId: "D5.5:d5-5-observability",
+      variant: "observability-control-v1"
+    });
+  });
+
+  it("uses the authored disaster-recovery visual for D5.6", () => {
+    const lesson = allLessons.find((item) => item.id === "D5.6");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d5-6-disaster-recovery",
+      bindingId: "D5.6:d5-6-disaster-recovery",
+      variant: "disaster-recovery-system-v1"
+    });
+  });
+
   it("requires every illustration block to carry its curriculum binding identity", () => {
     for (const lesson of allLessons) {
       for (const block of lesson.content.blocks) {

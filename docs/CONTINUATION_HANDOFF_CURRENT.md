@@ -2054,6 +2054,17 @@ Merged PR #101:
 - Fresh current-main validation passed **409 tests**, all programme contracts, TypeScript and the Next.js production build.
 - Stale PR #92 was closed unmerged after the clean port landed.
 
+
+Active PR #103 scope:
+- D5.4 is upgraded to the script+illustration gold-standard with `reliability-patterns-v1`.
+- D5.4 teaching model: Request -> Timeout -> Policy -> Retry Load -> Recovery.
+- D5.5 is upgraded with `observability-control-v1`.
+- D5.5 teaching model: Question -> Signal -> Correlation -> Objective -> Decision.
+- D5.6 is upgraded with `disaster-recovery-system-v1`.
+- D5.6 teaching model: Assets -> Failure -> Restore -> Dependencies -> Recovery.
+- All three scripts now use the same mechanism-first loop, explicit predictions, controlled experiments, evidence, recovery and transfer.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
 

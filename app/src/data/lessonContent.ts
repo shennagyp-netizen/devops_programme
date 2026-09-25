@@ -42,7 +42,10 @@ export type LessonIllustrationVariantV1 =
   | "global-architecture-v1"
   | "production-incident-v1"
   | "git-production-workflow-v1"
-  | "ci-cd-pipeline-v1";
+  | "ci-cd-pipeline-v1"
+  | "reliability-patterns-v1"
+  | "observability-control-v1"
+  | "disaster-recovery-system-v1";
 
 export type LessonContentBlock =
   | {
@@ -95,6 +98,79 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D5.4": {
+    version: 1,
+    blocks: [
+      {
+        id: "d5-4-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Reliability patterns change system behavior under failure. Timeouts bound waiting, retries create new traffic, backoff and jitter spread attempts, idempotency limits duplicate side effects, circuit breakers protect unhealthy dependencies, and backpressure protects overloaded systems."
+      },
+      {
+        id: "d5-4-reliability-patterns",
+        type: "illustration",
+        heading: "The reliability control loop",
+        alt: "A request reaches a dependency, a bounded timeout triggers a policy decision, retries create load, and recovery is measured",
+        bindingId: "D5.4:d5-4-reliability-patterns",
+        nodes: ["Request", "Timeout", "Policy", "Retry Load", "Recovery"],
+        variant: "reliability-patterns-v1",
+        caption:
+          "Reliability comes from controlling the failure path, not from adding retries blindly."
+      }
+    ]
+  },
+
+  "D5.5": {
+    version: 1,
+    blocks: [
+      {
+        id: "d5-5-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Observability turns operational questions into evidence. Logs, metrics and traces answer different questions, while SLI, SLO and error budgets connect measurements to decisions."
+      },
+      {
+        id: "d5-5-observability",
+        type: "illustration",
+        heading: "The observability decision path",
+        alt: "An operational question selects signals, signals are correlated, objectives define acceptable behavior, and the evidence drives a decision",
+        bindingId: "D5.5:d5-5-observability",
+        nodes: ["Question", "Signal", "Correlation", "Objective", "Decision"],
+        variant: "observability-control-v1",
+        caption:
+          "Choose instrumentation because it answers a decision-relevant question."
+      }
+    ]
+  },
+
+  "D5.6": {
+    version: 1,
+    blocks: [
+      {
+        id: "d5-6-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Disaster recovery covers the whole service: data, infrastructure, identity, dependencies, runbooks and people. RPO and RTO define what recovery must achieve."
+      },
+      {
+        id: "d5-6-disaster-recovery",
+        type: "illustration",
+        heading: "The recovery system",
+        alt: "A service maps critical assets through a failure to restore, dependency verification and proven recovery within RPO and RTO",
+        bindingId: "D5.6:d5-6-disaster-recovery",
+        nodes: ["Assets", "Failure", "Restore", "Dependencies", "Recovery"],
+        variant: "disaster-recovery-system-v1",
+        caption:
+          "A valid backup is one input to recovery, not proof that the whole service can return."
+      }
+    ]
+  },
+
+
   "D4.2": {
     version: 1,
     blocks: [
@@ -1062,6 +1138,9 @@ export function validateLessonContent(
         block.variant !== "kubernetes-failure-loop-v1" &&
         block.variant !== "git-production-workflow-v1" &&
         block.variant !== "ci-cd-pipeline-v1" &&
+        block.variant !== "reliability-patterns-v1" &&
+        block.variant !== "observability-control-v1" &&
+        block.variant !== "disaster-recovery-system-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
