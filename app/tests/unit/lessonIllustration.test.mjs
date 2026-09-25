@@ -59,6 +59,40 @@ describe("lesson illustration teaching model", () => {
 
 
 
+  it("models the Linux operating model from application work to kernel-managed evidence", () => {
+    const model = getLessonIllustrationModel({
+      id: "d1-1-linux-model",
+      type: "illustration",
+      heading: "The Linux operating model",
+      alt: "Application work runs as processes that request kernel-managed CPU, memory, files and network resources, which operators inspect as evidence",
+      bindingId: "D1.1:d1-1-linux-model",
+      nodes: ["Application", "Process", "Kernel", "Resources", "Evidence"],
+      variant: "linux-operating-model-v1"
+    });
+
+    expect(model.variant).toBe("linux-operating-model-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "application",
+      "process",
+      "kernel",
+      "resources",
+      "evidence"
+    ]);
+    expect(model.foundation.label).toBe("The kernel mediates access to shared resources");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "process-state",
+      "file-descriptors",
+      "signals",
+      "observability"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "process-identity",
+      "kernel-resource",
+      "execution-context",
+      "evidence-sequence"
+    ]);
+  });
+
   it("models process diagnosis from symptom to process, resource, dependency and proof", () => {
     const model = getLessonIllustrationModel({
       id: "b1-1-process-diagnosis",
