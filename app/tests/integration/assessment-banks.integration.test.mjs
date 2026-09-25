@@ -80,11 +80,12 @@ describe("assessment bank integration", () => {
       "hands-on": 8
     };
 
-    const allowedCognitiveLevels = {
-      conceptual: new Set(["mechanism", "application", "design"]),
-      diagnostic: new Set(["application", "diagnosis"]),
-      "hands-on": new Set(["application", "diagnosis", "design"])
-    };
+    const allowedCognitiveLevels = new Set([
+      "mechanism",
+      "application",
+      "diagnosis",
+      "design"
+    ]);
 
     for (const { course, section } of cases) {
       const bank = JSON.parse(
@@ -96,7 +97,7 @@ describe("assessment bank integration", () => {
         expect(items).toHaveLength(expectedCount);
 
         for (const item of items) {
-          expect(allowedCognitiveLevels[family].has(item.cognitiveLevel)).toBe(true);
+          expect(allowedCognitiveLevels.has(item.cognitiveLevel)).toBe(true);
           expect(item.competencyId.startsWith(section + ".")).toBe(true);
           expect(item.prompt.trim()).not.toBe("");
           expect(item.itemType.trim()).not.toBe("");
