@@ -17,7 +17,8 @@ export type LessonIllustrationVariantV1 =
   | "queue-state-v1"
   | "incident-loop-v1"
   | "process-diagnosis-v1"
-  | "linux-operating-model-v1";
+  | "linux-operating-model-v1"
+  | "terminal-composition-v1";
 
 export type LessonContentBlock =
   | {
@@ -70,6 +71,30 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D1.2": {
+    version: 1,
+    blocks: [
+      {
+        id: "d1-2-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "The terminal becomes an engineering instrument when you can start with a system question, choose the right producer, compose tools, route evidence, and explain the result."
+      },
+      {
+        id: "d1-2-terminal-tool",
+        type: "illustration",
+        heading: "The terminal as an evidence pipeline",
+        alt: "A diagnostic question is answered by composing commands, transforming output, routing it through pipes or files, and interpreting the resulting evidence",
+        bindingId: "D1.2:d1-2-terminal-tool",
+        nodes: ["Question", "Producer", "Transform", "Route", "Evidence"],
+        variant: "terminal-composition-v1",
+        caption:
+          "Use commands as evidence-producing components, not as a list to memorize."
+      }
+    ]
+  },
+
   "D1.1": {
     version: 1,
     blocks: [
@@ -418,7 +443,8 @@ export function validateLessonContent(
         block.variant !== "queue-state-v1" &&
         block.variant !== "incident-loop-v1" &&
         block.variant !== "process-diagnosis-v1" &&
-        block.variant !== "linux-operating-model-v1"
+        block.variant !== "linux-operating-model-v1" &&
+        block.variant !== "terminal-composition-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }
