@@ -290,3 +290,20 @@ Current validation for this slice:
 - Next.js production build.
 
 Browser visual validation is still separate and is not claimed without an accessible preview.
+
+
+## 2026-09-25 post-merge main evidence
+
+PR #22 is merged into `main` at `d6f659e174af388dc11d8e43a56dd40dda722945`.
+
+Post-merge main validation:
+- workflow `36089271904`
+- full-programme-gate: success
+- 44 test files
+- 310 tests
+- TypeScript typecheck
+- Next.js production build.
+
+The standalone routes and preview host are therefore part of the current main architecture.
+
+Browser visual validation is still a separate, not-yet-validated evidence category.
