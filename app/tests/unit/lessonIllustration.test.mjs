@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models TCP and UDP as distinct transport contracts", () => {
+    const model = getLessonIllustrationModel({
+      id: "d2-1-transport",
+      type: "illustration",
+      heading: "The transport contract",
+      alt: "An endpoint selects TCP or UDP for a port, with different delivery behavior and evidence at the transport layer",
+      bindingId: "D2.1:d2-1-transport",
+      nodes: ["Endpoint", "Port", "Transport", "Delivery", "Evidence"],
+      variant: "transport-contract-v1"
+    });
+
+    expect(model.variant).toBe("transport-contract-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "endpoint",
+      "port",
+      "transport",
+      "delivery",
+      "evidence"
+    ]);
+    expect(model.foundation.label).toBe("IP reaches the host; transport reaches the service");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "tcp",
+      "udp",
+      "socket",
+      "failure-signals"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "port-listen",
+      "transport-choice",
+      "connection-state",
+      "application-response"
+    ]);
+  });
+
   it("models routing as destination, route, next hop, boundary and evidence", () => {
     const model = getLessonIllustrationModel({
       id: "d1-6-routing-model",
