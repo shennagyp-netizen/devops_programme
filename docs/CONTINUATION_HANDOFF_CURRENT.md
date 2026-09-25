@@ -1864,5 +1864,13 @@ Merged PR #37:
 - Red-team again caught the authored-stream fallback risk during development; B2.2 was explicitly registered in the lesson content source instead of weakening the integration test.
 - Next content boundary: B2.3 — Backups Are Not the Same as Recovery.
 
+
+Active PR #38 scope:
+- B2.3 is upgraded to the same script+illustration quality standard.
+- New semantic illustration: `backup-recovery-v1`.
+- Teaching model: Backup -> Restore -> Compatibility -> Verify -> Recover, with RPO and RTO as explicit constraints.
+- The rewritten script separates backup existence from restore capability and service recovery, including compatibility, encryption-key and recovery-time risks.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
