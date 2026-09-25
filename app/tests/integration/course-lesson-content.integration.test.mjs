@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored Kubernetes config-storage visual for D3.3", () => {
+    const lesson = allLessons.find((item) => item.id === "D3.3");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d3-3-kubernetes-config-storage",
+      bindingId: "D3.3:d3-3-kubernetes-config-storage",
+      variant: "kubernetes-config-storage-v1"
+    });
+  });
+
   it("uses the authored Kubernetes Service path visual for D3.2", () => {
     const lesson = allLessons.find((item) => item.id === "D3.2");
     expect(lesson).toBeDefined();
