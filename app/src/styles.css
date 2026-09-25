@@ -1049,3 +1049,49 @@ textarea{width:100%;min-height:110px;resize:vertical;border:1px solid #2b385b;bo
 .account-email{max-width:240px;color:#8f9cbd;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .account-logout{padding:8px 10px}
 @media(max-width:900px){.account-area{align-items:flex-start;flex-direction:column}.account-email{max-width:180px}}
+
+
+/* Public hero system illustration */
+.marketing-hero-illustration {
+  width: 100%;
+  margin: 14px 0 16px;
+  border: 1px solid #26385f;
+  border-radius: 18px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(124,145,255,.1), transparent 42%),
+    #0a1022;
+}
+
+.marketing-hero-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.marketing-packet {
+  animation: marketingPacketGlow 1.8s ease-in-out infinite;
+}
+
+.marketing-packet-static {
+  display: none;
+}
+
+@keyframes marketingPacketGlow {
+  0%, 100% { opacity: .55; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marketing-packet {
+    display: none;
+  }
+
+  .marketing-packet-static {
+    display: inline;
+  }
+
+  .marketing-hero-illustration {
+    scroll-behavior: auto;
+  }
+}
