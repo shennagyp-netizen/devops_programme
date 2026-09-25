@@ -676,84 +676,271 @@ Speaker A: Run the lab and explain every stage of your pipeline.
 
 EPISODE D1.3 — Processes, Services, Permissions and Logs
 
+Speaker A: Yesterday we looked at processes and the kernel.
 
+Speaker B: Today the same process gets a context.
 
-Speaker A: A production service has a lifecycle. It starts, runs, consumes resources, emits evidence, and eventually stops or restarts.
+Speaker A: Exactly. The picture is Process -> Identity -> Resource -> Service -> Logs.
 
-Speaker B: Like an employee, except the employee can be restarted automatically.
+Speaker B: So the code can be correct and still fail because the context is wrong.
 
-Speaker A: Please do not give management ideas.
+Speaker A: That is one of the most important operational ideas.
 
-Speaker A: Think of a hotel. Guests are requests. Rooms are resources. Staff are processes. The front desk is a service endpoint. The supervisor keeps the system operating when one worker disappears.
+Speaker B: Start with identity.
 
-Speaker A: In Linux, understand process state, signals, users, groups, permissions, environment variables, services and logs.
+Speaker A: A process runs under a user identity and usually one or more groups.
 
-Speaker B: Why can a perfectly healthy application still fail?
+Speaker B: And that identity affects what it can access.
 
-Speaker A: Because it may not be allowed to read a file, bind a socket, access a directory, or get a credential.
+Speaker A: Yes. A file can exist, be perfectly healthy, and still be inaccessible to the process.
 
-Speaker A: Real-life example: a lab technician knows the correct file exists but cannot open a locked cabinet. The data exists; authority is missing.
+Speaker B: Because of permissions.
 
-Speaker A: Lab: inspect a service-like process, its environment, files and logs. In a temporary directory, make one permission change and observe the failure.
-Speaker B: This one feels like the point where “the code is correct” stops being enough.
+Speaker A: Or ownership, directory traversal, ACLs, credentials or another access rule.
 
-Speaker A: Exactly. Production systems have another dimension: authority.
+Speaker B: So the first question is not 'does the file exist?'
 
-Speaker B: Meaning permissions.
+Speaker A: Right. Ask two questions: does it exist, and can this process access it?
 
-Speaker A: Permissions, identity, environment, service lifecycle, secrets, filesystem ownership, all of it. An application can be perfectly valid and still be unable to do the thing it needs to do.
+Speaker B: Prediction.
 
-Speaker B: Give me the boring real-life version.
+Speaker A: Go.
 
-Speaker A: A lab technician knows exactly which folder contains a report. The report exists. But the cabinet is locked and they don't have the key.
+Speaker B: A service reads a configuration file successfully from my terminal. I deploy the same application as a managed service and it cannot read the file.
 
-Speaker B: The data is healthy. Authorization isn't.
+Speaker A: What changed?
 
-Speaker A: Right. Now bring that back to Linux. A process has a user identity. Files have ownership and permission bits. Directories have their own access rules. Environment variables can change behavior. A service manager can start a process with a different user, different environment, and different lifecycle than the shell you used during development.
+Speaker B: Maybe the process user changed. Maybe the working directory changed. Maybe PATH changed. Maybe the environment variables changed. Maybe the service has a different filesystem context.
 
-Speaker B: Which explains the classic, “It works from my terminal.”
+Speaker A: Exactly.
 
-Speaker A: Exactly. Your terminal might have a PATH, credentials, working directory, and environment that the service does not have.
+Speaker B: So 'same code' does not mean 'same execution context'.
 
-Speaker B: So the service isn't necessarily broken. My assumptions about its execution context are broken.
+Speaker A: Correct.
 
-Speaker A: Very often.
+Speaker B: That explains the classic sentence: It works from my terminal.
 
-Speaker B: What should I inspect first?
+Speaker A: Exactly.
 
-Speaker A: Start with the process identity and how it was started. Then inspect the files and directories it needs. Then logs. Then environment. You're reconstructing the process's world.
+Speaker B: Stage two: resource.
 
-Speaker B: Prediction pause: if I change a file from readable to unreadable and restart the process, what kind of evidence should I expect?
+Speaker A: The process may need a file, directory, socket, device, port, credential or secret.
 
-Speaker A: Good. Predict the failure in the application log. Then check whether the process itself stays alive. Those are different outcomes.
+Speaker B: Each resource has its own access rules.
 
-Speaker B: So one permission failure might return an application error without killing the service.
+Speaker A: Right.
 
-Speaker A: Exactly. Or it might happen during startup and prevent the service from coming up. Same underlying category, different lifecycle point.
+Speaker B: So a permission failure can happen even when CPU and memory look perfectly normal.
 
-Speaker B: That's subtle.
+Speaker A: Yes.
 
-Speaker A: It's also normal. That's why operational debugging is temporal. You care about what happened, when, and in what state the process was.
+Speaker B: Give me a lab example.
 
-Speaker B: I notice we keep coming back to state.
+Speaker A: Use a temporary directory you own. Create a test file. Let a harmless process read it. Then change the permission so the process can no longer read it.
 
-Speaker A: Because computers are state machines wearing business clothes.
+Speaker B: Observe the exact error.
 
-Speaker B: That's a line.
+Speaker A: Good. Then restore the permission and verify the operation succeeds again.
 
-Speaker A: Fine. You can keep it.
+Speaker B: Controlled failure, known-good state, recovery.
+
+Speaker A: Exactly.
+
+Speaker B: Stage three: service lifecycle.
+
+Speaker A: A service is not just a process you started once.
+
+Speaker B: It may be started by a service manager.
+
+Speaker A: Yes.
+
+Speaker B: It may be restarted automatically.
+
+Speaker A: Yes.
+
+Speaker B: It may run under a different user and environment from my shell.
+
+Speaker A: Exactly.
+
+Speaker B: So service management changes the process context.
+
+Speaker A: It can.
+
+Speaker B: And supervision changes lifecycle behavior.
+
+Speaker A: Right. The operating question becomes: who starts this process, under which context, and what happens when it exits?
+
+Speaker B: Prediction.
+
+Speaker A: A service is working when started manually. The managed service fails during startup. Where do you look first?
+
+Speaker B: Execution context: user, environment, working directory, paths, permissions and required resources.
+
+Speaker A: Good.
+
+Speaker B: Then logs.
+
+Speaker A: Yes. Logs are evidence of what the service recorded about its lifecycle and work.
+
+Speaker B: But logs are not magic.
+
+Speaker A: Correct. You still need the process and resource model.
+
+Speaker B: So the visual ends with Logs because logs describe the behavior, but the earlier boxes explain the mechanism.
+
+Speaker A: Exactly.
+
+Speaker B: What should I look for in logs?
+
+Speaker A: Timestamp, component, severity when available, process or request identity when available, and the first error that changes your next decision.
+
+Speaker B: Not five thousand lines.
+
+Speaker A: Please not five thousand lines.
+
+Speaker B: Another prediction.
+
+Speaker A: The application process stays alive, but one feature returns a permission error.
+
+Speaker B: The process lifecycle is healthy enough to continue. The failure is probably at resource access or application handling.
+
+Speaker A: Good.
+
+Speaker B: So not every permission failure kills the process.
+
+Speaker A: Exactly. The timing and location of the failure matter.
+
+Speaker B: That is why lifecycle state matters.
+
+Speaker A: Yes.
+
+Speaker B: Let's connect user, group and permissions.
+
+Speaker A: A process's identity is one part of an authorization decision. File ownership and permission bits are another. Directory access matters too.
+
+Speaker B: So I need to inspect the whole path, not just the final file.
+
+Speaker A: Correct. A directory can block traversal even when the final file appears readable.
+
+Speaker B: That's a useful trap.
+
+Speaker A: Operational work is full of useful traps.
+
+Speaker B: What about environment variables?
+
+Speaker A: They are part of execution context. A service may have a different PATH, different configuration values, different credentials and a different working directory from the shell where you tested it.
+
+Speaker B: Which means the same binary can behave differently.
+
+Speaker A: Exactly.
+
+Speaker B: So when I debug a service, I am reconstructing its world.
+
+Speaker A: That's the idea.
+
+Speaker B: Pause.
+
+Speaker A: Go ahead.
+
+Speaker B: Make a prediction. I change the PATH in my shell and the command works. The service still says the command is missing.
+
+Speaker A: What is your hypothesis?
+
+Speaker B: The service probably has a different PATH or execution environment.
+
+Speaker A: Good.
+
+Speaker B: I should compare contexts before changing the application.
+
+Speaker A: Exactly.
+
+Speaker B: This feels like a systems version of configuration debugging.
+
+Speaker A: It is.
 
 Speaker B: Mac lab?
 
-Speaker A: Pick a harmless temporary directory. Create a file. Let one process read it. Change the permission. Observe the exact failure. Then restore it. Next, inspect a real process's environment and parent. The objective isn't to break the Mac. It's to feel how identity and lifecycle change what a process can do.
+Speaker A: Pick a harmless temporary directory and a disposable test process.
 
-Speaker B: And logs?
+Speaker B: Inspect the process identity and environment.
 
-Speaker A: Read them as evidence, not as a diary. Look for timestamps, severity, component, request or process identity, and the first useful error. Don't scroll through five thousand lines hoping the answer will become emotionally obvious.
+Speaker A: Good.
 
-Speaker B: I have definitely done that.
+Speaker B: Create a file the process can read.
 
-Speaker A: So have I. It never works.
+Speaker A: Good.
+
+Speaker B: Change the permission so it cannot read it.
+
+Speaker A: Good.
+
+Speaker B: Observe the failure in the process or service log.
+
+Speaker A: Good.
+
+Speaker B: Restore the permission.
+
+Speaker A: Good.
+
+Speaker B: Verify the original operation works again.
+
+Speaker A: Exactly.
+
+Speaker B: Then explain why the code itself did not change.
+
+Speaker A: That explanation is the lesson.
+
+Speaker B: What should success look like?
+
+Speaker A: You can answer: which user is the process, what environment did it receive, which resource failed, what permission blocked it, what lifecycle component started it, and what log evidence proves the failure and recovery.
+
+Speaker B: Stronger than memorizing chmod.
+
+Speaker A: Much stronger.
+
+Speaker B: Recall.
+
+Speaker A: Why can correct application code still fail in production?
+
+Speaker B: Because the execution context can differ: identity, permissions, environment, working directory, credentials, service supervision or resource availability.
+
+Speaker A: Why does identity matter?
+
+Speaker B: Resource access is evaluated in the process's identity context.
+
+Speaker A: Why inspect logs?
+
+Speaker B: They provide time-stamped evidence about lifecycle and failures, but must be interpreted with process and resource state.
+
+Speaker A: What is the difference between a process and a service?
+
+Speaker B: A process is the running work. A service is the operational lifecycle and interface around that work, often including supervision, startup, restart and environment.
+
+Speaker A: What proves recovery?
+
+Speaker B: The original user-facing or process operation succeeds again under the intended service context.
+
+Speaker A: Final challenge.
+
+Speaker B: A service works from my shell but fails when started by the service manager.
+
+Speaker A: Your model?
+
+Speaker B: Compare process identity, groups, permissions, environment, working directory, resource access, service startup configuration and logs.
+
+Speaker A: And what do you change first?
+
+Speaker B: The smallest context or permission boundary supported by the evidence, then I verify the original operation.
+
+Speaker A: Exactly.
+
+Speaker B: So the lesson is not 'permissions are annoying.'
+
+Speaker A: It is 'execution context is part of the system'.
+
+Speaker B: That's the model.
+
+Speaker A: Run the lab, break one context boundary safely, and prove recovery.
 
 
 EPISODE D1.4 — What Is a Network?
