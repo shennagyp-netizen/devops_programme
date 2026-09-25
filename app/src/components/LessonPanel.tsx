@@ -22,6 +22,8 @@ import { LessonContentFeed } from "./LessonContentFeed";
 import { PodcastCoach } from "./PodcastCoach";
 import { AssessmentPanel } from "./AssessmentPanel";
 import { MasteryRemediation } from "./MasteryRemediation";
+import { MasteryPreview } from "./MasteryPreview";
+import { recordMasteryAttemptAction } from "../app/actions/progress";
 import {
   getMasteryPlan,
   masteryStorageKey,
@@ -300,7 +302,12 @@ export function LessonPanel({
 
       <PodcastCoach lesson={lesson} />
 
-      {mode === "learn" ? <LessonContentFeed blocks={lesson.content.blocks} /> : null}
+      {mode === "learn" ? (
+        <>
+          <LessonContentFeed blocks={lesson.content.blocks} />
+          <MasteryPreview lesson={lesson} task={handsOnTask} />
+        </>
+      ) : null}
 
       <nav className="mode-tabs">
         {(["learn", "do", "recall", "design", "assessment"] as Mode[]).map((item) => (
@@ -603,6 +610,16 @@ export function LessonPanel({
                 setMasteryReadyForRetry(true);
                 setExerciseRecorded(true);
                 setValidationMessage("Evidence structure validated and saved locally.");
+
+                void recordMasteryAttemptAction({
+                  lessonId: lesson.id,
+                  taskId: handsOnTask.id,
+                  outcome: "mastered",
+                  stage: "mastered",
+                  summary: "Hands-on evidence passed the current exercise contract."
+                }).catch(() => {
+                  // Completion remains server-authoritative even if mastery telemetry is temporarily unavailable.
+                });
                 onEvidenceRecorded?.();
               }}
             >
