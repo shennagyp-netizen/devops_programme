@@ -1868,7 +1868,7 @@ Merged PR #38:
 - The rewritten script separates backup existence from restore capability and full service recovery, including compatibility, encryption-key and recovery-time risks.
 - Final PR #38 gate passed the complete programme suite, TypeScript and the Next.js production build.
 - Red-team again caught authored-stream fallback risk during development; B2.3 was explicitly registered instead of weakening the test.
-- Next content boundary: B2.4 — "Backups Are Not the Same as Recovery" has now been completed; next authored target is B2.4's following lesson in the programme source.
+- Next content boundary: **B3.1 — Why Use a Queue?**. There is no authored B2.4 lesson in the current 53-lesson programme.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
