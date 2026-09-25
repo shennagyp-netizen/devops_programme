@@ -1949,5 +1949,7 @@ Active PR #56 scope:
 - Controlled labs delete a disposable Pod and deliberately break the Service selector, then restore and prove the Service path recovers.
 - TDD/full-programme gate is required before merge.
 
+- Fresh current-head validation requested on 2026-09-25 after main advanced; this commit is documentation-only and does not alter D3.2 lesson behavior.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
