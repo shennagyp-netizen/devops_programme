@@ -1932,5 +1932,14 @@ Merged PR #54 / #78:
 - The later PR #78 is the authoritative merge record because it contains the latest branch head.
 - Next content boundary: **D3.1 — Kubernetes Mental Model**.
 
+
+Active PR #55 scope:
+- D3.1 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `kubernetes-reconciliation-v1`.
+- Teaching model: Desired State -> Controller -> Scheduler -> Pod -> Node, returning through observed state.
+- The rewritten script teaches reconciliation, desired-vs-observed state, scheduler placement, pod lifecycle and node execution as separate evidence layers.
+- Controlled labs delete a disposable replica and create an intentionally unschedulable placement condition, then restore and prove recovery.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
