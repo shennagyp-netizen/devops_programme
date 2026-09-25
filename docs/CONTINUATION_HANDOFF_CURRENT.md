@@ -1996,5 +1996,13 @@ Merged PR #67:
 - Controlled failure makes one step fail, diagnoses it from step logs, restores it, and proves workflow recovery.
 - Next content boundary: **D4.4 — Infrastructure as Code**.
 
+
+Merged PR #68:
+- D4.4 -> `iac-control-loop-v1`: Intent -> Plan -> Apply -> State -> Drift.
+- Merge commit: `d8d8d029334279ba4a9c86f8f40a000a0cc06127`.
+- D4.4 teaches infrastructure intent, plan evidence, provider reality, state as coordination data, and drift detection.
+- Controlled lab makes one declared or external change, predicts the plan, detects drift, restores state and proves the clean plan.
+- Next content boundary: **D4.5 — Terraform Lifecycle**.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
