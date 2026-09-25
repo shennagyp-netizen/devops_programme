@@ -2018,5 +2018,12 @@ Active PR #96 scope:
 - The old short distributed-systems note is replaced with a full lesson covering partial failure, timeout ambiguity, idempotency, replication consistency, ordering, clock uncertainty, controlled delay/retry experiments, recall and transfer.
 - Fresh Vercel validation may be blocked by the current build-rate-limit infrastructure condition.
 
+
+Merged PR #96:
+- Merge commit: `3c66d559e4e53216846f39ce4d2b1a5271dfd312`.
+- D5.3 now uses `distributed-partial-failure-v1`: Request -> Local State -> Network -> Remote State -> Uncertainty -> Evidence.
+- The short note was replaced with a full lesson covering partial failure, timeout ambiguity, idempotency, replication consistency, ordering, clock uncertainty and controlled retry/delay experiments.
+- Fresh Vercel validation for PR #96 remained blocked by build-rate-limit infrastructure.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
