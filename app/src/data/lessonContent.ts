@@ -40,7 +40,8 @@ export type LessonIllustrationVariantV1 =
   | "github-actions-execution-v1"
   | "iac-control-loop-v1"
   | "terraform-lifecycle-v1"
-  | "cloud-primitives-v1";
+  | "cloud-primitives-v1"
+  | "scaling-control-loop-v1";
 
 export type LessonContentBlock =
   | {
@@ -93,6 +94,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D5.1": {
+    version: 1,
+    blocks: [
+      {
+        id: "d5-1-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Scaling is a system decision. More servers help only when the constrained part of the workload can use the added capacity."
+      },
+      {
+        id: "d5-1-scaling",
+        type: "illustration",
+        heading: "The scaling control path",
+        alt: "Rising workload meets capacity limits, is distributed across instances, constrained by shared state, and diagnosed through the active bottleneck and evidence",
+        bindingId: "D5.1:d5-1-scaling",
+        nodes: ["Workload", "Capacity", "Distribution", "Shared State", "Bottleneck", "Evidence"],
+        variant: "scaling-control-loop-v1",
+        caption:
+          "Find the first constrained dependency before deciding how to scale."
+      }
+    ]
+  },
+
+
   "D4.6": {
     version: 1,
     blocks: [
@@ -1035,6 +1061,7 @@ export function validateLessonContent(
         block.variant !== "iac-control-loop-v1" &&
         block.variant !== "terraform-lifecycle-v1" &&
         block.variant !== "cloud-primitives-v1" &&
+        block.variant !== "scaling-control-loop-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
