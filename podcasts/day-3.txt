@@ -252,51 +252,249 @@ Speaker B: Run the lab, delete one pod, watch the replacement, then make one dis
 
 EPISODE D3.2 — Kubernetes Networking
 
-Speaker A: Now we combine the networking foundation with Kubernetes.
+Speaker A: Yesterday we saw that Pods are replaceable.
 
-Speaker B: I knew the networking day would come back to collect its debt.
+Speaker B: Which means clients should not depend on a Pod IP staying alive.
 
-Speaker A: Happily, it pays interest.
+Speaker A: Exactly. Today the stable abstraction is the Service.
 
-Speaker A: A request may travel through DNS, an external load balancer, ingress, a Service, and a selected Pod. Each abstraction solves a different problem.
+Speaker B: The picture is:
 
-Speaker A: Real-life analogy: a hospital visitor knows a department name, not the exact bed occupied by the doctor today. Reception, department routing, and internal assignment happen in layers.
+Speaker A: Service -> Selector -> Endpoints -> Pod -> Path.
 
-Speaker A: The Service gives stable discovery while pods can come and go.
+Speaker B: So the Service is the stable front door.
 
-Speaker A: Lab: deploy two pods, expose them through a Service, inspect endpoints, then kill one pod and observe the routing behavior.
-Speaker B: Kubernetes networking looks like four abstractions stacked on top of one another.
+Speaker A: Yes.
 
-Speaker A: That's because it solves several different problems. The user wants a stable destination. Pods are disposable. Something needs to select healthy backends. External traffic may need another layer.
+Speaker B: Stage one: Service.
 
-Speaker B: Service gives stable discovery.
+Speaker A: A Service gives clients a stable destination while the Pods behind it can change.
 
-Speaker A: Right. The Service abstraction decouples callers from the current set of pod IPs.
+Speaker B: So the client does not need to know which Pod currently serves the request.
 
-Speaker B: Hospital analogy?
+Speaker A: Correct.
 
-Speaker A: A visitor knows the department name, not which bed the doctor is in today. Reception routes them to the department. The department handles the current assignment.
+Speaker B: Stage two: selector.
 
-Speaker B: So the visitor-facing name stays stable even while the internal assignment changes.
+Speaker A: A Service needs a way to decide which Pods belong to its backend set.
 
-Speaker A: Exactly. Kubernetes networking works in a similar spirit, although the literal mechanisms are very different.
+Speaker B: Labels and selectors.
 
-Speaker B: Prediction. One pod dies. Should clients need to know its old IP disappeared?
+Speaker A: Exactly.
 
-Speaker A: Ideally, no. The abstraction above the pods should continue selecting available endpoints.
+Speaker B: If the selector is wrong, the Service can exist while having no useful backends.
 
-Speaker B: And if no endpoints remain?
+Speaker A: Good.
 
-Speaker A: Then the failure becomes visible at the Service layer. Again, observe which layer stopped providing a valid path.
+Speaker B: Stage three: endpoints.
+
+Speaker A: The endpoint set represents the backend addresses available for the Service to use.
+
+Speaker B: So the endpoint set is a view of the current backend state.
+
+Speaker A: Right.
+
+Speaker B: A Pod can be Running and still not be a good endpoint if it is not ready.
+
+Speaker A: Correct.
+
+Speaker B: That connects to the health lesson later.
+
+Speaker A: Exactly.
+
+Speaker B: Stage four: Pod.
+
+Speaker A: Pods are replaceable workload instances.
+
+Speaker B: Which is why Service identity must not depend on one Pod IP.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction.
+
+Speaker A: One Pod behind a Service dies. Should a client using the Service need to change its destination?
+
+Speaker B: Ideally no. The Service name stays stable while the endpoint set changes and a replacement Pod becomes available.
+
+Speaker A: Good.
+
+Speaker B: But if no healthy endpoints remain?
+
+Speaker A: Then the failure becomes visible at the Service path.
+
+Speaker B: So we inspect the endpoint set instead of just saying 'networking is broken.'
+
+Speaker A: Exactly.
+
+Speaker B: Real-life analogy?
+
+Speaker A: A hospital visitor knows the department, not the exact bed where a doctor is sitting today.
+
+Speaker B: Reception routes them to the department.
+
+Speaker A: Yes. The visitor-facing identity stays stable while the internal assignment changes.
+
+Speaker B: So Service is like the stable department name.
+
+Speaker A: Roughly. The mechanisms are different, but the abstraction is useful.
+
+Speaker B: Prediction pause.
+
+Speaker A: DNS for the Service name works, but the client still gets no useful response.
+
+Speaker B: I inspect the Service selector and endpoint set next.
+
+Speaker A: Good.
+
+Speaker B: Why not inspect the Pod IP first?
+
+Speaker A: Because the abstraction says the Service should choose available backends for you. A Pod IP is lower-level evidence.
+
+Speaker B: Good.
+
+Speaker A: Now another failure.
+
+Speaker B: The Service selector is `app=api`, but the Pods are labeled `app=web`.
+
+Speaker A: Prediction?
+
+Speaker B: The Service exists, but the selector may match no Pods, so the endpoint set is empty.
+
+Speaker A: Exactly.
+
+Speaker B: Another failure.
+
+Speaker A: The selector is correct, but the endpoint disappears when the Pod stops.
+
+Speaker B: That is expected. The endpoint set should change with the Pod lifecycle.
+
+Speaker A: Exactly.
+
+Speaker B: So endpoint churn is not automatically a bug.
+
+Speaker A: Right. The question is whether the replacement path restores a healthy backend.
+
+Speaker B: Now the external path.
+
+Speaker A: An external load balancer or ingress may sit above the Service.
+
+Speaker B: So the complete request can have several stable and dynamic layers.
+
+Speaker A: Exactly.
+
+Speaker B: External name.
+
+Speaker A: Load balancer or ingress.
+
+Speaker B: Service.
+
+Speaker A: Endpoint set.
+
+Speaker B: Pod.
+
+Speaker A: Good.
+
+Speaker B: Controlled failure?
+
+Speaker A: Deploy two simple Pods with the same label.
+
+Speaker B: Expose them with a Service.
+
+Speaker A: Good.
+
+Speaker B: Prove the client can reach the Service.
+
+Speaker A: Good.
+
+Speaker B: Inspect the endpoint set.
+
+Speaker A: Good.
+
+Speaker B: Delete one Pod.
+
+Speaker A: Predict what should happen.
+
+Speaker B: The endpoint set shrinks, then the replacement Pod appears and the endpoint set returns to the expected healthy size.
+
+Speaker A: Exactly.
+
+Speaker B: Now break the selector.
+
+Speaker A: Predict the symptom.
+
+Speaker B: The Service can still resolve, but it can have no matching endpoints.
+
+Speaker A: Good.
+
+Speaker B: Restore the selector.
+
+Speaker A: Then prove the client request works again.
+
+Speaker B: So the experiment separates Service identity from backend selection.
+
+Speaker A: Exactly.
 
 Speaker B: Mac lab?
 
-Speaker A: Deploy two pods. Expose them with a Service. Inspect the Service and its endpoints. Delete one pod. Watch the endpoint set change. Then break the selector and see what the client experiences.
+Speaker A: Deploy two Pods.
 
-Speaker B: That's a better exercise than memorizing Service YAML.
+Speaker B: Give them the expected labels.
 
-Speaker A: Much better. You want to understand the relationship: stable name, selector, endpoint set, pod lifecycle.
+Speaker A: Create the Service.
 
+Speaker B: Inspect the selector and endpoint set.
+
+Speaker A: Good.
+
+Speaker B: Make a request through the Service.
+
+Speaker A: Good.
+
+Speaker B: Delete one Pod and watch the endpoint set.
+
+Speaker A: Good.
+
+Speaker B: Then change the selector so it matches nothing.
+
+Speaker A: Observe the difference.
+
+Speaker B: Restore it and prove recovery.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: What does a Service provide?
+
+Speaker B: A stable logical destination while the Pods behind it can change.
+
+Speaker A: What does the selector do?
+
+Speaker B: It defines which Pods belong to the Service backend set.
+
+Speaker A: What is the endpoint set?
+
+Speaker B: The current backend addresses that the Service can use.
+
+Speaker A: Why should clients avoid Pod IPs?
+
+Speaker B: Pod IPs are tied to replaceable Pod instances, while the Service abstraction is designed to stay stable.
+
+Speaker A: Final challenge.
+
+Speaker B: The Service name resolves, but there are zero endpoints.
+
+Speaker A: Your model?
+
+Speaker B: Service -> Selector -> Endpoints -> Pod -> Path. I inspect the selector, current matching Pods and endpoint readiness before blaming the network.
+
+Speaker A: Good.
+
+Speaker B: So Kubernetes networking is not one object.
+
+Speaker A: It is a chain of abstractions that separates stable discovery from changing workload instances.
+
+Speaker B: Run the lab, delete one Pod, break one selector, restore it, and explain the endpoint evidence.
 
 EPISODE D3.3 — Kubernetes Configuration and Storage
 
