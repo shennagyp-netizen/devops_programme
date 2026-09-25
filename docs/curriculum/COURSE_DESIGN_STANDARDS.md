@@ -666,3 +666,27 @@ The learner should be able to answer:
 - What should happen after the change?
 - How do I prove recovery?
 - What changes when the same mechanism appears at larger scale?
+# 4.3 Standalone visual capability preview
+
+Reusable illustrations/animations may be exposed through a standalone preview host for development, inspection and capability validation.
+
+This preview host is not part of the curriculum authoring contract.
+
+It may:
+- list reusable animation capabilities
+- open a capability directly
+- play/pause/restart/seek using a local preview clock
+- show accessibility metadata.
+
+It must not:
+- choose lesson order
+- choose learner progression
+- write learner progress
+- own production audio
+- replace PodcastCoach
+- replace curriculum illustration bindings
+- turn preview timing fixtures into lesson timing.
+
+Production lesson timing remains driven by the actual aligned audio clock. The curriculum binding maps authored lesson cues to declared animation events.
+
+This separation permits direct inspection of reusable visual capabilities without weakening curriculum authority.
