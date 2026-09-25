@@ -41,7 +41,8 @@ export type LessonIllustrationVariantV1 =
   | "distributed-partial-failure-v1"
   | "global-architecture-v1"
   | "production-incident-v1"
-  | "git-production-workflow-v1";
+  | "git-production-workflow-v1"
+  | "ci-cd-pipeline-v1";
 
 export type LessonContentBlock =
   | {
@@ -94,6 +95,29 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D4.2": {
+    version: 1,
+    blocks: [
+      {
+        id: "d4-2-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "CI/CD is a controlled evidence path from a known source change to validated software, an identified artifact, controlled promotion and proven runtime behavior."
+      },
+      {
+        id: "d4-2-ci-cd",
+        type: "illustration",
+        heading: "The CI/CD control path",
+        alt: "A source change is validated, built into an identified artifact, promoted through controlled environments and verified in the running system",
+        bindingId: "D4.2:d4-2-ci-cd",
+        nodes: ["Source", "Validate", "Artifact", "Promote", "Verify"],
+        variant: "ci-cd-pipeline-v1",
+        caption:
+          "Treat every stage as a risk control with explicit evidence."
+      }
+    ]
+  },
   "D5.8": {
     version: 1,
     blocks: [
@@ -1037,6 +1061,7 @@ export function validateLessonContent(
         block.variant !== "kubernetes-health-scaling-v1" &&
         block.variant !== "kubernetes-failure-loop-v1" &&
         block.variant !== "git-production-workflow-v1" &&
+        block.variant !== "ci-cd-pipeline-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
