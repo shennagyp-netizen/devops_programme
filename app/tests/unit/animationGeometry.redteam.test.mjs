@@ -347,6 +347,62 @@ describe("animation geometry red team", () => {
     expect(result.failures.join(" ")).not.toContain("connection crossing");
   });
 
+  it("rejects connections whose endpoints are not nodes", () => {
+    const definition = baseDefinition();
+    definition.primitives.push({
+      kind: "label",
+      id: "not-a-node",
+      text: "Endpoint",
+      x: 320,
+      y: 80,
+      width: 120,
+      height: 40
+    });
+    definition.primitives.push({
+      kind: "connection",
+      id: "invalid-endpoint",
+      from: "a",
+      to: "not-a-node"
+    });
+
+    const failures = validateAnimationDefinition(definition).failures.join(" ");
+    expect(failures).toContain("endpoint must reference a node");
+  });
+
+  it("rejects packet routes whose endpoints are not nodes", () => {
+    const definition = baseDefinition();
+    definition.primitives.push({
+      kind: "packet",
+      id: "invalid-packet-endpoint",
+      from: "a",
+      to: "missing"
+    });
+
+    const failures = validateAnimationDefinition(definition).failures.join(" ");
+    expect(failures).toContain("endpoint must reference a node");
+  });
+
+  it("rejects zero-length connections and packets", () => {
+    const definition = baseDefinition();
+    definition.primitives.push(
+      {
+        kind: "connection",
+        id: "self-connection",
+        from: "a",
+        to: "a"
+      },
+      {
+        kind: "packet",
+        id: "self-packet",
+        from: "b",
+        to: "b"
+      }
+    );
+
+    const failures = validateAnimationDefinition(definition).failures.join(" ");
+    expect(failures).toContain("route endpoints must be different");
+  });
+
   it("rejects zero-area and NaN geometry before spatial checks", () => {
     const definition = baseDefinition();
     definition.primitives[0].width = 0;
