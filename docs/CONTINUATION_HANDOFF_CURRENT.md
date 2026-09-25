@@ -1930,5 +1930,14 @@ Merged PR #55:
 - Final PR #55 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 - Next content boundary: **D3.2 — Kubernetes Networking**.
 
+
+Active PR #56 scope:
+- D3.2 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `kubernetes-service-path-v1`.
+- Teaching model: Service -> Selector -> Endpoints -> Pod -> Path.
+- The rewritten script separates stable Service identity, label selection, endpoint state and disposable Pod lifecycle.
+- Controlled failure deletes one Pod, then breaks the selector to produce an empty endpoint set, restores it and proves recovery.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
