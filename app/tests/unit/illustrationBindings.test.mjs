@@ -75,7 +75,7 @@ describe("curriculum illustration binding v1", () => {
       contentBlockId: "http-flow",
       contentIndex: 1,
       presentation: "animated",
-      visualCapabilityId: "animation",
+      visualCapabilityId: "animation-stage-v1",
       animationId: "http-request",
       voiceCueBindings: [
         { voiceCueId: "request-start", eventIds: ["send-request"] },
