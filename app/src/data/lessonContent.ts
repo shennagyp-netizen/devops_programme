@@ -9,7 +9,8 @@ export type LessonIllustrationVariantV1 =
   | "causal-flow-v1"
   | "container-boundary-v1"
   | "request-path-v1"
-  | "https-stack-v1";
+  | "https-stack-v1"
+  | "repeatable-service-v1";
 
 export type LessonContentBlock =
   | {
@@ -62,6 +63,29 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "B1.5": {
+    version: 1,
+    blocks: [
+      {
+        id: "b1-5-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "An application is not repeatable because one engineer knows how to start it. It is repeatable when another engineer can follow the same startup, configuration, health and user-path contract without hidden operational knowledge."
+      },
+      {
+        id: "b1-5-repeatability",
+        type: "illustration",
+        heading: "The repeatable service contract",
+        alt: "An application image receives environment configuration, starts with its dependencies, becomes ready, and is proven through a real user request",
+        bindingId: "B1.5:b1-5-repeatability",
+        nodes: ["Image", "Configuration", "Runtime", "Health", "User path"],
+        variant: "repeatable-service-v1",
+        caption:
+          "Repeatability is a contract from packaged application to proven user behavior."
+      }
+    ]
+  },
   "B1.2": {
     version: 1,
     blocks: [
@@ -211,7 +235,8 @@ export function validateLessonContent(
         block.variant !== "causal-flow-v1" &&
         block.variant !== "container-boundary-v1" &&
         block.variant !== "request-path-v1" &&
-        block.variant !== "https-stack-v1"
+        block.variant !== "https-stack-v1" &&
+        block.variant !== "repeatable-service-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }
