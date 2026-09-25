@@ -8,8 +8,8 @@ import { getHandsOnTask } from "../../src/data/handsOn.ts";
 import { lessonsByCourse } from "../../src/data/courseLessons.ts";
 
 describe("mastery remediation engine", () => {
-  const lesson = lessonsByCourse.beginner.find((item) => item.id === "B1.4");
-  if (!lesson) throw new Error("B1.4 lesson is required for remediation tests.");
+  const lesson = lessonsByCourse.beginner.find((item) => item.id === "D3.1");
+  if (!lesson) throw new Error("D3.1 lesson is required for remediation tests.");
   const task = getHandsOnTask(lesson);
 
   it("classifies an invalid evidence submission without pretending the assignment succeeded", () => {
