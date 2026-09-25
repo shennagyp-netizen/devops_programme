@@ -105,7 +105,24 @@ export function LessonPanel({
       .catch(() => {
         try {
           const stored = localStorage.getItem(remediationKey);
-      useEffect(() => {
+          const parsed = stored
+            ? (JSON.parse(stored) as { attempt?: number })
+            : {};
+          setRemediationAttempt(
+            typeof parsed.attempt === "number" ? parsed.attempt : 0
+          );
+        } catch {
+          setRemediationAttempt(0);
+        }
+        setMasteryAttemptId(null);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [lesson.id, handsOnTask.id, remediationKey]);
+
+  useEffect(() => {
     try {
       const stored = localStorage.getItem(evidenceKey);
       if (!stored) {
