@@ -1995,5 +1995,14 @@ Active PR #68 scope:
 - TDD/full-programme gate is required before merge.
 
 
+
+Active PR #69 scope:
+- D4.5 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `terraform-lifecycle-v1`.
+- Teaching model: Configuration -> Init -> Plan -> Apply -> Observe.
+- The rewritten script treats plan as a safety checkpoint, state locking as a coordination boundary, destroy as a high-impact lifecycle operation, and post-apply observation as required proof.
+- Controlled lab covers initial plan/apply, repeat plan, one declared change, controlled drift, recovery, and disposable destroy.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
