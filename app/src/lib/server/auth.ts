@@ -255,10 +255,11 @@ export async function loginUserAndCreateSession(
 }
 
 export async function getCurrentUser(): Promise<CurrentUser | null> {
-  await ensureAuthSchema();
   const token = (await cookies()).get(SESSION_COOKIE_NAME)?.value;
 
   if (!token) return null;
+
+  await ensureAuthSchema();
 
   const tokenHash = hashSessionToken(token);
   const [row] = await getDb()
