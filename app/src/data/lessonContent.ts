@@ -74,6 +74,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D1.6": {
+    version: 1,
+    blocks: [
+      {
+        id: "d1-6-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Routing determines where packets go next. NAT may change address representation at a boundary. Treating them as the same mechanism makes partial reachability and asymmetric failures harder to diagnose."
+      },
+      {
+        id: "d1-6-routing-model",
+        type: "illustration",
+        heading: "The routing decision",
+        alt: "A destination address is matched against routes, sent to a next hop across a boundary, and verified with path evidence",
+        bindingId: "D1.6:d1-6-routing-model",
+        nodes: ["Destination", "Route", "Next hop", "Boundary", "Evidence"],
+        variant: "routing-boundary-v1",
+        caption:
+          "Trace destination match, next hop, boundary behavior and return-path evidence separately."
+      }
+    ]
+  },
+
+
   "D1.5": {
     version: 1,
     blocks: [
@@ -522,7 +547,8 @@ export function validateLessonContent(
         block.variant !== "terminal-composition-v1" &&
         block.variant !== "service-permission-model-v1" &&
         block.variant !== "network-operating-model-v1" &&
-        block.variant !== "cidr-boundary-v1"
+        block.variant !== "cidr-boundary-v1" &&
+        block.variant !== "routing-boundary-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }
