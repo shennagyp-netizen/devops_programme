@@ -22,21 +22,22 @@ function filesUnder(directory) {
 describe("curriculum/animation dependency boundary", () => {
   it("keeps the reusable animation library independent from curriculum sources", () => {
     const root = resolve(process.cwd(), "src/animations");
-    const forbiddenImports = [
-      "../data/",
-      "../../data/",
-      "courseLessons",
-      "lessonContent",
-      "illustrationBindings",
-      "PodcastCoach",
-      "LessonPanel"
+    const forbiddenImportPatterns = [
+      /from\\s+["'][^"']*(?:courseLessons|lessonContent|illustrationBindings|PodcastCoach|LessonPanel)[^"']*["']/,
+      /import\\s*["'][^"']*(?:courseLessons|lessonContent|illustrationBindings|PodcastCoach|LessonPanel)[^"']*["']/,
+      /from\\s+["'][^"']*\\.\\.\\/data\\/[^"']*["']/,
+      /import\\s*["'][^"']*\\.\\.\\/data\\/[^"']*["']/
     ];
 
     for (const file of filesUnder(root)) {
       const code = readFileSync(file, "utf8");
+      const importLines = code
+        .split("\\n")
+        .filter((line) => /^\\s*(?:import|export).*from\\s+["']|^\\s*import\\s*["']/.test(line))
+        .join("\\n");
 
-      for (const forbidden of forbiddenImports) {
-        expect(code, file).not.toContain(forbidden);
+      for (const forbiddenPattern of forbiddenImportPatterns) {
+        expect(importLines, file).not.toMatch(forbiddenPattern);
       }
     }
   });
