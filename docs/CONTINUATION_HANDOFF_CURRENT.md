@@ -2027,5 +2027,14 @@ Active PR #70 scope:
 - TDD/full-programme gate is required before merge.
 
 
+
+Active PR #55 scope:
+- D5.1 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `scaling-control-loop-v1`.
+- Teaching model: Workload -> Capacity -> Distribution -> Shared State -> Bottleneck -> Evidence.
+- The rewritten script makes vertical/horizontal scaling, statelessness, shared state, queues/caches, bottleneck movement and user proof one coherent mechanism.
+- The lab now requires baseline capacity evidence, a controlled workload increase, one scaling change, and measurement of the next bottleneck.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================

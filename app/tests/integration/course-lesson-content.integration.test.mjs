@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored scaling control-loop visual for D5.1", () => {
+    const lesson = allLessons.find((item) => item.id === "D5.1");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d5-1-scaling",
+      bindingId: "D5.1:d5-1-scaling",
+      variant: "scaling-control-loop-v1"
+    });
+  });
+
   it("uses the authored cloud-primitives visual for D4.6", () => {
     const lesson = allLessons.find((item) => item.id === "D4.6");
     expect(lesson).toBeDefined();
