@@ -32,7 +32,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-failure-loop-v1"
   | "git-production-workflow-v1"
   | "cicd-control-path-v1"
-  | "github-actions-execution-v1";
+  | "github-actions-execution-v1"
+  | "iac-control-loop-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -997,6 +998,36 @@ const GITHUB_ACTIONS_EXECUTION_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const IAC_CONTROL_LOOP_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "iac-control-loop-v1",
+  title: "The Infrastructure as Code control loop",
+  stages: [
+    { id: "intent", label: "Intent", detail: "Code declares the infrastructure and configuration the team intends to exist." },
+    { id: "plan", label: "Plan", detail: "The tool compares intent with its known state and provider information to calculate a proposed change." },
+    { id: "apply", label: "Apply", detail: "The proposed changes are sent to the provider to create, update or remove real resources." },
+    { id: "state", label: "State", detail: "State records information the tool uses to relate configuration to resources across runs." },
+    { id: "drift", label: "Drift", detail: "Manual or external changes can make real infrastructure differ from declared intent." }
+  ],
+  foundation: {
+    label: "Declarative infrastructure separates desired intent from real resources",
+    detail: "Terraform and similar tools describe desired infrastructure and calculate changes; the cloud provider remains the authority for the real resources."
+  },
+  callouts: [
+    { id: "desired-state", label: "Desired state", detail: "The code describes what infrastructure should exist; it is not a live copy of the provider." },
+    { id: "plan", label: "Plan", detail: "A plan is evidence of what the tool proposes to change before those changes are applied." },
+    { id: "state", label: "State", detail: "State is coordination data used by the tool; it is not the infrastructure itself." },
+    { id: "drift", label: "Drift", detail: "Out-of-band changes create a difference between declared intent and actual resources." }
+  ],
+  failureChecks: [
+    { id: "code-review", label: "1. Code review", detail: "Was the intended infrastructure change reviewed before apply?" },
+    { id: "plan-difference", label: "2. Plan difference", detail: "Does the plan match the change you intended, or does it contain unexpected replacements or deletions?" },
+    { id: "apply-result", label: "3. Apply result", detail: "Did the provider actually create the intended resources, and what evidence confirms it?" },
+    { id: "drift-detection", label: "4. Drift detection", detail: "Has someone changed the real infrastructure outside the declared workflow?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1239,6 +1270,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "iac-control-loop-v1") {
+    return {
+      ...IAC_CONTROL_LOOP_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1285,7 +1323,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "kubernetes-failure-loop-v1" &&
     model.variant !== "git-production-workflow-v1" &&
     model.variant !== "cicd-control-path-v1" &&
-    model.variant !== "github-actions-execution-v1"
+    model.variant !== "github-actions-execution-v1" &&
+    model.variant !== "iac-control-loop-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
