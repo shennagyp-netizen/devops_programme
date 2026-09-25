@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { getLessonIllustrationModel } from "../../src/data/lessonIllustration.ts";
+import {
+  getLessonIllustrationModel,
+  validateLessonIllustrationModel
+} from "../../src/data/lessonIllustration.ts";
 
 describe("lesson illustration teaching model", () => {
   it("turns the B1.4 container visual into a concrete causal model", () => {
@@ -67,5 +70,22 @@ describe("lesson illustration teaching model", () => {
       })
     ).toMatchObject({
       variant: "causal-flow-v1"
+    });
+  });
+
+
+  it("rejects an invalid model shape instead of rendering arbitrary data", () => {
+    expect(
+      validateLessonIllustrationModel({
+        version: 1,
+        variant: "not-real",
+        stages: []
+      })
+    ).toEqual({
+      valid: false,
+      failures: [
+        "illustration model variant is invalid",
+        "illustration model needs at least two stages"
+      ]
     });
   });
