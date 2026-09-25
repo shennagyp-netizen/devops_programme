@@ -23,7 +23,8 @@ export type LessonIllustrationVariantV1 =
   | "network-operating-model-v1"
   | "cidr-boundary-v1"
   | "routing-boundary-v1"
-  | "transport-contract-v1";
+  | "transport-contract-v1"
+  | "dns-resolution-v1";
 
 export type LessonContentBlock =
   | {
