@@ -228,6 +228,11 @@ Video/content-feed rule:
 
 TDD coverage:
 - `app/tests/integration/lesson-voice-continuity.integration.test.mjs` rejects the separate listen mode and verifies the persistent co-teacher source contract.
+- `app/tests/integration/lesson-content-stream.integration.test.mjs` verifies ordered rendering, draft-video safety, captions/transcript behavior, navigation, IntersectionObserver cleanup and the absence of a second voice owner.
+- `app/tests/integration/course-lesson-content.integration.test.mjs` verifies that every current course lesson receives a valid content stream with stable per-lesson ids.
+- `app/tests/unit/lessonContent.redteam.test.mjs` covers malformed payloads, unsafe media, draft/published source rules, accessibility metadata, durations and cue boundaries.
+- `app/tests/unit/podcastSync.redteam.test.mjs` covers manifest security, duplicate identities, timeline ordering, cue boundaries and fail-closed loading.
+- `app/tests/unit/podcastsRaw.test.mjs` covers episode extraction and deterministic speaker-turn classification.
 
 ## 4.1 ORDERED LESSON CONTENT STREAM
 
@@ -245,7 +250,8 @@ Current implementation:
 - Required instructional meaning must remain available in written lesson content even when no video is published.
 
 Tests:
-- `app/tests/unit/lessonContent.test.mjs` covers block validation, unsafe media rejection, timing validation, deterministic defaults, all current lesson streams and the B1.4 video slot.
+- `app/tests/unit/lessonContent.test.mjs` covers the baseline content contract.
+- Red-team content tests extend that baseline with security and malformed-input boundaries.
 
 Validation state:
 - The GitHub Actions connector has returned no executed check/run for the current branch commit, so CI is **not claimed green** from this change.
