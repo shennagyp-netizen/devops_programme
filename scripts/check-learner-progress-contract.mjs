@@ -93,8 +93,10 @@ assert.match(content.page, /listCompletionHistoryForUser/);
 assert.match(content.page, /redirect\("\/sign-in"\)/);
 
 assert.match(content.layout, /<body>/);
-assert.match(content.layout, /<ClerkProvider>/);
-assert.ok(content.layout.indexOf("<body>") < content.layout.indexOf("<ClerkProvider>"));
+assert.match(content.layout, /<ClerkProvider(?:\s|>)/);
+assert.ok(
+  content.layout.indexOf("<body>") < content.layout.indexOf("<ClerkProvider")
+);
 
 assert.match(content.proxy, /clerkMiddleware/);
 assert.match(content.signIn, /<SignIn/);
