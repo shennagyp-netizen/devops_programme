@@ -795,6 +795,7 @@ export function validateAnimationDefinition(
   }
 
   const primitiveIds = new Set<string>();
+  const primitiveKinds = new Map<string, string>();
   const visualCustomization = isObject(value.visual)
     ? value.visual.customization
     : undefined;
@@ -802,6 +803,9 @@ export function validateAnimationDefinition(
   if (Array.isArray(value.primitives)) {
     for (const primitive of value.primitives) {
       validatePrimitive(primitive, primitiveIds, failures);
+      if (isObject(primitive) && isNonEmptyString(primitive.id)) {
+        primitiveKinds.set(primitive.id, String(primitive.kind));
+      }
     }
 
     for (const primitive of value.primitives) {
