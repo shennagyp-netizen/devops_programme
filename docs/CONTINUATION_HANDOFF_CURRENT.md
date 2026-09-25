@@ -1965,5 +1965,12 @@ Active PR #89 scope:
 - Vercel validation is required; GitHub Actions is currently not exposing a run for this branch.
 - TDD/content contracts remain authoritative: the D2.6 tests are already present on `main`.
 
+
+Current content-quality batch (PR #93):
+- D2.6 rewritten podcast: `Service -> Network -> Name -> Port -> Volume`.
+- D3.5 prediction layer strengthened without changing its existing `kubernetes-failure-loop-v1` visual/model/tests.
+- D3.5 now has explicit prediction pauses for CrashLoopBackOff, ImagePullBackOff, OOMKilled, readiness failure and Service-selector failure.
+- PR #93 is currently blocked by Vercel build-rate-limit infrastructure; no code/test failure is claimed from that status.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
