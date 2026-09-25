@@ -33,7 +33,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-reconciliation-v1"
   | "kubernetes-service-path-v1"
   | "kubernetes-config-storage-v1"
-  | "kubernetes-health-scaling-v1";
+  | "kubernetes-health-scaling-v1"
+  | "kubernetes-failure-loop-v1";
 
 export type LessonContentBlock =
   | {
@@ -86,6 +87,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D3.5": {
+    version: 1,
+    blocks: [
+      {
+        id: "d3-5-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Kubernetes failure states are clues, not diagnoses. Start from a known-good baseline, change one boundary, collect evidence, repair it, and prove recovery."
+      },
+      {
+        id: "d3-5-kubernetes-failure",
+        type: "illustration",
+        heading: "The Kubernetes failure loop",
+        alt: "A known-good workload is changed at one boundary, produces a symptom, is diagnosed with evidence, and is recovered",
+        bindingId: "D3.5:d3-5-kubernetes-failure",
+        nodes: ["Baseline", "Fault", "Symptom", "Evidence", "Recovery"],
+        variant: "kubernetes-failure-loop-v1",
+        caption:
+          "Turn status names into an evidence sequence and close the loop with recovery proof."
+      }
+    ]
+  },
+
+
   "D3.4": {
     version: 1,
     blocks: [
@@ -846,6 +872,7 @@ export function validateLessonContent(
         block.variant !== "kubernetes-service-path-v1" &&
         block.variant !== "kubernetes-config-storage-v1" &&
         block.variant !== "kubernetes-health-scaling-v1" &&
+        block.variant !== "kubernetes-failure-loop-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
