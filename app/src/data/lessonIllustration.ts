@@ -1001,6 +1001,37 @@ const DATABASE_SCALING_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const DISTRIBUTED_PARTIAL_FAILURE_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "distributed-partial-failure-v1",
+  title: "The partial-failure model",
+  stages: [
+    { id: "request", label: "Request", detail: "One service starts an operation whose outcome may depend on a remote service." },
+    { id: "local-state", label: "Local State", detail: "The caller records what it knows before and after sending the request." },
+    { id: "network", label: "Network", detail: "The communication path can delay, drop or reorder information without stopping either endpoint." },
+    { id: "remote-state", label: "Remote State", detail: "The remote service may have completed the operation even when the caller has not seen the response." },
+    { id: "uncertainty", label: "Uncertainty", detail: "A timeout narrows what is known but does not prove whether the remote operation succeeded." },
+    { id: "evidence", label: "Evidence", detail: "Correlate request IDs, remote logs, state changes, retries and timing before deciding whether another operation is safe." }
+  ],
+  foundation: {
+    label: "A timeout is an observation, not proof of remote failure",
+    detail: "Distributed systems create incomplete information because communication and execution can fail independently."
+  },
+  callouts: [
+    { id: "partial-failure", label: "Partial failure", detail: "One component can fail or become unreachable while the other components remain healthy." },
+    { id: "timeout-ambiguity", label: "Timeout ambiguity", detail: "A caller timeout does not tell you whether the remote operation failed, succeeded, or succeeded while the response was lost." },
+    { id: "idempotency", label: "Idempotency", detail: "A safe retry needs a way to avoid producing an incorrect duplicate side effect when the first attempt may already have succeeded." },
+    { id: "consistency", label: "Consistency", detail: "Replicas or distributed state can temporarily disagree; the application must define what freshness or agreement its operation requires." }
+  ],
+  failureChecks: [
+    { id: "operation-outcome", label: "1. Operation outcome", detail: "Did the remote operation complete, fail, or simply become unobservable to the caller?" },
+    { id: "retry-safety", label: "2. Retry safety", detail: "Can another attempt be made without creating an incorrect duplicate side effect?" },
+    { id: "replica-state", label: "3. Replica state", detail: "Which copy has the state you need, and how fresh is it?" },
+    { id: "failure-domain", label: "4. Failure domain", detail: "Is the problem in local execution, the communication path, remote execution, or only the observation path?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1243,6 +1274,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "distributed-partial-failure-v1") {
+    return {
+      ...DISTRIBUTED_PARTIAL_FAILURE_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1285,6 +1323,7 @@ export function validateLessonIllustrationModel(
     model.variant !== "docker-failure-loop-v1" &&
     model.variant !== "cloud-primitives-v1" &&
     model.variant !== "database-scaling-v1" &&
+    model.variant !== "distributed-partial-failure-v1" &&
     model.variant !== "kubernetes-service-path-v1" &&
     model.variant !== "kubernetes-config-storage-v1" &&
     model.variant !== "kubernetes-health-scaling-v1" &&
