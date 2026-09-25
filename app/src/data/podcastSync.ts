@@ -34,29 +34,46 @@ function isFiniteNonNegative(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value) && value >= 0;
 }
 
+function isSafeAudioSource(value: string) {
+  return (
+    (value.startsWith("/") && !value.startsWith("//")) ||
+    /^https:\/\//i.test(value)
+  );
+}
+
 function isValidManifest(value: unknown): value is PodcastAudioManifest {
   if (!value || typeof value !== "object") return false;
 
   const candidate = value as Partial<PodcastAudioManifest>;
   if (typeof candidate.episodeId !== "string" || !candidate.episodeId) return false;
   if (typeof candidate.scriptVersion !== "string" || !candidate.scriptVersion) return false;
-  if (typeof candidate.audioUrl !== "string" || !candidate.audioUrl) return false;
+  if (
+    typeof candidate.audioUrl !== "string" ||
+    !candidate.audioUrl ||
+    !isSafeAudioSource(candidate.audioUrl)
+  ) return false;
   if (!isFiniteNonNegative(candidate.durationMs) || candidate.durationMs === 0) return false;
   if (!Array.isArray(candidate.turns) || !Array.isArray(candidate.cues)) return false;
 
   let previousTurnEnd = 0;
+  const turnIds = new Set<string>();
   for (const turn of candidate.turns) {
     if (!turn || typeof turn.turnId !== "string" || !turn.turnId) return false;
+    if (turnIds.has(turn.turnId)) return false;
+    turnIds.add(turn.turnId);
     if (!isFiniteNonNegative(turn.startMs) || !isFiniteNonNegative(turn.endMs)) return false;
     if (turn.endMs <= turn.startMs || turn.endMs > candidate.durationMs) return false;
     if (turn.startMs < previousTurnEnd) return false;
     previousTurnEnd = turn.endMs;
   }
 
-  const turnIds = new Set(candidate.turns.map((turn) => turn.turnId));
+  const cueIds = new Set<string>();
   let previousCueStart = 0;
+  let previousCueEnd = 0;
   for (const cue of candidate.cues) {
     if (!cue || typeof cue.id !== "string" || !cue.id) return false;
+    if (cueIds.has(cue.id)) return false;
+    cueIds.add(cue.id);
     if (typeof cue.turnId !== "string" || !turnIds.has(cue.turnId)) return false;
     if (!cueKinds.has(cue.kind)) return false;
     if (!isFiniteNonNegative(cue.startMs) || cue.startMs > candidate.durationMs) return false;
@@ -66,7 +83,9 @@ function isValidManifest(value: unknown): value is PodcastAudioManifest {
       }
     }
     if (cue.startMs < previousCueStart) return false;
+    if (cue.startMs < previousCueEnd) return false;
     previousCueStart = cue.startMs;
+    previousCueEnd = cue.endMs ?? cue.startMs;
   }
 
   return true;
