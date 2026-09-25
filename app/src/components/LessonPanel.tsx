@@ -23,6 +23,11 @@ import { PodcastCoach } from "./PodcastCoach";
 import { AssessmentPanel } from "./AssessmentPanel";
 import { RemediationPanel } from "./RemediationPanel";
 import {
+  finishMasteryAttemptAction,
+  listMasteryAttemptsAction,
+  recordMasteryAttemptAction
+} from "../app/actions/mastery";
+import {
   buildRemediationPlan,
   classifyHandsOnFailure,
   type RemediationFailure
@@ -59,6 +64,7 @@ export function LessonPanel({
   const [validationMessage, setValidationMessage] = useState("");
   const [remediationFailure, setRemediationFailure] = useState<RemediationFailure | null>(null);
   const [remediationAttempt, setRemediationAttempt] = useState(0);
+  const [masteryAttemptId, setMasteryAttemptId] = useState<string | null>(null);
   const [machineVerificationMessage, setMachineVerificationMessage] = useState("");
   const [localAgentAvailable, setLocalAgentAvailable] = useState(false);
   const [localAgentPlatform, setLocalAgentPlatform] = useState<string | null>(null);
@@ -80,8 +86,39 @@ export function LessonPanel({
   const runtimeTask = runtimeTaskForLesson(lesson.id);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(remediationKey);
+    let active = true;
+
+    void listMasteryAttemptsAction(lesson.id, handsOnTask.id)
+      .then((history) => {
+        if (!active) return;
+        const latest = history[0];
+        if (latest) {
+          setRemediationAttempt(latest.attemptNumber);
+          setMasteryAttemptId(
+            latest.reattemptResult === "passed" ? null : latest.id
+          );
+        } else {
+          setRemediationAttempt(0);
+          setMasteryAttemptId(null);
+        }
+      })
+      .catch(() => {
+        try {
+          const stored = localStorage.getItem(remediationKey);
+          const parsed = stored ? (JSON.parse(stored) as { attempt?: number }) : {};
+          setRemediationAttempt(typeof parsed.attempt === "number" ? parsed.attempt : 0);
+        } catch {
+          setRemediationAttempt(0);
+        }
+        setMasteryAttemptId(null);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [lesson.id, handsOnTask.id, remediationKey]);
+
+
       const parsed = stored ? (JSON.parse(stored) as { attempt?: number }) : {};
       setRemediationAttempt(typeof parsed.attempt === "number" ? parsed.attempt : 0);
       setRemediationFailure(null);
@@ -540,6 +577,24 @@ export function LessonPanel({
                   setValidationMessage(
                     "The assignment was not accepted. Complete the targeted remediation before retrying the original assignment."
                   );
+
+                  if (masteryAttemptId) {
+                    void finishMasteryAttemptAction(masteryAttemptId, "failed").catch(() => {
+                      // Best-effort history completion; the new attempt remains authoritative.
+                    });
+                  }
+
+                  void recordMasteryAttemptAction({
+                    lessonId: lesson.id,
+                    assignmentId: handsOnTask.id,
+                    attemptNumber: nextAttempt,
+                    failureClass: failure.failureClass,
+                    failedFields: failure.failedFields,
+                    remediationMethods: []
+                  })
+                    .then((result) => setMasteryAttemptId(result.attemptId))
+                    .catch(() => setMasteryAttemptId(null));
+
                   try {
                     localStorage.setItem(
                       remediationKey,
@@ -551,7 +606,7 @@ export function LessonPanel({
                       })
                     );
                   } catch {
-                    // Best-effort local mastery telemetry in the current MVP.
+                    // Local fallback for environments where persistence is unavailable.
                   }
                   return;
                 }
@@ -587,6 +642,12 @@ export function LessonPanel({
                 });
 
                 setExerciseRecorded(true);
+                if (masteryAttemptId) {
+                  void finishMasteryAttemptAction(masteryAttemptId, "passed").catch(() => {
+                    // Keep the learner unblocked if the persistence service is temporarily unavailable.
+                  });
+                }
+                setMasteryAttemptId(null);
                 setRemediationFailure(null);
                 setValidationMessage("Evidence structure validated and saved locally.");
                 onEvidenceRecorded?.();
@@ -603,6 +664,7 @@ export function LessonPanel({
               <RemediationPanel
                 plan={buildRemediationPlan(lesson, handsOnTask, remediationFailure)}
                 attemptNumber={remediationAttempt}
+                attemptId={masteryAttemptId}
                 onRetry={() => {
                   setValidationMessage("Retry the original assignment now. The same evidence contract still applies.");
                 }}
