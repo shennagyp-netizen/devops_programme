@@ -18,7 +18,8 @@ export type LessonIllustrationVariantV1 =
   | "network-operating-model-v1"
   | "cidr-boundary-v1"
   | "routing-boundary-v1"
-  | "transport-contract-v1";
+  | "transport-contract-v1"
+  | "dns-resolution-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -567,6 +568,36 @@ const TRANSPORT_CONTRACT_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const DNS_RESOLUTION_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "dns-resolution-v1",
+  title: "The DNS answer path",
+  stages: [
+    { id: "name", label: "Name", detail: "The application starts with a hostname or other DNS name." },
+    { id: "resolver", label: "Resolver", detail: "A recursive resolver answers from cache or performs the work needed to find an authoritative answer." },
+    { id: "cache", label: "Cache", detail: "A cached answer can be returned while its TTL allows it to remain fresh enough for the resolver's policy." },
+    { id: "authority", label: "Authority", detail: "Authoritative DNS servers provide the configured records for the zone." },
+    { id: "freshness", label: "Freshness", detail: "TTL, negative caching and resolver choice explain why different clients can see different answers for a while." }
+  ],
+  foundation: {
+    label: "DNS is a distributed naming system",
+    detail: "A client usually asks a recursive resolver, which may answer from cache or query authoritative servers; there is no single global DNS server."
+  },
+  callouts: [
+    { id: "recursive-resolver", label: "Recursive resolver", detail: "The resolver answers for clients and may cache or query authoritative servers." },
+    { id: "authoritative-server", label: "Authoritative server", detail: "Authoritative servers hold the configured DNS data for a zone." },
+    { id: "record-types", label: "Record types", detail: "A, AAAA, CNAME and other record types answer different naming questions." },
+    { id: "ttl-cache", label: "TTL + cache", detail: "TTL helps control how long a resolver may retain an answer before refreshing it." }
+  ],
+  failureChecks: [
+    { id: "resolver-used", label: "1. Resolver used", detail: "Which DNS resolver actually answered the client?" },
+    { id: "record-type", label: "2. Record type", detail: "Did the query ask for the record type that matches the application question?" },
+    { id: "authoritative-data", label: "3. Authoritative data", detail: "What do the authoritative servers say for the zone and name?" },
+    { id: "freshness", label: "4. Freshness", detail: "Could cached positive or negative answers explain why clients still see older data?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -711,6 +742,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "dns-resolution-v1") {
+    return {
+      ...DNS_RESOLUTION_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -743,7 +781,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "network-operating-model-v1" &&
     model.variant !== "cidr-boundary-v1" &&
     model.variant !== "routing-boundary-v1" &&
-    model.variant !== "transport-contract-v1"
+    model.variant !== "transport-contract-v1" &&
+    model.variant !== "dns-resolution-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
