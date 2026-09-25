@@ -45,7 +45,11 @@ export type LessonIllustrationVariantV1 =
   | "ci-cd-pipeline-v1"
   | "reliability-patterns-v1"
   | "observability-control-v1"
-  | "disaster-recovery-system-v1";
+  | "disaster-recovery-system-v1"
+  | "capacity-system-v1"
+  | "queue-backpressure-v1"
+  | "replication-tradeoff-v1"
+  | "failure-domain-ladder-v1";
 
 export type LessonContentBlock =
   | {
@@ -98,6 +102,103 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "A1.1": {
+    version: 1,
+    blocks: [
+      {
+        id: "a1-1-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Capacity is a system property. Traffic can rise, one resource can saturate first, queues can grow, and recovery can fail if the surviving system has no headroom."
+      },
+      {
+        id: "a1-1-capacity",
+        type: "illustration",
+        heading: "The capacity system",
+        alt: "Demand enters a service, one bottleneck limits throughput, a queue grows when arrival rate exceeds service rate, and headroom protects recovery",
+        bindingId: "A1.1:a1-1-capacity",
+        nodes: ["Demand", "Service", "Bottleneck", "Queue", "Headroom"],
+        variant: "capacity-system-v1",
+        caption:
+          "Follow the bottleneck and the queue instead of treating capacity as one CPU number."
+      }
+    ]
+  },
+
+  "A1.2": {
+    version: 1,
+    blocks: [
+      {
+        id: "a1-2-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "A queue can absorb bursts, but it cannot create processing capacity. Backpressure is the control that limits admission when downstream capacity is already full."
+      },
+      {
+        id: "a1-2-backpressure",
+        type: "illustration",
+        heading: "The backpressure system",
+        alt: "A producer sends work into a queue, consumers process it at finite capacity, and backpressure limits admission when the queue grows",
+        bindingId: "A1.2:a1-2-backpressure",
+        nodes: ["Producer", "Queue", "Consumer", "Capacity", "Backpressure"],
+        variant: "queue-backpressure-v1",
+        caption:
+          "Measure arrival rate and service rate before deciding how to control admission."
+      }
+    ]
+  },
+
+  "A1.3": {
+    version: 1,
+    blocks: [
+      {
+        id: "a1-3-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Replication creates extra copies that can improve resilience and locality, but those copies introduce lag, conflicts and consistency decisions that the application must understand."
+      },
+      {
+        id: "a1-3-replication",
+        type: "illustration",
+        heading: "The replication trade-off",
+        alt: "A write creates multiple copies with possible lag, and a read observes one or more copies under a chosen consistency model",
+        bindingId: "A1.3:a1-3-replication",
+        nodes: ["Write", "Copies", "Lag", "Read", "Consistency"],
+        variant: "replication-tradeoff-v1",
+        caption:
+          "Replication is a trade-off between resilience, locality, coordination and freshness."
+      }
+    ]
+  },
+
+  "A1.4": {
+    version: 1,
+    blocks: [
+      {
+        id: "a1-4-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Failure domains define what can fail together. A process, host, zone and region require different redundancy, survivor-capacity and recovery plans."
+      },
+      {
+        id: "a1-4-failure-domains",
+        type: "illustration",
+        heading: "The failure-domain ladder",
+        alt: "A service spans process, host, zone and region boundaries, and each boundary changes blast radius and recovery requirements",
+        bindingId: "A1.4:a1-4-failure-domains",
+        nodes: ["Process", "Host", "Zone", "Region", "Recovery"],
+        variant: "failure-domain-ladder-v1",
+        caption:
+          "Choose redundancy across the failure domain you actually need to survive."
+      }
+    ]
+  },
+
+
   "D5.4": {
     version: 1,
     blocks: [
@@ -1141,6 +1242,10 @@ export function validateLessonContent(
         block.variant !== "reliability-patterns-v1" &&
         block.variant !== "observability-control-v1" &&
         block.variant !== "disaster-recovery-system-v1" &&
+        block.variant !== "capacity-system-v1" &&
+        block.variant !== "queue-backpressure-v1" &&
+        block.variant !== "replication-tradeoff-v1" &&
+        block.variant !== "failure-domain-ladder-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
