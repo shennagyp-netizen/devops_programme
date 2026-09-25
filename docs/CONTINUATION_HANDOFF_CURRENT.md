@@ -1880,8 +1880,6 @@ Merged PR #43:
 Merged PR #44:
 - D1.3 -> `service-permission-model-v1`: Process -> Identity -> Resource -> Service -> Logs.
 - Merge commit: `de0a4893f272640f2d02b54dd45ecc397acc6bf2`.
-- Final PR #44 gate passed **347 tests**, all programme contracts, TypeScript and the Next.js production build.
-- Red-team caught a duplicate D1.3 illustration declaration; it was removed without weakening tests.
 
 Merged PR #45:
 - D1.4 -> `network-operating-model-v1`: Interface -> Link -> IP -> Route -> Evidence.
@@ -1894,7 +1892,6 @@ Merged PR #46:
 Merged PR #47:
 - D1.6 -> `routing-boundary-v1`: Destination -> Route -> Next hop -> Boundary -> Evidence.
 - Merge commit: `417cf8ec4ce899623f705708e839214591ac1acb`.
-- Final PR #47 gate passed **369 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #48:
 - D2.1 -> `transport-contract-v1`: Endpoint -> Port -> Transport -> Delivery -> Evidence.
@@ -1904,7 +1901,6 @@ Merged PR #49:
 - D2.2 -> `dns-resolution-v1`: Name -> Resolver -> Cache -> Authority -> Freshness.
 - Merge commit: `79dd956303907480c20091debfcff2f0500661a8`.
 - Final PR #49 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
-- Red-team caught a missing DNS variant registration and one spoken-English complexity issue; both were corrected.
 
 Merged PR #50:
 - D2.3 -> `http-exchange-v1`: Request -> Headers -> Route -> Response -> Evidence.
@@ -1919,24 +1915,20 @@ Merged PR #51:
 Merged PR #52:
 - D2.5 -> `container-execution-v1`: Image -> Container -> Process -> Namespaces -> Host Kernel.
 - Merge commit: `ffb17b61597e7a8b1e25139bcd634fba0719523c`.
-- Final PR #52 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 
 Merged PR #77:
 - D2.6 -> `docker-network-storage-v1`: Service -> Network -> Name -> Port -> Volume.
 - Merge commit: `cfa8718b193591be1a86770a43fe455b59b2bb7b`.
-- D2.6 teaches internal Docker service discovery, internal service ports versus published host ports, and volume-backed persistence as separate boundaries.
-- The initial PR #71 became stale after `main` advanced; it was closed. The validated content was carried onto current `main` in PR #77 without deleting newer Day-2 content.
-- Final refreshed PR #77 gate passed all programme contracts, full unit/integration tests, TypeScript and the Next.js production build.
-- Next content boundary: **D2.7 — Break Docker**.
+- Refreshed PR #77 gate passed all programme contracts, full unit/integration tests, TypeScript and the Next.js production build.
+- The stale predecessor PR #71 was closed; newer Day-2 content was preserved when the validated D2.6 slice was rebased onto current main.
 
-
-Active PR #54 scope:
-- D2.7 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `docker-failure-loop-v1`.
-- Teaching model: Baseline -> Change -> Symptom -> Evidence -> Recovery.
-- The rewritten script turns Docker failure into a controlled experiment across hostname, published port, configuration, permissions, readiness and resource failures.
-- Every experiment requires one change, a prediction, evidence, restoration and recovery proof.
-- TDD/full-programme gate is required before merge.
+Merged PR #78:
+- D2.7 -> `docker-failure-loop-v1`: Baseline -> Change -> Symptom -> Evidence -> Recovery.
+- Merge commit: `0d0c490b5a7f21f49f6d6ba25c763672cc5cd8ab`.
+- D2.7 is the Docker incident-drill capstone: known-good baseline, single controlled change, prediction, evidence at the correct boundary, restoration and real user-path proof.
+- Final PR #78 workflow passed the full programme gate on the merged head before merge.
+- **Day 2 Docker/TCP/DNS/HTTP/TLS block is now gold-standard through D2.7.**
+- Next content boundary: inspect the next lesson after D2.7 in the current 53-lesson programme source.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
