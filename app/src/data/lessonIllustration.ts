@@ -444,35 +444,6 @@ const SERVICE_PERMISSION_MODEL_VARIANT: LessonIllustrationModelV1 = {
 };
 
 
-const SERVICE_PERMISSION_MODEL_VARIANT: LessonIllustrationModelV1 = {
-  version: 1,
-  variant: "service-permission-model-v1",
-  title: "The service execution context",
-  stages: [
-    { id: "process", label: "Process", detail: "The application is running as a concrete process with a PID, parent and execution state." },
-    { id: "identity", label: "Identity", detail: "The process runs as a user and groups that participate in resource authorization." },
-    { id: "resource", label: "Resource", detail: "Files, directories, sockets, ports, credentials and other resources have access rules." },
-    { id: "service", label: "Service", detail: "A service manager or supervisor defines startup, environment, working directory and restart behavior." },
-    { id: "logs", label: "Logs", detail: "Lifecycle and application logs provide time-stamped evidence that must be correlated with process and resource state." }
-  ],
-  foundation: {
-    label: "The running process has an execution context",
-    detail: "The same application binary can behave differently when user identity, groups, environment, working directory, resources or supervision change."
-  },
-  callouts: [
-    { id: "user-group", label: "User + groups", detail: "A process's identity affects what resources it can access." },
-    { id: "permissions", label: "Permissions", detail: "Access can fail because a file, directory, socket or other resource denies the process's identity." },
-    { id: "environment", label: "Environment", detail: "PATH, configuration, credentials and working directory can differ between a shell and a managed service." },
-    { id: "lifecycle", label: "Lifecycle", detail: "A service manager may start, stop, restart and supervise the process under a defined execution context." }
-  ],
-  failureChecks: [
-    { id: "process-context", label: "1. Process context", detail: "Which user, groups, parent, environment and working directory does the process actually have?" },
-    { id: "resource-access", label: "2. Resource access", detail: "Which exact file, directory, socket, credential or other resource is failing, and why?" },
-    { id: "service-startup", label: "3. Service lifecycle", detail: "Who starts the process, with what context, and what happens when it exits?" },
-    { id: "log-evidence", label: "4. Log evidence", detail: "Which timestamped error or lifecycle event changes the next diagnostic decision?" }
-  ]
-};
-
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -617,7 +588,6 @@ export function validateLessonIllustrationModel(
     model.variant !== "process-diagnosis-v1" &&
     model.variant !== "linux-operating-model-v1" &&
     model.variant !== "terminal-composition-v1" &&
-    model.variant !== "service-permission-model-v1" &&
     model.variant !== "service-permission-model-v1"
   ) {
     failures.push("illustration model variant is invalid");
