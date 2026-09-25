@@ -76,6 +76,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D2.2": {
+    version: 1,
+    blocks: [
+      {
+        id: "d2-2-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "DNS is a distributed naming system. Resolver choice, caching, authoritative data, record type and TTL all affect what answer a client sees."
+      },
+      {
+        id: "d2-2-dns",
+        type: "illustration",
+        heading: "The DNS answer path",
+        alt: "A DNS name is queried through a resolver that may use cached data or ask authoritative servers, with record type and TTL shaping the answer",
+        bindingId: "D2.2:d2-2-dns",
+        nodes: ["Name", "Resolver", "Cache", "Authority", "Freshness"],
+        variant: "dns-resolution-v1",
+        caption:
+          "Trace the answer from the client's resolver to authoritative data, then account for caching and freshness."
+      }
+    ]
+  },
+
+
   "D2.1": {
     version: 1,
     blocks: [
@@ -576,6 +601,7 @@ export function validateLessonContent(
         block.variant !== "network-operating-model-v1" &&
         block.variant !== "cidr-boundary-v1" &&
         block.variant !== "routing-boundary-v1" &&
+        block.variant !== "dns-resolution-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
