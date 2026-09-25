@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models Kubernetes failure diagnosis as baseline, fault, symptom, evidence and recovery", () => {
+    const model = getLessonIllustrationModel({
+      id: "d3-5-kubernetes-failure",
+      type: "illustration",
+      heading: "The Kubernetes failure loop",
+      alt: "A known-good Kubernetes workload is changed at one boundary, a symptom appears, evidence narrows the cause, and the workload is recovered",
+      bindingId: "D3.5:d3-5-kubernetes-failure",
+      nodes: ["Baseline", "Fault", "Symptom", "Evidence", "Recovery"],
+      variant: "kubernetes-failure-loop-v1"
+    });
+
+    expect(model.variant).toBe("kubernetes-failure-loop-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "baseline",
+      "fault",
+      "symptom",
+      "evidence",
+      "recovery"
+    ]);
+    expect(model.foundation.label).toBe("A Kubernetes status is a clue, not the diagnosis");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "events",
+      "describe",
+      "logs",
+      "health"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "hypothesis",
+      "boundary",
+      "evidence-sequence",
+      "recovery-proof"
+    ]);
+  });
+
   it("models Kubernetes health and scaling as startup, readiness, liveness, capacity and rollout", () => {
     const model = getLessonIllustrationModel({
       id: "d3-4-kubernetes-health-scaling",
