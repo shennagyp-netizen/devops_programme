@@ -952,6 +952,8 @@ export function validateLessonContent(
         block.variant !== "kubernetes-health-scaling-v1" &&
         block.variant !== "kubernetes-failure-loop-v1" &&
         block.variant !== "git-production-workflow-v1" &&
+        block.variant !== "scaling-control-loop-v1" &&
+        block.variant !== "database-scale-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
