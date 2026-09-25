@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   animationStateAt,
-  animationTimelineAt,
-  type AnimationTimedCueV1
+  animationTimelineAt
 } from "../../src/animations/runtime.ts";
 
 const definition = {
