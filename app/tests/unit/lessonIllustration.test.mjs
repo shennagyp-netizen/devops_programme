@@ -59,6 +59,40 @@ describe("lesson illustration teaching model", () => {
 
 
 
+  it("models process diagnosis from symptom to process, resource, dependency and proof", () => {
+    const model = getLessonIllustrationModel({
+      id: "b1-1-process-diagnosis",
+      type: "illustration",
+      heading: "From symptom to process evidence",
+      alt: "A slow application symptom is narrowed to a process, resource or dependency and then verified with evidence",
+      bindingId: "B1.1:b1-1-process-diagnosis",
+      nodes: ["Symptom", "Process", "Resource", "Dependency", "Proof"],
+      variant: "process-diagnosis-v1"
+    });
+
+    expect(model.variant).toBe("process-diagnosis-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "symptom",
+      "process",
+      "resource",
+      "dependency",
+      "proof"
+    ]);
+    expect(model.foundation.label).toBe("A process is code running with state and resources");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "ps",
+      "open-endpoints",
+      "cpu-trap",
+      "state"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "scope-symptom",
+      "process-identity",
+      "resource-or-wait",
+      "evidence-proof"
+    ]);
+  });
+
   it("models an incident as impact, scope, evidence, mitigation, recovery and learning", () => {
     const model = getLessonIllustrationModel({
       id: "b3-2-incident",
