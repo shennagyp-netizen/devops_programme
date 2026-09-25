@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #62, commit `049d6ddeb8b3f7ec41eef59d4a88292f288de0dc` (D3.5 Kubernetes failure-loop script + illustration quality slice).
+**Latest main architecture/content merge:** PR #78, commit `0d0c490b5a7f21f49f6d6ba25c763672cc5cd8ab` (D2.7 controlled Docker failure-loop script + illustration quality slice).
+**Active content-quality branch:** none. PR #78 has merged to `main`.
 
-**Active content-quality branch:** none. PR #55 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1854,7 +1854,7 @@ Merged PR #37:
 
 Merged PR #38:
 - B2.3 -> `backup-recovery-v1`: Backup -> Restore -> Compatibility -> Verify -> Recover.
-- Merge commit: `55f43081f3aae067c66ae29e3e104da68e4d7a8e`.
+- Merge commit: `55f43081f3aae067c66ae29e3e104da68e4d7a8`.
 
 Merged PR #39:
 - B3.1 -> `queue-state-v1`: Producer -> Queue -> Consumer -> Outcome.
@@ -1867,7 +1867,7 @@ Merged PR #40:
 Merged PR #41:
 - B1.1 -> `process-diagnosis-v1`: Symptom -> Process -> Resource -> Dependency -> Proof.
 - Merge commit: `b8e8456d19be162c64850bdaa01f319101153885`.
-- All 10 Beginner lessons now meet the gold-standard script+illustration contract.
+- All 10 Beginner lessons meet the gold-standard script+illustration contract.
 
 Merged PR #42:
 - D1.1 -> `linux-operating-model-v1`: Application -> Process -> Kernel -> Resources -> Evidence.
@@ -1892,6 +1892,7 @@ Merged PR #46:
 Merged PR #47:
 - D1.6 -> `routing-boundary-v1`: Destination -> Route -> Next hop -> Boundary -> Evidence.
 - Merge commit: `417cf8ec4ce899623f705708e839214591ac1acb`.
+- Final PR #47 gate passed **369 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #48:
 - D2.1 -> `transport-contract-v1`: Endpoint -> Port -> Transport -> Delivery -> Evidence.
@@ -1901,140 +1902,35 @@ Merged PR #49:
 - D2.2 -> `dns-resolution-v1`: Name -> Resolver -> Cache -> Authority -> Freshness.
 - Merge commit: `79dd956303907480c20091debfcff2f0500661a8`.
 - Final PR #49 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
-- Red-team caught and corrected the DNS variant registration and a spoken-English complexity issue.
 
 Merged PR #50:
 - D2.3 -> `http-exchange-v1`: Request -> Headers -> Route -> Response -> Evidence.
 - Merge commit: `b2932a7ee3ebe61e206f1f49f9da5943106a2727`.
+- Final PR #50 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #51:
 - D2.4 -> `tls-trust-v1`: Client -> Certificate -> Handshake -> Secure Session -> Evidence.
 - Merge commit: `faee8ec98812592b20c7b854bc506c47f86247e0`.
+- Final PR #51 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #52:
 - D2.5 -> `container-execution-v1`: Image -> Container -> Process -> Namespaces -> Host Kernel.
 - Merge commit: `ffb17b61597e7a8b1e25139bcd634fba0719523c`.
+- Final PR #52 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 
-Merged PR #77:
+Merged PR #53:
 - D2.6 -> `docker-network-storage-v1`: Service -> Network -> Name -> Port -> Volume.
-- Merge commit: `cfa8718b193591be1a86770a43fe455b59b2bb7b`.
+- Merge commit: `d1884d9443a7e2c2f8eff85822307604ea5d865d`.
+- Final PR #53 head status was **Vercel success**; the earlier rate-limit failure was infrastructure-only and was cleared on the successful validation commit.
+- D2.6 separates internal service discovery, internal service ports, published host ports and persistent volumes, then uses controlled failures to distinguish their symptoms.
 
-Merged PR #78:
+Merged PR #54 / #78:
 - D2.7 -> `docker-failure-loop-v1`: Baseline -> Change -> Symptom -> Evidence -> Recovery.
-- Merge commit: `0d0c490b5a7f21f49f6d6ba25c763672cc5cd8ab`.
-- Final PR #78 gate passed the full programme workflow.
-
-Merged PR #79:
-- D3.1 -> `kubernetes-reconciliation-v1`: Desired State -> Controller -> Observe -> Act -> Converge.
-- Merge commit: `cd7497c5bfa2f164f684eb3d46835000f3ac962a`.
-- Final PR #79 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-
-Merged PR #80:
-- D3.2 -> `kubernetes-service-path-v1`: Service -> Selector -> Endpoints -> Pod -> Path.
-- Merge commit: `a0e372c77ca8c0706a22b4accf49f918805adebc`.
-- Final refreshed PR #80 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- D3.2 teaches stable Service identity, selector matching, endpoint state, Pod readiness and controlled selector failure/recovery.
-
-Merged PR #82:
-- D3.3 -> `kubernetes-config-storage-v1`: Config -> Secret -> Mount -> Pod -> Persistence.
-- Merge commit: `2a7c58e9f8ab25264744bd9d5de62286bcc7284c`.
-- Final PR #82 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- D3.3 separates non-secret configuration, secret handling, application consumption and persistent storage lifecycle.
-
-Merged PR #83:
-- D3.4 -> `kubernetes-health-scaling-v1`: Startup -> Readiness -> Liveness -> Capacity -> Rollout.
-- Merge commit: `3514e356dbda8e1260e788d1e82c4864d7af009f`.
-- Final PR #83 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- D3.4 was ported from the older parallel branch onto current `main` without replaying stale predecessor history.
-
-Merged PR #84:
-- D3.5 -> `kubernetes-failure-loop-v1`: Baseline -> Fault -> Symptom -> Evidence -> Recovery.
-- Merge commit: `e9858af68efe906a3e6c20c01e71e3b8c067c4b2`.
-- Final PR #84 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- D3.5 now turns CrashLoopBackOff, ImagePullBackOff, OOMKilled, readiness failure and selector failure into one controlled diagnosis/recovery loop.
-
-Merged PR #86:
-- D4.1 -> `git-production-workflow-v1`: Change -> Review -> Commit -> Release -> Recovery.
-- Merge commit: `0b39d885b8623d8e396da986b1b282e1b593f774`.
-- The existing D4.1 production-workflow script now has a semantic visual and dedicated TDD binding on the post-D3.5 main lineage.
-- Final D4.1 gate passed all programme contracts, full unit/integration tests, TypeScript and the Next.js production build.
-- PR #85 was closed as stale after D3.5 changed the main lineage; D4.1 was safely re-ported as PR #86.
-- Next content boundary: **D4.2 — Continuous Integration and Quality Gates**.
-
-
-Current merge gate blocker — PR #88 / D2.6:
-- D2.6 is authored, tested at the source-contract level, and PR #88 is ready for review.
-- GitHub combined status for head `517e9f5b77913ca1f61217700ccb45efbaec02db` is **Vercel: failure** with target `build-rate-limit`.
-- This is an external deployment-rate limitation, not a reported TypeScript/test failure.
-- Green-only main merge rule: **do not merge PR #88 while the Vercel gate is red**.
-- Independent container-side GitHub access is unavailable in this environment, so a fresh local production build cannot be claimed.
-- D3.1 already has the same strong semantic script+illustration structure on main and is not being rewritten merely to create churn.
-- Content audit found 29 lessons with explicit authored semantic illustration variants currently registered in `lessonContent.ts`; further work should target real gaps after the D2.6 gate recovers.
-
-
-Gold-standard coverage audit — 2026-09-25:
-- Explicit semantic illustration variants currently cover **29 lessons** in `app/src/data/lessonContent.ts`.
-- Covered: B1/B2/B3, D1.1-D1.6, D2.1-D2.7, D3.1-D3.5 and D4.1.
-- Identified next visual/script quality gaps: **D4.2-D4.6 and D5.1-D5.8**.
-- These are now the next quality targets unless a higher-priority red-team finding appears.
-
-
-Merged PR #66:
-- D4.2 -> `cicd-control-path-v1`: Source -> Validate -> Artifact -> Promote -> Verify.
-- Merge commit: `dcc336d2362def4a804e021bf8b1b6af7d59dfcd`.
-- GitHub Actions run **36151007940** passed successfully.
-- The recorded Vercel status on the branch head still shows the external `build-rate-limit` limitation; this is not a reported application/test failure.
-- D4.2 now makes CI/CD a risk-control and evidence path rather than a YAML exercise.
-- Next content boundary: **D4.3 — GitHub Actions**.
-
-
-Merged PR #67:
-- D4.3 -> `github-actions-execution-v1`: Workflow -> Job -> Runner -> Steps -> Artifact.
-- Merge commit: `0376a9fa4406f6afb9d8baed1184c09c6bb0a2d2`.
-- GitHub Actions run **36151547242** passed successfully.
-- D4.3 now treats jobs as execution boundaries, runner state as part of evidence, logs as the primary failure evidence, cache and artifact as different concepts, and secrets as a protected boundary.
-- Controlled failure makes one step fail, diagnoses it from step logs, restores it, and proves workflow recovery.
-- Next content boundary: **D4.4 — Infrastructure as Code**.
-
-
-Merged PR #68:
-- D4.4 -> `iac-control-loop-v1`: Intent -> Plan -> Apply -> State -> Drift.
-- Merge commit: `d8d8d029334279ba4a9c86f8f40a000a0cc06127`.
-- D4.4 teaches infrastructure intent, plan evidence, provider reality, state as coordination data, and drift detection.
-- Controlled lab makes one declared or external change, predicts the plan, detects drift, restores state and proves the clean plan.
-- Next content boundary: **D4.5 — Terraform Lifecycle**.
-
-
-Merged PR #69:
-- D4.5 -> `terraform-lifecycle-v1`: Configuration -> Init -> Plan -> Apply -> Observe.
-- Merge commit: `efc16df80ff091206717f9ad9bbd6a28b5e1a699`.
-- GitHub Actions run **36152596669** passed successfully.
-- D4.5 now treats plan as a safety checkpoint, state locking as a coordination boundary, destroy as a high-impact lifecycle operation, and post-apply observation as required proof.
-- Next content boundary: **D4.6 — Cloud Primitives**.
-
-
-Merged PR #70:
-- D4.6 -> `cloud-primitives-v1`: Workload -> Compute -> Network -> State -> Identity -> Data Services.
-- Merge commit: `404638fd337cefd6de3e48d390f9d6fd47bedd84`.
-- GitHub Actions run **36153116757** passed successfully.
-- D4.6 is provider-neutral and teaches managed services, dependency graphs, identity, durable state and cost as architecture boundaries.
-- Next content boundary: **D5.1 — Scaling**.
-
-
-Merged PR #55:
-- D5.1 -> `scaling-control-loop-v1`: Workload -> Capacity -> Distribution -> Shared State -> Bottleneck -> Evidence.
-- Merge commit: `a66a3abb9be8db6b867f85d1430b4dba35934af1`.
-- GitHub Actions run **36145404285** passed successfully.
-- D5.1 makes vertical/horizontal scaling, statelessness, shared state, queue/cache behavior, bottleneck movement and user-path proof one mechanism.
-- Next content boundary: **D5.2 — Databases at Scale**.
-
-
-Current content gate — PR #89 / D5.1 + D5.2:
-- Final GitHub Actions run **36168370580** is green across all programme contracts, **365 tests**, TypeScript and the Next.js production build.
-- The combined commit status still reports **Vercel: failure / build-rate-limit**.
-- Green-only main merge rule: **PR #89 is not being merged while the Vercel status is red**.
-- D5.1 and D5.2 implementation is otherwise complete and ready.
-- Next stacked content boundary: **D5.3 — Distributed Systems**.
+- Later merge commit: `0d0c490b5a7f21f49f6d6ba25c763672cc5cd8ab`.
+- Final merged commit status is **Vercel success**.
+- D2.7 turns Docker failure into a controlled incident drill: one change, one prediction, evidence, restoration and real recovery proof.
+- The later PR #78 is the authoritative merge record because it contains the latest branch head.
+- Next content boundary: **D2.8**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
