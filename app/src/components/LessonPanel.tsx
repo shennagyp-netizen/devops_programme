@@ -21,6 +21,12 @@ import { MotionIllustration } from "./MotionIllustration";
 import { LessonContentFeed } from "./LessonContentFeed";
 import { PodcastCoach } from "./PodcastCoach";
 import { AssessmentPanel } from "./AssessmentPanel";
+import { RemediationPanel } from "./RemediationPanel";
+import {
+  buildRemediationPlan,
+  classifyHandsOnFailure,
+  type RemediationFailure
+} from "../data/masteryRemediation";
 
 type Mode = "learn" | "do" | "recall" | "design" | "assessment";
 
@@ -51,6 +57,9 @@ export function LessonPanel({
   const [handsOnEvidence, setHandsOnEvidence] = useState<Record<string, string>>({});
   const [exerciseRecorded, setExerciseRecorded] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
+  const [remediationFailure, setRemediationFailure] = useState<RemediationFailure | null>(null);
+  const remediationKey = `devops-programme-remediation:${lesson.id}:${handsOnTask.id}`;
+  const [remediationAttempt, setRemediationAttempt] = useState(0);
   const [machineVerificationMessage, setMachineVerificationMessage] = useState("");
   const [localAgentAvailable, setLocalAgentAvailable] = useState(false);
   const [localAgentPlatform, setLocalAgentPlatform] = useState<string | null>(null);
@@ -69,6 +78,18 @@ export function LessonPanel({
   const command = commandForPlatform(lesson, platform);
   const handsOnTask: HandsOnTask = getHandsOnTask(lesson);
   const runtimeTask = runtimeTaskForLesson(lesson.id);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(remediationKey);
+      const parsed = stored ? (JSON.parse(stored) as { attempt?: number }) : {};
+      setRemediationAttempt(typeof parsed.attempt === "number" ? parsed.attempt : 0);
+      setRemediationFailure(null);
+    } catch {
+      setRemediationAttempt(0);
+      setRemediationFailure(null);
+    }
+  }, [remediationKey]);
 
   useEffect(() => {
     try {
@@ -512,7 +533,26 @@ export function LessonPanel({
                 );
                 if (!validation.valid) {
                   setExerciseRecorded(false);
-                  setValidationMessage(validation.failures.join(" "));
+                  const failure = classifyHandsOnFailure(validation.failures, handsOnTask);
+                  const nextAttempt = remediationAttempt + 1;
+                  setRemediationAttempt(nextAttempt);
+                  setRemediationFailure(failure);
+                  setValidationMessage(
+                    "The assignment was not accepted. Complete the targeted remediation before retrying the original assignment."
+                  );
+                  try {
+                    localStorage.setItem(
+                      remediationKey,
+                      JSON.stringify({
+                        attempt: nextAttempt,
+                        failureClass: failure.failureClass,
+                        failedFields: failure.failedFields,
+                        savedAt: new Date().toISOString()
+                      })
+                    );
+                  } catch {
+                    // Best-effort local mastery telemetry in the current MVP.
+                  }
                   return;
                 }
 
@@ -547,6 +587,7 @@ export function LessonPanel({
                 });
 
                 setExerciseRecorded(true);
+                setRemediationFailure(null);
                 setValidationMessage("Evidence structure validated and saved locally.");
                 onEvidenceRecorded?.();
               }}
@@ -556,6 +597,16 @@ export function LessonPanel({
 
             {validationMessage ? (
               <p className="range">{validationMessage}</p>
+            ) : null}
+
+            {remediationFailure ? (
+              <RemediationPanel
+                plan={buildRemediationPlan(lesson, handsOnTask, remediationFailure)}
+                attemptNumber={remediationAttempt}
+                onRetry={() => {
+                  setValidationMessage("Retry the original assignment now. The same evidence contract still applies.");
+                }}
+              />
             ) : null}
 
             {exerciseRecorded ? (
