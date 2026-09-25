@@ -465,6 +465,41 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models distributed systems as request, local state, network, remote state, uncertainty and evidence", () => {
+    const model = getLessonIllustrationModel({
+      id: "d5-3-distributed-systems",
+      type: "illustration",
+      heading: "The partial-failure model",
+      alt: "A distributed request crosses a network between separate states, and the caller must reason about incomplete information and evidence",
+      bindingId: "D5.3:d5-3-distributed-systems",
+      nodes: ["Request", "Local State", "Network", "Remote State", "Uncertainty", "Evidence"],
+      variant: "distributed-partial-failure-v1"
+    });
+
+    expect(model.variant).toBe("distributed-partial-failure-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "request",
+      "local-state",
+      "network",
+      "remote-state",
+      "uncertainty",
+      "evidence"
+    ]);
+    expect(model.foundation.label).toBe("A timeout is an observation, not proof of remote failure");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "partial-failure",
+      "timeout-ambiguity",
+      "idempotency",
+      "consistency"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "operation-outcome",
+      "retry-safety",
+      "replica-state",
+      "failure-domain"
+    ]);
+  });
+
   it("models database scaling as workload, query, index, copies, partitions and evidence", () => {
     const model = getLessonIllustrationModel({
       id: "d5-2-database-scale",
