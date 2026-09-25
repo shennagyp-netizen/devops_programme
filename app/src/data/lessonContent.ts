@@ -44,7 +44,8 @@ export type LessonIllustrationVariantV1 =
   | "scaling-control-loop-v1"
   | "database-scale-v1"
   | "distributed-failure-v1"
-  | "reliability-control-v1";
+  | "reliability-control-v1"
+  | "observability-decision-v1";
 
 export type LessonContentBlock =
   | {
@@ -97,6 +98,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D5.5": {
+    version: 1,
+    blocks: [
+      {
+        id: "d5-5-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Observability turns system behavior into evidence for operational decisions. Logs, metrics, traces, SLI, SLO and error budgets are different tools in the same control loop."
+      },
+      {
+        id: "d5-5-observability",
+        type: "illustration",
+        heading: "The observability decision path",
+        alt: "An operational question selects signals that are correlated into evidence, measured against an objective, turned into a decision and verified against user behavior",
+        bindingId: "D5.5:d5-5-observability",
+        nodes: ["Question", "Signal", "Correlation", "Objective", "Decision", "User Proof"],
+        variant: "observability-decision-v1",
+        caption:
+          "Design instrumentation around questions and objectives, not dashboard quantity."
+      }
+    ]
+  },
+
+
   "D5.4": {
     version: 1,
     blocks: [
@@ -1143,6 +1169,7 @@ export function validateLessonContent(
         block.variant !== "database-scale-v1" &&
         block.variant !== "distributed-failure-v1" &&
         block.variant !== "reliability-control-v1" &&
+        block.variant !== "observability-decision-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
