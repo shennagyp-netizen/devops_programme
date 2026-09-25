@@ -23,6 +23,14 @@ export type LessonContentBlock =
     }
   | {
       id: string;
+      type: "interactive-illustration";
+      heading: string;
+      alt: string;
+      bindingId: string;
+      caption?: string;
+    }
+  | {
+      id: string;
       type: "video";
       heading: string;
       status: "draft" | "published";
