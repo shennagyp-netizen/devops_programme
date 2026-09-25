@@ -23,9 +23,7 @@ export type LessonIllustrationVariantV1 =
   | "http-exchange-v1"
   | "tls-trust-v1"
   | "container-execution-v1"
-  | "docker-network-storage-v1"
-  | "docker-failure-loop-v1"
-  | "kubernetes-reconciliation-v1";
+  | "docker-network-storage-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -724,66 +722,6 @@ const DOCKER_NETWORK_STORAGE_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
-
-const DOCKER_FAILURE_LOOP_VARIANT: LessonIllustrationModelV1 = {
-  version: 1,
-  variant: "docker-failure-loop-v1",
-  title: "The controlled Docker failure loop",
-  stages: [
-    { id: "baseline", label: "Baseline", detail: "Start from a known-good Docker stack and record the evidence that proves it works." },
-    { id: "change", label: "Change", detail: "Change exactly one variable or boundary so the experiment has a clear cause." },
-    { id: "symptom", label: "Symptom", detail: "Predict the visible failure before observing it." },
-    { id: "evidence", label: "Evidence", detail: "Inspect the process, logs, network, configuration or storage state that can distinguish the leading hypotheses." },
-    { id: "recovery", label: "Recovery", detail: "Restore the known-good state and prove that the original behavior returns." }
-  ],
-  foundation: {
-    label: "Change one boundary, predict one symptom, collect evidence, then recover",
-    detail: "A controlled failure is an experiment: one change, one prediction, one observation, and one recovery proof."
-  },
-  callouts: [
-    { id: "single-change", label: "One change", detail: "Do not change several variables at once; otherwise the symptom cannot be tied to one cause." },
-    { id: "prediction", label: "Prediction", detail: "State what you expect to see before running the failing experiment." },
-    { id: "evidence", label: "Evidence", detail: "Use logs, process state, network state, configuration and storage state to separate hypotheses." },
-    { id: "recovery-proof", label: "Recovery proof", detail: "Restoring the setting is not enough; verify that the known-good user path works again." }
-  ],
-  failureChecks: [
-    { id: "process", label: "1. Process", detail: "Is the main container process running, restarting or exiting?" },
-    { id: "network", label: "2. Network", detail: "Can the expected service name, internal port and published path still reach the right process?" },
-    { id: "configuration", label: "3. Configuration", detail: "Did one environment variable, command or mounted file change the behavior?" },
-    { id: "storage", label: "4. Storage", detail: "Does the expected volume exist, contain the right data and attach to the new container?" }
-  ]
-};
-
-
-const KUBERNETES_RECONCILIATION_VARIANT: LessonIllustrationModelV1 = {
-  version: 1,
-  variant: "kubernetes-reconciliation-v1",
-  title: "The Kubernetes reconciliation loop",
-  stages: [
-    { id: "desired-state", label: "Desired State", detail: "A Kubernetes object declares the state the workload should have." },
-    { id: "controller", label: "Controller", detail: "A controller owns a reconciliation loop that compares desired and actual state and decides what action is needed." },
-    { id: "observe", label: "Observe", detail: "The system observes current objects, health, scheduling state and other facts about actual state." },
-    { id: "act", label: "Act", detail: "The controller creates, updates or removes resources to reduce the difference between desired and actual state." },
-    { id: "converge", label: "Converge", detail: "Repeated observation and action move the system toward the desired state when that state is feasible." }
-  ],
-  foundation: {
-    label: "Kubernetes is a reconciliation system",
-    detail: "YAML describes desired state, but controllers continuously observe and act so the real system can converge toward that state."
-  },
-  callouts: [
-    { id: "desired-state", label: "Desired state", detail: "The specification says what should exist, not how to perform every individual repair." },
-    { id: "controller", label: "Controller", detail: "Controllers implement control loops that respond to differences between desired and actual state." },
-    { id: "actual-state", label: "Actual state", detail: "Running pods, scheduling, image state and health checks are part of the observed system." },
-    { id: "feasibility", label: "Feasibility", detail: "Reconciliation can keep trying while the desired state remains impossible because of an image, resource, configuration or scheduling problem." }
-  ],
-  failureChecks: [
-    { id: "specification", label: "1. Specification", detail: "Is the desired state actually what you intended to declare?" },
-    { id: "controller-action", label: "2. Controller action", detail: "What controller is responsible, and what action did it take after observing the difference?" },
-    { id: "replacement-health", label: "3. Replacement health", detail: "Did the new or updated resource become scheduled, running and ready?" },
-    { id: "feasibility", label: "4. Feasibility", detail: "If the controller keeps acting, what evidence shows the desired state itself is currently impossible to satisfy?" }
-  ]
-};
-
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -963,20 +901,6 @@ export function getLessonIllustrationModel(
     };
   }
 
-  if (block.variant === "docker-failure-loop-v1") {
-    return {
-      ...DOCKER_FAILURE_LOOP_VARIANT,
-      title: block.heading
-    };
-  }
-
-  if (block.variant === "kubernetes-reconciliation-v1") {
-    return {
-      ...KUBERNETES_RECONCILIATION_VARIANT,
-      title: block.heading
-    };
-  }
-
   return genericModel(block);
 }
 
@@ -1014,9 +938,7 @@ export function validateLessonIllustrationModel(
     model.variant !== "http-exchange-v1" &&
     model.variant !== "tls-trust-v1" &&
     model.variant !== "container-execution-v1" &&
-    model.variant !== "docker-network-storage-v1" &&
-    model.variant !== "docker-failure-loop-v1" &&
-    model.variant !== "kubernetes-reconciliation-v1"
+    model.variant !== "docker-network-storage-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
