@@ -1955,5 +1955,15 @@ Merged PR #86:
 - D4.1 teaches branch/diff review, commit identity, release identity, repository-vs-runtime state and recovery/revert boundaries.
 - Next authored boundary: **D4.2 — CI/CD Mental Model**.
 
+
+Active PR #89 scope:
+- D2.6 authored visual/test contracts already exist on current `main`.
+- This branch restores the rewritten D2.6 script as the canonical podcast teaching unit.
+- Teaching model: Service -> Network -> Name -> Port -> Volume.
+- The script separates internal service discovery, internal service ports, published host ports and persistent data lifecycle.
+- Controlled failures isolate service-name resolution, published-port access and persistence across container recreation.
+- Vercel validation is required; GitHub Actions is currently not exposing a run for this branch.
+- TDD/content contracts remain authoritative: the D2.6 tests are already present on `main`.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
