@@ -1941,5 +1941,14 @@ Merged PR #60:
 - Final PR #60 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 - Next content boundary: **D3.4 — Kubernetes Health and Scaling**.
 
+
+Active PR D3.4 scope:
+- D3.4 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `kubernetes-health-scaling-v1`.
+- Teaching model: Startup -> Readiness -> Liveness -> Capacity -> Rollout.
+- The rewritten script treats health signals as different operational decisions and ties them to resource/capacity and rolling-update behavior.
+- Controlled failures cover startup delay, readiness failure and liveness/restart behavior, followed by recovery proof.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
