@@ -223,3 +223,77 @@ The next boundary is to author the first real interactive/animated curriculum bi
 This preserves the invariant:
 
 > **Curriculum determines teaching. Animation library provides reusable visual capabilities.**
+
+## 2026-09-25 CURRENT OVERRIDE — STANDALONE ANIMATION PLAYGROUND
+
+PR #22 adds a real user-facing standalone launch surface for the reusable animation library.
+
+Branch:
+- `feature/standalone-animation-playground-v1`
+
+Current branch head:
+- `7d9330dfb81ffdacb96440421c36038de87df9bf`
+
+Latest branch gate:
+- workflow run: `36089003221`
+- job: `full-programme-gate`
+- conclusion: success
+- 44 test files / 310 tests
+- programme contract checks passed
+- TypeScript typecheck passed
+- Next.js production build passed.
+
+This milestone closes the earlier distinction between “reusable/renderable” and “directly launchable”. The animation capability is now directly launchable through:
+
+- `/animations` — standalone capability gallery
+- `/animations/[animationId]` — standalone animation preview
+
+The standalone preview host owns only a local preview clock for Play/Pause/Restart/Seek. It does not move timing ownership into the reusable animation runtime.
+
+The separation is:
+
+Standalone preview host
+  -> local preview clock
+  -> AnimationStage
+  -> deterministic animation runtime
+  -> reusable animation definition
+
+Production lesson path remains:
+
+PodcastCoach actual audio clock
+  -> curriculum voice cue
+  -> illustration binding
+  -> animation event
+  -> deterministic animation runtime
+  -> AnimationStage
+
+The preview cue fixture in `app/src/animations/previewCues.ts` is development/demo material. It is not a production curriculum voice binding and must never replace actual PodcastCoach timing.
+
+Unknown animation IDs fail closed through `notFound()`. The standalone routes do not require Clerk auth, learner progress, lesson data or curriculum data.
+
+Added source:
+- `app/src/animations/preview.ts`
+- `app/src/animations/previewCues.ts`
+- `app/src/components/AnimationPlayground.tsx`
+- `app/src/app/animations/page.tsx`
+- `app/src/app/animations/[animationId]/page.tsx`
+
+Added tests:
+- `app/tests/unit/animationPreview.integration.test.mjs`
+- `app/tests/unit/animationPreview.redteam.test.mjs`
+- `app/tests/integration/standalone-animation-pages.integration.test.mjs`
+
+Browser visual validation is still **Not yet validated** because no Vercel team/project is exposed through the current connected account and the container cannot reach GitHub directly. Contract/CI validation does not substitute for browser visual evidence.
+
+### Next implementation boundary
+
+1. Merge PR #22 only with the green branch gate.
+2. Confirm the post-merge main gate on the exact merge commit.
+3. Perform browser visual validation when an accessible preview exists.
+4. Author the first real interactive/animated curriculum binding.
+5. Connect that binding to the existing PodcastCoach actual audio clock.
+6. Only then expand the reusable scenario catalogue.
+
+The invariant remains:
+
+> **Curriculum determines teaching. Animation library provides reusable visual capabilities. The standalone playground is a host for inspection, not a second curriculum.**
