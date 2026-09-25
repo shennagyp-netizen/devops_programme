@@ -20,7 +20,8 @@ export type LessonIllustrationVariantV1 =
   | "linux-operating-model-v1"
   | "terminal-composition-v1"
   | "service-permission-model-v1"
-  | "network-operating-model-v1";
+  | "network-operating-model-v1"
+  | "cidr-boundary-v1";
 
 export type LessonContentBlock =
   | {
@@ -73,6 +74,30 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D1.5": {
+    version: 1,
+    blocks: [
+      {
+        id: "d1-5-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "CIDR is not a notation trick. It defines a network boundary that determines which addresses belong together, how traffic is routed, and how large a segment can be."
+      },
+      {
+        id: "d1-5-cidr-model",
+        type: "illustration",
+        heading: "The subnet boundary",
+        alt: "An IP address is split by a CIDR prefix into network and host space, producing a defined range that can be verified",
+        bindingId: "D1.5:d1-5-cidr-model",
+        nodes: ["Address", "Prefix", "Boundary", "Range", "Verify"],
+        variant: "cidr-boundary-v1",
+        caption:
+          "Reason from the boundary first, then calculate the usable range."
+      }
+    ]
+  },
+
   "D1.4": {
     version: 1,
     blocks: [
@@ -496,7 +521,8 @@ export function validateLessonContent(
         block.variant !== "linux-operating-model-v1" &&
         block.variant !== "terminal-composition-v1" &&
         block.variant !== "service-permission-model-v1" &&
-        block.variant !== "network-operating-model-v1"
+        block.variant !== "network-operating-model-v1" &&
+        block.variant !== "cidr-boundary-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }

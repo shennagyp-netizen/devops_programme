@@ -1254,76 +1254,219 @@ Speaker A: Run the lab, name the layer, and explain the evidence.
 
 EPISODE D1.5 — IP Addresses, Subnets and CIDR
 
+Speaker A: CIDR stops being mysterious when you treat it as a boundary.
 
+Speaker B: The slash tells me how much of the address belongs to the network.
 
-Speaker A: IP addressing gets easier when you stop treating CIDR as a decorative slash.
+Speaker A: Exactly.
 
-Speaker B: The slash has always looked like a fraction that escaped into networking.
+Speaker B: So the picture is Address -> Prefix -> Boundary -> Range -> Verify.
 
-Speaker A: It is a compact way to state how many leading bits define the network portion.
+Speaker A: Good. For IPv4, there are thirty-two address bits. The prefix length tells us how many leading bits define the network portion.
 
-Speaker A: Imagine a neighborhood. The street identifies a shared area; the house number identifies one home. A subnet is the neighborhood boundary.
+Speaker B: The remaining bits are host space.
 
-Speaker A: We will reason through 192.168.1.0/24, 192.168.1.0/26, and 10.0.0.0/16, calculating boundaries and understanding why segmentation matters.
+Speaker A: Right.
 
-Speaker A: Real-life example: a large hospital does not need every device in one undifferentiated network. Departments and sensitive systems may be separated to control communication.
+Speaker B: Prediction.
 
-Speaker A: Lab: calculate CIDR ranges manually before using a calculator, then compare with the machine.
-Speaker B: CIDR is the part where I usually remember a formula and then immediately forget why it exists.
+Speaker A: A /24 has more addresses in each block than a /26. True?
 
-Speaker A: Then don't start with the formula. Start with boundaries.
+Speaker B: True. /26 uses more bits for the network, leaving fewer host bits.
 
-Speaker B: Neighborhood again?
+Speaker A: Good.
 
-Speaker A: Neighborhood again. Suppose the whole street belongs to one network. You can subdivide it into smaller neighborhoods so traffic and ownership become easier to manage.
+Speaker B: So subnetting is really about changing the boundary.
 
-Speaker B: And /24 tells me how many bits define the network portion.
+Speaker A: Exactly.
 
-Speaker A: Right. For IPv4, there are thirty-two address bits. A /24 leaves eight bits for hosts inside that network. A /26 leaves six. Smaller host space, more specific subdivision.
+Speaker B: Take 192.168.1.0/24.
 
-Speaker B: So the slash is describing the boundary between network bits and host bits.
+Speaker A: Twenty-four network bits. Eight host bits.
 
-Speaker A: Exactly. That sentence is more important than memorizing a table.
+Speaker B: Two to the eight gives 256 addresses in the block.
 
-Speaker B: Let's do one. 192.168.1.0/26.
+Speaker A: Correct.
 
-Speaker A: Good. Sixty-four total addresses in that block. Now ask where the boundaries are.
+Speaker B: Now /26.
 
-Speaker B: Zero through sixty-three for the first block.
+Speaker A: Six host bits.
 
-Speaker A: Correct. Then sixty-four through one hundred twenty-seven, and so on.
+Speaker B: Two to the six gives 64 addresses per block.
 
-Speaker B: The usable-host story depends on context, too.
+Speaker A: Exactly.
 
-Speaker A: Yes. For ordinary IPv4 subnets, the network and broadcast addresses have traditional special meanings. But don't blindly apply old memorized rules to every environment; IPv6 and specialized designs differ.
+Speaker B: So the /24 can be divided into four /26 blocks.
 
-Speaker B: That's a nice warning.
+Speaker A: Good.
 
-Speaker A: Operations is full of them. A rule that was once useful becomes dangerous when it turns into a superstition.
+Speaker B: And the boundaries are .0, .64, .128 and .192.
+
+Speaker A: Exactly.
+
+Speaker B: That means 192.168.1.130/26 belongs to the .128 block.
+
+Speaker A: Correct.
+
+Speaker B: This is easier than memorizing subnet-mask tables.
+
+Speaker A: That is the goal. Derive the answer.
+
+Speaker B: So what is the failure mode?
+
+Speaker A: Picking an arbitrary endpoint that is not aligned with the prefix.
+
+Speaker B: Example: saying a /26 block starts at .64 and ends at .100.
+
+Speaker A: Exactly. The block size says where the next boundary must occur.
+
+Speaker B: So the prefix constrains the possible ranges.
+
+Speaker A: Yes.
+
+Speaker B: What about network and broadcast addresses?
+
+Speaker A: In ordinary IPv4 subnetting, those addresses have traditional special meanings, so the usual host-range calculation excludes them. But do not treat that as a universal law for every addressing design or protocol.
+
+Speaker B: So I keep the model, but I keep the context too.
+
+Speaker A: Exactly.
+
+Speaker B: Now why does segmentation matter to an engineer?
+
+Speaker A: Because a subnet is not only an address bucket. It can help define routing boundaries, security boundaries, fault domains and clearer ownership.
 
 Speaker B: Hospital example?
 
-Speaker A: Picture one hospital network with everything mixed together: reception computers, clinical devices, guest Wi-Fi, lab instruments, cameras. A compromise in one area can have a much larger blast radius. Segmentation creates boundaries where communication can be controlled.
+Speaker A: Put reception systems, clinical devices, guest Wi-Fi and lab equipment in one flat network. A problem in one area can have a much larger blast radius.
 
-Speaker B: So subnetting isn't only about conserving addresses.
+Speaker B: Separate subnets can make the boundaries explicit.
 
-Speaker A: Right. It can support routing design, security boundaries, fault isolation, and operational clarity.
+Speaker A: Yes. Then routing and access rules can control how those segments communicate.
 
-Speaker B: Prediction pause. If I move a machine into a different subnet but leave the gateway configuration inconsistent, what happens?
+Speaker B: Prediction.
 
-Speaker A: Don't answer with “it loses Internet.” Think in terms of which destinations are local, which require a router, and which next hop the host believes is reachable.
+Speaker A: Two machines have addresses 192.168.1.10 and 192.168.1.200. Same subnet under /24?
 
-Speaker B: So the failure might appear as “some addresses work, some don't.”
+Speaker B: Yes.
 
-Speaker A: Exactly. Partial reachability is useful evidence.
+Speaker A: Under /26?
 
-Speaker B: Mac lab?
+Speaker B: No. .10 is in the .0 block; .200 is in the .192 block.
 
-Speaker A: Calculate a few CIDR blocks by hand first. Write the first address and the next boundary. Only then use a calculator or operating-system tool to verify yourself. You want the machine to confirm your reasoning, not replace it.
+Speaker A: Good.
 
-Speaker B: That's uncomfortable.
+Speaker B: Same addresses, different boundary.
 
-Speaker A: Good. Comfort is not the learning objective.
+Speaker A: Exactly.
+
+Speaker B: And that changes which traffic is local versus routed.
+
+Speaker A: Good. That connection matters for the next lesson.
+
+Speaker B: Because D1.6 is routing.
+
+Speaker A: Right.
+
+Speaker B: So CIDR is already affecting route decisions.
+
+Speaker A: Yes.
+
+Speaker B: Let's make the evidence part explicit.
+
+Speaker A: A good subnet calculation should give you the network boundary, block size, address range, and a way to decide whether two addresses share the same subnet.
+
+Speaker B: Then I verify it with a calculator or system tool.
+
+Speaker A: Correct.
+
+Speaker B: But only after doing the reasoning myself.
+
+Speaker A: Exactly. The tool checks the model; it does not replace the model.
+
+Speaker B: Another prediction.
+
+Speaker A: We need four smaller networks from a /24. What should you think about before choosing a prefix?
+
+Speaker B: Required host count, number of segments, routing boundaries and growth headroom.
+
+Speaker A: Good.
+
+Speaker B: So /26 is a design result, not a favorite number.
+
+Speaker A: Exactly.
+
+Speaker B: Safe lab.
+
+Speaker A: Calculate 192.168.1.0/24 by hand.
+
+Speaker B: Then divide it into /26 blocks.
+
+Speaker A: Good.
+
+Speaker B: Pick two addresses and predict whether they share a subnet.
+
+Speaker A: Good.
+
+Speaker B: Verify the prediction with a calculator.
+
+Speaker A: Good.
+
+Speaker B: Deliberately write one wrong block boundary.
+
+Speaker A: Good.
+
+Speaker B: Explain why the prefix makes that boundary impossible.
+
+Speaker A: Good.
+
+Speaker B: Then design a small segmentation for a hospital network and explain the operational reason for each boundary.
+
+Speaker A: Exactly.
+
+Speaker B: That is harder than memorizing /24.
+
+Speaker A: Good.
+
+Speaker B: Recall.
+
+Speaker A: What does the CIDR prefix length tell you?
+
+Speaker B: How many leading bits define the network portion.
+
+Speaker A: How do you derive an IPv4 block size?
+
+Speaker B: From the number of host bits; the block size is two to that power.
+
+Speaker A: Why does /26 have smaller blocks than /24?
+
+Speaker B: Because /26 leaves fewer host bits.
+
+Speaker A: Why do boundaries matter operationally?
+
+Speaker B: They affect which addresses belong together, so they influence routing, segmentation and address allocation.
+
+Speaker A: What should you verify?
+
+Speaker B: Network boundary, range, same-subnet decisions and whether the design fits the routing requirements.
+
+Speaker A: Final challenge.
+
+Speaker B: 192.168.1.130/26.
+
+Speaker A: Which block?
+
+Speaker B: The .128 block.
+
+Speaker A: Why?
+
+Speaker B: /26 has a block size of 64, so the boundaries are .0, .64, .128 and .192.
+
+Speaker A: Exactly.
+
+Speaker B: So the slash is a boundary.
+
+Speaker A: Now run the calculations yourself and prove each result.
 
 
 EPISODE D1.6 — Routing, Gateways and NAT

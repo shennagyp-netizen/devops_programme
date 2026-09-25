@@ -1888,5 +1888,14 @@ Merged PR #45:
 - Final PR #45 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 - Next content boundary: **D1.5 — IP Addresses, Subnets and CIDR**.
 
+
+Active PR #46 scope:
+- D1.5 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `cidr-boundary-v1`.
+- Teaching model: Address -> Prefix -> Boundary -> Range -> Verify.
+- The rewritten script teaches CIDR as a network-boundary design decision, including manual block-size reasoning, segmentation, same-subnet reasoning and verification.
+- The earlier episode-boundary lookup failed without changing the file; the correct D1.5 block was then replaced precisely.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
