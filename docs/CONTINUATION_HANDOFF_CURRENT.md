@@ -1938,5 +1938,7 @@ Merged PR #80:
 - D3.2 now teaches stable Service identity, selector matching, endpoint state, Pod readiness and controlled selector failure/recovery.
 - Next content boundary: **D3.3 — Kubernetes Configuration and Storage**.
 
+- PR #81 was closed as stale; D2.6 was already merged by PR #77, and the current `main` history through D3.2 must remain authoritative.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
