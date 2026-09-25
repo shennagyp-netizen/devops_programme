@@ -13,10 +13,16 @@ export default function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
+  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
   return (
     <html lang="en">
       <body>
-        <ClerkProvider>{children}</ClerkProvider>
+        {publishableKey ? (
+          <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>
+        ) : (
+          children
+        )}
       </body>
     </html>
   );
