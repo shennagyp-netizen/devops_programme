@@ -8,7 +8,7 @@
 
 **Latest main architecture/content merge:** PR #62, commit `049d6ddeb8b3f7ec41eef59d4a88292f288de0dc` (D3.5 Kubernetes failure-loop script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #70 has merged to `main`.
+**Active content-quality branch:** none. PR #55 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -2019,6 +2019,14 @@ Merged PR #70:
 - GitHub Actions run **36153116757** passed successfully.
 - D4.6 is provider-neutral and teaches managed services, dependency graphs, identity, durable state and cost as architecture boundaries.
 - Next content boundary: **D5.1 — Scaling**.
+
+
+Merged PR #55:
+- D5.1 -> `scaling-control-loop-v1`: Workload -> Capacity -> Distribution -> Shared State -> Bottleneck -> Evidence.
+- Merge commit: `a66a3abb9be8db6b867f85d1430b4dba35934af1`.
+- GitHub Actions run **36145404285** passed successfully.
+- D5.1 makes vertical/horizontal scaling, statelessness, shared state, queue/cache behavior, bottleneck movement and user-path proof one mechanism.
+- Next content boundary: **D5.2 — Databases at Scale**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
