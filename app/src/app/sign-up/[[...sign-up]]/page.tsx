@@ -1,11 +1,16 @@
-import { ClerkProvider, SignUp } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
+import { AuthForm } from "../../../components/AuthForm";
+import { getCurrentUser } from "../../../lib/server/auth";
+import { registerAction } from "../../actions/auth";
 
-export default function SignUpPage() {
+export default async function SignUpPage() {
+  if (await getCurrentUser()) {
+    redirect("/learn");
+  }
+
   return (
-    <ClerkProvider>
-      <main className="auth-page">
-        <SignUp fallbackRedirectUrl="/learn" />
-      </main>
-    </ClerkProvider>
+    <main className="auth-page">
+      <AuthForm mode="sign-up" action={registerAction} />
+    </main>
   );
 }
