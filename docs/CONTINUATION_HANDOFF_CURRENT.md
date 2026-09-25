@@ -1497,3 +1497,43 @@ The next work boundary after merge is:
 ============================================================
 END ANIMATION / STANDALONE PREVIEW CURRENT OVERRIDE
 ============================================================
+
+
+============================================================
+ANIMATION / STANDALONE PREVIEW — POST-MERGE CURRENT MAIN OVERRIDE — 2026-09-25
+============================================================
+
+PR #22 is merged.
+
+Authoritative merge:
+- merge commit: `d6f659e174af388dc11d8e43a56dd40dda722945`
+- post-merge main workflow: `36089271904`
+- `full-programme-gate`: success
+- 44 test files / 310 tests
+- TypeScript typecheck: success
+- Next.js production build: success.
+
+The standalone animation capability is now on main.
+
+Direct launch surfaces:
+- `/animations`
+- `/animations/[animationId]`
+
+The three-layer separation is authoritative:
+- reusable animation definitions/runtime/stage
+- standalone preview host with a local inspection clock
+- curriculum illustration bindings for production teaching.
+
+PodcastCoach remains the only production audio-time authority.
+
+Browser visual validation remains **Not yet validated** because no accessible Vercel preview is currently exposed through the connected account.
+
+Next implementation boundary:
+- author the first real curriculum animated/interactive binding;
+- connect it to the actual PodcastCoach audio clock;
+- validate in browser when a real preview is available;
+- then expand reusable scenarios.
+
+============================================================
+END ANIMATION / STANDALONE PREVIEW — POST-MERGE CURRENT MAIN OVERRIDE
+============================================================
