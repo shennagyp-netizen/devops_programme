@@ -69,6 +69,21 @@ describe("lesson content stream contract", () => {
     expect(result.valid).toBe(false);
     expect(result.failures.join(" ")).toContain("duplicate block id");
     expect(result.failures.join(" ")).toContain("published video source");
+
+    const protocolRelative = validateLessonContent({
+      version: 1,
+      blocks: [
+        {
+          id: "video",
+          type: "video",
+          heading: "Protocol relative",
+          status: "published",
+          src: "//cdn.example.com/video.mp4"
+        }
+      ]
+    });
+
+    expect(protocolRelative.valid).toBe(false);
   });
 
   it("rejects impossible video timing metadata", () => {
