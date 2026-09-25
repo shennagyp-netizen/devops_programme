@@ -1411,3 +1411,39 @@ TDD:
 - PostgreSQL enforces the supported item-type invariant and unique user/item identity.
 
 The branch is intended to be merged to `main` only as this single architecture. A hosted CI failure caused by runner infrastructure must remain visible rather than being bypassed or reclassified as a source-code pass.
+
+============================================================
+34. CURRICULUM ILLUSTRATION BINDING IMPLEMENTED — 2026-09-25
+============================================================
+
+The curriculum-to-illustration binding architecture is implemented on the active feature branch and has passed the full canonical programme gate.
+
+Latest verified workflow:
+- run: 36087678753
+- job: full-programme-gate
+- conclusion: success
+- 41 test files
+- 297 tests
+- TypeScript typecheck: success
+- Next.js production build: success.
+
+Implemented source:
+- app/src/data/illustrationBindings.ts
+- app/src/data/curriculumIllustrationBindings.ts
+- app/src/data/lessonContent.ts
+- app/src/components/LessonContentFeed.tsx
+
+Architecture:
+Curriculum -> ordered lesson content -> curriculum illustration binding registry -> reusable animation capability -> deterministic runtime -> renderer.
+
+The binding registry is curriculum-owned. Static visual bindings are deterministic from lesson content. Interactive and animated bindings require explicit authored binding records. Missing or stale bindings fail closed; there is no silent generic-animation fallback.
+
+The reusable animation library remains independent of curriculum data and lesson identity. PodcastCoach remains the voice authority.
+
+Browser visual validation remains unclaimed.
+
+Next implementation:
+- author the first real animated/interactive curriculum binding
+- connect it to the actual PodcastCoach audio clock
+- validate rendered behavior in an accessible browser preview
+- then expand the reusable animation scenario library.
