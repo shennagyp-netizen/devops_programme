@@ -334,12 +334,12 @@ export function validateCurriculumIllustrationBinding(
     failures.push("binding id does not match lesson and content block identity");
   }
 
-  if (value.contentIndex !== undefined && !isFiniteNonNegativeInteger(value.contentIndex)) {
+  if (!isFiniteNonNegativeInteger(value.contentIndex)) {
     failures.push("contentIndex is invalid");
   }
 
-  if (isFiniteNonNegativeInteger(value.contentIndex) && value.contentIndex < 0) {
-    failures.push("contentIndex is invalid");
+  if (value.id !== block.bindingId) {
+    failures.push("binding id does not match the content block bindingId");
   }
 
   const expectedInteractive = block.type === "interactive-illustration";
@@ -435,7 +435,12 @@ export function validateLessonIllustrationBindings(
         bindingId?: string;
       }>;
     };
-  }>
+  }>,
+  options: {
+    bindings?: readonly CurriculumIllustrationBindingV1[];
+    animationDefinitions?: readonly AnimationDefinitionV1[];
+    voiceCueIds?: ReadonlySet<string>;
+  } = {}
 ): {
   valid: boolean;
   failures: string[];
@@ -443,6 +448,10 @@ export function validateLessonIllustrationBindings(
 } {
   const failures: string[] = [];
   const bindings: CurriculumIllustrationBindingV1[] = [];
+  const authoredBindings = new Map(
+    (options.bindings ?? []).map((binding) => [binding.id, binding])
+  );
+  const animationDefinitions = options.animationDefinitions ?? [];
 
   for (const lesson of lessons) {
     const blocks = lesson.content.blocks;
@@ -462,11 +471,13 @@ export function validateLessonIllustrationBindings(
         return;
       }
 
-      const binding = buildDefaultIllustrationBinding(
+      const canonicalBinding = buildDefaultIllustrationBinding(
         lesson.id,
         block as IllustrationContentBlockV1,
         contentIndex
       );
+      const binding =
+        authoredBindings.get(block.bindingId) ?? canonicalBinding;
 
       if (block.bindingId !== binding.id) {
         failures.push(
@@ -477,7 +488,10 @@ export function validateLessonIllustrationBindings(
       const result = validateCurriculumIllustrationBinding(
         binding,
         block as IllustrationContentBlockV1,
-        { animationDefinitions: [] }
+        {
+          animationDefinitions,
+          voiceCueIds: options.voiceCueIds
+        }
       );
 
       failures.push(...result.failures.map((failure) => `${lesson.id}:${block.id}: ${failure}`));
