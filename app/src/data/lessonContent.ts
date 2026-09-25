@@ -38,7 +38,8 @@ export type LessonIllustrationVariantV1 =
   | "git-production-workflow-v1"
   | "cicd-control-path-v1"
   | "github-actions-execution-v1"
-  | "iac-control-loop-v1";
+  | "iac-control-loop-v1"
+  | "terraform-lifecycle-v1";
 
 export type LessonContentBlock =
   | {
@@ -91,6 +92,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D4.5": {
+    version: 1,
+    blocks: [
+      {
+        id: "d4-5-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Terraform becomes predictable when the team understands its lifecycle: initialization, plan, apply, state coordination and observation of the real resources."
+      },
+      {
+        id: "d4-5-terraform-lifecycle",
+        type: "illustration",
+        heading: "The Terraform lifecycle",
+        alt: "Terraform loads configuration, initializes providers and state, creates a plan, applies changes and then observes the resulting infrastructure",
+        bindingId: "D4.5:d4-5-terraform-lifecycle",
+        nodes: ["Configuration", "Init", "Plan", "Apply", "Observe"],
+        variant: "terraform-lifecycle-v1",
+        caption:
+          "Treat plan as the checkpoint, state as coordination data, and the provider as the authority for real resources."
+      }
+    ]
+  },
+
+
   "D4.4": {
     version: 1,
     blocks: [
@@ -981,6 +1007,7 @@ export function validateLessonContent(
         block.variant !== "cicd-control-path-v1" &&
         block.variant !== "github-actions-execution-v1" &&
         block.variant !== "iac-control-loop-v1" &&
+        block.variant !== "terraform-lifecycle-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
