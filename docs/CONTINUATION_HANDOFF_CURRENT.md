@@ -8,7 +8,7 @@
 
 **Latest main architecture/content merge:** PR #62, commit `049d6ddeb8b3f7ec41eef59d4a88292f288de0dc` (D3.5 Kubernetes failure-loop script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #69 has merged to `main`.
+**Active content-quality branch:** none. PR #70 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1966,10 +1966,16 @@ Merged PR #68:
 Merged PR #69:
 - D4.5 -> `terraform-lifecycle-v1`: Configuration -> Init -> Plan -> Apply -> Observe.
 - Merge commit: `efc16df80ff091206717f9ad9bbd6a28b5e1a699`.
-- D4.5 now teaches Terraform lifecycle evidence, plan review, state locking, drift, high-impact destroy, and post-apply observation.
-- A language gate caught “therefore” in the spoken script; it was simplified without weakening the technical content.
-- Final PR #69 gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
-- Next content boundary: **D4.6 — Cloud Primitives**.
+- D4.5 final gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
+- Language gate caught “therefore” and it was simplified.
+
+Merged PR #70:
+- D4.6 -> `cloud-primitives-v1`: Workload -> Compute -> Network -> State -> Identity -> Data Services.
+- Merge commit: `404638fd337cefd6de3e48d390f9d6fd47bedd84`.
+- D4.6 is provider-neutral: managed boundaries, dependency graphs, identity, durable state and cost are taught before vendor products.
+- Final PR #70 gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
+- **Day 4 is now gold-standard from D4.1 through D4.6.**
+- Next content boundary: **D5.1 — Scaling**.
 
 
 Active PR #66 scope:
@@ -2019,6 +2025,7 @@ Active PR #70 scope:
 - The rewritten script is provider-neutral and treats managed services, dependency graphs, identity, durable state and cost as architecture boundaries.
 - Controlled exercises remove one primitive boundary and require a prediction about the resulting user-facing failure.
 - TDD/full-programme gate is required before merge.
+
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
