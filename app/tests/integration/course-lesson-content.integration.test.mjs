@@ -191,6 +191,21 @@ describe("course lesson content integration", () => {
     });
   });
 
+  it("uses the authored global-architecture visual for D5.7", () => {
+    const lesson = allLessons.find((item) => item.id === "D5.7");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d5-7-global-architecture",
+      bindingId: "D5.7:d5-7-global-architecture",
+      variant: "global-architecture-v1"
+    });
+  });
+
   it("uses the authored distributed-systems visual for D5.3", () => {
     const lesson = allLessons.find((item) => item.id === "D5.3");
     expect(lesson).toBeDefined();
