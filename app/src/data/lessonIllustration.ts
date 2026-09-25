@@ -29,7 +29,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-networking-v1"
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
-  | "kubernetes-failure-loop-v1";
+  | "kubernetes-failure-loop-v1"
+  | "git-production-workflow-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -904,6 +905,36 @@ const KUBERNETES_FAILURE_LOOP_VARIANT: LessonIllustrationModelV1 = {
     { id: "recovery-proof", label: "4. Recovery proof", detail: "After the repair, does the same real workload action succeed and remain stable?" }
   ]
 };
+
+const GIT_PRODUCTION_WORKFLOW_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "git-production-workflow-v1",
+  title: "The production Git workflow",
+  stages: [
+    { id: "change", label: "Change", detail: "Make a small, reviewable change with a known starting point." },
+    { id: "review", label: "Review", detail: "Expose the intended change to another person or an explicit review gate before release." },
+    { id: "commit", label: "Commit", detail: "Store a durable source identity that can be traced and compared." },
+    { id: "release", label: "Release", detail: "Connect the reviewed source to a stable release identity and deployment evidence." },
+    { id: "recovery", label: "Recovery", detail: "Know the smallest safe path back to a known-good release before the change becomes urgent." }
+  ],
+  foundation: {
+    label: "Git history becomes operational evidence",
+    detail: "A production workflow needs more than commits: it needs traceability, review, release identity, and a recovery path."
+  },
+  callouts: [
+    { id: "branch", label: "Branch", detail: "A branch isolates work so the change can be reviewed and compared before it becomes the release." },
+    { id: "commit", label: "Commit", detail: "A commit gives the source change a stable identity and a recoverable parent." },
+    { id: "release-tag", label: "Release identity", detail: "A tag or other immutable release reference lets operators identify the exact version they mean." },
+    { id: "revert", label: "Revert", detail: "A revert creates a new corrective commit; restoring an earlier production version may require a different deployment or rollback mechanism." }
+  ],
+  failureChecks: [
+    { id: "change-trace", label: "1. Change trace", detail: "Can you connect the production behavior to the exact source change?" },
+    { id: "reviewed-change", label: "2. Reviewed change", detail: "Was the intended change inspected before release, and can its reasoning be explained?" },
+    { id: "release-identity", label: "3. Release identity", detail: "Can the running system be tied to one exact source/release identifier?" },
+    { id: "rollback-path", label: "4. Recovery path", detail: "Can you identify the known-good version and the safe mechanism that returns production to it?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1125,6 +1156,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "git-production-workflow-v1") {
+    return {
+      ...GIT_PRODUCTION_WORKFLOW_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1168,7 +1206,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "kubernetes-networking-v1" &&
     model.variant !== "kubernetes-config-storage-v1" &&
     model.variant !== "kubernetes-health-scaling-v1" &&
-    model.variant !== "kubernetes-failure-loop-v1"
+    model.variant !== "kubernetes-failure-loop-v1" &&
+    model.variant !== "git-production-workflow-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
