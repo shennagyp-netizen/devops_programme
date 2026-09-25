@@ -1108,7 +1108,7 @@ const SCALING_CONTROL_LOOP_VARIANT: LessonIllustrationModelV1 = {
   foundation: {
     label: "Scaling is a system property, not a server-size property",
     detail: "More instances help only when the constrained part of the dependency graph has available parallel capacity."
-  ],
+  },
   callouts: [
     { id: "vertical", label: "Vertical scaling", detail: "Make one unit larger; the system keeps one primary capacity unit but with more resources." },
     { id: "horizontal", label: "Horizontal scaling", detail: "Add more units and distribute work when the workload and dependencies allow parallelism." },
