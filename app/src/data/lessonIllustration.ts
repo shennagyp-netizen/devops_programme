@@ -2,7 +2,9 @@ import type { LessonContentBlock } from "./lessonContent";
 
 export type LessonIllustrationVariantV1 =
   | "causal-flow-v1"
-  | "container-boundary-v1";
+  | "container-boundary-v1"
+  | "request-path-v1"
+  | "https-stack-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -96,6 +98,46 @@ const CONTAINER_BOUNDARY_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const REQUEST_PATH_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "request-path-v1",
+  title: "The request path",
+  stages: [
+    { id: "name", label: "Name", detail: "A service name must resolve to usable address information." },
+    { id: "route", label: "Route", detail: "The host chooses how packets should reach the destination." },
+    { id: "connection", label: "Connection", detail: "The expected transport endpoint must be reachable." },
+    { id: "application", label: "Application", detail: "The protocol must produce the response the client expects." }
+  ],
+  callouts: [],
+  failureChecks: [
+    { id: "name-resolution", label: "1. Name resolution", detail: "Does the name resolve to the expected address?" },
+    { id: "route-selected", label: "2. Route selected", detail: "Does the client have a usable route to that address?" },
+    { id: "port-reachable", label: "3. Port reachable", detail: "Can the client reach the expected transport endpoint?" },
+    { id: "protocol-response", label: "4. Protocol response", detail: "Did the application protocol actually answer correctly?" }
+  ]
+};
+
+const HTTPS_STACK_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "https-stack-v1",
+  title: "One HTTPS request",
+  stages: [
+    { id: "dns", label: "DNS", detail: "Turn a service name into address information." },
+    { id: "route", label: "Route", detail: "Choose the network path toward the destination." },
+    { id: "transport", label: "Transport", detail: "Reach the expected TCP endpoint in a typical HTTPS setup." },
+    { id: "tls", label: "TLS", detail: "Authenticate the peer and establish the encrypted session." },
+    { id: "http", label: "HTTP", detail: "Send the application request and interpret the response." }
+  ],
+  callouts: [
+    { id: "timeout", label: "Timeout", detail: "The expected response did not arrive within the client's wait window." },
+    { id: "refusal", label: "Refusal", detail: "A reachable endpoint actively rejected the connection." },
+    { id: "tls-failure", label: "TLS failure", detail: "The secure session could not be established as expected." },
+    { id: "http-error", label: "HTTP error", detail: "The secure connection worked, but the application returned an error response." }
+  ],
+  failureChecks: []
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -128,6 +170,20 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "request-path-v1") {
+    return {
+      ...REQUEST_PATH_VARIANT,
+      title: block.heading
+    };
+  }
+
+  if (block.variant === "https-stack-v1") {
+    return {
+      ...HTTPS_STACK_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -144,7 +200,9 @@ export function validateLessonIllustrationModel(
   if (model.version !== 1) failures.push("illustration model version must be 1");
   if (
     model.variant !== "causal-flow-v1" &&
-    model.variant !== "container-boundary-v1"
+    model.variant !== "container-boundary-v1" &&
+    model.variant !== "request-path-v1" &&
+    model.variant !== "https-stack-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }

@@ -8,6 +8,8 @@
 
 **Latest main architecture/content merge:** PR #33, commit `d3c49338180d948d0d5f7284713a91ead65267b1` (gold-standard script + illustration slice).
 
+**Active content-quality branch:** `feature/gold-standard-beginner-network-slice` (PR #34). This slice upgrades B1.2 and B1.3.
+
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
 **Current learner-state rule:** one authenticated user + item type + item ID = one append-only completion row.
@@ -1828,5 +1830,13 @@ Current TDD status:
 
 Do not scale the animation catalogue before the script+illustration quality gate is stable. Reusable animations remain capabilities; curriculum remains the instructional authority.
 ============================================================
+
+Current PR #34 scope:
+- B1.2 has an authored semantic `request-path-v1` illustration.
+- B1.3 has an authored semantic `https-stack-v1` illustration.
+- B1.2 and B1.3 spoken scripts were rewritten around mechanism, prediction, controlled failure, evidence and recovery.
+- Lesson-stream isolation is explicitly tested so one lesson cannot silently inherit another lesson's visual blocks.
+- The first red-team run found two contract issues: the validator did not know the new variants and B1.3 used a non-canonical binding identity. Both were corrected before the current rerun.
+- Do not merge PR #34 until the full programme gate is green and the authored binding registry resolves all new visuals.
 END CONTENT QUALITY OVERRIDE
 ============================================================

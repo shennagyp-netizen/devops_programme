@@ -7,7 +7,9 @@ export type LessonVideoCue = {
 
 export type LessonIllustrationVariantV1 =
   | "causal-flow-v1"
-  | "container-boundary-v1";
+  | "container-boundary-v1"
+  | "request-path-v1"
+  | "https-stack-v1";
 
 export type LessonContentBlock =
   | {
@@ -60,6 +62,52 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "B1.2": {
+    version: 1,
+    blocks: [
+      {
+        id: "b1-2-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "A request does not jump straight from a browser to an application. It crosses several boundaries, and each boundary gives us different evidence when something fails."
+      },
+      {
+        id: "b1-2-request-path",
+        type: "illustration",
+        heading: "The request path",
+        alt: "A request moves from a name through DNS, routing, transport and the application",
+        bindingId: "B1.2:b1-2-request-path",
+        nodes: ["Name", "Route", "Connection", "Application"],
+        variant: "request-path-v1",
+        caption:
+          "A request is a chain. Diagnose the smallest layer that can explain the observed failure."
+      }
+    ]
+  },
+  "B1.3": {
+    version: 1,
+    blocks: [
+      {
+        id: "b1-3-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "An API can be reachable while its secure session fails, or the secure session can work while the application returns an error. HTTP, TLS and DNS help us see how far a request actually got."
+      },
+      {
+        id: "b1-3-request-stack",
+        type: "illustration",
+        heading: "One HTTPS request",
+        alt: "DNS, routing, transport, TLS and HTTP cooperate to produce an HTTPS response",
+        bindingId: "B1.3:b1-3-request-stack",
+        nodes: ["DNS", "Route", "Transport", "TLS", "HTTP"],
+        variant: "https-stack-v1",
+        caption:
+          "DNS, routing, transport, TLS and HTTP cooperate; a failure at one stage changes the evidence."
+      }
+    ]
+  },
   "B1.4": {
     version: 1,
     blocks: [
@@ -161,7 +209,9 @@ export function validateLessonContent(
       if (
         block.variant !== undefined &&
         block.variant !== "causal-flow-v1" &&
-        block.variant !== "container-boundary-v1"
+        block.variant !== "container-boundary-v1" &&
+        block.variant !== "request-path-v1" &&
+        block.variant !== "https-stack-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }

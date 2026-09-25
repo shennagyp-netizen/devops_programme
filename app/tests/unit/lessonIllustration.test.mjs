@@ -57,6 +57,61 @@ describe("lesson illustration teaching model", () => {
 });
 
 
+
+
+  it("models the request path as address, route, transport and application", () => {
+    const model = getLessonIllustrationModel({
+      id: "b1-2-request-path",
+      type: "illustration",
+      heading: "The request path",
+      alt: "A request moves from a name through DNS, routing, transport and the application",
+      bindingId: "B1.2:b1-2-request-path",
+      nodes: ["Name", "Route", "Connection", "Application"],
+      variant: "request-path-v1"
+    });
+
+    expect(model.variant).toBe("request-path-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "name",
+      "route",
+      "connection",
+      "application"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "name-resolution",
+      "route-selected",
+      "port-reachable",
+      "protocol-response"
+    ]);
+  });
+
+  it("models HTTPS as a protocol stack instead of one generic network box", () => {
+    const model = getLessonIllustrationModel({
+      id: "b1-3-http-tls-dns",
+      type: "illustration",
+      heading: "One HTTPS request",
+      alt: "DNS, routing, transport, TLS and HTTP cooperate to produce an HTTPS response",
+      bindingId: "B1.3:request-stack",
+      nodes: ["DNS", "Route", "Transport", "TLS", "HTTP"],
+      variant: "https-stack-v1"
+    });
+
+    expect(model.variant).toBe("https-stack-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "dns",
+      "route",
+      "transport",
+      "tls",
+      "http"
+    ]);
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "timeout",
+      "refusal",
+      "tls-failure",
+      "http-error"
+    ]);
+  });
+
   it("fails closed for an unknown authored illustration variant", () => {
     expect(
       getLessonIllustrationModel({
