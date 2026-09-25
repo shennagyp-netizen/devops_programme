@@ -1933,6 +1933,23 @@ Merged PR #106:
 - Course-level podcast baseline: Beginner **13,090 words / ~1h 37m**; Intermediate **32,892 words / ~4h 04m**; Advanced **12,780 words / ~1h 35m** at 135 wpm.
 - Next content boundary: **D2.7 — Break Docker**.
 
+
+Active PR #53 scope:
+- Product standard changed: lesson completion is no longer treated as simple content consumption.
+- Every lesson now has a first-pass three-way teaching loop: plain language, analogy/human model, and visual/system representation before the assignment.
+- Failed hands-on evidence triggers an adaptive mastery plan instead of an immediate identical retry.
+- Remediation stages are:
+  1. foundation reteach
+  2. mechanism reteach
+  3. guided practice with a smaller micro-assignment
+  4. prerequisite rewind.
+- Each remediation stage includes a different explanation representation and, where available, a diagnostic micro-check.
+- Failure attempts are recorded as distinct evidence events.
+- Authenticated mastery attempts are persisted in PostgreSQL through `learner_mastery_attempts`.
+- New contract: `docs/MASTERY_AND_REMEDIATION_CONTRACT.md`.
+- Important product decision: approximately seven hours of audio alone is not a sufficient $2,000 value proposition. Premium value must come from adaptive remediation, controlled failure/recovery, durable learner history, machine verification, project transfer and proof of mastery.
+- TDD adds unit coverage for stage progression and integration coverage across all authored lessons.
+- Remaining mastery work after this slice: server-loaded initial mastery state, lesson-specific authored remediation explanations, machine-verified failure/recovery across the hands-on catalogue, richer assessment remediation, analytics and browser validation.
 END CONTENT QUALITY OVERRIDE
 ============================================================
 

@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import {
   check,
   index,
+  integer,
   pgTable,
   text,
   timestamp,
@@ -43,6 +44,42 @@ export const authSessions = pgTable(
   })
 );
 
+export const learnerMasteryAttempts = pgTable(
+  "learner_mastery_attempts",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => authUsers.id, { onDelete: "cascade" }),
+    lessonId: text("lesson_id").notNull(),
+    taskId: text("task_id").notNull(),
+    attemptNumber: integer("attempt_number").notNull(),
+    outcome: text("outcome").notNull(),
+    stage: text("stage").notNull(),
+    summary: text("summary").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => ({
+    userTaskAttemptUnique: uniqueIndex(
+      "learner_mastery_attempts_user_task_attempt_uq"
+    ).on(table.userId, table.taskId, table.attemptNumber),
+    userLessonIndex: index("learner_mastery_attempts_user_lesson_idx").on(
+      table.userId,
+      table.lessonId,
+      table.createdAt
+    ),
+    outcomeCheck: check(
+      "learner_mastery_attempts_outcome_ck",
+      sql.raw("outcome IN ('failure', 'mastered')")
+    ),
+    attemptNumberCheck: check(
+      "learner_mastery_attempts_attempt_number_ck",
+      sql.raw("attempt_number >= 1")
+    )
+  })
+);
 export const learnerProgressHistory = pgTable(
   "learner_progress_history",
   {

@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import type { CourseLesson } from "../data/courseLessons";
 import type { PlatformId } from "../data/programme";
 import type { DiagnosticRecommendation } from "../data/diagnostics";
+import type { MasteryAttemptRecord } from "../lib/mastery-contract";
 import { diagnosticBySection } from "../data/diagnostics";
-import { recordHandsOnEvidence, recordMachineVerification } from "../data/evidence";
+import { addEvidence, recordHandsOnEvidence, recordMachineVerification } from "../data/evidence";
 import {
   getHandsOnTask,
   validateHandsOnEvidence,
@@ -21,6 +22,17 @@ import { MotionIllustration } from "./MotionIllustration";
 import { LessonContentFeed } from "./LessonContentFeed";
 import { PodcastCoach } from "./PodcastCoach";
 import { AssessmentPanel } from "./AssessmentPanel";
+import { MasteryRemediation } from "./MasteryRemediation";
+import { MasteryPreview } from "./MasteryPreview";
+import { recordMasteryAttemptAction } from "../app/actions/progress";
+import {
+  getMasteryPlan,
+  masteryStorageKey,
+  readMasteryAttempts,
+  recordMasteryFailure,
+  resetMasteryAttempts,
+  type MasteryPlan
+} from "../data/mastery";
 
 type Mode = "learn" | "do" | "recall" | "design" | "assessment";
 
@@ -33,7 +45,8 @@ export function LessonPanel({
   onSelectLesson,
   onEvidenceRecorded,
   progressReady = true,
-  progressSaving = false
+  progressSaving = false,
+  initialMasteryHistory = []
 }: {
   lesson: CourseLesson;
   mastered: boolean;
@@ -44,6 +57,7 @@ export function LessonPanel({
   onEvidenceRecorded?: () => void;
   progressReady?: boolean;
   progressSaving?: boolean;
+  initialMasteryHistory?: MasteryAttemptRecord[];
 }) {
   const [mode, setMode] = useState<Mode>("learn");
   const [showTheory, setShowTheory] = useState(true);
@@ -51,6 +65,9 @@ export function LessonPanel({
   const [handsOnEvidence, setHandsOnEvidence] = useState<Record<string, string>>({});
   const [exerciseRecorded, setExerciseRecorded] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
+  const [masteryPlan, setMasteryPlan] = useState<MasteryPlan | null>(null);
+  const [masteryReadyForRetry, setMasteryReadyForRetry] = useState(true);
+  const [masteryAttempts, setMasteryAttempts] = useState(0);
   const [machineVerificationMessage, setMachineVerificationMessage] = useState("");
   const [localAgentAvailable, setLocalAgentAvailable] = useState(false);
   const [localAgentPlatform, setLocalAgentPlatform] = useState<string | null>(null);
@@ -69,6 +86,8 @@ export function LessonPanel({
   const command = commandForPlatform(lesson, platform);
   const handsOnTask: HandsOnTask = getHandsOnTask(lesson);
   const runtimeTask = runtimeTaskForLesson(lesson.id);
+  const masteryKey = masteryStorageKey(lesson.id);
+  const serverAttemptsForLesson = initialMasteryHistory.filter((item) => item.lessonId === lesson.id).length;
 
   useEffect(() => {
     try {
@@ -95,6 +114,13 @@ export function LessonPanel({
       setMachineVerificationMessage("");
     }
   }, [evidenceKey]);
+
+  useEffect(() => {
+    const attempts = Math.max(readMasteryAttempts(lesson.id), serverAttemptsForLesson);
+    setMasteryAttempts(attempts);
+    setMasteryPlan(null);
+    setMasteryReadyForRetry(true);
+  }, [lesson.id, masteryKey, serverAttemptsForLesson]);
 
   useEffect(() => {
     setShowTheory(diagnosticRecommendation !== "skip-theory");
@@ -280,7 +306,12 @@ export function LessonPanel({
 
       <PodcastCoach lesson={lesson} />
 
-      {mode === "learn" ? <LessonContentFeed blocks={lesson.content.blocks} /> : null}
+      {mode === "learn" ? (
+        <>
+          <LessonContentFeed blocks={lesson.content.blocks} />
+          <MasteryPreview lesson={lesson} task={handsOnTask} />
+        </>
+      ) : null}
 
       <nav className="mode-tabs">
         {(["learn", "do", "recall", "design", "assessment"] as Mode[]).map((item) => (
@@ -505,14 +536,68 @@ export function LessonPanel({
 
             <button
               className="primary"
+              disabled={!masteryReadyForRetry}
               onClick={() => {
                 const validation = validateHandsOnEvidence(
                   handsOnTask,
                   handsOnEvidence
                 );
                 if (!validation.valid) {
+                  const attempt = recordMasteryFailure(lesson.id);
+                  const plan = getMasteryPlan(
+                    lesson,
+                    handsOnTask,
+                    validation.failures,
+                    attempt - 1
+                  );
+
+                  setMasteryAttempts(attempt);
+                  setMasteryPlan(plan);
+                  setMasteryReadyForRetry(false);
                   setExerciseRecorded(false);
-                  setValidationMessage(validation.failures.join(" "));
+                  setValidationMessage(
+                    "Attempt " +
+                      attempt +
+                      " did not yet prove the exercise contract. Complete the guided remediation before retrying."
+                  );
+
+                  addEvidence({
+                    course: lesson.course,
+                    projectId: lesson.projectId,
+                    lessonId: lesson.id,
+                    kind: "failure",
+                    summary:
+                      "Hands-on attempt " +
+                      attempt +
+                      " failed: " +
+                      validation.failures.join(" "),
+                    taskId: handsOnTask.id,
+                    verificationLevel: handsOnTask.verificationLevel,
+                    evidencePayload: { ...handsOnEvidence }
+                  });
+                  void recordMasteryAttemptAction({
+                    lessonId: lesson.id,
+                    taskId: handsOnTask.id,
+                    outcome: "failure",
+                    stage: plan.stage,
+                    summary: validation.failures.join(" ")
+                  })
+                    .then((stored) => {
+                      if (stored.attemptNumber !== attempt) {
+                        const authoritativePlan = getMasteryPlan(
+                          lesson,
+                          handsOnTask,
+                          validation.failures,
+                          stored.attemptNumber - 1
+                        );
+                        setMasteryAttempts(stored.attemptNumber);
+                        setMasteryPlan(authoritativePlan);
+                      }
+                    })
+                    .catch(() => {
+                      // Local evidence remains available if server mastery history is temporarily unavailable.
+                    });
+
                   return;
                 }
 
@@ -546,13 +631,43 @@ export function LessonPanel({
                   evidencePayload: handsOnEvidence
                 });
 
+                resetMasteryAttempts(lesson.id);
+                setMasteryAttempts(0);
+                setMasteryPlan(null);
+                setMasteryReadyForRetry(true);
                 setExerciseRecorded(true);
                 setValidationMessage("Evidence structure validated and saved locally.");
+
+                void recordMasteryAttemptAction({
+                  lessonId: lesson.id,
+                  taskId: handsOnTask.id,
+                  outcome: "mastered",
+                  stage: "mastered",
+                  summary: "Hands-on evidence passed the current exercise contract."
+                }).catch(() => {
+                  // Completion remains server-authoritative even if mastery telemetry is temporarily unavailable.
+                });
                 onEvidenceRecorded?.();
               }}
             >
-              Validate and record evidence
+              {masteryReadyForRetry
+                ? "Validate and record evidence"
+                : "Complete remediation first"}
             </button>
+
+            {masteryPlan ? (
+              <MasteryRemediation
+                plan={masteryPlan}
+                onReadyForRetry={() => {
+                  setMasteryReadyForRetry(true);
+                  setValidationMessage(
+                    "Remediation complete after attempt " +
+                      masteryAttempts +
+                      ". Retry the assignment with the new explanation path."
+                  );
+                }}
+              />
+            ) : null}
 
             {validationMessage ? (
               <p className="range">{validationMessage}</p>
