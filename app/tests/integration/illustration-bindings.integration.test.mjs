@@ -4,10 +4,18 @@ import {
   validateLessonIllustrationBindings
 } from "../../src/data/illustrationBindings.ts";
 import { lessonsByCourse } from "../../src/data/courseLessons.ts";
+import { animationLibrary } from "../../src/animations/library.ts";
+import { curriculumIllustrationBindings } from "../../src/data/curriculumIllustrationBindings.ts";
 
 describe("curriculum illustration binding integration", () => {
   it("resolves every illustration block in the authored programme", () => {
-    const result = validateLessonIllustrationBindings(Object.values(lessonsByCourse).flat());
+    const result = validateLessonIllustrationBindings(
+      Object.values(lessonsByCourse).flat(),
+      {
+        bindings: curriculumIllustrationBindings,
+        animationDefinitions: animationLibrary
+      }
+    );
 
     expect(result.valid).toBe(true);
     expect(result.failures).toEqual([]);
@@ -49,4 +57,19 @@ describe("curriculum illustration binding integration", () => {
     expect(binding.id).toBe(illustration.bindingId);
     expect(binding.contentBlockId).toBe(illustration.id);
   });
+  it("fails closed when the curriculum binding registry is incomplete", () => {
+    const result = validateLessonIllustrationBindings(
+      Object.values(lessonsByCourse).flat(),
+      {
+        bindings: [],
+        animationDefinitions: animationLibrary
+      }
+    );
+
+    expect(result.valid).toBe(false);
+    expect(result.failures.some((failure) =>
+      failure.includes("has no authored curriculum binding")
+    )).toBe(true);
+  });
+
 });
