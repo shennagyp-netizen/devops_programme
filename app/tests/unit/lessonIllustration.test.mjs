@@ -567,6 +567,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models Kubernetes as desired state reconciled onto pods and nodes", () => {
+    const model = getLessonIllustrationModel({
+      id: "d3-1-kubernetes-model",
+      type: "illustration",
+      heading: "The Kubernetes control loop",
+      alt: "A desired workload is stored in Kubernetes, controllers reconcile it, the scheduler places pods on nodes, and observed state is reported back",
+      bindingId: "D3.1:d3-1-kubernetes-model",
+      nodes: ["Desired State", "Controller", "Scheduler", "Pod", "Node"],
+      variant: "kubernetes-reconciliation-v1"
+    });
+
+    expect(model.variant).toBe("kubernetes-reconciliation-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "desired",
+      "controller",
+      "scheduler",
+      "pod",
+      "node"
+    ]);
+    expect(model.foundation.label).toBe("Kubernetes continuously reconciles desired state with observed state");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "api",
+      "controller",
+      "scheduler",
+      "pod-node",
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "desired-state",
+      "reconciliation",
+      "placement",
+      "observed-state"
+    ]);
+  });
+
   it("models containers as image, container, process, namespaces and host kernel", () => {
     const model = getLessonIllustrationModel({
       id: "d2-5-containers",
