@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored process-diagnosis visual for B1.1", () => {
+    const lesson = allLessons.find((item) => item.id === "B1.1");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "b1-1-process-diagnosis",
+      bindingId: "B1.1:b1-1-process-diagnosis",
+      variant: "process-diagnosis-v1"
+    });
+  });
+
   it("uses the authored container-boundary visual for B1.4", () => {
     const lesson = allLessons.find((item) => item.id === "B1.4");
     expect(lesson).toBeDefined();
