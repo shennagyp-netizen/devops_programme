@@ -1849,5 +1849,14 @@ Merged PR #35:
 - Final PR #35 gate passed all programme contracts, the complete test suite, TypeScript and the Next.js production build.
 - Next content boundary: B2.1 — From Code Change to Safe Delivery.
 
+
+Active PR #36 scope:
+- B2.1 is upgraded to the same script+illustration quality standard.
+- New semantic illustration: `delivery-pipeline-v1`.
+- Teaching model: Change -> Review -> Test -> Artifact -> Deploy -> Verify, with fixed release identity as the evidence spine.
+- The rewritten script distinguishes deployment success from runtime health and treats rollback as a system-level recovery decision.
+- Controlled failures cover runtime regression, release-identity mismatch and application/data rollback boundaries.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
