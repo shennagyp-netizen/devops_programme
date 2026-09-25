@@ -2,45 +2,289 @@ DAY 4 — CI/CD + TERRAFORM + CLOUD
 
 EPISODE D4.1 — Git as a Production Workflow
 
-Speaker A: Git becomes a DevOps tool when history, review, artifacts, and rollback matter.
+Speaker A: Git becomes a DevOps tool when production changes need history, review, release identity and recovery.
 
-Speaker B: I already use Git. What changes?
+Speaker B: I already use Git. What changes in production?
 
-Speaker A: The key is that production changes must be traceable. A production deployment should be traceable to a reviewed change and a reproducible artifact.
+Speaker A: The code is no longer only your local work. Other people and systems need to explain exactly what changed and what is running.
 
-Speaker A: Think of a legal document. You care about versions, approvals, and exactly which version was signed. Production software needs the same discipline.
+Speaker B: So the visual is:
 
-Speaker A: Real-life example: if a bank asks which contract version was applied yesterday, 'I think it was the latest one' is not a satisfactory answer.
+Speaker A: Change -> Review -> Commit -> Release -> Recovery.
 
-Speaker A: Lab: create a branch, commit a change, inspect the diff, tag a release, and practice reverting to a known-good version.
-Speaker B: I use Git every day, but production changes feel different.
+Speaker B: Good. Five boundaries.
 
-Speaker A: They should. A local commit can be useful to you. A production change has to be explainable to other people and recoverable by the system.
+Speaker A: And each boundary answers a different question.
 
-Speaker B: Meaning I want to know what changed, who reviewed it, which artifact came from it, and how to get back.
+Speaker B: Start with change.
 
-Speaker A: Exactly. Git gives you history, but the operational workflow adds review, validation, release identity, and rollback thinking.
+Speaker A: A production change should begin from a known state.
 
-Speaker B: Legal document analogy?
+Speaker B: Which means I do not casually edit the production checkout and then try to remember what I did.
 
-Speaker A: If a contract changed after approval, everyone wants to know which version was approved. Software is not a legal document, obviously, but production systems need similar traceability.
+Speaker A: Exactly.
 
-Speaker B: Prediction. I tag a release. Why is that more useful than saying “the latest code”?
+Speaker B: I create a branch or another explicit change boundary.
 
-Speaker A: Because “latest” moves. A release identifier should be stable enough that you can point at exactly what was deployed.
+Speaker A: Good.
 
-Speaker B: So incident response becomes “deployment X introduced this,” instead of “someone changed something.”
+Speaker B: Then I can compare the change with the known starting point.
 
-Speaker A: That's the difference.
+Speaker A: Exactly.
+
+Speaker B: Stage two: review.
+
+Speaker A: A production change should be inspectable before release.
+
+Speaker B: Another person can read the diff.
+
+Speaker A: Yes.
+
+Speaker B: They can ask what changed, why it changed and what evidence supports it.
+
+Speaker A: Exactly.
+
+Speaker B: So review is not a social ritual.
+
+Speaker A: It is a control point that creates evidence before the change becomes operational.
+
+Speaker B: Prediction.
+
+Speaker A: A branch contains one small change. The diff is much larger than expected. What should you do?
+
+Speaker B: Stop and understand the extra changes before treating the branch as ready for release.
+
+Speaker A: Good.
+
+Speaker B: A clean branch gives us a clearer causal story.
+
+Speaker A: Exactly.
+
+Speaker B: Stage three: commit.
+
+Speaker A: A commit gives a source change a durable identity and a known parent.
+
+Speaker B: So I can say exactly which commit I reviewed.
+
+Speaker A: Yes.
+
+Speaker B: And compare it with its parent.
+
+Speaker A: Exactly.
+
+Speaker B: A commit message is useful for humans, but the commit ID is the stronger identity.
+
+Speaker A: Correct.
+
+Speaker B: What about history?
+
+Speaker A: History lets you answer questions such as: what changed, when, and how did the current revision come from the previous one?
+
+Speaker B: That becomes incident evidence.
+
+Speaker A: Exactly.
+
+Speaker B: Stage four: release.
+
+Speaker A: A production release should have a stable identity.
+
+Speaker B: Tag.
+
+Speaker A: Often. Or another immutable release reference appropriate to the delivery system.
+
+Speaker B: So I should not say 'the latest code.'
+
+Speaker A: Right. Latest moves.
+
+Speaker B: A release identifier points to one known thing.
+
+Speaker A: Exactly.
+
+Speaker B: And the deployment should make that identity visible in the running system when practical.
+
+Speaker A: Good.
+
+Speaker B: That connects Git to the runtime.
+
+Speaker A: Yes. Source identity becomes operational evidence.
+
+Speaker B: Prediction.
+
+Speaker A: Two releases exist. Production is on version A. The repository has a newer commit B. Which one is production?
+
+Speaker B: A. Repository recency does not change the running environment.
+
+Speaker A: Exactly.
+
+Speaker B: That sounds obvious, but 'latest' causes real mistakes.
+
+Speaker A: It does.
+
+Speaker B: Stage five: recovery.
+
+Speaker A: Before release, know how you would return to a known-good version.
+
+Speaker B: Git gives me history, but rollback is not always just 'git checkout old commit.'
+
+Speaker A: Correct. Recovery may involve the deployment system, configuration, database compatibility and data state.
+
+Speaker B: But Git should make the source version unambiguous.
+
+Speaker A: Exactly.
+
+Speaker B: What is a revert?
+
+Speaker A: A revert usually creates a new commit that undoes the effect of an earlier commit.
+
+Speaker B: So it preserves history.
+
+Speaker A: Yes. Revert and restoring an earlier deployment are related but not identical operations.
+
+Speaker B: Important distinction.
+
+Speaker A: Very.
+
+Speaker B: Let's create a production incident.
+
+Speaker A: A release went out at 14:00. At 14:05, order creation begins failing.
+
+Speaker B: First question?
+
+Speaker A: What exact release is running?
+
+Speaker B: Release identity.
+
+Speaker A: Good.
+
+Speaker B: Next?
+
+Speaker A: What source commit created it?
+
+Speaker B: Git history.
+
+Speaker A: Next?
+
+Speaker B: What changed from the previous known-good release?
+
+Speaker A: Good.
+
+Speaker B: Then decide whether rollback is appropriate.
+
+Speaker A: Exactly.
+
+Speaker B: If the release has a database schema change, I also need to consider whether the previous application version can work with the current data state.
+
+Speaker A: Exactly. Git is critical evidence, but Git cannot answer every recovery question by itself.
+
+Speaker B: Another prediction.
+
+Speaker A: Production is failing. Someone proposes deleting the latest bad commit from the repository.
+
+Speaker B: That may change future history, but it does not by itself repair the already-deployed production system.
+
+Speaker A: Correct.
+
+Speaker B: I need the deployment state and an operational recovery action.
+
+Speaker A: Good.
+
+Speaker B: So source history and running state are connected, but they are not the same state.
+
+Speaker A: Exactly.
 
 Speaker B: Mac lab?
 
-Speaker A: Make a tiny change on a branch. Inspect status and history. Commit it with a meaningful message. Then compare the branch with the previous revision and describe how you would identify the exact production version.
+Speaker A: Create a small branch from a known-good commit.
 
-Speaker B: No fancy Git tricks.
+Speaker B: Make one intentional change.
 
-Speaker A: Not yet. Master the basic evidence first.
+Speaker A: Good.
 
+Speaker B: Inspect the diff.
+
+Speaker A: Good.
+
+Speaker B: Commit it with a meaningful message.
+
+Speaker A: Good.
+
+Speaker B: Compare the new commit with its parent.
+
+Speaker A: Good.
+
+Speaker B: Create a temporary release tag.
+
+Speaker A: Good.
+
+Speaker B: Then practice recovering to the known-good version using the appropriate Git operation for the exercise.
+
+Speaker A: Good.
+
+Speaker B: And record what each identity tells me.
+
+Speaker A: Exactly.
+
+Speaker B: Controlled failure?
+
+Speaker A: Make the local application fail through one deliberate code change.
+
+Speaker B: Record the bad commit and release identity.
+
+Speaker A: Good.
+
+Speaker B: Prove the failure.
+
+Speaker A: Good.
+
+Speaker B: Then recover to the known-good release and prove the original behavior returns.
+
+Speaker A: Exactly.
+
+Speaker B: What should not happen?
+
+Speaker A: Do not rewrite history just to hide a production mistake. Do not call an unreviewed working tree the release. Do not confuse repository state with deployment state.
+
+Speaker B: That is the real DevOps discipline.
+
+Speaker A: It is.
+
+Speaker B: Recall.
+
+Speaker A: Why create a branch?
+
+Speaker B: To isolate the change and make the diff against a known starting point explicit.
+
+Speaker A: Why review before release?
+
+Speaker B: To create a control point where another person can inspect the intended change and its risks.
+
+Speaker A: What does a commit give you?
+
+Speaker B: A durable source identity and a known parent for comparison.
+
+Speaker A: Why use a release identifier?
+
+Speaker B: So everyone can point to the exact version that was intended or deployed instead of saying latest.
+
+Speaker A: What is a revert?
+
+Speaker B: A new commit that undoes the effect of an earlier commit; it is not automatically the same as rolling production back to an earlier deployed version.
+
+Speaker A: Final challenge.
+
+Speaker B: Production is broken after a release.
+
+Speaker A: Your model?
+
+Speaker B: Change -> Review -> Commit -> Release -> Recovery. I identify the exact running release, trace it to the source commit and reviewed change, compare it with the known-good version, choose the appropriate recovery action, and then prove the user path works again.
+
+Speaker A: Good.
+
+Speaker B: So Git is not just history.
+
+Speaker A: It is a source-of-truth layer for production change evidence.
+
+Speaker B: Run the lab, break one release safely, recover it, and explain every identity in the chain.
 
 EPISODE D4.2 — CI/CD Mental Model
 
