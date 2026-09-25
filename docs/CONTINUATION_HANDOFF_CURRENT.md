@@ -1868,6 +1868,14 @@ Active Advanced A1.5-A1.6 scope:
 - Unit and integration tests lock exact visual identity and model behavior.
 - TDD/full-programme gate is required before merge.
 
+Merged PR #105:
+- A1.5 -> `global-traffic-v1`: Users -> Routing -> Regions -> Capacity -> Failover.
+- A1.6 -> `data-locality-v1`: User -> Region -> Data -> Latency -> Consistency.
+- Merge commit: `7eff6a379ae456391d0766153f682d7386cc1a67`.
+- Final PR #105 gate passed **428 tests**, 50 test files, all programme contracts, TypeScript and the Next.js production build.
+- Advanced A1.1-A1.6 now all have explicit semantic visual contracts.
+- Next Advanced boundary: **A2.1-A2.3 — dependency failure, retry storms and partial network failure**.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
 
@@ -1885,5 +1893,5 @@ Merged PR #100:
 - Stale PR #91 was closed unmerged after the clean current-main port landed.
 
 om that status.
-- Next content boundary: **A1.5-A1.6 — global traffic routing and data locality**.
+- Next content boundary: **A2.1-A2.3 — dependency failure, retry storms and partial network failure**.
 
