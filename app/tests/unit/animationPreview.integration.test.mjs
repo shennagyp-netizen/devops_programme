@@ -8,8 +8,8 @@ describe("animation preview clock contract", () => {
     expect(clampAnimationPreviewTime(7000, 5000)).toBe(5000);
   });
 
-  it("never returns a negative duration", () => {
-    expect(animationPreviewDurationMs([])).toBe(0);
+  it("uses a stable default duration when no preview cues are authored", () => {
+    expect(animationPreviewDurationMs([])).toBe(4000);
   });
 
   it("derives duration from the latest cue plus the animation settle window", () => {
