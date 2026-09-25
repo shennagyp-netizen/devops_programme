@@ -1921,25 +1921,21 @@ Merged PR #52:
 Merged PR #53:
 - D2.6 -> `docker-network-storage-v1`: Service -> Network -> Name -> Port -> Volume.
 - Merge commit: `d1884d9443a7e2c2f8eff85822307604ea5d865d`.
-- Final PR #53 head status was **Vercel success**; the earlier rate-limit failure was infrastructure-only and was cleared on the successful validation commit.
-- D2.6 separates internal service discovery, internal service ports, published host ports and persistent volumes, then uses controlled failures to distinguish their symptoms.
+- Final PR #53 head status was **Vercel success**.
+- D2.6 separates internal service discovery, internal service ports, published host ports and persistent volumes.
 
 Merged PR #54 / #78:
 - D2.7 -> `docker-failure-loop-v1`: Baseline -> Change -> Symptom -> Evidence -> Recovery.
 - Later merge commit: `0d0c490b5a7f21f49f6d6ba25c763672cc5cd8ab`.
 - Final merged commit status is **Vercel success**.
-- D2.7 turns Docker failure into a controlled incident drill: one change, one prediction, evidence, restoration and real recovery proof.
-- The later PR #78 is the authoritative merge record because it contains the latest branch head.
-- Next content boundary: **D3.1 — Kubernetes Mental Model**.
 
-
-Active PR #55 scope:
-- D3.1 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `kubernetes-reconciliation-v1`.
-- Teaching model: Desired State -> Controller -> Scheduler -> Pod -> Node, returning through observed state.
-- The rewritten script teaches reconciliation, desired-vs-observed state, scheduler placement, pod lifecycle and node execution as separate evidence layers.
-- Controlled labs delete a disposable replica and create an intentionally unschedulable placement condition, then restore and prove recovery.
-- TDD/full-programme gate is required before merge.
+Merged PR #90:
+- D3.1 -> `kubernetes-reconciliation-v1`: Desired State -> Controller -> Scheduler -> Pod -> Node -> Observed State.
+- Merge commit: `a40680ab966d9afea465e76fd3bd224e3b36ef78`.
+- Final PR #90 gate passed **397 tests**, all programme contracts, TypeScript and the Next.js production build.
+- A red-team test run caught a duplicate D3.1 model declaration and stale legacy stage expectations; both were corrected.
+- The shared Kubernetes variant validators also contained duplicate entries; those were removed without weakening validation.
+- Next content boundary: **D3.2 — Kubernetes Networking**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
