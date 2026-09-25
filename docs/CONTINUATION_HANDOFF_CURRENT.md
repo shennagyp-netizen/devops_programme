@@ -1949,5 +1949,13 @@ Merged PR #83:
 - D3.4 now has explicit semantic binding/tests for startup, readiness, liveness, capacity and rollout.
 - Next content boundary: **D3.5 — Kubernetes Failure and Replacement**.
 
+
+Active D3.5 current-main port:
+- D3.5 is upgraded to the script+illustration gold-standard on the current `main` lineage.
+- New semantic illustration: `kubernetes-failure-loop-v1`.
+- Teaching model: Baseline -> Fault -> Symptom -> Evidence -> Recovery.
+- The existing failure-lab script already teaches CrashLoopBackOff, ImagePullBackOff, OOMKilled, readiness failure, selector failure, controlled single-boundary changes and recovery proof; the new visual turns those mechanisms into one coherent loop.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
