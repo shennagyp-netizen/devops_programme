@@ -34,7 +34,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-networking-v1"
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
-  | "kubernetes-failure-loop-v1";
+  | "kubernetes-failure-loop-v1"
+  | "git-production-workflow-v1";
 
 export type LessonContentBlock =
   | {
@@ -87,6 +88,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D4.1": {
+    version: 1,
+    blocks: [
+      {
+        id: "d4-1-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Production Git is not only about storing code. The workflow must let the team trace a running change back to source, review it, identify the exact release and recover safely."
+      },
+      {
+        id: "d4-1-git-production-workflow",
+        type: "illustration",
+        heading: "The production Git workflow",
+        alt: "A code change moves through review, commit, release identity, deployment evidence and rollback recovery",
+        bindingId: "D4.1:d4-1-git-production-workflow",
+        nodes: ["Change", "Review", "Commit", "Release", "Recovery"],
+        variant: "git-production-workflow-v1",
+        caption:
+          "Treat Git history as evidence for production change, not just as developer history."
+      }
+    ]
+  },
+
+
   "D3.5": {
     version: 1,
     blocks: [
@@ -873,6 +899,7 @@ export function validateLessonContent(
         block.variant !== "kubernetes-config-storage-v1" &&
         block.variant !== "kubernetes-health-scaling-v1" &&
         block.variant !== "kubernetes-failure-loop-v1" &&
+        block.variant !== "git-production-workflow-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
