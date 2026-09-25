@@ -21,7 +21,8 @@ export type LessonIllustrationVariantV1 =
   | "transport-contract-v1"
   | "dns-resolution-v1"
   | "http-exchange-v1"
-  | "tls-trust-v1";
+  | "tls-trust-v1"
+  | "container-execution-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -660,6 +661,36 @@ const TLS_TRUST_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const CONTAINER_EXECUTION_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "container-execution-v1",
+  title: "The container execution model",
+  stages: [
+    { id: "image", label: "Image", detail: "An image packages a filesystem and metadata that can be used to create a container." },
+    { id: "container", label: "Container", detail: "A container is a running instance with an isolated process environment built from the image." },
+    { id: "process", label: "Process", detail: "The container's lifecycle follows its main process; when that process exits, the container normally stops." },
+    { id: "namespaces", label: "Namespaces", detail: "Linux namespaces isolate views such as processes, networking and mounts without creating a separate kernel." },
+    { id: "host-kernel", label: "Host Kernel", detail: "Containers share the host kernel rather than booting a separate guest kernel." }
+  ],
+  foundation: {
+    label: "A container is an isolated process environment, not a virtual machine",
+    detail: "Images package files and metadata; containers run processes using the host kernel with OS-level isolation."
+  },
+  callouts: [
+    { id: "image", label: "Image", detail: "A reusable package of filesystem layers and metadata used to create containers." },
+    { id: "lifecycle", label: "Process lifecycle", detail: "The main process defines the normal container lifetime; an immediate exit can make a healthy runtime look like a failed container." },
+    { id: "namespaces", label: "Namespaces", detail: "Namespaces give processes isolated views without providing a second kernel." },
+    { id: "kernel", label: "Shared kernel", detail: "The container uses the host kernel, which is a key difference from a traditional virtual machine." }
+  ],
+  failureChecks: [
+    { id: "process-command", label: "1. Main process", detail: "What command started in the container, and why did that process stay alive or exit?" },
+    { id: "filesystem", label: "2. Filesystem", detail: "Does the running container contain the files and configuration the process expects?" },
+    { id: "namespace-view", label: "3. Namespace view", detail: "Which process, network or mount view is isolated, and what evidence does that produce?" },
+    { id: "kernel-assumption", label: "4. Kernel assumption", detail: "Are you treating the container like a virtual machine when the behavior actually depends on a shared host kernel?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -825,6 +856,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "container-execution-v1") {
+    return {
+      ...CONTAINER_EXECUTION_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -860,7 +898,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "transport-contract-v1" &&
     model.variant !== "dns-resolution-v1" &&
     model.variant !== "http-exchange-v1" &&
-    model.variant !== "tls-trust-v1"
+    model.variant !== "tls-trust-v1" &&
+    model.variant !== "container-execution-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
