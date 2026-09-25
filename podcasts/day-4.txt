@@ -1484,46 +1484,355 @@ Speaker B: Run the plan before the apply, and treat unexpected change as evidenc
 
 EPISODE D4.6 — Cloud Primitives
 
-Speaker A: Cloud vendors package familiar primitives into managed services: compute, networking, storage, identity, load balancing, databases, queues and caches.
+Speaker A: Cloud is where the vocabulary gets large.
 
-Speaker B: So I should learn the concepts before memorizing service names.
+Speaker B: Compute names. Storage names. Network names. Database names.
 
-Speaker A: Absolutely. Otherwise you become excellent at flash cards and mediocre at architecture.
+Speaker A: So reduce the vocabulary to primitives.
 
-Speaker A: Real-life example: every city needs roads, warehouses, electricity, addresses, security and public transport. Different cities give them different names and implementations. Cloud providers do the same with infrastructure primitives.
+Speaker B: Workload -> Compute -> Network -> State -> Identity -> Data Services.
 
-Speaker A: We will map concepts to AWS examples only after the mental model is clear.
+Speaker A: Exactly. Learn the engineering concept before the provider product name.
 
-Speaker A: Lab: take one reference application and identify every primitive it requires, what owns it, what can fail, and what it costs operationally.
-Speaker B: Cloud is where the vocabulary explodes.
+Speaker B: Stage one: workload.
 
-Speaker A: Then reduce it to primitives. Compute. Network. Storage. Identity. Database. Queue. Cache.
+Speaker A: Start with the user-facing system.
 
-Speaker B: And managed services are composed from those ideas.
+Speaker B: Web application.
 
-Speaker A: Exactly. The names differ by provider, but the operational questions remain similar.
+Speaker A: Example.
 
-Speaker B: City infrastructure?
+Speaker B: API.
 
-Speaker A: Compute is like buildings and workers. Networks are roads. Storage is warehouses. Identity is access control. Queues are waiting areas for work. A cache is a nearby copy that saves expensive travel.
+Speaker A: Example.
 
-Speaker B: Prediction. If I add more application servers but keep one database as the bottleneck, have I solved scaling?
+Speaker B: Background worker.
 
-Speaker A: You changed one part of the system. The bottleneck may simply move.
+Speaker A: Example.
 
-Speaker B: So scale is a property of the whole dependency graph.
+Speaker B: The workload is what we are trying to operate.
 
-Speaker A: Exactly. That's one of the most important transitions in this programme.
+Speaker A: Good.
 
-Speaker B: And identity?
+Speaker B: Stage two: compute.
 
-Speaker A: Every networked system needs to know who can access what. Security becomes part of the architecture, not a finishing touch.
+Speaker A: Compute is where the workload actually runs.
+
+Speaker B: VM.
+
+Speaker A: One option.
+
+Speaker B: Containers.
+
+Speaker A: Another.
+
+Speaker B: Serverless runtime.
+
+Speaker A: Another.
+
+Speaker B: Provider names change, but the engineering question is still: what execution capacity runs this workload?
+
+Speaker A: Exactly.
+
+Speaker B: Stage three: network.
+
+Speaker A: The workload needs paths to users, services and dependencies.
+
+Speaker B: Load balancer.
+
+Speaker A: One network primitive boundary.
+
+Speaker B: Private network.
+
+Speaker A: Another.
+
+Speaker B: Subnet.
+
+Speaker A: Another.
+
+Speaker B: The provider can package them differently, but the architectural question is who can reach what and through which path.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction.
+
+Speaker A: We add ten more application servers. The database remains the same size. Have we solved scaling?
+
+Speaker B: Not necessarily. The database may still be the bottleneck.
+
+Speaker A: Exactly.
+
+Speaker B: So scale belongs to the dependency graph, not one box.
+
+Speaker A: One of the most important cloud lessons.
+
+Speaker B: Stage four: state.
+
+Speaker A: Compute can be disposable. Important application state often cannot.
+
+Speaker B: Database.
+
+Speaker A: Example.
+
+Speaker B: Object storage.
+
+Speaker A: Example.
+
+Speaker B: Queue state.
+
+Speaker A: Depending on the design, yes.
+
+Speaker B: The question is: where does durable state live, who owns it, and how does its lifecycle differ from compute?
+
+Speaker A: Exactly.
+
+Speaker B: Prediction.
+
+Speaker A: We replace every application server with a new image. Should the user's durable orders disappear?
+
+Speaker B: No. If the system is designed correctly, durable application state has a lifecycle separate from disposable compute.
+
+Speaker A: Good.
+
+Speaker B: Stage five: identity.
+
+Speaker A: Cloud architecture is also an access-control graph.
+
+Speaker B: Which service can read the database?
+
+Speaker A: Yes.
+
+Speaker B: Which workflow can deploy the application?
+
+Speaker A: Yes.
+
+Speaker B: Which human can change the network?
+
+Speaker A: Yes.
+
+Speaker B: So identity is part of the architecture from the start.
+
+Speaker A: Correct. It is not a finishing security layer.
+
+Speaker B: Prediction.
+
+Speaker A: A network path is correct, but the application still gets access denied to the storage service. Is networking the likely remaining fault?
+
+Speaker B: Not first. The path may work while identity or authorization denies the operation.
+
+Speaker A: Exactly.
+
+Speaker B: Stage six: data services.
+
+Speaker A: Databases, queues and caches solve different application problems.
+
+Speaker B: Database stores durable structured state.
+
+Speaker A: In one common design.
+
+Speaker B: Queue holds work between producer and consumer.
+
+Speaker A: Good.
+
+Speaker B: Cache keeps a reusable copy near the consumer to reduce repeated expensive work.
+
+Speaker A: Good.
+
+Speaker B: So replacing a database with a cache because both contain data would be a category mistake.
+
+Speaker A: Exactly.
+
+Speaker B: A cache is not the authoritative business state unless the system is deliberately designed that way.
+
+Speaker A: Correct.
+
+Speaker B: Managed services.
+
+Speaker A: A managed service moves some operational responsibility to the provider.
+
+Speaker B: Patching.
+
+Speaker A: Perhaps.
+
+Speaker B: Backups.
+
+Speaker A: Perhaps.
+
+Speaker B: Scaling mechanics.
+
+Speaker A: Perhaps.
+
+Speaker B: But the customer still owns architecture questions.
+
+Speaker A: Exactly. Capacity, access, dependencies, data lifecycle and cost do not disappear.
+
+Speaker B: Prediction.
+
+Speaker A: A cloud provider says a database is fully managed. Does that mean we do not need backups, recovery planning or capacity reasoning?
+
+Speaker B: No. The operational split changed, but the system still needs recovery and capacity decisions.
+
+Speaker A: Exactly.
+
+Speaker B: Now cost.
+
+Speaker A: Every primitive has an operational cost model.
+
+Speaker B: Compute hours.
+
+Speaker A: Yes.
+
+Speaker B: Storage.
+
+Speaker A: Yes.
+
+Speaker B: Data transfer.
+
+Speaker A: Yes.
+
+Speaker B: Requests and managed-service pricing.
+
+Speaker A: Yes.
+
+Speaker B: So architecture includes cost boundaries too.
+
+Speaker A: Correct.
+
+Speaker B: But cost is not the only design constraint.
+
+Speaker A: Exactly. Reliability, latency, security, operability and cost have to be considered together.
+
+Speaker B: Human example?
+
+Speaker A: A city.
+
+Speaker B: Buildings are compute.
+
+Speaker A: Roughly.
+
+Speaker B: Roads are network.
+
+Speaker A: Roughly.
+
+Speaker B: Warehouses are storage.
+
+Speaker A: Good.
+
+Speaker B: Identity controls who can enter which places.
+
+Speaker A: Good.
+
+Speaker B: Public transport is like a queue moving people between locations.
+
+Speaker A: Roughly. The analogy helps you see that a city is a system of primitives and dependencies, not a list of building names.
+
+Speaker B: Cloud products work the same way.
+
+Speaker A: That is the lesson.
 
 Speaker B: Mac lab?
 
-Speaker A: Draw a small cloud architecture for a web application. Use only primitives first. Then map each box to one managed service from a cloud provider you know. Finally remove the provider names and explain the system again.
+Speaker A: Draw a small web application using only primitives.
 
-Speaker B: So I'm learning the architecture vocabulary, not memorizing a vendor menu.
+Speaker B: Workload.
 
-Speaker A: Right. Vendors are implementations of patterns you need to understand.
+Speaker A: Good.
+
+Speaker B: Compute.
+
+Speaker A: Good.
+
+Speaker B: Network.
+
+Speaker A: Good.
+
+Speaker B: State.
+
+Speaker A: Good.
+
+Speaker B: Identity.
+
+Speaker A: Good.
+
+Speaker B: Data services.
+
+Speaker A: Good.
+
+Speaker B: Then map each primitive to one managed service from a provider you know.
+
+Speaker A: Good.
+
+Speaker B: Then remove the provider names.
+
+Speaker A: And explain the architecture again.
+
+Speaker B: That proves I learned the concept rather than memorizing the menu.
+
+Speaker A: Exactly.
+
+Speaker B: Controlled failure?
+
+Speaker A: Remove one primitive boundary in a safe diagram or disposable lab.
+
+Speaker B: For example, remove the database capacity increase while keeping the application scaled out.
+
+Speaker A: Good.
+
+Speaker B: Predict the new bottleneck.
+
+Speaker A: Good.
+
+Speaker B: Or remove one identity permission.
+
+Speaker A: Good.
+
+Speaker B: Predict which user path becomes forbidden while network reachability remains.
+
+Speaker A: Good.
+
+Speaker B: Or remove persistent storage from a disposable test.
+
+Speaker A: Good.
+
+Speaker B: Predict what state is lost when compute is replaced.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: Why start with primitives instead of provider product names?
+
+Speaker B: Because the same engineering concepts appear across providers even when product names and implementation details differ.
+
+Speaker A: Why does scaling one component fail sometimes?
+
+Speaker B: Another dependency can remain the bottleneck, so scale is a property of the whole dependency graph.
+
+Speaker A: Why is identity part of architecture?
+
+Speaker B: Because every networked system needs to control who or what can access each resource.
+
+Speaker A: Why is durable state separate from compute?
+
+Speaker B: Compute may be replaced or scaled horizontally while important data must survive its lifecycle.
+
+Speaker A: What does managed service mean?
+
+Speaker B: The provider owns more of the operational work, but the customer still owns architecture, access, dependency, reliability and cost decisions.
+
+Speaker A: Final challenge.
+
+Speaker B: Design a cloud application without naming AWS, Azure or GCP.
+
+Speaker A: Your model?
+
+Speaker B: Workload -> Compute -> Network -> State -> Identity -> Data Services. Then I map each primitive to provider products only after I can explain the architecture and its failure boundaries.
+
+Speaker A: Good.
+
+Speaker B: So cloud skill is not memorizing a provider menu.
+
+Speaker A: It is recognizing the primitives, dependencies and ownership boundaries underneath the menu.
+
+Speaker B: Finish Day 4 with the architecture diagram, then remove one primitive and explain what breaks.
 
