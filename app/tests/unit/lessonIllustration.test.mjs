@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models HTTPS as certificate identity, handshake, secure session and evidence", () => {
+    const model = getLessonIllustrationModel({
+      id: "d2-4-tls",
+      type: "illustration",
+      heading: "The HTTPS trust path",
+      alt: "A client checks a server certificate, completes a TLS handshake, establishes a protected session and interprets trust evidence",
+      bindingId: "D2.4:d2-4-tls",
+      nodes: ["Client", "Certificate", "Handshake", "Secure Session", "Evidence"],
+      variant: "tls-trust-v1"
+    });
+
+    expect(model.variant).toBe("tls-trust-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "client",
+      "certificate",
+      "handshake",
+      "secure-session",
+      "evidence"
+    ]);
+    expect(model.foundation.label).toBe("Encryption and authentication are related but not identical");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "certificate-chain",
+      "hostname",
+      "private-key",
+      "trust"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "identity-match",
+      "certificate-validity",
+      "handshake",
+      "application-proof"
+    ]);
+  });
+
   it("models HTTP as an application exchange from request to response evidence", () => {
     const model = getLessonIllustrationModel({
       id: "d2-3-http",
