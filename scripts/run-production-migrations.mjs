@@ -1,9 +1,10 @@
 import { readdir, readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import pg from "pg";
+import { createRequire } from "node:module";
 
-const { Pool } = pg;
+const require = createRequire(new URL("../app/package.json", import.meta.url));
+const { Pool } = require("pg");
 
 if (process.env.VERCEL_ENV !== "production") {
   console.log("Production database migration: skipped outside Vercel production.");
