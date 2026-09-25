@@ -1961,5 +1961,13 @@ Merged PR #86:
 - PR #85 was closed as stale after D3.5 changed the main lineage; D4.1 was safely re-ported as PR #86.
 - Next content boundary: **D4.2 — Continuous Integration and Quality Gates**.
 
+
+Active D4.2 current-main port:
+- D4.2 is upgraded to the script+illustration gold-standard on the post-D4.1 `main` lineage.
+- Semantic illustration: `cicd-control-path-v1`.
+- Teaching model: Source -> Validate -> Artifact -> Promote -> Verify.
+- The existing D4.2 script teaches pipeline risk control, artifact provenance, environment differences and runtime verification; the visual now binds those mechanisms into one evidence chain.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
