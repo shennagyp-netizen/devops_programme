@@ -12,14 +12,24 @@ describe("HTTP request animation red team", () => {
     const primitiveIds = httpRequestAnimation.primitives.map((primitive) => primitive.id);
     expect(new Set(primitiveIds).size).toBe(primitiveIds.length);
 
-    const packet = httpRequestAnimation.primitives.find(
+    const packets = httpRequestAnimation.primitives.filter(
       (primitive) => primitive.kind === "packet"
     );
-    expect(packet).toMatchObject({
-      id: "http-request",
-      from: "browser",
-      to: "api"
-    });
+    expect(packets).toHaveLength(2);
+    expect(packets).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "request-browser-gateway",
+          from: "browser",
+          to: "gateway"
+        }),
+        expect.objectContaining({
+          id: "request-gateway-api",
+          from: "gateway",
+          to: "api"
+        })
+      ])
+    );
   });
 
   it("keeps the reference diagram free of collision failures", () => {
