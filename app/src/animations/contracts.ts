@@ -517,12 +517,16 @@ export function validateAnimationDefinition(
       }
       eventIds.add(event.id);
 
-      if (!primitiveIds.has(event.targetId)) {
-        failures.push(`event target does not exist: ${event.targetId}`);
+      const eventTargetId = event.targetId;
+      if (!isNonEmptyString(eventTargetId) || !primitiveIds.has(eventTargetId)) {
+        failures.push(`event target does not exist: ${String(eventTargetId)}`);
       }
 
-      if (!stateIds.has(event.targetStateId)) {
-        failures.push(`event target state does not exist: ${event.targetStateId}`);
+      const eventTargetStateId = event.targetStateId;
+      if (!isNonEmptyString(eventTargetStateId) || !stateIds.has(eventTargetStateId)) {
+        failures.push(
+          `event target state does not exist: ${String(eventTargetStateId)}`
+        );
       }
 
       if (
@@ -551,9 +555,13 @@ export function validateAnimationDefinition(
         continue;
       }
 
-      if (!primitiveIds.has(interaction.targetId)) {
+      const interactionTargetId = interaction.targetId;
+      if (
+        !isNonEmptyString(interactionTargetId) ||
+        !primitiveIds.has(interactionTargetId)
+      ) {
         failures.push(
-          `interaction target does not exist: ${interaction.targetId}`
+          `interaction target does not exist: ${String(interactionTargetId)}`
         );
       }
 
