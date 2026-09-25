@@ -1892,7 +1892,6 @@ Merged PR #46:
 Merged PR #47:
 - D1.6 -> `routing-boundary-v1`: Destination -> Route -> Next hop -> Boundary -> Evidence.
 - Merge commit: `417cf8ec4ce899623f705708e839214591ac1acb`.
-- Final PR #47 gate passed **369 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #48:
 - D2.1 -> `transport-contract-v1`: Endpoint -> Port -> Transport -> Delivery -> Evidence.
@@ -1921,21 +1920,34 @@ Merged PR #52:
 Merged PR #53:
 - D2.6 -> `docker-network-storage-v1`: Service -> Network -> Name -> Port -> Volume.
 - Merge commit: `d1884d9443a7e2c2f8eff85822307604ea5d865d`.
-- Final PR #53 head status was **Vercel success**.
-- D2.6 separates internal service discovery, internal service ports, published host ports and persistent volumes.
+- Final merge status: Vercel success.
 
 Merged PR #54 / #78:
 - D2.7 -> `docker-failure-loop-v1`: Baseline -> Change -> Symptom -> Evidence -> Recovery.
 - Later merge commit: `0d0c490b5a7f21f49f6d6ba25c763672cc5cd8ab`.
-- Final merged commit status is **Vercel success**.
+- Final merge status: Vercel success.
 
 Merged PR #90:
 - D3.1 -> `kubernetes-reconciliation-v1`: Desired State -> Controller -> Scheduler -> Pod -> Node -> Observed State.
 - Merge commit: `a40680ab966d9afea465e76fd3bd224e3b36ef78`.
 - Final PR #90 gate passed **397 tests**, all programme contracts, TypeScript and the Next.js production build.
-- A red-team test run caught a duplicate D3.1 model declaration and stale legacy stage expectations; both were corrected.
-- The shared Kubernetes variant validators also contained duplicate entries; those were removed without weakening validation.
-- Next content boundary: **D3.2 — Kubernetes Networking**.
+- Red-team caught and corrected duplicate D3.1 model/validator declarations and stale legacy test expectations.
+
+Merged PR #82:
+- D3.3 -> `kubernetes-config-storage-v1`: Config -> Secret -> Mount -> Pod -> Persistence.
+- Merge commit: `2a7c58e9f8ab25264744bd9d5de62286bcc7284c`.
+- Merge status: **Vercel build-rate-limit failure**; treat D3.3 as **infrastructure-blocked**, not code-green.
+- D3.3 separates configuration lifecycle, secret handling, consumption/mounting and persistent storage lifecycle.
+
+Merged PR #83:
+- D3.4 -> `kubernetes-health-scaling-v1`.
+- Merge commit: `3514e356dbda8e1260e788d1e82c4864d7af009f`.
+- Merge status: **Vercel success**.
+- D3.4 covers startup/readiness/liveness, capacity and rollout evidence.
+
+Active validation state:
+- D3.2 current head is still pending current-head validation because the repository's Vercel build-rate-limit has intermittently blocked current deployments. Do not infer current-head green status from the older successful branch run.
+- Next authored boundary: **D3.5 — Kubernetes Failure Lab**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
