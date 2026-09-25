@@ -200,19 +200,24 @@ function validateInteractionSteps(
       stepIds.add(rawStep.id);
     }
 
-    if (!Number.isInteger(rawStep.order) || rawStep.order <= 0) {
+    const order = rawStep.order;
+    if (
+      typeof order !== "number" ||
+      !Number.isInteger(order) ||
+      order <= 0
+    ) {
       failures.push(`interaction step ${String(rawStep.id)} order is invalid`);
     } else {
-      if (orders.has(rawStep.order)) {
+      if (orders.has(order)) {
         failures.push(
-          `interaction step order is duplicated: ${rawStep.order}`
+          `interaction step order is duplicated: ${order}`
         );
       }
-      orders.add(rawStep.order);
+      orders.add(order);
 
       if (
         interactionMode === "sequential" &&
-        (rawStep.order !== index + 1)
+        order !== index + 1
       ) {
         failures.push(
           `interaction step order is not the declared order at index ${index}`
@@ -449,7 +454,7 @@ export function validateCurriculumIllustrationBinding(
       validateCompletion(value.completion, value.interactionSteps as IllustrationInteractionStepV1[], failures);
     }
   } else {
-    if (value.interactionSteps?.length) {
+    if (Array.isArray(value.interactionSteps) && value.interactionSteps.length > 0) {
       failures.push("static illustration cannot declare interaction steps");
     }
 
