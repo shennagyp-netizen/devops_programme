@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #41, commit `b8e8456d19be162c64850bdaa01f319101153885` (B1.1 process-diagnosis script + illustration quality slice).
+**Latest main architecture/content merge:** PR #42, commit `7feba39f6d02e9b8783744a9ffeb0db7050efeef` (D1.1 Linux operating model script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #41 has merged to `main`.
+**Active content-quality branch:** none. PR #42 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1867,20 +1867,14 @@ Merged PR #40:
 Merged PR #41:
 - B1.1 -> `process-diagnosis-v1`: Symptom -> Process -> Resource -> Dependency -> Proof.
 - Merge commit: `b8e8456d19be162c64850bdaa01f319101153885`.
-- B1.1 now explicitly teaches process identity/state, resource-versus-wait diagnosis, dependency evidence, safe local failure/recovery, and proof.
-- Final PR #41 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- **All 10 Beginner lessons now meet the gold-standard script+illustration contract.**
-- Completed gold-standard sequence: B1.1, B1.2, B1.3, B1.4, B1.5, B2.1, B2.2, B2.3, B3.1, B3.2.
-- Next content boundary: **Intermediate D1.1 — first lesson of I-F1 Linux and Operating Systems**.
+- All 10 Beginner lessons now meet the gold-standard script+illustration contract.
 
-
-Active PR #42 scope:
-- D1.1 (Intermediate Linux + Operating Systems) is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `linux-operating-model-v1`.
-- Teaching model: Application -> Process -> Kernel -> Resources -> Evidence.
-- The deeper script adds explicit process state, file descriptors, signals, execution context, evidence correlation and a safe disposable-process lab.
-- This is intentionally more systems-oriented than Beginner while preserving the same prediction -> operation -> failure -> evidence -> proof rhythm.
-- TDD/full-programme gate is required before merge.
+Merged PR #42:
+- D1.1 -> `linux-operating-model-v1`: Application -> Process -> Kernel -> Resources -> Evidence.
+- Merge commit: `7feba39f6d02e9b8783744a9ffeb0db7050efeef`.
+- D1.1 now teaches process identity/state, kernel-mediated resources, file descriptors, signals, execution context and evidence correlation at Intermediate depth.
+- Final PR #42 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- Next content boundary: **D1.2 — Terminal as an Engineering Tool**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
