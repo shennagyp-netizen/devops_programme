@@ -79,7 +79,7 @@ describe("course lesson content integration", () => {
     ]);
     expect(b13?.content.blocks[1]).toMatchObject({
       variant: "https-stack-v1",
-      bindingId: "B1.3:request-stack"
+      bindingId: "B1.3:b1-3-request-stack"
     });
 
     expect(b12?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
