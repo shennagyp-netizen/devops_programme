@@ -2046,6 +2046,14 @@ Active PR #101 scope:
 - The existing D4.2 script is preserved and visually bound to source identity, risk gates, artifact provenance, promotion controls and runtime proof.
 - Fresh current-head TDD/full-programme validation is required before merge.
 
+
+Merged PR #101:
+- D4.2 -> `ci-cd-pipeline-v1`: Source -> Validate -> Artifact -> Promote -> Verify.
+- Merge commit: `5bea3b1154e75df2783bdb0f43ee77fbd5fe0ede`.
+- D4.2 is a clean current-main port of the CI/CD control-path model: source identity, risk gates, artifact provenance, promotion controls and runtime proof.
+- Fresh current-main validation passed **409 tests**, all programme contracts, TypeScript and the Next.js production build.
+- Stale PR #92 was closed unmerged after the clean port landed.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
 
