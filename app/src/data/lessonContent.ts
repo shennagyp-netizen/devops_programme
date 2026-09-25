@@ -14,7 +14,8 @@ export type LessonIllustrationVariantV1 =
   | "delivery-pipeline-v1"
   | "observability-diagnosis-v1"
   | "backup-recovery-v1"
-  | "queue-state-v1";
+  | "queue-state-v1"
+  | "incident-loop-v1";
 
 export type LessonContentBlock =
   | {
@@ -67,6 +68,30 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "B3.2": {
+    version: 1,
+    blocks: [
+      {
+        id: "b3-2-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "An incident is not just a broken command. It is a live system problem where user impact, evidence, mitigation, recovery and learning must stay connected."
+      },
+      {
+        id: "b3-2-incident",
+        type: "illustration",
+        heading: "The incident loop",
+        alt: "A production incident moves from user impact through scoping and evidence to mitigation, stable recovery and follow-up learning",
+        bindingId: "B3.2:b3-2-incident",
+        nodes: ["Impact", "Scope", "Evidence", "Mitigate", "Recover", "Learn"],
+        variant: "incident-loop-v1",
+        caption:
+          "Reduce harm, keep evidence, prove recovery, then turn the incident into a stronger system."
+      }
+    ]
+  },
+
   "B3.1": {
     version: 1,
     blocks: [
@@ -340,7 +365,8 @@ export function validateLessonContent(
         block.variant !== "delivery-pipeline-v1" &&
         block.variant !== "observability-diagnosis-v1" &&
         block.variant !== "backup-recovery-v1" &&
-        block.variant !== "queue-state-v1"
+        block.variant !== "queue-state-v1" &&
+        block.variant !== "incident-loop-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }

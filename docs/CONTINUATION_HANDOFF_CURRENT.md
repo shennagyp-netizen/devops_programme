@@ -1867,5 +1867,14 @@ Merged PR #39:
 - The gold-standard script+illustration sequence now covers B1.2, B1.3, B1.4, B1.5, B2.1, B2.2, B2.3 and B3.1.
 - Next content boundary: B3.2 — The First Real Incident.
 
+
+Active PR #40 scope:
+- B3.2 is upgraded to the same script+illustration quality standard as the preceding Beginner and B2 units.
+- New semantic illustration: `incident-loop-v1`.
+- Teaching model: Impact -> Scope -> Evidence -> Mitigate -> Recover -> Learn.
+- The incident loop explicitly separates user impact from diagnosis, safe mitigation from root-cause certainty, and recovery proof from deployment-command success.
+- The rewritten script closes Beginner with a complete controlled incident drill.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================

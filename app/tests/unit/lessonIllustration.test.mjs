@@ -59,6 +59,41 @@ describe("lesson illustration teaching model", () => {
 
 
 
+  it("models an incident as impact, scope, evidence, mitigation, recovery and learning", () => {
+    const model = getLessonIllustrationModel({
+      id: "b3-2-incident",
+      type: "illustration",
+      heading: "The incident loop",
+      alt: "A production incident moves from user impact through scoping and evidence to mitigation, stable recovery and follow-up learning",
+      bindingId: "B3.2:b3-2-incident",
+      nodes: ["Impact", "Scope", "Evidence", "Mitigate", "Recover", "Learn"],
+      variant: "incident-loop-v1"
+    });
+
+    expect(model.variant).toBe("incident-loop-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "impact",
+      "scope",
+      "evidence",
+      "mitigate",
+      "recover",
+      "learn"
+    ]);
+    expect(model.foundation.label).toBe("Reduce harm before chasing a perfect explanation");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "timeline",
+      "change-identity",
+      "blast-radius",
+      "recovery-proof"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "user-impact",
+      "first-signal",
+      "safe-action",
+      "stable-recovery"
+    ]);
+  });
+
   it("models queue work as producer, queued state, consumer and outcome", () => {
     const model = getLessonIllustrationModel({
       id: "b3-1-queue",
