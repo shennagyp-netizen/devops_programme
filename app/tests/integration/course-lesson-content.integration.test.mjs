@@ -60,6 +60,21 @@ describe("course lesson content integration", () => {
       expect(lesson.content.blocks[1].type, lesson.id).toBe("illustration");
     }
   });
+  it("uses the authored queue-state visual for B3.1", () => {
+    const lesson = allLessons.find((item) => item.id === "B3.1");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "b3-1-queue",
+      bindingId: "B3.1:b3-1-queue",
+      variant: "queue-state-v1"
+    });
+  });
+
   it("uses the authored recovery visual for B2.3", () => {
     const lesson = allLessons.find((item) => item.id === "B2.3");
     expect(lesson).toBeDefined();
