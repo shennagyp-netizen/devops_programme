@@ -505,23 +505,6 @@ function validateGeometry(
       const first = rects[index];
       const second = rects[otherIndex];
 
-      const firstIsLabel = primitives.some(
-        (primitive) =>
-          isObject(primitive) &&
-          primitive.id === first.id &&
-          primitive.kind === "label"
-      );
-      const secondIsLabel = primitives.some(
-        (primitive) =>
-          isObject(primitive) &&
-          primitive.id === second.id &&
-          primitive.kind === "label"
-      );
-
-      if (firstIsLabel !== secondIsLabel) {
-        continue;
-      }
-
       if (rectanglesOverlap(first, second, clearance)) {
         failures.push(
           `shape clearance conflict between ${first.id} and ${second.id}`
@@ -537,6 +520,14 @@ function validateGeometry(
       }
     }
   }
+
+  const blockingRects = new Map<string, Rect>(
+    primitives
+      .filter(isObject)
+      .filter((primitive) => primitive.kind === "node" || primitive.kind === "label")
+      .map((primitive) => [String(primitive.id), rectangleForPrimitive(primitive)])
+      .filter((entry): entry is [string, Rect] => entry[1] !== null)
+  );
 
   const nodeRects = new Map<string, Rect>(
     primitives
@@ -582,11 +573,11 @@ function validateGeometry(
     const start = center(source);
     const end = center(target);
 
-    for (const [nodeId, nodeRect] of nodeRects) {
-      if (nodeId === connection.from || nodeId === connection.to) continue;
-      if (segmentIntersectsRect(start, end, nodeRect, clearance)) {
+    for (const [shapeId, shapeRect] of blockingRects) {
+      if (shapeId === connection.from || shapeId === connection.to) continue;
+      if (segmentIntersectsRect(start, end, shapeRect, clearance)) {
         failures.push(
-          `connection crosses shape: ${connection.id} crosses ${nodeId}`
+          `connection crosses shape: ${connection.id} crosses ${shapeId}`
         );
       }
     }
@@ -601,11 +592,11 @@ function validateGeometry(
     const start = center(source);
     const end = center(target);
 
-    for (const [nodeId, nodeRect] of nodeRects) {
-      if (nodeId === packet.from || nodeId === packet.to) continue;
-      if (segmentIntersectsRect(start, end, nodeRect, clearance)) {
+    for (const [shapeId, shapeRect] of blockingRects) {
+      if (shapeId === packet.from || shapeId === packet.to) continue;
+      if (segmentIntersectsRect(start, end, shapeRect, clearance)) {
         failures.push(
-          `packet crosses shape: ${packet.id} crosses ${nodeId}`
+          `packet crosses shape: ${packet.id} crosses ${shapeId}`
         );
       }
     }
