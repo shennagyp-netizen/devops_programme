@@ -72,4 +72,24 @@ describe("curriculum illustration binding integration", () => {
     )).toBe(true);
   });
 
+  it("keeps the curriculum binding registry one-to-one with authored visual blocks", () => {
+    const visualBlocks = Object.values(lessonsByCourse)
+      .flat()
+      .flatMap((lesson) =>
+        lesson.content.blocks.filter(
+          (block) =>
+            block.type === "illustration" ||
+            block.type === "interactive-illustration"
+        )
+      );
+
+    expect(curriculumIllustrationBindings).toHaveLength(visualBlocks.length);
+    expect(
+      new Set(curriculumIllustrationBindings.map((binding) => binding.id)).size
+    ).toBe(curriculumIllustrationBindings.length);
+    expect(
+      curriculumIllustrationBindings.map((binding) => binding.contentBlockId)
+    ).toEqual(visualBlocks.map((block) => block.id));
+  });
+
 });
