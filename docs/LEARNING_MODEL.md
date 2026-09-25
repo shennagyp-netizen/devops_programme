@@ -121,6 +121,40 @@ The current ledger is local. Hands-on tasks now use structured evidence contract
 
 The eventual competency record should be explainable: what was demonstrated, under what conditions, and by which evidence.
 
+## Mastery remediation
+
+The programme must not treat a failed assignment as a request to repeat the same lesson.
+
+A failed assignment creates a structured remediation event:
+failure -> classify the failure -> re-explain -> micro-task -> reattempt -> verify -> escalate to a different explanation path when needed.
+
+The remediation engine currently supports six explanation methods:
+1. plain-language explanation
+2. analogy followed by a literal technical mapping
+3. mechanism-level explanation
+4. worked example
+5. counterexample showing what the evidence does not prove
+6. visual/mechanism tracing
+
+Attempt progression is deliberate:
+- first failure: plain-language + analogy
+- second failure: mechanism + worked example
+- third failure: counterexample + visual
+- repeated failure: cycle through mechanism/counterexample/visual rather than repeating the same explanation.
+
+A remediation step is not itself a mastery decision. It prepares the learner for another attempt. The original assignment's evidence contract remains authoritative.
+
+The learner must not be shown only "try again". The system should identify the failure class, explain the relevant concept from another angle, require a small intermediate task, and then return the learner to the original task.
+
+Current MVP persistence for remediation attempts is local. A future server-side mastery ledger must persist:
+- lesson/task identity
+- attempt number
+- failure class
+- remediation methods shown
+- micro-task completion
+- reattempt result
+- final evidence.
+
 ## Mastery model
 
 Recognition -> Explanation -> Prediction -> Operation -> Failure engineering -> Diagnosis/repair -> Design
