@@ -13,7 +13,11 @@ vi.mock("../../src/lib/server/auth.ts", () => ({
   registerUserAndCreateSession: createAccountMock,
   loginUserAndCreateSession: loginMock,
   logoutCurrentSession: logoutMock,
-  normalizeEmail: (value) => String(value).trim().toLowerCase()
+  normalizeEmail: (value) => String(value).trim().toLowerCase(),
+  validateRegistrationInput: (input) => ({
+    ok: true,
+    email: String(input.email).trim().toLowerCase()
+  })
 }));
 
 vi.mock("next/navigation", () => ({
@@ -93,8 +97,8 @@ describe("self-hosted authentication actions", () => {
     });
   });
 
-  it("logs out through a server action", async () => {
-    await expect(logoutAction()).resolves.toEqual({ ok: true });
+  it("logs out through a server action and redirects home", async () => {
+    await expect(logoutAction()).rejects.toThrow("NEXT_REDIRECT:/");
     expect(logoutMock).toHaveBeenCalledTimes(1);
   });
 });
