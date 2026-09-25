@@ -879,6 +879,7 @@ const KUBERNETES_HEALTH_SCALING_VARIANT: LessonIllustrationModelV1 = {
 };
 
 
+// Gold-standard D3.5 failure-loop semantic model.
 const KUBERNETES_FAILURE_LOOP_VARIANT: LessonIllustrationModelV1 = {
   version: 1,
   variant: "kubernetes-failure-loop-v1",
