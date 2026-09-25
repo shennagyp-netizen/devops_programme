@@ -74,5 +74,37 @@ export type AuthUser = typeof authUsers.$inferSelect;
 export type AuthSession = typeof authSessions.$inferSelect;
 export type LearnerProgressHistory =
   typeof learnerProgressHistory.$inferSelect;
+
+export const learnerMasteryAttempts = pgTable(
+  "learner_mastery_attempts",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => authUsers.id, { onDelete: "cascade" }),
+    lessonId: text("lesson_id").notNull(),
+    assignmentId: text("assignment_id").notNull(),
+    attemptNumber: text("attempt_number").notNull(),
+    failureClass: text("failure_class").notNull(),
+    failedFields: text("failed_fields").notNull().default("[]"),
+    remediationMethods: text("remediation_methods").notNull().default("[]"),
+    remediationCompleted: text("remediation_completed").notNull().default("false"),
+    reattemptResult: text("reattempt_result").notNull().default("pending"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => ({
+    userAssignmentIndex: index(
+      "learner_mastery_attempts_user_assignment_idx"
+    ).on(table.userId, table.lessonId, table.assignmentId)
+  })
+);
+
+export type LearnerMasteryAttempt =
+  typeof learnerMasteryAttempts.$inferSelect;
+export type NewLearnerMasteryAttempt =
+  typeof learnerMasteryAttempts.$inferInsert;
+
 export type NewLearnerProgressHistory =
   typeof learnerProgressHistory.$inferInsert;
