@@ -1981,5 +1981,14 @@ Active PR #52 scope:
 - Controlled failures distinguish name-resolution failure, published-port failure and container recreation with persistent data.
 - TDD/full-programme gate is required before merge.
 
+
+Active PR #53 scope:
+- D2.6 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `docker-network-storage-v1`.
+- Teaching model: Service -> Network -> Name -> Port -> Volume.
+- The rewritten script separates internal service discovery, internal service ports, published host ports and persistent volumes.
+- Controlled failures isolate a bad database hostname, a bad published port and container recreation with a persistent volume.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
