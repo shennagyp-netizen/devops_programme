@@ -1972,5 +1972,13 @@ Current content-quality batch (PR #93):
 - D3.5 now has explicit prediction pauses for CrashLoopBackOff, ImagePullBackOff, OOMKilled, readiness failure and Service-selector failure.
 - PR #93 is currently blocked by Vercel build-rate-limit infrastructure; no code/test failure is claimed from that status.
 
+
+Merged PR #93:
+- Merge commit: `12773b47a6354c6e7dc0a558e2093ec971df44e4`.
+- D2.6 gold-standard podcast is now on `main`: Service -> Network -> Name -> Port -> Volume.
+- D3.5 now has explicit prediction pauses for CrashLoopBackOff, ImagePullBackOff, OOMKilled, readiness and selector failure while retaining the tested `kubernetes-failure-loop-v1` model.
+- Fresh Vercel validation for PR #93 was blocked by the platform's build-rate-limit status; this is recorded as infrastructure-blocked, not green.
+- Existing main content/test contracts for D2.6 and D3.5 remain intact.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
