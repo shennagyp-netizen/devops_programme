@@ -124,8 +124,8 @@ assert.match(content.authActionsTest, /generic login error/);
 assert.match(content.authBoundaryTest, /no Clerk dependency/);
 assert.match(content.migrationAuth, /auth_users/);
 assert.match(content.migrationAuth, /auth_sessions/);
-assert.match(content.migrationRunner, /auth_users/);
-assert.match(content.migrationRunner, /auth_sessions/);
+assert.match(content.migrationAuth, /auth_users/);
+assert.match(content.migrationAuth, /auth_sessions/);
 assert.match(content.migrationRunner, /_devops_programme_migrations/);
 
 for (const obsolete of [
