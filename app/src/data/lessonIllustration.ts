@@ -32,7 +32,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-failure-loop-v1"
   | "git-production-workflow-v1"
   | "scaling-control-loop-v1"
-  | "database-scale-v1";
+  | "database-scale-v1"
+  | "distributed-failure-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -1003,6 +1004,36 @@ const DATABASE_SCALE_VARIANT: LessonIllustrationModelV1 = {
 };
 
 
+const DISTRIBUTED_FAILURE_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "distributed-failure-v1",
+  title: "The distributed-system evidence path",
+  stages: [
+    { id: "request", label: "Request", detail: "One service sends a request with a deadline to another service or replica." },
+    { id: "observation", label: "Observation", detail: "The caller sees only what arrives before the deadline; missing responses leave multiple possible realities." },
+    { id: "replica-state", label: "Replica State", detail: "Replicas can temporarily hold different state because replication and communication are not instantaneous." },
+    { id: "agreement", label: "Agreement", detail: "The system uses consistency, quorum or coordination rules to decide what can be accepted and when." },
+    { id: "user-outcome", label: "User Outcome", detail: "The application turns partial information and recovery rules into a visible success, delay or failure." }
+  ],
+  foundation: {
+    label: "A timeout is missing information, not proof of failure",
+    detail: "When a caller times out, the remote service may have failed, succeeded, or completed the work while the response was delayed or lost."
+  },
+  callouts: [
+    { id: "partial-failure", label: "Partial failure", detail: "One component can fail or become unreachable while other components remain healthy." },
+    { id: "timeout", label: "Timeout", detail: "A timeout is a deadline observation. It does not reveal the remote operation's final state by itself." },
+    { id: "idempotency", label: "Idempotency", detail: "Safe retries require repeated delivery of the same logical operation to keep the final state correct." },
+    { id: "consistency", label: "Consistency", detail: "Different replicas or clients can observe different states while the system converges according to its consistency model." }
+  ],
+  failureChecks: [
+    { id: "response-uncertainty", label: "1. Response uncertainty", detail: "After a timeout, what can the caller actually prove about the remote operation?" },
+    { id: "replica-divergence", label: "2. Replica divergence", detail: "Are two replicas temporarily different, and what consistency rule governs that difference?" },
+    { id: "retry-safety", label: "3. Retry safety", detail: "Can the caller retry without duplicating a side effect?" },
+    { id: "user-meaning", label: "4. User meaning", detail: "What should the user see when the system cannot yet prove whether the requested operation succeeded?" }
+  ]
+};
+
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1239,6 +1270,10 @@ export function getLessonIllustrationModel(
     return { ...DATABASE_SCALE_VARIANT, title: block.heading };
   }
 
+  if (block.variant === "distributed-failure-v1") {
+    return { ...DISTRIBUTED_FAILURE_VARIANT, title: block.heading };
+  }
+
   return genericModel(block);
 }
 
@@ -1285,7 +1320,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "kubernetes-failure-loop-v1" &&
     model.variant !== "git-production-workflow-v1" &&
     model.variant !== "scaling-control-loop-v1" &&
-    model.variant !== "database-scale-v1"
+    model.variant !== "database-scale-v1" &&
+    model.variant !== "distributed-failure-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
