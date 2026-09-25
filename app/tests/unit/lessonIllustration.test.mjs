@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models IaC as intent, plan, apply, state and drift", () => {
+    const model = getLessonIllustrationModel({
+      id: "d4-4-iac",
+      type: "illustration",
+      heading: "The Infrastructure as Code control loop",
+      alt: "Declared infrastructure intent is planned, applied to real resources, recorded in state and compared for drift",
+      bindingId: "D4.4:d4-4-iac",
+      nodes: ["Intent", "Plan", "Apply", "State", "Drift"],
+      variant: "iac-control-loop-v1"
+    });
+
+    expect(model.variant).toBe("iac-control-loop-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "intent",
+      "plan",
+      "apply",
+      "state",
+      "drift"
+    ]);
+    expect(model.foundation.label).toBe("Declarative infrastructure separates desired intent from real resources");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "desired-state",
+      "plan",
+      "state",
+      "drift"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "code-review",
+      "plan-difference",
+      "apply-result",
+      "drift-detection"
+    ]);
+  });
+
   it("models GitHub Actions as workflow, job, runner, steps and artifact", () => {
     const model = getLessonIllustrationModel({
       id: "d4-3-github-actions",
