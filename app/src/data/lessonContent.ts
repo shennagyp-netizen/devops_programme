@@ -31,7 +31,8 @@ export type LessonIllustrationVariantV1 =
   | "docker-network-storage-v1"
   | "docker-failure-loop-v1"
   | "kubernetes-reconciliation-v1"
-  | "kubernetes-networking-v1";
+  | "kubernetes-networking-v1"
+  | "kubernetes-config-storage-v1";
 
 export type LessonContentBlock =
   | {
@@ -84,6 +85,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D3.3": {
+    version: 1,
+    blocks: [
+      {
+        id: "d3-3-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Kubernetes configuration, secrets and persistent data solve different problems. Their lifecycles should stay separate from the disposable Pod and image lifecycle."
+      },
+      {
+        id: "d3-3-kubernetes-config-storage",
+        type: "illustration",
+        heading: "Configuration, secrets and persistent data",
+        alt: "A Kubernetes workload receives configuration and secrets, mounts them into a Pod, and stores persistent data through a volume-backed storage boundary",
+        bindingId: "D3.3:d3-3-kubernetes-config-storage",
+        nodes: ["Config", "Secret", "Mount", "Pod", "Persistence"],
+        variant: "kubernetes-config-storage-v1",
+        caption:
+          "Separate configuration lifecycle, secret handling, application mounts and persistent data lifecycle."
+      }
+    ]
+  },
+
+
   "D3.2": {
     version: 1,
     blocks: [
@@ -792,6 +818,7 @@ export function validateLessonContent(
         block.variant !== "docker-failure-loop-v1" &&
         block.variant !== "kubernetes-reconciliation-v1" &&
         block.variant !== "kubernetes-networking-v1" &&
+        block.variant !== "kubernetes-config-storage-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
