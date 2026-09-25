@@ -11,7 +11,12 @@ import { promisify } from "node:util";
 import { getDb } from "./db";
 import { authSessions, authUsers } from "./schema";
 
-const scryptAsync = promisify(scrypt);
+const scryptAsync = promisify(scrypt) as (
+  password: string | Buffer,
+  salt: string | Buffer,
+  keylen: number,
+  options: { N: number; r: number; p: number; maxmem: number }
+) => Promise<Buffer>;
 
 export const SESSION_COOKIE_NAME = "devops_session";
 export const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
