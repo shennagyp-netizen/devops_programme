@@ -1978,5 +1978,14 @@ Gold-standard coverage audit — 2026-09-25:
 - Identified next visual/script quality gaps: **D4.2-D4.6 and D5.1-D5.8**.
 - These are now the next quality targets unless a higher-priority red-team finding appears.
 
+
+Merged PR #66:
+- D4.2 -> `cicd-control-path-v1`: Source -> Validate -> Artifact -> Promote -> Verify.
+- Merge commit: `dcc336d2362def4a804e021bf8b1b6af7d59dfcd`.
+- GitHub Actions run **36151007940** passed successfully.
+- The recorded Vercel status on the branch head still shows the external `build-rate-limit` limitation; this is not a reported application/test failure.
+- D4.2 now makes CI/CD a risk-control and evidence path rather than a YAML exercise.
+- Next content boundary: **D4.3 — GitHub Actions**.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
