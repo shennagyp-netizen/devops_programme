@@ -233,6 +233,7 @@ TDD coverage:
 - `app/tests/unit/lessonContent.redteam.test.mjs` covers malformed payloads, unsafe media, draft/published source rules, accessibility metadata, durations and cue boundaries.
 - `app/tests/unit/podcastSync.redteam.test.mjs` covers manifest security, duplicate identities, timeline ordering, cue boundaries and fail-closed loading.
 - `app/tests/unit/podcastsRaw.test.mjs` covers episode extraction and deterministic speaker-turn classification.
+- `app/tests/integration/lesson-panel.integration.test.mjs` verifies completion/evidence boundaries and lesson-mode invariants.
 
 ## 4.1 ORDERED LESSON CONTENT STREAM
 
@@ -254,7 +255,9 @@ Tests:
 - Red-team content tests extend that baseline with security and malformed-input boundaries.
 
 Validation state:
-- The GitHub Actions connector has returned no executed check/run for the current branch commit, so CI is **not claimed green** from this change.
+- The expanded feature-focused suite now contains 95 unit/integration tests across the affected lesson-content, podcast, feed, panel and continuous-voice contracts.
+- CI is executing the current branch head; no green result is claimed until the complete programme gate finishes.
+- The project contract checker was corrected to inspect intermediate project mappings in `courseLessons.ts`; the hands-on contract checker was corrected so its JavaScript template literals parse correctly.
 
 ============================================================
 5. PROJECT CONTRACT
