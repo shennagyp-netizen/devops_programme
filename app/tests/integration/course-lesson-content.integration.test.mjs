@@ -60,6 +60,21 @@ describe("course lesson content integration", () => {
       expect(lesson.content.blocks[1].type, lesson.id).toBe("illustration");
     }
   });
+  it("uses the authored container-boundary visual for B1.4", () => {
+    const lesson = allLessons.find((item) => item.id === "B1.4");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "b1-4-isolation",
+      bindingId: "B1.4:b1-4-isolation",
+      variant: "container-boundary-v1"
+    });
+  });
+
   it("requires every illustration block to carry its curriculum binding identity", () => {
     for (const lesson of allLessons) {
       for (const block of lesson.content.blocks) {
