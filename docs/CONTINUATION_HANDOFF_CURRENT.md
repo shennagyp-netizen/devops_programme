@@ -1933,6 +1933,23 @@ Merged PR #106:
 - Course-level podcast baseline: Beginner **13,090 words / ~1h 37m**; Intermediate **32,892 words / ~4h 04m**; Advanced **12,780 words / ~1h 35m** at 135 wpm.
 - Next content boundary: **D2.7 — Break Docker**.
 
+
+Active PR #108 scope — Adaptive mastery remediation:
+- The learning system now treats a failed hands-on assignment as a teaching event, not a terminal validation error.
+- New remediation engine: `app/src/data/masteryRemediation.ts`.
+- New learner-facing UI: `app/src/components/RemediationPanel.tsx`.
+- Failed evidence is classified into concept/procedure/evidence/diagnosis/recovery/transfer failure classes.
+- Remediation uses six distinct teaching methods: plain-language, analogy, mechanism, worked example, counterexample and visual tracing.
+- Attempt progression deliberately changes the explanation method after repeated failure.
+- A micro-task is required before the learner retries the original assignment.
+- The original assignment remains the mastery authority; remediation never lowers its evidence standard.
+- Mastery attempts are stored separately from completion in `learner_mastery_attempts`, bound to the authenticated user.
+- Server actions own creation, remediation completion, reattempt result and history retrieval.
+- A SQL migration and runtime schema guard are both present.
+- Red-team coverage verifies authenticated-user ownership, no client learnerId authority, input enum validation, failed-assignment routing and multi-method remediation.
+- Current MVP still uses a generic remediation generator; the next instructional-quality phase must author lesson-specific remediation explanations and micro-tasks so each important concept is taught multiple ways rather than merely using generic fallback language.
+- PR #108 must pass the full programme gate before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
 
