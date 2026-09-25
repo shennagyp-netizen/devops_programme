@@ -1946,5 +1946,14 @@ Merged PR #61:
 - Final PR #61 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 - Next content boundary: **D3.5 — Kubernetes Failure Lab**.
 
+
+Active PR D3.5 scope:
+- D3.5 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `kubernetes-failure-loop-v1`.
+- Teaching model: Baseline -> Fault -> Symptom -> Evidence -> Recovery.
+- The rewritten script treats CrashLoopBackOff, ImagePullBackOff, OOMKilled, failed readiness and bad selectors as diagnostic clues, not diagnoses.
+- Controlled lab breaks one boundary at a time and requires a prediction, evidence sequence and stable recovery proof.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================

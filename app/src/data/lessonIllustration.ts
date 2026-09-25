@@ -28,7 +28,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-reconciliation-v1"
   | "kubernetes-networking-v1"
   | "kubernetes-config-storage-v1"
-  | "kubernetes-health-scaling-v1";
+  | "kubernetes-health-scaling-v1"
+  | "kubernetes-failure-loop-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -874,6 +875,35 @@ const KUBERNETES_HEALTH_SCALING_VARIANT: LessonIllustrationModelV1 = {
     { id: "capacity-state", label: "4. Capacity state", detail: "Do resource requests, limits and replica count provide enough healthy capacity for the workload?" }
   ]
 };
+
+const KUBERNETES_FAILURE_LOOP_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "kubernetes-failure-loop-v1",
+  title: "The Kubernetes failure loop",
+  stages: [
+    { id: "baseline", label: "Baseline", detail: "Start from a known-good workload state and record the real user path before changing anything." },
+    { id: "fault", label: "Fault", detail: "Break exactly one boundary in a disposable workload so the expected failure has one main cause." },
+    { id: "symptom", label: "Symptom", detail: "Observe the visible Kubernetes state such as CrashLoopBackOff, ImagePullBackOff, OOMKilled, empty endpoints or failed readiness." },
+    { id: "evidence", label: "Evidence", detail: "Use events, describe output, logs, probes, resources and object relationships to narrow the cause." },
+    { id: "recovery", label: "Recovery", detail: "Restore the smallest broken boundary and prove the original workload path returns to a stable state." }
+  ],
+  foundation: {
+    label: "A Kubernetes status is a clue, not the diagnosis",
+    detail: "Red state names reduce the search space but do not explain the cause by themselves. Diagnose the boundary that produced the symptom."
+  },
+  callouts: [
+    { id: "events", label: "Events", detail: "Events can reveal scheduling, image, probe and lifecycle transitions that explain when the failure began." },
+    { id: "describe", label: "Describe", detail: "Object state, conditions, mounts, probes and relationships are often visible through kubectl describe." },
+    { id: "logs", label: "Logs", detail: "Container logs show what the application process recorded around the failure." },
+    { id: "health", label: "Health + resources", detail: "Probe results, restart counts and resource state connect Kubernetes symptoms to process behavior." }
+  ],
+  failureChecks: [
+    { id: "hypothesis", label: "1. Hypothesis", detail: "What single failure do you predict before running diagnostics?" },
+    { id: "boundary", label: "2. Boundary", detail: "Which layer is failing: image, process, configuration, selector, probe, resource or dependency?" },
+    { id: "evidence-sequence", label: "3. Evidence sequence", detail: "Which observation should you collect next, and what result would support or reject the hypothesis?" },
+    { id: "recovery-proof", label: "4. Recovery proof", detail: "After the repair, does the same real workload action succeed and remain stable?" }
+  ]
+};
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1088,6 +1118,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "kubernetes-failure-loop-v1") {
+    return {
+      ...KUBERNETES_FAILURE_LOOP_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1130,7 +1167,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "kubernetes-reconciliation-v1" &&
     model.variant !== "kubernetes-networking-v1" &&
     model.variant !== "kubernetes-config-storage-v1" &&
-    model.variant !== "kubernetes-health-scaling-v1"
+    model.variant !== "kubernetes-health-scaling-v1" &&
+    model.variant !== "kubernetes-failure-loop-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }

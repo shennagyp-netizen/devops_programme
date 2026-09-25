@@ -1122,58 +1122,322 @@ Speaker B: Run the lab, make one health boundary fail, and prove the workload re
 
 EPISODE D3.5 — Kubernetes Failure Lab
 
-Speaker A: Today we deliberately produce the ugly statuses engineers learn to fear: CrashLoopBackOff, ImagePullBackOff, OOMKilled, bad selectors, and failed readiness.
+Speaker A: This is the Kubernetes failure lab.
 
-Speaker B: This feels like learning medicine by reading symptoms and then creating them in a simulator.
+Speaker B: The part where we stop being polite to the cluster.
 
-Speaker A: That is actually a very good analogy.
+Speaker A: Carefully.
 
-Speaker A: Real-life incident: if a hospital monitor says 'patient unstable,' you do not restart random machines. You collect vital signs and locate the failing subsystem.
+Speaker B: Right.
 
-Speaker A: Same here: inspect events, describe the object, logs, probes, resources, image state, and service endpoints.
+Speaker A: The visual is:
 
-Speaker A: Lab: break one thing at a time. Before running diagnostics, write down your hypothesis and predicted evidence.
+Speaker B: Baseline -> Fault -> Symptom -> Evidence -> Recovery.
 
-Speaker B: The point is to train the diagnostic sequence, not memorize the names of red statuses.
+Speaker A: The most important word is baseline.
+
+Speaker B: Start with a known-good workload.
+
+Speaker A: Exactly. Prove the user path before breaking anything.
+
+Speaker B: Then change one boundary.
+
+Speaker A: Predict the symptom.
+
+Speaker B: Observe it.
+
+Speaker A: Collect evidence.
+
+Speaker B: Repair the smallest broken boundary.
+
+Speaker A: Then prove recovery.
+
+Speaker B: So a red status is never the end of the lesson.
+
+Speaker A: Correct. It is the start of the question.
+
+Speaker B: Let's take CrashLoopBackOff.
+
+Speaker A: What does it tell you?
+
+Speaker B: The container is being restarted repeatedly and the backoff is increasing.
+
+Speaker A: Good. Does it tell you why?
+
+Speaker B: No.
+
+Speaker A: So what are the leading hypotheses?
+
+Speaker B: Process exits. Bad configuration. Missing file. Failed dependency. Bad command. Probe failure. Resource problem.
+
+Speaker A: Good.
+
+Speaker B: Evidence sequence?
+
+Speaker A: Describe the Pod. Inspect events. Read container logs. Check last termination state and restart count.
+
+Speaker B: That is much better than searching the status name online.
 
 Speaker A: Exactly.
-Speaker B: I recognize the statuses now, but I don't want to memorize a red-flag dictionary.
 
-Speaker A: Good. A status name is a clue, not a diagnosis.
+Speaker B: Next: ImagePullBackOff.
 
-Speaker B: CrashLoopBackOff means something about repeated restarts.
+Speaker A: What does that narrow?
 
-Speaker A: Yes. But then you ask why. Logs? Exit code? Configuration? Dependency? Resource limit?
+Speaker B: Image retrieval or startup preparation: image name, registry reachability, credentials, tag or network path.
 
-Speaker B: ImagePullBackOff points somewhere else.
+Speaker A: Good.
 
-Speaker A: Image retrieval, registry access, image name, credentials, network path. Again, use the status to narrow the search.
+Speaker B: Again, status is a clue.
 
-Speaker B: OOMKilled means memory pressure or a memory limit event.
+Speaker A: Exactly.
 
-Speaker A: Right. Then inspect requests, limits, actual usage, and whether the workload's memory behavior changed.
+Speaker B: Next: OOMKilled.
 
-Speaker B: Hospital monitor analogy?
+Speaker A: What is the signal?
 
-Speaker A: “Patient unstable” is not a diagnosis. It's an alarm that tells you to inspect vital signs and identify the failing subsystem.
+Speaker B: The process was killed in an out-of-memory condition, often related to resource limits or system memory pressure.
 
-Speaker B: Prediction. Bad Service selector.
+Speaker A: Good. What do you inspect?
+
+Speaker B: Memory requests, limits, actual usage, recent workload change and whether the application has a memory-growth problem.
+
+Speaker A: Good.
+
+Speaker B: And a failed readiness probe?
+
+Speaker A: What does it mean?
+
+Speaker B: The workload is not currently considered ready for normal traffic.
+
+Speaker A: Does it necessarily mean the process should be restarted?
+
+Speaker B: No. Readiness controls traffic inclusion, not automatic restart.
+
+Speaker A: Excellent.
+
+Speaker B: That distinction is the whole health lesson coming back.
+
+Speaker A: Exactly.
+
+Speaker B: Now bad selector.
 
 Speaker A: What would you expect?
 
-Speaker B: The Service may exist, DNS may resolve, but there may be no endpoints behind it.
+Speaker B: The Service may still resolve, but the endpoint set can become empty because no Pods match the selector.
 
-Speaker A: Good. That is a much more useful hypothesis than “Kubernetes networking is broken.”
+Speaker A: Good.
+
+Speaker B: So now we have five failures.
+
+Speaker A: And five different evidence paths.
+
+Speaker B: Which means the lab should not just be a list of red screens.
+
+Speaker A: Correct. We are training a decision process.
+
+Speaker B: Prediction first.
+
+Speaker A: Always.
+
+Speaker B: Failure one: wrong image name.
+
+Speaker A: Predict.
+
+Speaker B: Pod never reaches normal startup because the image cannot be pulled.
+
+Speaker A: Evidence?
+
+Speaker B: Events, Pod status and image configuration.
+
+Speaker A: Recovery?
+
+Speaker B: Restore the correct image reference and prove the Pod becomes ready.
+
+Speaker A: Good.
+
+Speaker B: Failure two: wrong Service selector.
+
+Speaker A: Predict.
+
+Speaker B: Service still exists. DNS can still resolve. Endpoint set becomes empty.
+
+Speaker A: Evidence?
+
+Speaker B: Service selector, Pod labels, endpoint objects and a real client request.
+
+Speaker A: Recovery?
+
+Speaker B: Restore the selector and prove endpoints return and the request succeeds.
+
+Speaker A: Exactly.
+
+Speaker B: Failure three: liveness probe fails.
+
+Speaker A: Predict.
+
+Speaker B: Restart count rises and the workload may enter a restart loop.
+
+Speaker A: Evidence?
+
+Speaker B: Probe configuration, logs, events and process behavior.
+
+Speaker A: Recovery?
+
+Speaker B: Fix the actual health boundary, then prove the workload stays alive and ready.
+
+Speaker A: Good.
+
+Speaker B: Failure four: memory limit too low.
+
+Speaker A: Predict.
+
+Speaker B: The process may be killed under memory pressure and restart repeatedly.
+
+Speaker A: Evidence?
+
+Speaker B: Resource limits, termination state, usage and workload behavior.
+
+Speaker A: Recovery?
+
+Speaker B: Restore an appropriate resource contract or application behavior, then prove stable operation.
+
+Speaker A: Good.
+
+Speaker B: Failure five: dependency unavailable.
+
+Speaker A: Predict.
+
+Speaker B: The process may stay alive but readiness can fail, requests can time out or application errors can increase.
+
+Speaker A: Evidence?
+
+Speaker B: Dependency health, application logs, readiness condition and real request behavior.
+
+Speaker A: Good.
+
+Speaker B: Now the red-team rule.
+
+Speaker A: Never change three things at once.
+
+Speaker B: Otherwise I won't know which change caused the recovery.
+
+Speaker A: Exactly.
+
+Speaker B: Human analogy?
+
+Speaker A: A hospital monitor shows an unstable patient.
+
+Speaker B: You do not restart random equipment.
+
+Speaker A: Right. You collect vital signs, identify the failing subsystem, make one safe intervention and check whether the patient stabilizes.
+
+Speaker B: That maps well.
+
+Speaker A: The same principle applies here.
+
+Speaker B: Controlled lab.
+
+Speaker A: Start with a working Deployment and Service.
+
+Speaker B: Prove the request path.
+
+Speaker A: Good.
+
+Speaker B: Write down the baseline.
+
+Speaker A: Good.
+
+Speaker B: Break the image.
+
+Speaker A: Predict the status.
+
+Speaker B: Observe events and logs.
+
+Speaker A: Repair it.
+
+Speaker B: Prove recovery.
+
+Speaker A: Then reset to baseline.
+
+Speaker B: Break the selector.
+
+Speaker A: Predict the endpoint set.
+
+Speaker B: Observe it.
+
+Speaker A: Repair.
+
+Speaker B: Prove recovery.
+
+Speaker A: Repeat with readiness or memory.
+
+Speaker B: So every exercise follows the same loop.
+
+Speaker A: Exactly.
+
+Speaker B: Baseline -> Fault -> Symptom -> Evidence -> Recovery.
+
+Speaker A: And every iteration should answer one question better than the previous one.
 
 Speaker B: Mac lab?
 
-Speaker A: Break exactly one thing at a time. Bad image name. Then bad selector. Then failing readiness. Then a memory limit. Before every change, write the predicted evidence.
+Speaker A: Keep the failures safe and disposable.
 
-Speaker B: And then compare prediction to reality.
+Speaker B: Never use a production cluster for deliberate breakage.
 
-Speaker A: Exactly. The mismatch is often the most valuable part of the exercise.
+Speaker A: Correct.
 
-Speaker B: Because it exposes where my mental model was wrong.
+Speaker B: Keep a record of predicted evidence and observed evidence.
 
-Speaker A: Now you're using Kubernetes as a laboratory instead of as a YAML typing competition.
+Speaker A: Good.
 
+Speaker B: What if the prediction is wrong?
+
+Speaker A: That is valuable.
+
+Speaker B: Because the mismatch exposes a bad mental model.
+
+Speaker A: Exactly. Record the mismatch, update the hypothesis and repeat.
+
+Speaker B: That is the real exercise.
+
+Speaker A: Yes.
+
+Speaker B: Recall.
+
+Speaker A: What does CrashLoopBackOff tell you?
+
+Speaker B: Repeated restart behavior with backoff. It does not tell me the root cause.
+
+Speaker A: ImagePullBackOff?
+
+Speaker B: The workload is failing to pull or prepare the referenced image. I inspect image name, registry access, credentials and events.
+
+Speaker A: OOMKilled?
+
+Speaker B: A memory-related kill. I inspect requests, limits, usage and application memory behavior.
+
+Speaker A: Failed readiness?
+
+Speaker B: The workload is not ready for normal traffic. It does not by itself mean the process should be restarted.
+
+Speaker A: Bad selector?
+
+Speaker B: The Service can exist while its endpoint set becomes empty.
+
+Speaker A: Final challenge.
+
+Speaker B: A Kubernetes workload is red.
+
+Speaker A: Your method?
+
+Speaker B: Start from the last known-good baseline. Identify one fault boundary. Predict the symptom. Observe the exact Kubernetes state. Collect the smallest useful evidence sequence. Repair one boundary. Then prove the original user path recovers.
+
+Speaker A: Good.
+
+Speaker B: So Kubernetes failure status is not a dictionary to memorize.
+
+Speaker A: It is a map for choosing the next evidence.
+
+Speaker B: Run the lab, break one boundary, and prove the recovery.
