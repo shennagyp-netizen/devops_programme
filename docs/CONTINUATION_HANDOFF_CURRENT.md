@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #49, commit `79dd956303907480c20091debfcff2f0500661a8` (D2.2 DNS resolution script + illustration quality slice).
+**Latest main architecture/content merge:** PR #50, commit `b2932a7ee3ebe61e206f1f49f9da5943106a2727` (D2.3 HTTP exchange script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #49 has merged to `main`.
+**Active content-quality branch:** none. PR #50 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1893,7 +1893,6 @@ Merged PR #47:
 - D1.6 -> `routing-boundary-v1`: Destination -> Route -> Next hop -> Boundary -> Evidence.
 - Merge commit: `417cf8ec4ce899623f705708e839214591ac1acb`.
 - Final PR #47 gate passed **369 tests**, all programme contracts, TypeScript and the Next.js production build.
-- Red-team caught a missing routing variant in the shared lesson-content union; it was corrected.
 
 Merged PR #48:
 - D2.1 -> `transport-contract-v1`: Endpoint -> Port -> Transport -> Delivery -> Evidence.
@@ -1902,21 +1901,15 @@ Merged PR #48:
 Merged PR #49:
 - D2.2 -> `dns-resolution-v1`: Name -> Resolver -> Cache -> Authority -> Freshness.
 - Merge commit: `79dd956303907480c20091debfcff2f0500661a8`.
-- D2.2 now teaches recursive resolver behavior, authoritative DNS data, A/AAAA/CNAME record roles, positive and negative caching, TTL and resolver-specific answers.
-- Two red-team contract issues were caught and corrected before final green:
-  1. shared `dns-resolution-v1` type registration was missing from lesson content;
-  2. the podcast language gate rejected the harder word “obtain”, so the spoken line was simplified to “get”.
 - Final PR #49 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
-- Next content boundary: **D2.3 — HTTP**.
+- Red-team caught and corrected a missing DNS variant in the lesson-content type/validator and one harder spoken-English word.
 
-
-Active PR #50 scope:
-- D2.3 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `http-exchange-v1`.
-- Teaching model: Request -> Headers -> Route -> Response -> Evidence.
-- The rewritten script separates application-layer HTTP evidence from DNS, transport and TLS failures, and teaches status codes as evidence rather than slogans.
-- Controlled local failures cover 404/route behavior, method mismatch and request-header effects, followed by recovery proof.
-- TDD/full-programme gate is required before merge.
+Merged PR #50:
+- D2.3 -> `http-exchange-v1`: Request -> Headers -> Route -> Response -> Evidence.
+- Merge commit: `b2932a7ee3ebe61e206f1f49f9da5943106a2727`.
+- D2.3 explicitly separates HTTP application evidence from DNS, transport and TLS failures and teaches status codes as evidence rather than slogans.
+- Final PR #50 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
+- Next content boundary: **D2.4 — TLS and HTTPS**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
