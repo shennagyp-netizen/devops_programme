@@ -25,7 +25,8 @@ export type LessonIllustrationVariantV1 =
   | "container-execution-v1"
   | "docker-network-storage-v1"
   | "docker-failure-loop-v1"
-  | "kubernetes-reconciliation-v1";
+  | "kubernetes-reconciliation-v1"
+  | "kubernetes-service-path-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -760,27 +761,57 @@ const KUBERNETES_RECONCILIATION_VARIANT: LessonIllustrationModelV1 = {
   variant: "kubernetes-reconciliation-v1",
   title: "The Kubernetes reconciliation loop",
   stages: [
-    { id: "desired-state", label: "Desired State", detail: "A declaration describes the workload condition the system should keep trying to satisfy." },
-    { id: "controller", label: "Controller", detail: "A controller watches relevant resources and decides how to reduce the difference between desired and actual state." },
-    { id: "observe", label: "Observe", detail: "The control plane and node components report what resources, pods and conditions actually exist." },
-    { id: "act", label: "Act", detail: "The system creates, updates, replaces or removes resources to move reality toward the requested condition." },
-    { id: "converge", label: "Converge", detail: "The loop repeats until the state matches or an external constraint keeps the desired state blocked." }
+    { id: "desired-state", label: "Desired State", detail: "A Kubernetes object declares the state the workload should have." },
+    { id: "controller", label: "Controller", detail: "A controller owns a reconciliation loop that compares desired and actual state and decides what action is needed." },
+    { id: "observe", label: "Observe", detail: "The system observes current objects, health, scheduling state and other facts about actual state." },
+    { id: "act", label: "Act", detail: "The controller creates, updates or removes resources to reduce the difference between desired and actual state." },
+    { id: "converge", label: "Converge", detail: "Repeated observation and action move the system toward the desired state when that state is feasible." }
   ],
   foundation: {
-    label: "Reconciliation is continuous, not a one-time command",
-    detail: "A Kubernetes declaration remains a target condition; control loops keep comparing actual state with that target after the initial change."
+    label: "Kubernetes is a reconciliation system",
+    detail: "YAML describes desired state, but controllers continuously observe and act so the real system can converge toward that state."
   },
   callouts: [
-    { id: "declaration", label: "Declaration", detail: "YAML or another API client expresses desired state; the running system is the object to inspect." },
-    { id: "actual-state", label: "Actual state", detail: "Pods, scheduling state, image pulls, readiness and node capacity describe what exists now." },
-    { id: "control-loop", label: "Control loop", detail: "Observe, compare and act repeat continuously rather than stopping after one successful API call." },
-    { id: "impossible-state", label: "Impossible state", detail: "A controller can keep trying while an image, resource, configuration or scheduling constraint prevents convergence." }
+    { id: "desired-state", label: "Desired state", detail: "The specification says what should exist, not how to perform every individual repair." },
+    { id: "controller", label: "Controller", detail: "Controllers implement control loops that respond to differences between desired and actual state." },
+    { id: "actual-state", label: "Actual state", detail: "Running pods, scheduling, image state and health checks are part of the observed system." },
+    { id: "feasibility", label: "Feasibility", detail: "Reconciliation can keep trying while the desired state remains impossible because of an image, resource, configuration or scheduling problem." }
   ],
   failureChecks: [
-    { id: "replica-difference", label: "1. Replica difference", detail: "Does actual replica count differ from the requested count?" },
-    { id: "scheduling", label: "2. Scheduling", detail: "Can the cluster place the desired workload with the resources and constraints that exist?" },
-    { id: "readiness", label: "3. Readiness", detail: "Did the replacement process start and become Ready, or is it failing after creation?" },
-    { id: "recovery", label: "4. Recovery", detail: "After removing the blocker, does the control loop converge back to the expected healthy state?" }
+    { id: "specification", label: "1. Specification", detail: "Is the desired state actually what you intended to declare?" },
+    { id: "controller-action", label: "2. Controller action", detail: "What controller is responsible, and what action did it take after observing the difference?" },
+    { id: "replacement-health", label: "3. Replacement health", detail: "Did the new or updated resource become scheduled, running and ready?" },
+    { id: "feasibility", label: "4. Feasibility", detail: "If the controller keeps acting, what evidence shows the desired state itself is currently impossible to satisfy?" }
+  ]
+};
+
+
+const KUBERNETES_SERVICE_PATH_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "kubernetes-service-path-v1",
+  title: "The Kubernetes Service path",
+  stages: [
+    { id: "service", label: "Service", detail: "A Service gives clients a stable logical destination while the Pods behind it can change." },
+    { id: "selector", label: "Selector", detail: "Label selectors define which Pods belong to the Service's backend set." },
+    { id: "endpoints", label: "Endpoints", detail: "The endpoint set represents the current backend addresses available to receive traffic." },
+    { id: "pod", label: "Pod", detail: "Pods are replaceable workload instances whose lifecycle can change without changing the Service identity." },
+    { id: "path", label: "Path", detail: "Client traffic follows the Service abstraction to an available backend rather than targeting a Pod IP directly." }
+  ],
+  foundation: {
+    label: "A Service gives clients stable discovery while Pods can change",
+    detail: "The Service identity stays stable while selectors and endpoint state adapt to the current Pod set."
+  },
+  callouts: [
+    { id: "stable-name", label: "Stable name", detail: "Clients use the Service identity instead of tracking individual Pod IP addresses." },
+    { id: "selector", label: "Selector", detail: "Labels determine which Pods are included in the Service backend set." },
+    { id: "endpoint-set", label: "Endpoint set", detail: "The current endpoint set shows which backends are actually available to receive traffic." },
+    { id: "pod-lifecycle", label: "Pod lifecycle", detail: "A Pod can die and be replaced while the Service abstraction remains unchanged." }
+  ],
+  failureChecks: [
+    { id: "selector-match", label: "1. Selector match", detail: "Do the Service selector labels actually match the intended Pods?" },
+    { id: "endpoint-health", label: "2. Endpoint health", detail: "Does the current endpoint set contain the backends that should receive traffic?" },
+    { id: "service-path", label: "3. Service path", detail: "Does a client request use the expected Service name and port?" },
+    { id: "pod-replacement", label: "4. Pod replacement", detail: "When a Pod dies, does the replacement become a usable endpoint?" }
   ]
 };
 
@@ -977,6 +1008,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "kubernetes-service-path-v1") {
+    return {
+      ...KUBERNETES_SERVICE_PATH_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1016,7 +1054,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "container-execution-v1" &&
     model.variant !== "docker-network-storage-v1" &&
     model.variant !== "docker-failure-loop-v1" &&
-    model.variant !== "kubernetes-reconciliation-v1"
+    model.variant !== "kubernetes-reconciliation-v1" &&
+    model.variant !== "kubernetes-service-path-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }

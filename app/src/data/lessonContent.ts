@@ -30,7 +30,8 @@ export type LessonIllustrationVariantV1 =
   | "container-execution-v1"
   | "docker-network-storage-v1"
   | "docker-failure-loop-v1"
-  | "kubernetes-reconciliation-v1";
+  | "kubernetes-reconciliation-v1"
+  | "kubernetes-service-path-v1";
 
 export type LessonContentBlock =
   | {
@@ -83,6 +84,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D3.2": {
+    version: 1,
+    blocks: [
+      {
+        id: "d3-2-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Kubernetes networking becomes easier when Service identity, label selection, endpoint state and Pod lifecycle are treated as separate mechanisms."
+      },
+      {
+        id: "d3-2-kubernetes-networking",
+        type: "illustration",
+        heading: "The Kubernetes Service path",
+        alt: "A stable Service selects pods through labels, creates endpoints and routes client traffic to available pods",
+        bindingId: "D3.2:d3-2-kubernetes-networking",
+        nodes: ["Service", "Selector", "Endpoints", "Pod", "Path"],
+        variant: "kubernetes-service-path-v1",
+        caption:
+          "Follow the stable Service name to the current endpoint set instead of following Pod IPs."
+      }
+    ]
+  },
+
+
   "D3.1": {
     version: 1,
     blocks: [
@@ -91,18 +117,18 @@ const authoredLessonContent: Record<string, LessonContent> = {
         type: "text",
         heading: "Why this matters",
         body:
-          "Kubernetes is easier to reason about when you see it as a reconciliation system: a declared target is compared with actual state, controllers act on the difference, and the system observes again."
+          "Kubernetes becomes easier to understand when YAML is treated as desired state and controllers are treated as the machinery that keeps actual state moving toward it."
       },
       {
         id: "d3-1-kubernetes-model",
         type: "illustration",
         heading: "The Kubernetes reconciliation loop",
-        alt: "Kubernetes compares desired workload state with actual state, controllers act on the difference, and the system observes again until it converges or remains blocked",
+        alt: "Kubernetes compares desired state with actual state, a controller acts, and the system moves toward the desired state",
         bindingId: "D3.1:d3-1-kubernetes-model",
         nodes: ["Desired State", "Controller", "Observe", "Act", "Converge"],
         variant: "kubernetes-reconciliation-v1",
         caption:
-          "A declaration is a target condition; reconciliation is the repeated work of moving actual state toward it."
+          "YAML describes desired state; the control loop does the ongoing work."
       }
     ]
   },
@@ -765,6 +791,7 @@ export function validateLessonContent(
         block.variant !== "docker-network-storage-v1" &&
         block.variant !== "docker-failure-loop-v1" &&
         block.variant !== "kubernetes-reconciliation-v1" &&
+        block.variant !== "kubernetes-service-path-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
