@@ -239,6 +239,7 @@ Teaching assets are represented as an ordered lesson content stream rather than 
 Supported first-class content blocks currently include:
 - text
 - illustration
+- interactive illustration
 - video
 
 The stream is rendered as a vertical learning feed with an authored content index. A learner can read and inspect visuals in sequence, and video can appear between explanatory sections rather than replacing the written lesson.
@@ -256,6 +257,8 @@ Published media sources must be root-relative or HTTPS URLs. Draft video blocks 
 The written lesson remains the complete instructional explanation. Video is an additional teaching asset and must not become the only place where a required mechanism is explained.
 
 The content stream is separate from the podcast/co-teacher synchronization contract. Podcast timing remains driven by the actual aligned audio manifest.
+
+Illustration and interactive-illustration blocks require a curriculum binding identity. The binding determines the reusable visual capability, voice-event relationships and, for interactive content, the explicit learner interaction sequence. The animation/visual library does not determine lesson order.
 
 When a content block contract changes, update its validator, tests and authoring documentation together.
 
