@@ -105,9 +105,9 @@ assert.doesNotMatch(content.layout, /ClerkProvider/);
 assert.match(content.learnLayout, /<ClerkProvider>/);
 
 assert.match(content.proxy, /clerkMiddleware/);
-assert.match(content.proxy, /"\/learn\(\.\.\.\)"/);
-assert.match(content.proxy, /"\/sign-in\(\.\.\.\)"/);
-assert.match(content.proxy, /"\/sign-up\(\.\.\.\)"/);
+assert.match(content.proxy, /"\/learn\(\.\*\)"/);
+assert.match(content.proxy, /"\/sign-in\(\.\*\)"/);
+assert.match(content.proxy, /"\/sign-up\(\.\*\)"/);
 assert.doesNotMatch(content.proxy, /\/\(\(\?!_next/);
 
 assert.match(content.signIn, /<ClerkProvider>/);
