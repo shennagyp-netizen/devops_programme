@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { validateCurriculumIllustrationBinding } from "../../src/data/illustrationBindings.ts";
+import { validateCurriculumIllustrationBinding, validateLessonIllustrationBindings } from "../../src/data/illustrationBindings.ts";
 
 const validInteractiveBinding = () => ({
   version: 1,
@@ -8,7 +8,7 @@ const validInteractiveBinding = () => ({
   contentBlockId: "http-flow",
   contentIndex: 2,
   presentation: "animated",
-  visualCapabilityId: "animation",
+  visualCapabilityId: "animation-stage-v1",
   animationId: "http-request",
   voiceCueBindings: [
     { voiceCueId: "request-start", eventIds: ["send-request"] }
@@ -33,6 +33,98 @@ const validInteractiveBinding = () => ({
   completion: {
     requiredStepIds: ["step-1", "step-2"]
   }
+  it("rejects a success event that the declared interaction does not trigger", () => {
+    const result = validateCurriculumIllustrationBinding(
+      {
+        ...validInteractiveBinding(),
+        interactionSteps: [
+          {
+            id: "step-1",
+            order: 1,
+            interactionId: "select-client",
+            prompt: "Select the client.",
+            successEventIds: ["receive-request"]
+          },
+          {
+            id: "step-2",
+            order: 2,
+            interactionId: "select-service",
+            prompt: "Select the service.",
+            successEventIds: ["receive-request"]
+          }
+        ]
+      },
+      block,
+      context
+    );
+
+    expect(result.valid).toBe(false);
+    expect(result.failures.join(" ")).toContain(
+      "success event is not declared by interaction"
+    );
+  });
+
+  it("rejects duplicate and orphan authored bindings", () => {
+    const duplicate = { ...validInteractiveBinding() };
+    const duplicateResult = validateLessonIllustrationBindings(
+      [
+        {
+          id: "B1.2",
+          content: {
+            blocks: [
+              {
+                id: "http-flow",
+                type: "illustration",
+                bindingId: "B1.2:http-flow"
+              }
+            ]
+          }
+        }
+      ],
+      {
+        bindings: [duplicate, duplicate],
+        animationDefinitions: context.animationDefinitions,
+        voiceCueIds: context.voiceCueIds
+      }
+    );
+
+    expect(duplicateResult.valid).toBe(false);
+    expect(duplicateResult.failures.join(" ")).toContain(
+      "duplicate authored illustration binding"
+    );
+
+    const orphaned = {
+      ...validInteractiveBinding(),
+      id: "B1.2:unused"
+    };
+    const orphanResult = validateLessonIllustrationBindings(
+      [
+        {
+          id: "B1.2",
+          content: {
+            blocks: [
+              {
+                id: "http-flow",
+                type: "illustration",
+                bindingId: "B1.2:http-flow"
+              }
+            ]
+          }
+        }
+      ],
+      {
+        bindings: [orphaned],
+        animationDefinitions: context.animationDefinitions,
+        voiceCueIds: context.voiceCueIds
+      }
+    );
+
+    expect(orphanResult.valid).toBe(false);
+    expect(orphanResult.failures.join(" ")).toContain(
+      "orphan authored illustration binding"
+    );
+  });
+
 });
 
 const block = {
