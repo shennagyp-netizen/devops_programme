@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #61, commit `95bd718feb0344789fd6ce4cdb68dd9bb89f3cce` (D3.4 Kubernetes health-scaling script + illustration quality slice).
+**Latest main architecture/content merge:** PR #62, commit `049d6ddeb8b3f7ec41eef59d4a88292f288de0dc` (D3.5 Kubernetes failure-loop script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #61 has merged to `main`.
+**Active content-quality branch:** none. PR #62 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1941,19 +1941,16 @@ Merged PR #60:
 Merged PR #61:
 - D3.4 -> `kubernetes-health-scaling-v1`: Startup -> Readiness -> Liveness -> Capacity -> Rollout.
 - Merge commit: `95bd718feb0344789fd6ce4cdb68dd9bb89f3cce`.
-- D3.4 now separates initialization, traffic readiness, restart health, capacity planning and rollout behavior.
-- Controlled failures cover startup delay, readiness failure and liveness/restart behavior, followed by stable recovery proof.
 - Final PR #61 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- Next content boundary: **D3.5 — Kubernetes Failure Lab**.
 
-
-Active PR D3.5 scope:
-- D3.5 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `kubernetes-failure-loop-v1`.
-- Teaching model: Baseline -> Fault -> Symptom -> Evidence -> Recovery.
-- The rewritten script treats CrashLoopBackOff, ImagePullBackOff, OOMKilled, failed readiness and bad selectors as diagnostic clues, not diagnoses.
-- Controlled lab breaks one boundary at a time and requires a prediction, evidence sequence and stable recovery proof.
-- TDD/full-programme gate is required before merge.
+Merged PR #62:
+- D3.5 -> `kubernetes-failure-loop-v1`: Baseline -> Fault -> Symptom -> Evidence -> Recovery.
+- Merge commit: `049d6ddeb8b3f7ec41eef59d4a88292f288de0dc`.
+- D3.5 now treats CrashLoopBackOff, ImagePullBackOff, OOMKilled, failed readiness and bad selectors as evidence clues rather than diagnoses.
+- The controlled lab uses one-fault-at-a-time exercises with a written prediction, evidence sequence and stable recovery proof.
+- Final PR #62 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- Day 3 is now gold-standard from D3.1 through D3.5.
+- Next content boundary: inspect the following Intermediate lesson after D3.5 in the current programme source.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
