@@ -22,7 +22,8 @@ export type LessonIllustrationVariantV1 =
   | "dns-resolution-v1"
   | "http-exchange-v1"
   | "tls-trust-v1"
-  | "container-execution-v1";
+  | "container-execution-v1"
+  | "docker-network-storage-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -691,6 +692,36 @@ const CONTAINER_EXECUTION_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const DOCKER_NETWORK_STORAGE_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "docker-network-storage-v1",
+  title: "The Docker service boundary",
+  stages: [
+    { id: "service", label: "Service", detail: "A containerized service runs as a process with its own runtime context." },
+    { id: "network", label: "Network", detail: "Docker networks provide an internal communication boundary between connected containers." },
+    { id: "name", label: "Name", detail: "Service-to-service communication can use Docker-provided service discovery rather than hard-coded container IP addresses." },
+    { id: "port", label: "Port", detail: "A published host port is a separate access path from internal container-to-container communication." },
+    { id: "volume", label: "Volume", detail: "A volume gives application data a lifecycle separate from one container instance." }
+  ],
+  foundation: {
+    label: "Service discovery, published ports and persistent data are different boundaries",
+    detail: "An internal container name, a published host port and a persistent volume solve different problems and should be diagnosed separately."
+  },
+  callouts: [
+    { id: "internal-network", label: "Internal network", detail: "Containers on the same Docker network can communicate through the network mechanisms Docker provides." },
+    { id: "service-name", label: "Service name", detail: "Use a stable service identity for internal discovery instead of treating container IPs as permanent configuration." },
+    { id: "published-port", label: "Published port", detail: "Publishing a port exposes a container service through a host-side port; it is not the same path as internal service-to-service traffic." },
+    { id: "volume", label: "Volume", detail: "Persistent data should live outside the disposable container lifecycle when it must survive recreation." }
+  ],
+  failureChecks: [
+    { id: "name-resolution", label: "1. Name resolution", detail: "Does the application resolve the expected service name on the intended Docker network?" },
+    { id: "internal-connectivity", label: "2. Internal connectivity", detail: "Can the client container reach the database or API on the internal service port?" },
+    { id: "published-access", label: "3. Published access", detail: "Is the host-side port published and mapped correctly for the external access path being tested?" },
+    { id: "data-persistence", label: "4. Data persistence", detail: "Does the database keep its data when the container is removed and recreated?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -863,6 +894,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "docker-network-storage-v1") {
+    return {
+      ...DOCKER_NETWORK_STORAGE_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -899,7 +937,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "dns-resolution-v1" &&
     model.variant !== "http-exchange-v1" &&
     model.variant !== "tls-trust-v1" &&
-    model.variant !== "container-execution-v1"
+    model.variant !== "container-execution-v1" &&
+    model.variant !== "docker-network-storage-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }

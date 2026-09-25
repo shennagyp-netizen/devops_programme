@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models Docker networking and storage as service, network, name, port and volume boundaries", () => {
+    const model = getLessonIllustrationModel({
+      id: "d2-6-docker-network-storage",
+      type: "illustration",
+      heading: "The Docker service boundary",
+      alt: "A Docker service connects through a network and service name to a port while persistent data lives in a volume",
+      bindingId: "D2.6:d2-6-docker-network-storage",
+      nodes: ["Service", "Network", "Name", "Port", "Volume"],
+      variant: "docker-network-storage-v1"
+    });
+
+    expect(model.variant).toBe("docker-network-storage-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "service",
+      "network",
+      "name",
+      "port",
+      "volume"
+    ]);
+    expect(model.foundation.label).toBe("Service discovery, published ports and persistent data are different boundaries");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "internal-network",
+      "service-name",
+      "published-port",
+      "volume"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "name-resolution",
+      "internal-connectivity",
+      "published-access",
+      "data-persistence"
+    ]);
+  });
+
   it("models containers as image, container, process, namespaces and host kernel", () => {
     const model = getLessonIllustrationModel({
       id: "d2-5-containers",

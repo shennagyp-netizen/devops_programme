@@ -27,7 +27,8 @@ export type LessonIllustrationVariantV1 =
   | "dns-resolution-v1"
   | "http-exchange-v1"
   | "tls-trust-v1"
-  | "container-execution-v1";
+  | "container-execution-v1"
+  | "docker-network-storage-v1";
 
 export type LessonContentBlock =
   | {
@@ -80,6 +81,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D2.6": {
+    version: 1,
+    blocks: [
+      {
+        id: "d2-6-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Docker networking and storage make earlier DevOps ideas concrete. Internal service names, published ports and persistent volumes are separate boundaries, so their failures need separate diagnoses."
+      },
+      {
+        id: "d2-6-docker-network-storage",
+        type: "illustration",
+        heading: "The Docker service boundary",
+        alt: "A Docker service connects through a network and service name to a port while persistent data lives in a volume",
+        bindingId: "D2.6:d2-6-docker-network-storage",
+        nodes: ["Service", "Network", "Name", "Port", "Volume"],
+        variant: "docker-network-storage-v1",
+        caption:
+          "Use the visual to separate internal discovery, external access and data lifetime."
+      }
+    ]
+  },
+
+
   "D2.5": {
     version: 1,
     blocks: [
@@ -684,6 +710,7 @@ export function validateLessonContent(
         block.variant !== "http-exchange-v1" &&
         block.variant !== "tls-trust-v1" &&
         block.variant !== "container-execution-v1" &&
+        block.variant !== "docker-network-storage-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
