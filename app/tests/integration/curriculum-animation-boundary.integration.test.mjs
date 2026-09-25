@@ -23,10 +23,8 @@ describe("curriculum/animation dependency boundary", () => {
   it("keeps the reusable animation library independent from curriculum sources", () => {
     const root = resolve(process.cwd(), "src/animations");
     const forbiddenImportPatterns = [
-      /from\\s+["'][^"']*(?:courseLessons|lessonContent|illustrationBindings|PodcastCoach|LessonPanel)[^"']*["']/,
-      /import\\s*["'][^"']*(?:courseLessons|lessonContent|illustrationBindings|PodcastCoach|LessonPanel)[^"']*["']/,
-      /from\\s+["'][^"']*\\.\\.\\/data\\/[^"']*["']/,
-      /import\\s*["'][^"']*\\.\\.\\/data\\/[^"']*["']/
+      /\\b(?:from|import)\\s*["'][^"']*(?:courseLessons|lessonContent|illustrationBindings|PodcastCoach|LessonPanel)[^"']*["']/,
+      /\\b(?:from|import)\\s*["'][^"']*\\.\\.\\/data\\// 
     ];
 
     for (const file of filesUnder(root)) {
