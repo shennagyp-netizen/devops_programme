@@ -13,7 +13,8 @@ export type LessonIllustrationVariantV1 =
   | "repeatable-service-v1"
   | "delivery-pipeline-v1"
   | "observability-diagnosis-v1"
-  | "backup-recovery-v1";
+  | "backup-recovery-v1"
+  | "queue-state-v1";
 
 export type LessonContentBlock =
   | {
@@ -66,6 +67,30 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "B3.1": {
+    version: 1,
+    blocks: [
+      {
+        id: "b3-1-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "A queue separates accepting work from processing it, but it also introduces new system states: waiting work, consumer throughput, retries and duplicate delivery."
+      },
+      {
+        id: "b3-1-queue",
+        type: "illustration",
+        heading: "Where the work is now",
+        alt: "Work moves from a producer into a queue, through a consumer, and into an outcome while queue depth and duplicate delivery remain visible",
+        bindingId: "B3.1:b3-1-queue",
+        nodes: ["Producer", "Queue", "Consumer", "Outcome"],
+        variant: "queue-state-v1",
+        caption:
+          "Follow the message state and the evidence at each boundary."
+      }
+    ]
+  },
+
   "B2.3": {
     version: 1,
     blocks: [
@@ -314,7 +339,8 @@ export function validateLessonContent(
         block.variant !== "repeatable-service-v1" &&
         block.variant !== "delivery-pipeline-v1" &&
         block.variant !== "observability-diagnosis-v1" &&
-        block.variant !== "backup-recovery-v1"
+        block.variant !== "backup-recovery-v1" &&
+        block.variant !== "queue-state-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }
