@@ -1748,10 +1748,10 @@ Request boundary:
 
 Database migration:
 - `app/drizzle/migrations/0001_self_hosted_auth.sql` creates the account/session tables and indexes;
-- `scripts/run-production-migrations.mjs` is an idempotent production migration gate;
-- the production Vercel build runs the migration gate before the application build;
-- a private `_devops_programme_migrations` table records applied SQL files;
-- production migration requires `DATABASE_URL`; preview/local builds skip the production migration gate.
+- `app/drizzle/migrations/0001_self_hosted_auth.sql` remains the canonical schema migration;
+- `app/src/lib/server/auth.ts` also performs an idempotent runtime schema bootstrap before account/session operations, so authentication does not depend on Vercel exposing database credentials during the build phase;
+- `scripts/run-production-migrations.mjs` is retained as a separate migration utility, not a build-time requirement;
+- the running application still requires `DATABASE_URL` for persistent accounts, sessions, and learner progress.
 
 No external-email capability:
 - email verification is not implemented;
