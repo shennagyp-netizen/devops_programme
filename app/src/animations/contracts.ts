@@ -50,6 +50,7 @@ export type AnimationPrimitiveV1 =
       from: string;
       to: string;
       emphasis?: AnimationEmphasisV1;
+      allowCrossingWith?: string[];
     }
   | {
       kind: "packet";
@@ -64,6 +65,8 @@ export type AnimationPrimitiveV1 =
       text: string;
       x: number;
       y: number;
+      width: number;
+      height: number;
     };
 
 export type AnimationMotionCustomizationV1 = {
@@ -79,6 +82,7 @@ export type AnimationCustomizationV1 = {
   emphasis?: AnimationEmphasisV1;
   nodeVariant?: AnimationNodeVariantV1;
   motion?: AnimationMotionCustomizationV1;
+  shapeClearancePx?: number;
 };
 
 export const DEFAULT_ANIMATION_CUSTOMIZATION: Required<
@@ -187,6 +191,12 @@ const MOTION_LIMITS = {
   settleMs: { min: 100, max: 1200 }
 } as const;
 
+const SHAPE_CLEARANCE_LIMITS = {
+  min: 0,
+  max: 32
+} as const;
+
+
 function isObject(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object";
 }
@@ -259,7 +269,8 @@ function validateCustomization(value: unknown, failures: string[]) {
     "density",
     "emphasis",
     "nodeVariant",
-    "motion"
+    "motion",
+    "shapeClearancePx"
   ] as const;
 
   if (!hasOnlyKeys(value, allowed)) {
@@ -296,6 +307,303 @@ function validateCustomization(value: unknown, failures: string[]) {
 
   if (value.motion !== undefined) {
     validateMotionCustomization(value.motion, failures, "visual customization motion");
+  }
+
+  if (value.shapeClearancePx !== undefined) {
+    if (
+      !isFiniteNumber(value.shapeClearancePx) ||
+      value.shapeClearancePx < SHAPE_CLEARANCE_LIMITS.min ||
+      value.shapeClearancePx > SHAPE_CLEARANCE_LIMITS.max
+    ) {
+      failures.push(
+        `visual customization shapeClearancePx must be between ${SHAPE_CLEARANCE_LIMITS.min} and ${SHAPE_CLEARANCE_LIMITS.max}`
+      );
+    }
+  }
+}
+
+type Rect = {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+type Point = {
+  x: number;
+  y: number;
+};
+
+function rectangleForPrimitive(primitive: Record<string, unknown>): Rect | null {
+  if (
+    !isNonEmptyString(primitive.id) ||
+    (primitive.kind !== "node" && primitive.kind !== "label") ||
+    !isFiniteNumber(primitive.x) ||
+    !isFiniteNumber(primitive.y) ||
+    !isFiniteNumber(primitive.width) ||
+    !isFiniteNumber(primitive.height)
+  ) {
+    return null;
+  }
+
+  return {
+    id: primitive.id,
+    x: primitive.x,
+    y: primitive.y,
+    width: primitive.width,
+    height: primitive.height
+  };
+}
+
+function rectanglesOverlap(a: Rect, b: Rect, clearance: number): boolean {
+  return (
+    a.x < b.x + b.width + clearance &&
+    a.x + a.width + clearance > b.x &&
+    a.y < b.y + b.height + clearance &&
+    a.y + a.height + clearance > b.y
+  );
+}
+
+function center(rect: Rect): Point {
+  return {
+    x: rect.x + rect.width / 2,
+    y: rect.y + rect.height / 2
+  };
+}
+
+function orientation(a: Point, b: Point, c: Point): number {
+  const value =
+    (b.y - a.y) * (c.x - b.x) -
+    (b.x - a.x) * (c.y - b.y);
+
+  if (Math.abs(value) < 0.000001) return 0;
+  return value > 0 ? 1 : 2;
+}
+
+function onSegment(a: Point, b: Point, c: Point): boolean {
+  return (
+    b.x >= Math.min(a.x, c.x) - 0.000001 &&
+    b.x <= Math.max(a.x, c.x) + 0.000001 &&
+    b.y >= Math.min(a.y, c.y) - 0.000001 &&
+    b.y <= Math.max(a.y, c.y) + 0.000001
+  );
+}
+
+function segmentsIntersect(a: Point, b: Point, c: Point, d: Point): boolean {
+  const o1 = orientation(a, b, c);
+  const o2 = orientation(a, b, d);
+  const o3 = orientation(c, d, a);
+  const o4 = orientation(c, d, b);
+
+  if (o1 !== o2 && o3 !== o4) return true;
+
+  if (o1 === 0 && onSegment(a, c, b)) return true;
+  if (o2 === 0 && onSegment(a, d, b)) return true;
+  if (o3 === 0 && onSegment(c, a, d)) return true;
+  if (o4 === 0 && onSegment(c, b, d)) return true;
+
+  return false;
+}
+
+function segmentIntersectsRect(
+  start: Point,
+  end: Point,
+  rect: Rect,
+  clearance: number
+): boolean {
+  const expanded: Rect = {
+    id: rect.id,
+    x: rect.x - clearance,
+    y: rect.y - clearance,
+    width: rect.width + clearance * 2,
+    height: rect.height + clearance * 2
+  };
+
+  if (
+    start.x > expanded.x &&
+    start.x < expanded.x + expanded.width &&
+    start.y > expanded.y &&
+    start.y < expanded.y + expanded.height
+  ) {
+    return true;
+  }
+
+  if (
+    end.x > expanded.x &&
+    end.x < expanded.x + expanded.width &&
+    end.y > expanded.y &&
+    end.y < expanded.y + expanded.height
+  ) {
+    return true;
+  }
+
+  const topLeft = { x: expanded.x, y: expanded.y };
+  const topRight = {
+    x: expanded.x + expanded.width,
+    y: expanded.y
+  };
+  const bottomRight = {
+    x: expanded.x + expanded.width,
+    y: expanded.y + expanded.height
+  };
+  const bottomLeft = {
+    x: expanded.x,
+    y: expanded.y + expanded.height
+  };
+
+  return (
+    segmentsIntersect(start, end, topLeft, topRight) ||
+    segmentsIntersect(start, end, topRight, bottomRight) ||
+    segmentsIntersect(start, end, bottomRight, bottomLeft) ||
+    segmentsIntersect(start, end, bottomLeft, topLeft)
+  );
+}
+
+function areConnectionCrossing(
+  first: { from: string; to: string },
+  second: { from: string; to: string },
+  nodeRects: Map<string, Rect>
+): boolean {
+  if (
+    first.from === second.from ||
+    first.from === second.to ||
+    first.to === second.from ||
+    first.to === second.to
+  ) {
+    return false;
+  }
+
+  const a = nodeRects.get(first.from);
+  const b = nodeRects.get(first.to);
+  const c = nodeRects.get(second.from);
+  const d = nodeRects.get(second.to);
+
+  if (!a || !b || !c || !d) return false;
+
+  return segmentsIntersect(center(a), center(b), center(c), center(d));
+}
+
+function validateGeometry(
+  primitives: unknown[],
+  customization: unknown,
+  failures: string[]
+) {
+  const clearance =
+    isObject(customization) && isFiniteNumber(customization.shapeClearancePx)
+      ? customization.shapeClearancePx
+      : 12;
+
+  const rects = primitives
+    .filter(isObject)
+    .map(rectangleForPrimitive)
+    .filter((rect): rect is Rect => rect !== null);
+
+  for (let index = 0; index < rects.length; index += 1) {
+    for (let otherIndex = index + 1; otherIndex < rects.length; otherIndex += 1) {
+      const first = rects[index];
+      const second = rects[otherIndex];
+
+      const firstIsLabel = primitives.some(
+        (primitive) =>
+          isObject(primitive) &&
+          primitive.id === first.id &&
+          primitive.kind === "label"
+      );
+      const secondIsLabel = primitives.some(
+        (primitive) =>
+          isObject(primitive) &&
+          primitive.id === second.id &&
+          primitive.kind === "label"
+      );
+
+      if (firstIsLabel !== secondIsLabel) {
+        continue;
+      }
+
+      if (rectanglesOverlap(first, second, clearance)) {
+        failures.push(
+          `shape clearance conflict between ${first.id} and ${second.id}`
+        );
+        if (
+          first.x < second.x + second.width &&
+          first.x + first.width > second.x &&
+          first.y < second.y + second.height &&
+          first.y + first.height > second.y
+        ) {
+          failures.push(`shape overlap between ${first.id} and ${second.id}`);
+        }
+      }
+    }
+  }
+
+  const nodeRects = new Map<string, Rect>(
+    primitives
+      .filter(isObject)
+      .filter((primitive) => primitive.kind === "node")
+      .map((primitive) => [String(primitive.id), rectangleForPrimitive(primitive)])
+      .filter((entry): entry is [string, Rect] => entry[1] !== null)
+  );
+
+  const connections = primitives
+    .filter(isObject)
+    .filter(
+      (
+        primitive
+      ): primitive is Record<string, unknown> & {
+        kind: "connection";
+        id: string;
+        from: string;
+        to: string;
+        allowCrossingWith?: string[];
+      } => primitive.kind === "connection" && isNonEmptyString(primitive.id)
+    );
+
+  for (const connection of connections) {
+    const source = nodeRects.get(String(connection.from));
+    const target = nodeRects.get(String(connection.to));
+
+    if (!source || !target) continue;
+
+    const start = center(source);
+    const end = center(target);
+
+    for (const [nodeId, nodeRect] of nodeRects) {
+      if (nodeId === connection.from || nodeId === connection.to) continue;
+      if (segmentIntersectsRect(start, end, nodeRect, clearance)) {
+        failures.push(
+          `connection crosses shape: ${connection.id} crosses ${nodeId}`
+        );
+      }
+    }
+  }
+
+  for (let firstIndex = 0; firstIndex < connections.length; firstIndex += 1) {
+    for (
+      let secondIndex = firstIndex + 1;
+      secondIndex < connections.length;
+      secondIndex += 1
+    ) {
+      const first = connections[firstIndex];
+      const second = connections[secondIndex];
+
+      const firstAllows = Array.isArray(first.allowCrossingWith)
+        ? first.allowCrossingWith.includes(second.id)
+        : false;
+      const secondAllows = Array.isArray(second.allowCrossingWith)
+        ? second.allowCrossingWith.includes(first.id)
+        : false;
+
+      if (
+        !firstAllows &&
+        !secondAllows &&
+        areConnectionCrossing(first, second, nodeRects)
+      ) {
+        failures.push(
+          `connection crossing: ${first.id} crosses ${second.id}`
+        );
+      }
+    }
   }
 }
 
@@ -370,8 +678,37 @@ function validatePrimitive(
     }
   }
 
-  if (primitive.kind === "label" && !isNonEmptyString(primitive.text)) {
-    failures.push(`primitive ${id} text is required`);
+  if (primitive.kind === "label") {
+    if (!isNonEmptyString(primitive.text)) {
+      failures.push(`primitive ${id} text is required`);
+    }
+    for (const key of ["width", "height"] as const) {
+      if (!isFiniteNumber(primitive[key]) || primitive[key] <= 0) {
+        failures.push(`primitive ${id} ${key} is invalid`);
+      }
+    }
+
+    if (
+      isFiniteNumber(primitive.x) &&
+      isFiniteNumber(primitive.y) &&
+      isFiniteNumber(primitive.width) &&
+      isFiniteNumber(primitive.height) &&
+      (primitive.x < 0 ||
+        primitive.y < 0 ||
+        primitive.x + primitive.width > ANIMATION_VIEWPORT.width ||
+        primitive.y + primitive.height > ANIMATION_VIEWPORT.height)
+    ) {
+      failures.push(`primitive ${id} is outside viewport`);
+    }
+  }
+
+  if (primitive.kind === "connection" && primitive.allowCrossingWith !== undefined) {
+    if (
+      !Array.isArray(primitive.allowCrossingWith) ||
+      primitive.allowCrossingWith.some((id) => !isNonEmptyString(id))
+    ) {
+      failures.push(`primitive ${id} allowCrossingWith is invalid`);
+    }
   }
 }
 
@@ -444,7 +781,7 @@ export function validateAnimationDefinition(
       if (!isObject(primitive) || !isNonEmptyString(primitive.id)) continue;
 
       if (primitive.kind === "connection" || primitive.kind === "packet") {
-        if (isNonEmptyString(primitive.from) && !primitiveIds.has(primitive.from)) {
+          if (isNonEmptyString(primitive.from) && !primitiveIds.has(primitive.from)) {
           failures.push(
             `primitive ${primitive.id} source does not exist: ${primitive.from}`
           );
@@ -456,6 +793,8 @@ export function validateAnimationDefinition(
         }
       }
     }
+
+    validateGeometry(value.primitives, value.visual.customization, failures);
   }
 
   const stateIds = new Set<string>();
