@@ -31,6 +31,7 @@ export type LessonIllustrationVariantV1 =
   | "docker-network-storage-v1"
   | "docker-failure-loop-v1"
   | "kubernetes-reconciliation-v1"
+  | "kubernetes-networking-v1"
   | "kubernetes-service-path-v1"
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
@@ -1024,6 +1025,7 @@ export function validateLessonContent(
         block.variant !== "container-execution-v1" &&
         block.variant !== "docker-network-storage-v1" &&
         block.variant !== "kubernetes-reconciliation-v1" &&
+        block.variant !== "kubernetes-networking-v1" &&
         block.variant !== "docker-failure-loop-v1" &&
         block.variant !== "cloud-primitives-v1" &&
         block.variant !== "database-scaling-v1" &&
