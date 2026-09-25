@@ -818,6 +818,36 @@ export function validateAnimationDefinition(
             `primitive ${primitive.id} target does not exist: ${primitive.to}`
           );
         }
+
+        if (
+          isNonEmptyString(primitive.from) &&
+          primitiveIds.has(primitive.from) &&
+          primitiveKinds.get(primitive.from) !== "node"
+        ) {
+          failures.push(
+            `primitive ${primitive.id} endpoint must reference a node: ${primitive.from}`
+          );
+        }
+
+        if (
+          isNonEmptyString(primitive.to) &&
+          primitiveIds.has(primitive.to) &&
+          primitiveKinds.get(primitive.to) !== "node"
+        ) {
+          failures.push(
+            `primitive ${primitive.id} endpoint must reference a node: ${primitive.to}`
+          );
+        }
+
+        if (
+          isNonEmptyString(primitive.from) &&
+          isNonEmptyString(primitive.to) &&
+          primitive.from === primitive.to
+        ) {
+          failures.push(
+            `primitive ${primitive.id} route endpoints must be different`
+          );
+        }
       }
     }
 
