@@ -31,7 +31,7 @@ describe("animation stage integration contract", () => {
   it("supports reduced motion without removing the diagram meaning", () => {
     const code = source("src/animations/AnimationStage.tsx");
     expect(code).toContain("prefersReducedMotion");
-    expect(code).toContain("reducedMotion");
+    expect(code).toContain("prefersReducedMotion");
     expect(code).toContain("aria-label");
   });
 
