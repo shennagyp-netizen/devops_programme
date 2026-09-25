@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #43, commit `3ba501eea24abfc7788837dc2a443c2e28ad7f95` (D1.2 terminal-composition script + illustration quality slice).
+**Latest main architecture/content merge:** PR #44, commit `de0a4893f272640f2d02b54dd45ecc397acc6bf2` (D1.3 service execution-context script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #43 has merged to `main`.
+**Active content-quality branch:** none. PR #44 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1876,18 +1876,13 @@ Merged PR #42:
 Merged PR #43:
 - D1.2 -> `terminal-composition-v1`: Question -> Producer -> Transform -> Route -> Evidence.
 - Merge commit: `3ba501eea24abfc7788837dc2a443c2e28ad7f95`.
-- D1.2 now teaches pipes, redirection, stderr, filtering, remote boundaries and command-result interpretation as a single evidence-routing model.
-- Final PR #43 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- Next content boundary: **D1.3 — Processes, Services, Permissions and Logs**.
 
-
-Active PR #44 scope:
-- D1.3 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `service-permission-model-v1`.
-- Teaching model: Process -> Identity -> Resource -> Service -> Logs.
-- The rewritten script makes execution context explicit: user/group, permissions, environment, service supervision and log evidence.
-- Controlled failure uses a safe temporary permission boundary and verifies recovery.
-- TDD/full-programme gate is required before merge.
+Merged PR #44:
+- D1.3 -> `service-permission-model-v1`: Process -> Identity -> Resource -> Service -> Logs.
+- Merge commit: `de0a4893f272640f2d02b54dd45ecc397acc6bf2`.
+- D1.3 now teaches execution context as part of the system: user/group identity, permissions, environment, service supervision and log evidence.
+- Final PR #44 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- Next content boundary: **D1.4 — What Is a Network?**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
