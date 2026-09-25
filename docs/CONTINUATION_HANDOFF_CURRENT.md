@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #37, commit `a5f77bda6927d01c7510cebbac272950b27db84a` (B2.2 observability diagnosis script + illustration quality slice).
+**Latest main architecture/content merge:** PR #38, commit `55f43081f3aae067c66ae29e3e104da68e4d7a8e` (B2.3 backup/recovery script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #37 has merged to `main`.
+**Active content-quality branch:** none. PR #38 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1852,7 +1852,6 @@ Merged PR #36:
 - Teaching model: Change -> Review -> Test -> Artifact -> Deploy -> Verify, with release identity as the evidence spine.
 - B2.1 explicitly distinguishes deployment success from runtime health and treats rollback as a system-level recovery decision.
 - Final PR #36 gate passed **347 tests**, all programme contracts, TypeScript and the Next.js production build.
-- Red-team caught the authored-stream fallback risk before the final green revision; the B2.1 lesson registry was corrected rather than weakening the test.
 
 Merged PR #37:
 - merge commit: `a5f77bda6927d01c7510cebbac272950b27db84a`
@@ -1861,16 +1860,15 @@ Merged PR #37:
 - Metrics, logs, health checks and traces are explicitly taught as different evidence types answering different questions.
 - The rewritten script distinguishes correlation from proof and includes misleading-signal cases.
 - Final PR #37 gate passed **347 tests**, all programme contracts, TypeScript and the Next.js production build.
-- Red-team again caught the authored-stream fallback risk during development; B2.2 was explicitly registered in the lesson content source instead of weakening the integration test.
-- Next content boundary: B2.3 — Backups Are Not the Same as Recovery.
 
-
-Active PR #38 scope:
-- B2.3 is upgraded to the same script+illustration quality standard.
-- New semantic illustration: `backup-recovery-v1`.
-- Teaching model: Backup -> Restore -> Compatibility -> Verify -> Recover, with RPO and RTO as explicit constraints.
-- The rewritten script separates backup existence from restore capability and service recovery, including compatibility, encryption-key and recovery-time risks.
-- TDD/full-programme gate is required before merge.
+Merged PR #38:
+- merge commit: `55f43081f3aae067c66ae29e3e104da68e4d7a8e`
+- B2.3 uses the `backup-recovery-v1` semantic illustration.
+- Teaching model: Backup -> Restore -> Compatibility -> Verify -> Recover, with RPO/RTO as explicit constraints.
+- The rewritten script separates backup existence from restore capability and full service recovery, including compatibility, encryption-key and recovery-time risks.
+- Final PR #38 gate passed the complete programme suite, TypeScript and the Next.js production build.
+- Red-team again caught authored-stream fallback risk during development; B2.3 was explicitly registered instead of weakening the test.
+- Next content boundary: B2.4 — "Backups Are Not the Same as Recovery" has now been completed; next authored target is B2.4's following lesson in the programme source.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
