@@ -191,6 +191,21 @@ describe("course lesson content integration", () => {
     });
   });
 
+  it("uses the authored production-incident visual for D5.8", () => {
+    const lesson = allLessons.find((item) => item.id === "D5.8");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d5-8-production-incident",
+      bindingId: "D5.8:d5-8-production-incident",
+      variant: "production-incident-v1"
+    });
+  });
+
   it("uses the authored global-architecture visual for D5.7", () => {
     const lesson = allLessons.find((item) => item.id === "D5.7");
     expect(lesson).toBeDefined();
