@@ -34,7 +34,8 @@ export type LessonIllustrationVariantV1 =
   | "cicd-control-path-v1"
   | "github-actions-execution-v1"
   | "iac-control-loop-v1"
-  | "terraform-lifecycle-v1";
+  | "terraform-lifecycle-v1"
+  | "cloud-primitives-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -1059,6 +1060,37 @@ const TERRAFORM_LIFECYCLE_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const CLOUD_PRIMITIVES_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "cloud-primitives-v1",
+  title: "The provider-neutral cloud architecture",
+  stages: [
+    { id: "workload", label: "Workload", detail: "Start with the application workload and its real user-facing behavior." },
+    { id: "compute", label: "Compute", detail: "Choose the execution capacity that runs the workload and determines the first resource boundary." },
+    { id: "network", label: "Network", detail: "Connect the workload to clients, services and dependencies through explicit network boundaries." },
+    { id: "state", label: "State", detail: "Store data and other durable state outside the disposable compute lifecycle when required." },
+    { id: "identity", label: "Identity", detail: "Define who or what can access each resource and under which policy." },
+    { id: "data-services", label: "Data Services", detail: "Use databases, queues and caches according to the workload's consistency, latency and reliability needs." }
+  ],
+  foundation: {
+    label: "Cloud products are implementations of infrastructure primitives",
+    detail: "AWS, Azure, GCP and other providers package compute, networking, storage, identity and data capabilities differently; the underlying engineering questions remain."
+  },
+  callouts: [
+    { id: "managed-boundary", label: "Managed boundary", detail: "A managed service moves some operational responsibility to the provider, but it does not remove capacity, security, dependency or cost decisions." },
+    { id: "dependency-graph", label: "Dependency graph", detail: "Scaling or changing one primitive can move a bottleneck or failure into another part of the architecture." },
+    { id: "identity", label: "Identity", detail: "Access control is part of architecture from the start, not a final security layer added after networking." },
+    { id: "cost", label: "Cost", detail: "Every primitive has an operational cost model, including idle capacity, data transfer, storage, requests and managed-service pricing." }
+  ],
+  failureChecks: [
+    { id: "bottleneck", label: "1. Bottleneck", detail: "Which dependency limits the user-facing workload when one component scales?" },
+    { id: "network-boundary", label: "2. Network boundary", detail: "Which clients can reach which services, and through what explicit network path?" },
+    { id: "state-owner", label: "3. State owner", detail: "Which system owns durable data and how does that lifecycle differ from compute?" },
+    { id: "access-model", label: "4. Access model", detail: "Which identity is allowed to perform each operation and how is that access evidenced?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1315,6 +1347,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "cloud-primitives-v1") {
+    return {
+      ...CLOUD_PRIMITIVES_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1363,7 +1402,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "cicd-control-path-v1" &&
     model.variant !== "github-actions-execution-v1" &&
     model.variant !== "iac-control-loop-v1" &&
-    model.variant !== "terraform-lifecycle-v1"
+    model.variant !== "terraform-lifecycle-v1" &&
+    model.variant !== "cloud-primitives-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
