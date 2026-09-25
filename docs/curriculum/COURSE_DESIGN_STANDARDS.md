@@ -427,7 +427,7 @@ This does not mean the entire B1.2 failure/recovery exercise is machine verified
 
 # 10. Podcast standard
 
-The spoken lesson is two engineers working through a problem, not a narrated textbook.
+The spoken lesson is two engineers working through a problem, not a narrated textbook. It is a continuous co-teacher layer attached to the whole learner session, not a separate Listen mode.
 
 Required style:
 - natural contractions
@@ -451,6 +451,8 @@ Learning rhythm:
 problem -> competing hypotheses -> mental model -> prediction -> operation -> failure -> evidence -> diagnosis -> repair -> recall -> transfer -> challenge
 
 Audio timing must come from actual aligned audio. Never estimate timing from word count.
+
+The voice session remains active across the lesson's content feed and learner modes. Authored prediction, lab and recall cues are deliberate learner-action boundaries: speech pauses, the learner acts, and the same voice session resumes. Switching from Learn to Do/Recall/Design/Assessment must not destroy the voice session.
 
 Current authored spoken content covers 53 lessons. Production aligned audio is not yet complete.
 
