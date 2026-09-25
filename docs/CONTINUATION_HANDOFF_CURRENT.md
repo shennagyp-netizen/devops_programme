@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #60, commit `68ee5fb403fc0a729dcef2d26ad3da587abd247f` (D3.3 Kubernetes config-storage script + illustration quality slice).
+**Latest main architecture/content merge:** PR #61, commit `95bd718feb0344789fd6ce4cdb68dd9bb89f3cce` (D3.4 Kubernetes health-scaling script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #60 has merged to `main`.
+**Active content-quality branch:** none. PR #61 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1936,19 +1936,15 @@ Merged PR #59:
 Merged PR #60:
 - D3.3 -> `kubernetes-config-storage-v1`: Config -> Secret -> Mount -> Pod -> Persistence.
 - Merge commit: `68ee5fb403fc0a729dcef2d26ad3da587abd247f`.
-- D3.3 now separates non-secret configuration, secret handling, application consumption, Pod lifecycle and persistent storage lifecycle.
-- Controlled failures cover wrong configuration, secret-consumption paths and data behavior across Pod replacement.
 - Final PR #60 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- Next content boundary: **D3.4 — Kubernetes Health and Scaling**.
 
-
-Active PR D3.4 scope:
-- D3.4 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `kubernetes-health-scaling-v1`.
-- Teaching model: Startup -> Readiness -> Liveness -> Capacity -> Rollout.
-- The rewritten script treats health signals as different operational decisions and ties them to resource/capacity and rolling-update behavior.
-- Controlled failures cover startup delay, readiness failure and liveness/restart behavior, followed by recovery proof.
-- TDD/full-programme gate is required before merge.
+Merged PR #61:
+- D3.4 -> `kubernetes-health-scaling-v1`: Startup -> Readiness -> Liveness -> Capacity -> Rollout.
+- Merge commit: `95bd718feb0344789fd6ce4cdb68dd9bb89f3cce`.
+- D3.4 now separates initialization, traffic readiness, restart health, capacity planning and rollout behavior.
+- Controlled failures cover startup delay, readiness failure and liveness/restart behavior, followed by stable recovery proof.
+- Final PR #61 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- Next content boundary: **D3.5 — Kubernetes Failure Lab**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
