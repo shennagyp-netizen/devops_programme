@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models CI/CD as source, validation, artifact, promotion and verification", () => {
+    const model = getLessonIllustrationModel({
+      id: "d4-2-cicd",
+      type: "illustration",
+      heading: "The CI/CD control path",
+      alt: "A source change is validated, built into an identified artifact, promoted through controlled environments and verified after deployment",
+      bindingId: "D4.2:d4-2-cicd",
+      nodes: ["Source", "Validate", "Artifact", "Promote", "Verify"],
+      variant: "cicd-control-path-v1"
+    });
+
+    expect(model.variant).toBe("cicd-control-path-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "source",
+      "validate",
+      "artifact",
+      "promote",
+      "verify"
+    ]);
+    expect(model.foundation.label).toBe("A pipeline is a control system, not a YAML file");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "gates",
+      "build-once",
+      "environment",
+      "provenance"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "source-identity",
+      "validation-evidence",
+      "artifact-identity",
+      "runtime-proof"
+    ]);
+  });
+
   it("models Git production workflow as change, review, commit, release and recovery", () => {
     const model = getLessonIllustrationModel({
       id: "d4-1-git-production-workflow",
