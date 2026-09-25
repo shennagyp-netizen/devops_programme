@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models distributed work as request, observation, replica state, agreement and user outcome", () => {
+    const model = getLessonIllustrationModel({
+      id: "d5-3-distributed",
+      type: "illustration",
+      heading: "The distributed-system evidence path",
+      alt: "A request crosses a distributed boundary where responses can be delayed or lost, replicas can disagree temporarily, and user outcomes depend on recovery rules",
+      bindingId: "D5.3:d5-3-distributed",
+      nodes: ["Request", "Observation", "Replica State", "Agreement", "User Outcome"],
+      variant: "distributed-failure-v1"
+    });
+
+    expect(model.variant).toBe("distributed-failure-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "request",
+      "observation",
+      "replica-state",
+      "agreement",
+      "user-outcome"
+    ]);
+    expect(model.foundation.label).toBe("A timeout is missing information, not proof of failure");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "partial-failure",
+      "timeout",
+      "idempotency",
+      "consistency"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "response-uncertainty",
+      "replica-divergence",
+      "retry-safety",
+      "user-meaning"
+    ]);
+  });
+
   it("models database scaling as query path, correctness, copies, distribution and evidence", () => {
     const model = getLessonIllustrationModel({
       id: "d5-2-database-scale",
