@@ -1950,6 +1950,24 @@ Active PR #53 scope:
 - Important product decision: approximately seven hours of audio alone is not a sufficient $2,000 value proposition. Premium value must come from adaptive remediation, controlled failure/recovery, durable learner history, machine verification, project transfer and proof of mastery.
 - TDD adds unit coverage for stage progression and integration coverage across all authored lessons.
 - Remaining mastery work after this slice: server-loaded initial mastery state, lesson-specific authored remediation explanations, machine-verified failure/recovery across the hands-on catalogue, richer assessment remediation, analytics and browser validation.
+
+Merged PR #107:
+- merge commit: `863bd5c2330d9c9ca1f5d6c713403e6285267b7e`
+- Product instructional standard is now **mastery-first**, not hours-first.
+- Every lesson gets a three-way first-pass teaching preview before the assignment:
+  1. plain-language explanation
+  2. analogy/human model
+  3. visual/system explanation.
+- Failed hands-on evidence triggers a different remediation stage rather than an identical retry.
+- Remediation stages: foundation reteach -> mechanism reteach -> guided practice -> prerequisite rewind.
+- Guided remediation includes micro-checks and smaller retry assignments.
+- Failure attempts are recorded as distinct evidence events.
+- Authenticated mastery attempts are persisted in PostgreSQL in `learner_mastery_attempts`.
+- New contract document: `docs/MASTERY_AND_REMEDIATION_CONTRACT.md`.
+- PR #107 full gate passed all programme contracts, unit/integration tests, TypeScript and production build.
+- Important product decision: approximately seven hours of audio alone is not sufficient justification for a $2,000 product. The premium proposition must be demonstrated mastery, adaptive remediation, controlled failure/recovery, durable learner history, machine verification and project transfer.
+- Remaining premium-quality work: authored remediation packs for every concept, richer assessment-specific remediation, complete machine-verified hands-on coverage, analytics, and browser visual validation.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
 
