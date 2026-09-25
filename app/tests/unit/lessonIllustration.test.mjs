@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models GitHub Actions as workflow, job, runner, steps and artifact", () => {
+    const model = getLessonIllustrationModel({
+      id: "d4-3-github-actions",
+      type: "illustration",
+      heading: "The GitHub Actions execution model",
+      alt: "A workflow creates jobs that run on runners through ordered steps and produce artifacts while caches and secrets serve separate purposes",
+      bindingId: "D4.3:d4-3-github-actions",
+      nodes: ["Workflow", "Job", "Runner", "Steps", "Artifact"],
+      variant: "github-actions-execution-v1"
+    });
+
+    expect(model.variant).toBe("github-actions-execution-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "workflow",
+      "job",
+      "runner",
+      "steps",
+      "artifact"
+    ]);
+    expect(model.foundation.label).toBe("GitHub Actions encodes the pipeline; it does not replace the control model");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "runner",
+      "cache",
+      "artifact",
+      "secrets"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "job-context",
+      "step-log",
+      "output-identity",
+      "secret-boundary"
+    ]);
+  });
+
   it("models CI/CD as source, validation, artifact, promotion and verification", () => {
     const model = getLessonIllustrationModel({
       id: "d4-2-cicd",
