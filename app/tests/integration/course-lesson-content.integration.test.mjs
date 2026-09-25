@@ -639,6 +639,50 @@ describe("course lesson content integration", () => {
     });
   });
 
+  it("uses the authored capacity-system visual for A1.1", () => {
+    const lesson = allLessons.find((item) => item.id === "A1.1");
+    expect(lesson).toBeDefined();
+    const illustration = lesson.content.blocks.find((block) => block.type === "illustration");
+    expect(illustration).toMatchObject({
+      id: "a1-1-capacity",
+      bindingId: "A1.1:a1-1-capacity",
+      variant: "capacity-system-v1"
+    });
+  });
+
+  it("uses the authored queue-backpressure visual for A1.2", () => {
+    const lesson = allLessons.find((item) => item.id === "A1.2");
+    expect(lesson).toBeDefined();
+    const illustration = lesson.content.blocks.find((block) => block.type === "illustration");
+    expect(illustration).toMatchObject({
+      id: "a1-2-backpressure",
+      bindingId: "A1.2:a1-2-backpressure",
+      variant: "queue-backpressure-v1"
+    });
+  });
+
+  it("uses the authored replication-tradeoff visual for A1.3", () => {
+    const lesson = allLessons.find((item) => item.id === "A1.3");
+    expect(lesson).toBeDefined();
+    const illustration = lesson.content.blocks.find((block) => block.type === "illustration");
+    expect(illustration).toMatchObject({
+      id: "a1-3-replication",
+      bindingId: "A1.3:a1-3-replication",
+      variant: "replication-tradeoff-v1"
+    });
+  });
+
+  it("uses the authored failure-domain ladder for A1.4", () => {
+    const lesson = allLessons.find((item) => item.id === "A1.4");
+    expect(lesson).toBeDefined();
+    const illustration = lesson.content.blocks.find((block) => block.type === "illustration");
+    expect(illustration).toMatchObject({
+      id: "a1-4-failure-domains",
+      bindingId: "A1.4:a1-4-failure-domains",
+      variant: "failure-domain-ladder-v1"
+    });
+  });
+
   it("requires every illustration block to carry its curriculum binding identity", () => {
     for (const lesson of allLessons) {
       for (const block of lesson.content.blocks) {
