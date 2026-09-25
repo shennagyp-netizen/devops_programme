@@ -893,6 +893,7 @@ export function validateLessonContent(
         block.variant !== "tls-trust-v1" &&
         block.variant !== "container-execution-v1" &&
         block.variant !== "docker-network-storage-v1" &&
+        block.variant !== "kubernetes-reconciliation-v1" &&
         block.variant !== "docker-failure-loop-v1" &&
         block.variant !== "kubernetes-reconciliation-v1" &&
         block.variant !== "kubernetes-service-path-v1" &&
