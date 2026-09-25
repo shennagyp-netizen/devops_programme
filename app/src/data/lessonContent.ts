@@ -37,7 +37,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-failure-loop-v1"
   | "git-production-workflow-v1"
   | "cicd-control-path-v1"
-  | "github-actions-execution-v1";
+  | "github-actions-execution-v1"
+  | "iac-control-loop-v1";
 
 export type LessonContentBlock =
   | {
@@ -90,6 +91,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D4.4": {
+    version: 1,
+    blocks: [
+      {
+        id: "d4-4-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Infrastructure as Code makes infrastructure intent reviewable and repeatable, but safe operation still depends on plan evidence, provider state, state coordination and drift detection."
+      },
+      {
+        id: "d4-4-iac",
+        type: "illustration",
+        heading: "The Infrastructure as Code control loop",
+        alt: "Declared infrastructure intent is planned, applied to real resources, recorded in state and compared for drift",
+        bindingId: "D4.4:d4-4-iac",
+        nodes: ["Intent", "Plan", "Apply", "State", "Drift"],
+        variant: "iac-control-loop-v1",
+        caption:
+          "Keep declared intent, tool state and real provider resources conceptually separate."
+      }
+    ]
+  },
+
+
   "D4.3": {
     version: 1,
     blocks: [
@@ -954,6 +980,7 @@ export function validateLessonContent(
         block.variant !== "git-production-workflow-v1" &&
         block.variant !== "cicd-control-path-v1" &&
         block.variant !== "github-actions-execution-v1" &&
+        block.variant !== "iac-control-loop-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
