@@ -1550,3 +1550,31 @@ No curriculum, runtime, authentication, persistence, or animation behavior is ch
 ============================================================
 END VERCEL VISUAL AUDIT DEPLOYMENT TRIGGER
 ============================================================
+
+
+============================================================
+VERCEL VISUAL VALIDATION DEPLOYMENT BOUNDARY — 2026-09-25
+============================================================
+
+Vercel access is now authorized for team `shennagyp-8842`, and the `devops-programme` project is reachable.
+
+Deployment finding:
+- Production deployment `dpl_6ACAE4n5GQSGiWfxRbjaWifib5Dh` was READY but served 404 because Vercel was building the repository root rather than the Next.js application under `app/`.
+- Its build log completed in 141 ms without running Next.js.
+- A repository-level `vercel.json` workaround was tested, but Vercel still reported no Next.js dependency at the configured project root. The workaround is therefore removed rather than retained as a misleading deployment configuration.
+- The working CAGI project confirms the expected Vercel behavior: Vercel detects Next.js from the application root, installs dependencies there, runs `npm run build`, and exposes the generated App Router routes.
+
+Required Vercel project configuration for this repository:
+- Root Directory: `app`
+- Framework Preset: Next.js
+- Build Command: default / auto-detected
+- Install Command: default / auto-detected
+- Output Directory: default / auto-detected.
+
+This is a Vercel project setting, not application source behavior. Do not add a root-level package/Next.js shim or legacy Vercel builder merely to compensate for an incorrect Root Directory.
+
+Visual validation remains blocked until the Vercel project Root Directory is set to `app` and a fresh deployment reaches READY. Once that is true, browser visual evaluation is the next gate before further curriculum-animation implementation.
+
+============================================================
+END VERCEL VISUAL VALIDATION DEPLOYMENT BOUNDARY
+============================================================
