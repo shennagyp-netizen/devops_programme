@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #33, commit `d3c49338180d948d0d5f7284713a91ead65267b1` (gold-standard script + illustration slice).
+**Latest main architecture/content merge:** PR #34, commit `ead42af0fdd8f6437ec71849cb2ffd6f8125cc4d` (B1.2/B1.3 network script + illustration quality slice).
 
-**Active content-quality branch:** `feature/gold-standard-beginner-network-slice` (PR #34). This slice upgrades B1.2 and B1.3.
+**Active content-quality branch:** none. PR #34 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1826,17 +1826,18 @@ Current TDD status:
 - final pre-merge programme gate: run 36102416096 PASS on the corrected content-quality head.
 - the earlier red run 36102249143 caught a fixture mismatch; that regression was corrected and then covered by additional fail-closed tests.
 - branch preview deployments before the final green revision also included a Vercel build-rate-limit signal. That infrastructure condition must not be confused with application test failure.
-- production deployment for the merged commit is still pending verification; the last verified production deployment is PR #32 commit `ab3a9400929be685f4c366068e1b4e576e9d5f41`.
+- production deployment for PR #34 commit is pending verification. The last verified production deployment remains PR #32 commit `ab3a9400929be685f4c366068e1b4e576e9d5f41`.
 
 Do not scale the animation catalogue before the script+illustration quality gate is stable. Reusable animations remain capabilities; curriculum remains the instructional authority.
 ============================================================
 
-Current PR #34 scope:
+- PR #34: merged to `main` as `ead42af0fdd8f6437ec71849cb2ffd6f8125cc4d`.
 - B1.2 has an authored semantic `request-path-v1` illustration.
 - B1.3 has an authored semantic `https-stack-v1` illustration.
 - B1.2 and B1.3 spoken scripts were rewritten around mechanism, prediction, controlled failure, evidence and recovery.
 - Lesson-stream isolation is explicitly tested so one lesson cannot silently inherit another lesson's visual blocks.
-- The first red-team run found two contract issues: the validator did not know the new variants and B1.3 used a non-canonical binding identity. Both were corrected before the current rerun.
-- Do not merge PR #34 until the full programme gate is green and the authored binding registry resolves all new visuals.
+- Red-team/CI caught two contract issues during development: the validator did not know the new variants and B1.3 used a non-canonical binding identity. Both were corrected before the final green run.
+- The final PR #34 programme gate passed 342 tests, all contract checks, TypeScript typecheck and the Next.js production build.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
