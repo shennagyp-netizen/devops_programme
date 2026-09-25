@@ -29,7 +29,7 @@ describe("public marketing visual contract", () => {
     const styles = await source("../../src/styles.css");
 
     expect(styles).toContain(".marketing-packet");
-    expect(styles).toContain("@keyframes marketingPacketTravel");
+    expect(styles).toContain("@keyframes marketingPacketGlow");
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
     expect(styles).toContain(".marketing-hero-illustration");
   });
