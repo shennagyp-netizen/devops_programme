@@ -122,6 +122,19 @@ describe("animation geometry red team", () => {
     expect(failures).toContain("outside viewport");
   });
 
+  it("rejects a packet route that passes through an unrelated node", () => {
+    const definition = baseDefinition();
+    definition.primitives.push({
+      kind: "packet",
+      id: "packet-through-b",
+      from: "a",
+      to: "b"
+    });
+
+    const failures = validateAnimationDefinition(definition).failures.join(" ");
+    expect(failures).toContain("packet crosses shape");
+  });
+
   it("rejects a connection that crosses an unrelated node", () => {
     const definition = baseDefinition();
     definition.primitives.push({
