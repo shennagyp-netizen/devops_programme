@@ -5,6 +5,10 @@ export type LessonVideoCue = {
   endMs?: number;
 };
 
+export type LessonIllustrationVariantV1 =
+  | "causal-flow-v1"
+  | "container-boundary-v1";
+
 export type LessonContentBlock =
   | {
       id: string;
@@ -19,6 +23,7 @@ export type LessonContentBlock =
       alt: string;
       bindingId: string;
       nodes: string[];
+      variant?: LessonIllustrationVariantV1;
       caption?: string;
     }
   | {
@@ -71,7 +76,8 @@ const authoredLessonContent: Record<string, LessonContent> = {
         heading: "The isolation boundary",
         alt: "Image becomes a container and then an isolated process environment",
         bindingId: "B1.4:b1-4-isolation",
-        nodes: ["Application image", "Container boundary", "Process"],
+        nodes: ["Image", "Container", "Process"],
+        variant: "container-boundary-v1",
         caption:
           "Use the picture to connect the packaging decision to the running process."
       },
@@ -295,6 +301,7 @@ export function buildDefaultLessonContent(seed: LessonContentSeed): LessonConten
         alt: "A simple causal flow for the lesson",
         bindingId: `${seed.id}:${seed.id.toLowerCase()}-mechanism`,
         nodes: ["Problem", "Mechanism", "Evidence"],
+        variant: "causal-flow-v1",
         caption:
           "The visual is a compact cue. The literal technical mechanism remains in the written lesson."
       }
