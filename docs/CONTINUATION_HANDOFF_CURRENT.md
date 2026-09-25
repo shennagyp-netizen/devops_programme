@@ -1938,6 +1938,7 @@ Active PR D3.2 scope:
 - The rewritten script separates stable Service identity, selector matching, endpoint membership, Pod readiness and the actual request path.
 - Controlled failures remove one Pod, break the Service selector, and verify endpoint/routing recovery.
 - TDD/full-programme gate is required before merge.
+- Current PR head `4828027c7e5411f0ff5b941ade0a55cf0a4ee471` requires a fresh full-programme gate; the older branch run is not treated as current-head proof.
 
 
 Active PR #56 scope:
