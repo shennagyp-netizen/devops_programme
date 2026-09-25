@@ -28,9 +28,7 @@ export type LessonIllustrationVariantV1 =
   | "http-exchange-v1"
   | "tls-trust-v1"
   | "container-execution-v1"
-  | "docker-network-storage-v1"
-  | "docker-failure-loop-v1"
-  | "kubernetes-reconciliation-v1";
+  | "docker-network-storage-v1";
 
 export type LessonContentBlock =
   | {
@@ -83,56 +81,6 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
-  "D3.1": {
-    version: 1,
-    blocks: [
-      {
-        id: "d3-1-problem",
-        type: "text",
-        heading: "Why this matters",
-        body:
-          "Kubernetes becomes easier to understand when YAML is treated as desired state and controllers are treated as the machinery that keeps actual state moving toward it."
-      },
-      {
-        id: "d3-1-kubernetes-model",
-        type: "illustration",
-        heading: "The Kubernetes reconciliation loop",
-        alt: "Kubernetes compares desired state with actual state, a controller acts, and the system moves toward the desired state",
-        bindingId: "D3.1:d3-1-kubernetes-model",
-        nodes: ["Desired State", "Controller", "Observe", "Act", "Converge"],
-        variant: "kubernetes-reconciliation-v1",
-        caption:
-          "YAML describes desired state; the control loop does the ongoing work."
-      }
-    ]
-  },
-
-
-  "D2.7": {
-    version: 1,
-    blocks: [
-      {
-        id: "d2-7-problem",
-        type: "text",
-        heading: "Why this matters",
-        body:
-          "Controlled failure turns Docker from a command vocabulary into an evidence-based operating skill. Change one boundary, predict the symptom, collect evidence, then prove recovery."
-      },
-      {
-        id: "d2-7-break-docker",
-        type: "illustration",
-        heading: "The controlled Docker failure loop",
-        alt: "A known-good Docker stack is changed in one place, a predicted symptom is observed, evidence identifies the boundary, and the system is restored",
-        bindingId: "D2.7:d2-7-break-docker",
-        nodes: ["Baseline", "Change", "Symptom", "Evidence", "Recovery"],
-        variant: "docker-failure-loop-v1",
-        caption:
-          "The experiment is only complete when the system is restored and the original user path is proven again."
-      }
-    ]
-  },
-
-
   "D2.6": {
     version: 1,
     blocks: [
@@ -763,8 +711,6 @@ export function validateLessonContent(
         block.variant !== "tls-trust-v1" &&
         block.variant !== "container-execution-v1" &&
         block.variant !== "docker-network-storage-v1" &&
-        block.variant !== "docker-failure-loop-v1" &&
-        block.variant !== "kubernetes-reconciliation-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
