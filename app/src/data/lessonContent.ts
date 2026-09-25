@@ -35,6 +35,11 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
   | "kubernetes-failure-loop-v1"
+  | "cloud-primitives-v1"
+  | "database-scaling-v1"
+  | "distributed-partial-failure-v1"
+  | "global-architecture-v1"
+  | "production-incident-v1"
   | "git-production-workflow-v1";
 
 export type LessonContentBlock =
@@ -88,6 +93,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D5.8": {
+    version: 1,
+    blocks: [
+      {
+        id: "d5-8-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "A production incident is a live control problem: reduce user harm, keep evidence, recover the real path, then prove the deeper cause and prevent recurrence."
+      },
+      {
+        id: "d5-8-production-incident",
+        type: "illustration",
+        heading: "The production incident loop",
+        alt: "A production incident moves from impact through diagnosis and mitigation to recovery, root cause and learning",
+        bindingId: "D5.8:d5-8-production-incident",
+        nodes: ["Impact", "Diagnosis", "Mitigate", "Recover", "Root Cause", "Learn"],
+        variant: "production-incident-v1",
+        caption:
+          "Stabilize first, preserve evidence, prove recovery, then turn the incident into a stronger system."
+      }
+    ]
+  },
+
+
   "D5.7": {
     version: 1,
     blocks: [
@@ -999,6 +1029,7 @@ export function validateLessonContent(
         block.variant !== "database-scaling-v1" &&
         block.variant !== "distributed-partial-failure-v1" &&
         block.variant !== "global-architecture-v1" &&
+        block.variant !== "production-incident-v1" &&
         block.variant !== "kubernetes-service-path-v1" &&
         block.variant !== "kubernetes-config-storage-v1" &&
         block.variant !== "kubernetes-health-scaling-v1" &&
