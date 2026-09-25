@@ -1841,57 +1841,49 @@ Do not scale the animation catalogue before the script+illustration quality gate
 
 
 Merged PR #35:
-- B1.5 -> `repeatable-service-v1`.
+- B1.5 -> `repeatable-service-v1`: Image -> Configuration -> Runtime -> Health -> User path.
 - Merge commit: `0eae3678c22641e3db2802f24689554278d0280c`.
 
 Merged PR #36:
-- B2.1 -> `delivery-pipeline-v1`.
+- B2.1 -> `delivery-pipeline-v1`: Change -> Review -> Test -> Artifact -> Deploy -> Verify.
 - Merge commit: `e5ff9ff66ca5f38276a082c3d61180ddce986c64`.
 
 Merged PR #37:
-- B2.2 -> `observability-diagnosis-v1`.
+- B2.2 -> `observability-diagnosis-v1`: Symptom -> Scope -> Service -> Dependency -> Proof.
 - Merge commit: `a5f77bda6927d01c7510cebbac272950b27db84a`.
 
 Merged PR #38:
-- B2.3 -> `backup-recovery-v1`.
+- B2.3 -> `backup-recovery-v1`: Backup -> Restore -> Compatibility -> Verify -> Recover.
 - Merge commit: `55f43081f3aae067c66ae29e3e104da68e4d7a8e`.
 
 Merged PR #39:
-- B3.1 -> `queue-state-v1`.
+- B3.1 -> `queue-state-v1`: Producer -> Queue -> Consumer -> Outcome.
 - Merge commit: `f4fed3b13a019c9b9834bbef15f2a240f2a12362`.
 
 Merged PR #40:
-- B3.2 -> `incident-loop-v1`.
+- B3.2 -> `incident-loop-v1`: Impact -> Scope -> Evidence -> Mitigate -> Recover -> Learn.
 - Merge commit: `7d8cf51cab91ba7eb41dedce19a1d1b6cab4135a`.
 
 Merged PR #41:
-- B1.1 -> `process-diagnosis-v1`.
+- B1.1 -> `process-diagnosis-v1`: Symptom -> Process -> Resource -> Dependency -> Proof.
 - Merge commit: `b8e8456d19be162c64850bdaa01f319101153885`.
 - All 10 Beginner lessons now meet the gold-standard script+illustration contract.
 
 Merged PR #42:
-- D1.1 -> `linux-operating-model-v1`.
+- D1.1 -> `linux-operating-model-v1`: Application -> Process -> Kernel -> Resources -> Evidence.
 - Merge commit: `7feba39f6d02e9b8783744a9ffeb0db7050efeef`.
 
 Merged PR #43:
-- D1.2 -> `terminal-composition-v1`.
+- D1.2 -> `terminal-composition-v1`: Question -> Producer -> Transform -> Route -> Evidence.
 - Merge commit: `3ba501eea24abfc7788837dc2a443c2e28ad7f95`.
 
 Merged PR #44:
-- D1.3 -> `service-permission-model-v1`.
+- D1.3 -> `service-permission-model-v1`: Process -> Identity -> Resource -> Service -> Logs.
 - Merge commit: `de0a4893f272640f2d02b54dd45ecc397acc6bf2`.
-
-Merged PR #45:
-- D1.4 -> `network-operating-model-v1`.
-- Merge commit: `7ffa6edd1fd266fa0d3b585e674ae885c709b81a`.
-
-Merged PR #46:
-- D1.5 -> `cidr-boundary-v1`: Address -> Prefix -> Boundary -> Range -> Verify.
-- Merge commit: `1d427a9c24e6b24954857f43eaf34981b5e67ebb`.
-- D1.5 now teaches CIDR as a network-boundary design decision, including block-size reasoning, same-subnet tests and segmentation.
-- The first D1.5 full gate caught a language-contract violation from the word "therefore"; it was simplified to "so" and the corrected head passed the full programme gate.
-- Final PR #46 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- Next content boundary: **D1.6 — Routing, Gateways and NAT**.
+- D1.3 teaches execution context as part of system behavior: user/group, permissions, environment, service supervision and timestamped log evidence.
+- A red-team CI run caught a duplicate illustration-model declaration introduced during authoring; the duplicate declaration and duplicate validator entry were removed, then the full gate passed.
+- Final PR #44 gate passed **347 tests**, all programme contracts, TypeScript and the Next.js production build.
+- Next content boundary: **D1.4 — What Is a Network?**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
