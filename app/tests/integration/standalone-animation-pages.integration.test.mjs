@@ -12,6 +12,8 @@ describe("standalone animation page integration contract", () => {
     expect(code).not.toContain("lessonContent");
     expect(code).not.toContain("curriculumIllustrationBindings");
     expect(code).not.toContain("CourseLesson");
+    expect(code).not.toContain("auth(");
+    expect(code).not.toContain("redirect(");
   });
 
   it("provides an animation-id route with fail-closed lookup", () => {
@@ -21,6 +23,8 @@ describe("standalone animation page integration contract", () => {
     expect(code).toContain("<AnimationPlayground");
     expect(code).not.toContain("LessonPanel");
     expect(code).not.toContain("PodcastCoach");
+    expect(code).not.toContain("auth(");
+    expect(code).not.toContain("redirect(");
   });
 
   it("keeps route-level preview metadata separate from animation definitions", () => {
@@ -29,3 +33,10 @@ describe("standalone animation page integration contract", () => {
     expect(code).not.toContain("animationDefinition.lessonId");
   });
 });
+
+  it("keeps the preview host outside the reusable animation library", () => {
+    const library = source("src/animations/library.ts");
+    const stage = source("src/animations/AnimationStage.tsx");
+    expect(library).not.toContain("AnimationPlayground");
+    expect(stage).not.toContain("AnimationPlayground");
+  });
