@@ -59,6 +59,39 @@ describe("lesson illustration teaching model", () => {
 
 
 
+  it("models safe delivery as a traceable path from change to verified release", () => {
+    const model = getLessonIllustrationModel({
+      id: "b2-1-safe-delivery",
+      type: "illustration",
+      heading: "The release path",
+      alt: "A code change is reviewed, tested, built into an identified artifact, deployed, and verified in the running service",
+      bindingId: "B2.1:b2-1-safe-delivery",
+      nodes: ["Change", "Review", "Test", "Artifact", "Deploy", "Verify"],
+      variant: "delivery-pipeline-v1"
+    });
+
+    expect(model.variant).toBe("delivery-pipeline-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "change",
+      "review",
+      "test",
+      "artifact",
+      "deploy",
+      "verify"
+    ]);
+    expect(model.foundation.label).toBe("Release identity");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "build-once",
+      "rollback-scope"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "known-change",
+      "tested-artifact",
+      "deployed-version",
+      "runtime-health"
+    ]);
+  });
+
   it("models repeatable service operation as build, configure, start, health and user proof", () => {
     const model = getLessonIllustrationModel({
       id: "b1-5-repeatability",
