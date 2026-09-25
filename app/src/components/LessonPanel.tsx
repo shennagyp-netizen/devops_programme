@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { CourseLesson } from "../data/courseLessons";
 import type { PlatformId } from "../data/programme";
 import type { DiagnosticRecommendation } from "../data/diagnostics";
+import type { MasteryAttemptRecord } from "../lib/mastery-contract";
 import { diagnosticBySection } from "../data/diagnostics";
 import { addEvidence, recordHandsOnEvidence, recordMachineVerification } from "../data/evidence";
 import {
@@ -44,7 +45,8 @@ export function LessonPanel({
   onSelectLesson,
   onEvidenceRecorded,
   progressReady = true,
-  progressSaving = false
+  progressSaving = false,
+  initialMasteryHistory = []
 }: {
   lesson: CourseLesson;
   mastered: boolean;
@@ -55,6 +57,7 @@ export function LessonPanel({
   onEvidenceRecorded?: () => void;
   progressReady?: boolean;
   progressSaving?: boolean;
+  initialMasteryHistory?: MasteryAttemptRecord[];
 }) {
   const [mode, setMode] = useState<Mode>("learn");
   const [showTheory, setShowTheory] = useState(true);
@@ -84,6 +87,7 @@ export function LessonPanel({
   const handsOnTask: HandsOnTask = getHandsOnTask(lesson);
   const runtimeTask = runtimeTaskForLesson(lesson.id);
   const masteryKey = masteryStorageKey(lesson.id);
+  const serverAttemptsForLesson = initialMasteryHistory.filter((item) => item.lessonId === lesson.id).length;
 
   useEffect(() => {
     try {
@@ -112,11 +116,11 @@ export function LessonPanel({
   }, [evidenceKey]);
 
   useEffect(() => {
-    const attempts = readMasteryAttempts(lesson.id);
+    const attempts = Math.max(readMasteryAttempts(lesson.id), serverAttemptsForLesson);
     setMasteryAttempts(attempts);
     setMasteryPlan(null);
     setMasteryReadyForRetry(true);
-  }, [lesson.id, masteryKey]);
+  }, [lesson.id, masteryKey, serverAttemptsForLesson]);
 
   useEffect(() => {
     setShowTheory(diagnosticRecommendation !== "skip-theory");
