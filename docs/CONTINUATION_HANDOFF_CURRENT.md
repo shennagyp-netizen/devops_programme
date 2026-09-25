@@ -2038,6 +2038,14 @@ Merged PR #99:
 - Next outstanding mainline quality gap: **D3.2 — Kubernetes Networking** (PR #91 is open and main-based); D4.2 is also open as PR #92.
 
 
+
+Active PR #101 scope:
+- D4.2 is being ported cleanly onto the current `main` lineage.
+- Semantic illustration: `ci-cd-pipeline-v1`.
+- Teaching model: Source -> Validate -> Artifact -> Promote -> Verify.
+- The existing D4.2 script is preserved and visually bound to source identity, risk gates, artifact provenance, promotion controls and runtime proof.
+- Fresh current-head TDD/full-programme validation is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
 
