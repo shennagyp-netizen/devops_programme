@@ -44,7 +44,9 @@ export type LessonIllustrationVariantV1 =
   | "capacity-system-v1"
   | "queue-backpressure-v1"
   | "replication-tradeoff-v1"
-  | "failure-domain-ladder-v1";
+  | "failure-domain-ladder-v1"
+  | "global-traffic-v1"
+  | "data-locality-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -1370,6 +1372,65 @@ const FAILURE_DOMAIN_LADDER_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const GLOBAL_TRAFFIC_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "global-traffic-v1",
+  title: "The global traffic system",
+  stages: [
+    { id: "users", label: "Users", detail: "Traffic originates from users with different locations, latency and demand patterns." },
+    { id: "routing", label: "Routing", detail: "Global routing chooses a regional destination using policy, health and sometimes latency or proximity." },
+    { id: "regions", label: "Regions", detail: "Each region contains a full or partial service footprint that may have different state and dependencies." },
+    { id: "capacity", label: "Capacity", detail: "The surviving region must have enough capacity to absorb additional traffic after a failure." },
+    { id: "failover", label: "Failover", detail: "Failover is complete only when traffic reaches a healthy survivor and real user behavior recovers." }
+  ],
+  foundation: {
+    label: "Routing is only safe when the survivor can carry the load",
+    detail: "A second region is not a usable failover target if it lacks capacity, required data or healthy dependencies."
+  },
+  callouts: [
+    { id: "health", label: "Health", detail: "Traffic policy needs a trustworthy signal that a region can serve the relevant workload." },
+    { id: "latency", label: "Latency", detail: "User distance and network conditions can influence placement and perceived performance." },
+    { id: "capacity", label: "Capacity", detail: "The survivor needs enough headroom for traffic that was previously served by the failed region." },
+    { id: "drain", label: "Drain", detail: "Controlled removal of traffic can protect a degraded region while failover takes effect." }
+  ],
+  failureChecks: [
+    { id: "route-choice", label: "1. Route choice", detail: "Why did the policy send this user to this region?" },
+    { id: "regional-health", label: "2. Regional health", detail: "Is the selected region healthy for the exact traffic being sent to it?" },
+    { id: "survivor-capacity", label: "3. Survivor capacity", detail: "Can the remaining region carry the added load without creating a second outage?" },
+    { id: "failover-proof", label: "4. Failover proof", detail: "After routing changes, did the real user path recover and remain stable?" }
+  ]
+};
+
+const DATA_LOCALITY_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "data-locality-v1",
+  title: "The data-locality trade-off",
+  stages: [
+    { id: "user", label: "User", detail: "A user action creates a read or write that has latency and consistency requirements." },
+    { id: "region", label: "Region", detail: "The compute location determines how far the request travels to reach its data." },
+    { id: "data", label: "Data", detail: "The data's authoritative or replica location changes the path and coordination cost." },
+    { id: "latency", label: "Latency", detail: "Cross-region distance adds network delay and can amplify tail latency." },
+    { id: "consistency", label: "Consistency", detail: "Keeping copies close to users may require replication and creates freshness and consistency trade-offs." }
+  ],
+  foundation: {
+    label: "Distance is part of the consistency and latency budget",
+    detail: "Moving compute or data closer can reduce latency, but multi-region state introduces replication delay, conflict handling and coordination choices."
+  },
+  callouts: [
+    { id: "local-read", label: "Local read", detail: "Reading a nearby replica can reduce latency when the application tolerates its freshness contract." },
+    { id: "cross-region", label: "Cross-region", detail: "A remote read or write pays network latency and can increase tail latency." },
+    { id: "write-locality", label: "Write locality", detail: "Choosing where writes are accepted affects consistency, failover and conflict behavior." },
+    { id: "consistency", label: "Consistency", detail: "The application must define how fresh and coordinated the observed data must be." }
+  ],
+  failureChecks: [
+    { id: "request-region", label: "1. Request region", detail: "Where is the user request executed?" },
+    { id: "data-region", label: "2. Data region", detail: "Where is the data authoritative, and where are useful replicas?" },
+    { id: "latency-cost", label: "3. Latency cost", detail: "What latency and tail-latency cost does the chosen data path add?" },
+    { id: "consistency-fit", label: "4. Consistency fit", detail: "Does the selected locality and replication pattern meet the user action's consistency needs?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1676,6 +1737,14 @@ export function getLessonIllustrationModel(
     return { ...FAILURE_DOMAIN_LADDER_VARIANT, title: block.heading };
   }
 
+  if (block.variant === "global-traffic-v1") {
+    return { ...GLOBAL_TRAFFIC_VARIANT, title: block.heading };
+  }
+
+  if (block.variant === "data-locality-v1") {
+    return { ...DATA_LOCALITY_VARIANT, title: block.heading };
+  }
+
   if (block.variant === "kubernetes-networking-v1") {
     return {
       ...KUBERNETES_NETWORKING_VARIANT,
@@ -1740,7 +1809,9 @@ export function validateLessonIllustrationModel(
     model.variant !== "capacity-system-v1" &&
     model.variant !== "queue-backpressure-v1" &&
     model.variant !== "replication-tradeoff-v1" &&
-    model.variant !== "failure-domain-ladder-v1"
+    model.variant !== "failure-domain-ladder-v1" &&
+    model.variant !== "global-traffic-v1" &&
+    model.variant !== "data-locality-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
