@@ -2,12 +2,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   findActiveCue,
   findCurrentTurnId,
-  loadPodcastAudioManifest,
-  type PodcastAudioManifest
+  loadPodcastAudioManifest
 } from "../../src/data/podcastSync.ts";
 
 function manifest(overrides = {}) {
-  const base: PodcastAudioManifest = {
+  const base = {
     episodeId: "B1.2",
     scriptVersion: "v1",
     audioUrl: "/podcasts/audio/B1.2.mp3",
