@@ -1938,19 +1938,16 @@ Merged PR #80:
 Merged PR #82:
 - D3.3 -> `kubernetes-config-storage-v1`: Config -> Secret -> Mount -> Pod -> Persistence.
 - Merge commit: `2a7c58e9f8ab25264744bd9d5de62286bcc7284c`.
-- D3.3 now has a semantic visual and explicit TDD binding around ConfigMap, Secret, application consumption and persistent storage lifecycle.
 - Final PR #82 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- PR #81 was closed as stale because D2.6 had already been merged upstream as PR #77.
-- Next content boundary: **D3.4 — Kubernetes Scaling and Bottlenecks**.
+- D3.3 separates non-secret configuration, secret handling, application consumption and persistent storage lifecycle.
 
-
-Active D3.4 current-main port:
-- D3.4 is upgraded to the script+illustration gold-standard on the current `main` lineage.
-- New semantic illustration: `kubernetes-health-scaling-v1`.
-- Teaching model: Startup -> Readiness -> Liveness -> Capacity -> Rollout.
-- The existing D3.4 script already matches this mechanism model and includes controlled health/scaling failures and recovery proof.
-- This branch deliberately ports only D3.4 changes onto current `main`; it does not reuse the older D3.4 branch history containing stale predecessor merges.
-- TDD/full-programme gate is required before merge.
+Merged PR #83:
+- D3.4 -> `kubernetes-health-scaling-v1`: Startup -> Readiness -> Liveness -> Capacity -> Rollout.
+- Merge commit: `3514e356dbda8e1260e788d1e82c4864d7af009f`.
+- Final PR #83 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- D3.4 was ported from an older parallel branch onto current `main` without replaying stale predecessor history.
+- D3.4 now has explicit semantic binding/tests for startup, readiness, liveness, capacity and rollout.
+- Next content boundary: **D3.5 — Kubernetes Failure and Replacement**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
