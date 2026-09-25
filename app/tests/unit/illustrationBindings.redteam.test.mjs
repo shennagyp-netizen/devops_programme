@@ -40,7 +40,7 @@ const validInteractiveBinding = () => ({
 
 const block = {
   id: "http-flow",
-  type: "illustration",
+  type: "interactive-illustration",
   heading: "Request flow",
   alt: "Request flow",
   bindingId: "B1.2:http-flow",
