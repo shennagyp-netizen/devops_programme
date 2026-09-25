@@ -2037,6 +2037,15 @@ Merged PR #99:
 - Day 5 D5.1-D5.8 now all meet the gold-standard script+illustration standard.
 - Next outstanding mainline quality gap: **D3.2 — Kubernetes Networking** (PR #91 is open and main-based); D4.2 is also open as PR #92.
 
+
+Active PR #100 scope:
+- D3.2 is being ported cleanly onto the current `main` rather than merging the stale PR #91 lineage.
+- New semantic illustration: `kubernetes-networking-v1`.
+- Teaching model: Service -> Selector -> Endpoint set -> Pod -> Evidence.
+- The rewritten script separates stable Service identity, selector matching, endpoint membership, Pod readiness and real request proof.
+- Controlled labs delete a disposable Pod and deliberately break the Service selector, then restore and prove the request path.
+- Fresh current-head TDD/full-programme validation is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
 
