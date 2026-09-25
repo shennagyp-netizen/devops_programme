@@ -39,7 +39,8 @@ export type LessonIllustrationVariantV1 =
   | "cicd-control-path-v1"
   | "github-actions-execution-v1"
   | "iac-control-loop-v1"
-  | "terraform-lifecycle-v1";
+  | "terraform-lifecycle-v1"
+  | "cloud-primitives-v1";
 
 export type LessonContentBlock =
   | {
@@ -92,6 +93,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D4.6": {
+    version: 1,
+    blocks: [
+      {
+        id: "d4-6-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Cloud architecture becomes easier to reason about when provider names are reduced to primitives: workload, compute, network, state, identity and data services."
+      },
+      {
+        id: "d4-6-cloud-primitives",
+        type: "illustration",
+        heading: "The provider-neutral cloud architecture",
+        alt: "A workload is built from compute, network, state, identity and data services with dependencies and managed boundaries",
+        bindingId: "D4.6:d4-6-cloud-primitives",
+        nodes: ["Workload", "Compute", "Network", "State", "Identity", "Data Services"],
+        variant: "cloud-primitives-v1",
+        caption:
+          "Understand the primitive first, then map it to AWS, Azure, GCP or another provider."
+      }
+    ]
+  },
+
+
   "D4.5": {
     version: 1,
     blocks: [
@@ -1008,6 +1034,7 @@ export function validateLessonContent(
         block.variant !== "github-actions-execution-v1" &&
         block.variant !== "iac-control-loop-v1" &&
         block.variant !== "terraform-lifecycle-v1" &&
+        block.variant !== "cloud-primitives-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
