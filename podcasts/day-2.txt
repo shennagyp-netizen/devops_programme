@@ -596,7 +596,7 @@ Speaker B: A distributed naming system that maps names to information through re
 
 Speaker A: What does a recursive resolver do?
 
-Speaker B: It answers client queries, often from cache, or performs the work needed to obtain the answer from authoritative DNS servers.
+Speaker B: It answers client queries, often from cache, or performs the work needed to get the answer from authoritative DNS servers.
 
 Speaker A: What does an authoritative server provide?
 
