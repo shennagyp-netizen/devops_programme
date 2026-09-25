@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models Kubernetes reconciliation as desired state, controller, observation, action and convergence", () => {
+    const model = getLessonIllustrationModel({
+      id: "d3-1-kubernetes-model",
+      type: "illustration",
+      heading: "The Kubernetes reconciliation loop",
+      alt: "Kubernetes compares desired state with actual state, a controller acts, and the system moves toward the desired state",
+      bindingId: "D3.1:d3-1-kubernetes-model",
+      nodes: ["Desired State", "Controller", "Observe", "Act", "Converge"],
+      variant: "kubernetes-reconciliation-v1"
+    });
+
+    expect(model.variant).toBe("kubernetes-reconciliation-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "desired-state",
+      "controller",
+      "observe",
+      "act",
+      "converge"
+    ]);
+    expect(model.foundation.label).toBe("Kubernetes is a reconciliation system");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "desired-state",
+      "controller",
+      "actual-state",
+      "feasibility"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "specification",
+      "controller-action",
+      "replacement-health",
+      "feasibility"
+    ]);
+  });
+
   it("models controlled Docker failure as hypothesis, change, symptom, evidence and recovery", () => {
     const model = getLessonIllustrationModel({
       id: "d2-7-break-docker",
