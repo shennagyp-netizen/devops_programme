@@ -38,7 +38,7 @@ export type LessonContent = {
   blocks: LessonContentBlock[];
 };
 
-type LessonContentSeed = {
+export type LessonContentSeed = {
   id: string;
   title: string;
   objective: string;
@@ -81,7 +81,7 @@ const authoredLessonContent: Record<string, LessonContent> = {
 function isSafeMediaSource(value: unknown) {
   return (
     typeof value === "string" &&
-    (value.startsWith("/") || /^https:\/\//i.test(value))
+    ((value.startsWith("/") && !value.startsWith("//")) || /^https:\/\//i.test(value))
   );
 }
 
