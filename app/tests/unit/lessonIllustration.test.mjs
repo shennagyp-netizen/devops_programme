@@ -295,6 +295,41 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models observability as question, signal, correlation, objective, decision and proof", () => {
+    const model = getLessonIllustrationModel({
+      id: "d5-5-observability",
+      type: "illustration",
+      heading: "The observability decision path",
+      alt: "An operational question selects signals that are correlated into evidence, measured against an objective, turned into a decision and verified against user behavior",
+      bindingId: "D5.5:d5-5-observability",
+      nodes: ["Question", "Signal", "Correlation", "Objective", "Decision", "User Proof"],
+      variant: "observability-decision-v1"
+    });
+
+    expect(model.variant).toBe("observability-decision-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "question",
+      "signal",
+      "correlation",
+      "objective",
+      "decision",
+      "user-proof"
+    ]);
+    expect(model.foundation.label).toBe("Observability exists to answer operational questions");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "logs",
+      "metrics",
+      "traces",
+      "slo"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "signal-fit",
+      "correlation",
+      "objective-gap",
+      "action-proof"
+    ]);
+  });
+
   it("models reliability as bounded waiting, retry control, duplicate safety and overload protection", () => {
     const model = getLessonIllustrationModel({
       id: "d5-4-reliability",
