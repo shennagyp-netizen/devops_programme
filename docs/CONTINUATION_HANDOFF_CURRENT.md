@@ -1870,5 +1870,14 @@ Merged PR #38:
 - Red-team again caught authored-stream fallback risk during development; B2.3 was explicitly registered instead of weakening the test.
 - Next content boundary: **B3.1 — Why Use a Queue?**. There is no authored B2.4 lesson in the current 53-lesson programme.
 
+
+Active PR #39 scope:
+- B3.1 is upgraded to the same script+illustration quality standard.
+- New semantic illustration: `queue-state-v1`.
+- Teaching model: Producer -> Queue -> Consumer -> Outcome, with backpressure as the base mechanism.
+- Retry, idempotency and dead-letter behavior are explicit visual callouts.
+- The rewritten script teaches message state transitions and duplicate-delivery diagnosis instead of treating a queue as a generic scaling tool.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
