@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   buildDefaultLessonContent,
+  getLessonContent,
   validateLessonContent,
   type LessonContent
 } from "../../src/data/lessonContent.ts";
+import { lessonsByCourse } from "../../src/data/courseLessons.ts";
 
 describe("lesson content stream contract", () => {
   it("supports an ordered text, illustration and video stream", () => {
@@ -107,6 +109,37 @@ describe("lesson content stream contract", () => {
     expect(content.blocks[0]).toMatchObject({
       type: "text",
       heading: "Why this matters"
+    });
+  });
+});
+
+
+describe("programme lesson content integration", () => {
+  it("keeps every current lesson content stream valid", () => {
+    for (const lessons of Object.values(lessonsByCourse)) {
+      for (const lesson of lessons) {
+        const result = validateLessonContent(lesson.content);
+        expect(result, lesson.id).toEqual({ valid: true, failures: [] });
+      }
+    }
+  });
+
+  it("keeps the explicit B1.4 video authoring slot inside the ordered stream", () => {
+    const content = getLessonContent({
+      id: "B1.4",
+      title: "Why Containers Exist",
+      objective: "See the problem containers solve.",
+      humanExample: "Two kitchens can share one building."
+    });
+
+    expect(content.blocks.map((block) => block.type)).toEqual([
+      "text",
+      "illustration",
+      "video"
+    ]);
+    expect(content.blocks[2]).toMatchObject({
+      type: "video",
+      status: "draft"
     });
   });
 });
