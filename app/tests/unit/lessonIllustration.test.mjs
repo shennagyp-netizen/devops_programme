@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models routing as destination, route, next hop, boundary and evidence", () => {
+    const model = getLessonIllustrationModel({
+      id: "d1-6-routing-model",
+      type: "illustration",
+      heading: "The routing decision",
+      alt: "A destination address is matched against routes, sent to a next hop across a boundary, and verified with path evidence",
+      bindingId: "D1.6:d1-6-routing-model",
+      nodes: ["Destination", "Route", "Next hop", "Boundary", "Evidence"],
+      variant: "routing-boundary-v1"
+    });
+
+    expect(model.variant).toBe("routing-boundary-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "destination",
+      "route",
+      "next-hop",
+      "boundary",
+      "evidence"
+    ]);
+    expect(model.foundation.label).toBe("Routing chooses where the packet goes next");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "specific-route",
+      "default-route",
+      "gateway",
+      "nat"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "destination-match",
+      "next-hop",
+      "return-path",
+      "boundary-change"
+    ]);
+  });
+
   it("models CIDR as an explicit network boundary from address to verified range", () => {
     const model = getLessonIllustrationModel({
       id: "d1-5-cidr-model",
