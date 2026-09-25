@@ -17,7 +17,8 @@ export type LessonIllustrationVariantV1 =
   | "service-permission-model-v1"
   | "network-operating-model-v1"
   | "cidr-boundary-v1"
-  | "routing-boundary-v1";
+  | "routing-boundary-v1"
+  | "transport-contract-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -536,6 +537,36 @@ const ROUTING_BOUNDARY_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const TRANSPORT_CONTRACT_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "transport-contract-v1",
+  title: "The transport contract",
+  stages: [
+    { id: "endpoint", label: "Endpoint", detail: "Start with the host and the service endpoint the application wants to reach." },
+    { id: "port", label: "Port", detail: "A transport port identifies the service endpoint on the host." },
+    { id: "transport", label: "Transport", detail: "TCP and UDP provide different contracts for how application data is carried." },
+    { id: "delivery", label: "Delivery", detail: "TCP adds connection state, ordering, acknowledgement, retransmission, flow control and congestion control; UDP keeps the transport contract simpler." },
+    { id: "evidence", label: "Evidence", detail: "Connection refusal, timeout, reset and application response are different observations with different meanings." }
+  ],
+  foundation: {
+    label: "IP reaches the host; transport reaches the service",
+    detail: "An IP destination alone is not a complete application endpoint. Transport adds ports and a protocol contract."
+  },
+  callouts: [
+    { id: "tcp", label: "TCP", detail: "Connection-oriented transport with ordered, reliable byte-stream delivery and congestion/flow control." },
+    { id: "udp", label: "UDP", detail: "Datagram transport without TCP's connection and retransmission machinery; applications choose their own trade-offs." },
+    { id: "socket", label: "Socket", detail: "An operating-system communication endpoint used by an application for transport communication." },
+    { id: "failure-signals", label: "Failure signals", detail: "Refusal, timeout, reset and an HTTP/application error are different layers of evidence." }
+  ],
+  failureChecks: [
+    { id: "port-listen", label: "1. Port listening", detail: "Is the expected service endpoint listening on the host?" },
+    { id: "transport-choice", label: "2. Transport choice", detail: "Does the application actually use the transport contract the service expects?" },
+    { id: "connection-state", label: "3. Connection state", detail: "For TCP, did a connection establish, get refused, reset or simply fail to respond?" },
+    { id: "application-response", label: "4. Application response", detail: "After transport succeeds, what did the application protocol return?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -673,6 +704,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "transport-contract-v1") {
+    return {
+      ...TRANSPORT_CONTRACT_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -704,7 +742,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "service-permission-model-v1" &&
     model.variant !== "network-operating-model-v1" &&
     model.variant !== "cidr-boundary-v1" &&
-    model.variant !== "routing-boundary-v1"
+    model.variant !== "routing-boundary-v1" &&
+    model.variant !== "transport-contract-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
