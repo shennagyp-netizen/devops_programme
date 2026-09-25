@@ -47,7 +47,7 @@ describe("curriculum illustration binding v1", () => {
       lessonId: "B1.1",
       contentBlockId: "b1-1-mechanism",
       contentIndex: 1,
-      visualKind: "static",
+      presentation: "static",
       visualCapabilityId: "semantic-flow-v1",
       voiceCueBindings: [],
       interactionSteps: []
@@ -74,7 +74,8 @@ describe("curriculum illustration binding v1", () => {
       lessonId: "B1.2",
       contentBlockId: "http-flow",
       contentIndex: 1,
-      visualKind: "animated",
+      presentation: "animated",
+      presentation: "animated",
       visualCapabilityId: "animation",
       animationId: "http-request",
       voiceCueBindings: [
