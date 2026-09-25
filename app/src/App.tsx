@@ -18,7 +18,7 @@ export default function App({
   currentUser,
   initialCompletionHistory
 }: {
-  currentUser: { id: string; email: string };
+  currentUser: { email: string };
   initialCompletionHistory: CompletionRecord[];
 }) {
   const [course, setCourse] = useState<CourseLevel>("intermediate");
