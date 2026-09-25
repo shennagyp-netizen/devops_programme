@@ -296,157 +296,203 @@ Speaker B: Run the lab, break one layer safely, and explain which part of the co
 
 EPISODE D3.2 — Kubernetes Networking
 
-Speaker A: Yesterday we saw that Pods are replaceable.
+Speaker A: We have a Kubernetes controller keeping workloads alive.
 
-Speaker B: Which means clients should not depend on a Pod IP staying alive.
+Speaker B: Now the next question is: how does traffic find the right workload when Pods can disappear and return with new IP addresses?
 
-Speaker A: Exactly. Today the stable abstraction is the Service.
+Speaker A: Exactly. The visual for today is:
 
-Speaker B: The picture is:
+Speaker B: Service -> Selector -> Endpoint set -> Pod -> Evidence.
 
-Speaker A: Service -> Selector -> Endpoints -> Pod -> Path.
+Speaker A: Five boundaries. Each answers a different question.
 
-Speaker B: So the Service is the stable front door.
+Speaker B: Start with the Service.
 
-Speaker A: Yes.
+Speaker A: A Service gives callers a stable identity while the backend Pods can change.
 
-Speaker B: Stage one: Service.
+Speaker B: So the client should not need the current Pod IP.
 
-Speaker A: A Service gives clients a stable destination while the Pods behind it can change.
+Speaker A: Exactly.
 
-Speaker B: So the client does not need to know which Pod currently serves the request.
+Speaker B: That is the main abstraction.
 
-Speaker A: Correct.
+Speaker A: Make a prediction.
+
+Speaker A: One Pod is deleted. Should a client that uses the Service normally need to learn the new Pod IP?
+
+Speaker B: No. The Service abstraction should keep the caller on the stable path while Kubernetes updates the available endpoint set.
+
+Speaker A: Good.
 
 Speaker B: Stage two: selector.
 
-Speaker A: A Service needs a way to decide which Pods belong to its backend set.
+Speaker A: The Service needs a rule that says which Pods belong to its backend set.
 
 Speaker B: Labels and selectors.
 
 Speaker A: Exactly.
 
-Speaker B: If the selector is wrong, the Service can exist while having no useful backends.
+Speaker B: So a Service can exist while matching zero Pods.
 
-Speaker A: Good.
+Speaker A: Yes. That is an important failure state.
 
-Speaker B: Stage three: endpoints.
-
-Speaker A: The endpoint set represents the backend addresses available for the Service to use.
-
-Speaker B: So the endpoint set is a view of the current backend state.
-
-Speaker A: Right.
-
-Speaker B: A Pod can be Running and still not be a good endpoint if it is not ready.
-
-Speaker A: Correct.
-
-Speaker B: That connects to the health lesson later.
-
-Speaker A: Exactly.
-
-Speaker B: Stage four: Pod.
-
-Speaker A: Pods are replaceable workload instances.
-
-Speaker B: Which is why Service identity must not depend on one Pod IP.
+Speaker B: The Service name can resolve correctly and still have no usable backends.
 
 Speaker A: Exactly.
 
 Speaker B: Prediction.
 
-Speaker A: One Pod behind a Service dies. Should a client using the Service need to change its destination?
+Speaker A: The Service is healthy, DNS resolves, but there are no endpoints.
 
-Speaker B: Ideally no. The Service name stays stable while the endpoint set changes and a replacement Pod becomes available.
+Speaker B: I inspect the selector and the labels on the Pods before blaming the network path.
 
 Speaker A: Good.
 
-Speaker B: But if no healthy endpoints remain?
+Speaker B: If the selector is wrong, the abstraction is correct but the backend set is empty.
 
-Speaker A: Then the failure becomes visible at the Service path.
+Speaker A: Precisely.
 
-Speaker B: So we inspect the endpoint set instead of just saying 'networking is broken.'
+Speaker B: Stage three: endpoint set.
+
+Speaker A: Kubernetes maintains information about which Pod endpoints currently back the Service path.
+
+Speaker B: So this is where the changing Pod set becomes concrete.
 
 Speaker A: Exactly.
+
+Speaker B: If a Pod is not ready, it may be excluded from normal ready traffic.
+
+Speaker A: Right. The exact behavior depends on the controller and Service implementation, but the operational model is that traffic-ready endpoints are not simply every Pod object that happens to exist.
+
+Speaker B: So running is not the same as ready for Service traffic.
+
+Speaker A: Exactly.
+
+Speaker B: That sounds like the liveness versus readiness lesson.
+
+Speaker A: It is the networking consequence of that distinction.
+
+Speaker B: A Pod can exist, the process can be running, and the Service can still have a smaller endpoint set.
+
+Speaker A: Good.
+
+Speaker B: Stage four: Pod.
+
+Speaker A: Eventually the request must reach a concrete Pod endpoint.
+
+Speaker B: The Pod owns the process and its network namespace.
+
+Speaker A: Yes.
+
+Speaker B: But the caller should not have to manage the Pod lifecycle.
+
+Speaker A: Correct. That is exactly what the Service abstraction is trying to hide.
 
 Speaker B: Real-life analogy?
 
-Speaker A: A hospital visitor knows the department, not the exact bed where a doctor is sitting today.
+Speaker A: Think of a hospital department.
 
-Speaker B: Reception routes them to the department.
+Speaker B: A visitor asks for cardiology.
 
-Speaker A: Yes. The visitor-facing identity stays stable while the internal assignment changes.
+Speaker A: The visitor does not need today's room number for the doctor.
 
-Speaker B: So Service is like the stable department name.
+Speaker B: Reception routes them to the current available room.
 
-Speaker A: Roughly. The mechanisms are different, but the abstraction is useful.
+Speaker A: Exactly. The department identity is stable; the assignment changes.
+
+Speaker B: Now the evidence stage.
+
+Speaker A: When traffic fails, do not jump straight to the Pod.
+
+Speaker B: First Service lookup.
+
+Speaker A: Good.
+
+Speaker B: Then selector match.
+
+Speaker A: Good.
+
+Speaker B: Then endpoint membership.
+
+Speaker A: Good.
+
+Speaker B: Then real traffic to the backend.
+
+Speaker A: Exactly.
+
+Speaker B: That is the diagnostic sequence.
+
+Speaker A: It keeps the abstractions separate.
+
+Speaker B: Failure one: the Service name does not resolve.
+
+Speaker A: Start with DNS and Service identity.
+
+Speaker B: Failure two: Service resolves but has no endpoints.
+
+Speaker A: Check selector and Pod labels.
+
+Speaker B: Failure three: endpoint set contains no ready Pod.
+
+Speaker A: Inspect Pod readiness, startup and the conditions that remove it from the ready path.
+
+Speaker B: Failure four: endpoints exist but requests still fail.
+
+Speaker A: Now inspect the Pod process, container port, network policy, application listener and the actual request path.
+
+Speaker B: So the endpoint list narrows the problem, but it does not prove the application is healthy.
+
+Speaker A: Exactly.
 
 Speaker B: Prediction pause.
 
-Speaker A: DNS for the Service name works, but the client still gets no useful response.
+Speaker A: A Service has two endpoints. We delete one Pod.
 
-Speaker B: I inspect the Service selector and endpoint set next.
-
-Speaker A: Good.
-
-Speaker B: Why not inspect the Pod IP first?
-
-Speaker A: Because the abstraction says the Service should choose available backends for you. A Pod IP is lower-level evidence.
-
-Speaker B: Good.
-
-Speaker A: Now another failure.
-
-Speaker B: The Service selector is `app=api`, but the Pods are labeled `app=web`.
-
-Speaker A: Prediction?
-
-Speaker B: The Service exists, but the selector may match no Pods, so the endpoint set is empty.
-
-Speaker A: Exactly.
-
-Speaker B: Another failure.
-
-Speaker A: The selector is correct, but the endpoint disappears when the Pod stops.
-
-Speaker B: That is expected. The endpoint set should change with the Pod lifecycle.
-
-Speaker A: Exactly.
-
-Speaker B: So endpoint churn is not automatically a bug.
-
-Speaker A: Right. The question is whether the replacement path restores a healthy backend.
-
-Speaker B: Now the external path.
-
-Speaker A: An external load balancer or ingress may sit above the Service.
-
-Speaker B: So the complete request can have several stable and dynamic layers.
-
-Speaker A: Exactly.
-
-Speaker B: External name.
-
-Speaker A: Load balancer or ingress.
-
-Speaker B: Service.
-
-Speaker A: Endpoint set.
-
-Speaker B: Pod.
+Speaker B: The endpoint set should shrink and then recover when the replacement Pod becomes ready.
 
 Speaker A: Good.
 
-Speaker B: Controlled failure?
+Speaker B: Another one.
 
-Speaker A: Deploy two simple Pods with the same label.
+Speaker A: We change the Service selector so it matches no Pods. What do we predict?
 
-Speaker B: Expose them with a Service.
+Speaker B: The Service identity may still resolve, but the backend endpoint set should become empty.
+
+Speaker A: Exactly.
+
+Speaker B: Another.
+
+Speaker A: The Pod is running but readiness fails.
+
+Speaker B: The Pod can exist while being removed from the ready traffic path.
 
 Speaker A: Good.
 
-Speaker B: Prove the client can reach the Service.
+Speaker B: That is the visible connection between health and networking.
+
+Speaker A: Exactly.
+
+Speaker B: Now a subtle boundary.
+
+Speaker A: A Service and an Ingress are not the same abstraction.
+
+Speaker B: Service gives a stable in-cluster service path.
+
+Speaker A: And Ingress or another gateway layer can expose and route external HTTP traffic according to another set of rules.
+
+Speaker B: So if external traffic fails, I should not immediately blame the Service.
+
+Speaker A: Correct. Start at the layer where the evidence says the request stopped.
+
+Speaker B: Mac lab?
+
+Speaker A: Deploy two Pods with a label set.
+
+Speaker B: Create a Service with a selector matching those labels.
+
+Speaker A: Good.
+
+Speaker B: Verify the Service name resolves.
 
 Speaker A: Good.
 
@@ -454,91 +500,83 @@ Speaker B: Inspect the endpoint set.
 
 Speaker A: Good.
 
+Speaker B: Send a real request through the Service.
+
+Speaker A: Good.
+
 Speaker B: Delete one Pod.
 
-Speaker A: Predict what should happen.
+Speaker A: Observe the endpoint set change.
 
-Speaker B: The endpoint set shrinks, then the replacement Pod appears and the endpoint set returns to the expected healthy size.
+Speaker B: Wait for the replacement to become ready.
 
-Speaker A: Exactly.
+Speaker A: Verify the Service still works.
 
-Speaker B: Now break the selector.
+Speaker B: Then deliberately change the selector so it matches nothing.
 
-Speaker A: Predict the symptom.
+Speaker A: Predict the result before observing it.
 
-Speaker B: The Service can still resolve, but it can have no matching endpoints.
+Speaker B: Observe the empty endpoint set.
 
-Speaker A: Good.
+Speaker A: Restore the selector and prove the request path recovers.
 
-Speaker B: Restore the selector.
-
-Speaker A: Then prove the client request works again.
-
-Speaker B: So the experiment separates Service identity from backend selection.
+Speaker B: That is much stronger than memorizing Service YAML.
 
 Speaker A: Exactly.
 
-Speaker B: Mac lab?
+Speaker B: What should the lab record contain?
 
-Speaker A: Deploy two Pods.
+Speaker A: Service name. Selector. Pod labels. Endpoint set before and after. Pod readiness. Real request result. Recovery evidence.
 
-Speaker B: Give them the expected labels.
+Speaker B: So the whole network model can be written as one path.
 
-Speaker A: Create the Service.
+Speaker A: Yes.
 
-Speaker B: Inspect the selector and endpoint set.
-
-Speaker A: Good.
-
-Speaker B: Make a request through the Service.
-
-Speaker A: Good.
-
-Speaker B: Delete one Pod and watch the endpoint set.
-
-Speaker A: Good.
-
-Speaker B: Then change the selector so it matches nothing.
-
-Speaker A: Observe the difference.
-
-Speaker B: Restore it and prove recovery.
+Speaker B: Service -> Selector -> Endpoint set -> Pod -> Evidence.
 
 Speaker A: Exactly.
 
 Speaker B: Recall.
 
-Speaker A: What does a Service provide?
+Speaker A: What problem does a Service solve?
 
-Speaker B: A stable logical destination while the Pods behind it can change.
+Speaker B: It gives a stable network identity over a changing set of backend Pods.
 
 Speaker A: What does the selector do?
 
-Speaker B: It defines which Pods belong to the Service backend set.
+Speaker B: It determines which Pods are candidates for the Service backend set.
 
-Speaker A: What is the endpoint set?
+Speaker A: What does the endpoint set tell you?
 
-Speaker B: The current backend addresses that the Service can use.
+Speaker B: Which backend endpoints Kubernetes currently considers available for the Service path.
 
-Speaker A: Why should clients avoid Pod IPs?
+Speaker A: Why can a running Pod still fail to receive Service traffic?
 
-Speaker B: Pod IPs are tied to replaceable Pod instances, while the Service abstraction is designed to stay stable.
+Speaker B: It may not be ready, or it may not match the Service selector, or another network condition may exclude it.
 
 Speaker A: Final challenge.
 
-Speaker B: The Service name resolves, but there are zero endpoints.
+Speaker B: The Service name resolves, but users get no response.
 
 Speaker A: Your model?
 
-Speaker B: Service -> Selector -> Endpoints -> Pod -> Path. I inspect the selector, current matching Pods and endpoint readiness before blaming the network.
+Speaker B: Service -> Selector -> Endpoint set -> Pod -> Evidence. I check the Service identity, selector match, endpoint membership and Pod readiness before moving into the application process or lower network layers.
 
 Speaker A: Good.
 
-Speaker B: So Kubernetes networking is not one object.
+Speaker B: And after deleting a Pod?
 
-Speaker A: It is a chain of abstractions that separates stable discovery from changing workload instances.
+Speaker A: What proves recovery?
 
-Speaker B: Run the lab, delete one Pod, break one selector, restore it, and explain the endpoint evidence.
+Speaker B: The replacement becomes ready, the endpoint set returns to the expected state, and the real request succeeds again.
+
+Speaker A: Exactly.
+
+Speaker B: Kubernetes networking is not a Service object.
+
+Speaker A: It is the relationship among stable identity, selection, endpoint state and Pod lifecycle.
+
+Speaker B: Run the lab, break one boundary, and prove the Service path converges again.
 
 EPISODE D3.3 — Kubernetes Configuration and Storage
 

@@ -26,6 +26,7 @@ export type LessonIllustrationVariantV1 =
   | "docker-network-storage-v1"
   | "docker-failure-loop-v1"
   | "kubernetes-reconciliation-v1"
+  | "kubernetes-networking-v1"
   | "kubernetes-service-path-v1"
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
@@ -1099,6 +1100,34 @@ const PRODUCTION_INCIDENT_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+const KUBERNETES_NETWORKING_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "kubernetes-networking-v1",
+  title: "The Kubernetes network path",
+  stages: [
+    { id: "service", label: "Service", detail: "A Service provides a stable network identity for a changing set of backend Pods." },
+    { id: "selector", label: "Selector", detail: "A selector defines which Pods belong to the Service backend set." },
+    { id: "endpoint-set", label: "Endpoint set", detail: "Kubernetes maintains the set of Pod endpoints that currently match and can receive traffic." },
+    { id: "pod", label: "Pod", detail: "Traffic reaches one selected Pod endpoint that is actually available for the intended path." },
+    { id: "evidence", label: "Evidence", detail: "DNS, Service, endpoint and Pod state show where the network path is succeeding or breaking." }
+  ],
+  foundation: {
+    label: "A Service is a stable abstraction over a changing set of Pods",
+    detail: "Callers use the Service identity while Kubernetes keeps the backend endpoint set aligned with matching Pods."
+  },
+  callouts: [
+    { id: "service-identity", label: "Service identity", detail: "A stable Service name and virtual address decouple callers from individual Pod IPs." },
+    { id: "selector", label: "Selector", detail: "The selector determines which Pods are candidates for the Service backend set." },
+    { id: "endpoints", label: "Endpoint set", detail: "The active endpoint set tells you which backends Kubernetes currently considers available for the Service path." },
+    { id: "pod-readiness", label: "Pod readiness", detail: "A Pod can exist and run while still being excluded from ready traffic until its readiness conditions succeed." }
+  ],
+  failureChecks: [
+    { id: "service-lookup", label: "1. Service lookup", detail: "Does the client resolve and reach the intended Kubernetes Service?" },
+    { id: "selector-match", label: "2. Selector match", detail: "Do the Service selector labels match the Pods you intended to expose?" },
+    { id: "endpoint-membership", label: "3. Endpoint membership", detail: "Does the endpoint set contain the expected ready Pod backends?" },
+    { id: "traffic-proof", label: "4. Traffic proof", detail: "Can a real request reach an expected backend, and what changes when a Pod is removed or becomes unready?" }
+  ]
+};
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1362,6 +1391,12 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "kubernetes-networking-v1") {
+    return {
+      ...KUBERNETES_NETWORKING_VARIANT,
+      title: block.heading
+    };
+  }
   return genericModel(block);
 }
 
@@ -1401,6 +1436,7 @@ export function validateLessonIllustrationModel(
     model.variant !== "container-execution-v1" &&
     model.variant !== "docker-network-storage-v1" &&
     model.variant !== "kubernetes-reconciliation-v1" &&
+    model.variant !== "kubernetes-networking-v1" &&
     model.variant !== "docker-failure-loop-v1" &&
     model.variant !== "cloud-primitives-v1" &&
     model.variant !== "database-scaling-v1" &&
