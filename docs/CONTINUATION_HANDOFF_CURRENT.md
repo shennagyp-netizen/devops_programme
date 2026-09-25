@@ -6,13 +6,13 @@
 
 **Current branch:** `main`
 
-**Latest architecture merge:** PR #16, merge commit `655d66925bd9ccb081efc808ffd9c83c51a0e5e8`
+**Latest main architecture/content merge:** public instructional hero merge PR #32, commit `ab3a9400929be685f4c366068e1b4e576e9d5f41`
 
-**Current architecture:** Next.js 16.3.6 + React 19.2.8 + Clerk 7.9.4 + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative.
+**Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
 **Current learner-state rule:** one authenticated user + item type + item ID = one append-only completion row.
 
-**Authentication:** Clerk is the only identity authority. The browser never creates or submits a trusted learner ID.
+**Authentication:** First-party application auth is the identity authority. The browser never creates or submits a trusted learner ID. Passwords and sessions are owned by the application and stored through PostgreSQL-backed auth state.
 
 **Persistence:** PostgreSQL + Drizzle. Completion history is order-independent and keyed by authenticated user + item type + item ID. Duplicate completion is idempotent. There is no uncomplete operation.
 
@@ -20,7 +20,7 @@
 
 **TDD rule:** unit tests define the completion input contract; integration tests define the authentication/Server Action boundary; repository contract tests reject the obsolete Vite/API/anonymous-progress architecture.
 
-**CI truth:** current GitHub-hosted runners are executing the workflow. The latest standalone-animation branch gate completed successfully at workflow run `36089003221`; exact post-merge main validation must still be recorded after merge.
+**CI truth:** GitHub-hosted runners execute the full programme gate. Main production after PR #32 was green at 49 test files / 332 tests, with TypeScript and Next.js build passing. The current PR #33 content-quality branch has an intentionally red first run from a fixture mismatch; the correction is in progress and must reach green before merge.
 
 **Historical sections:** earlier sections record previous milestones and superseded designs. Sections 30–31 are retained for audit history only; section 32 and the final authenticated architecture are current.
 
@@ -1776,4 +1776,55 @@ IMPORTANT:
 Do not reintroduce Clerk or another external identity provider. The requested authentication architecture is intentionally first-party and database-backed.
 ============================================================
 END FIRST-PARTY AUTHENTICATION
+============================================================
+
+============================================================
+2026-09-25 CONTENT QUALITY OVERRIDE — SCRIPT + ILLUSTRATION FIRST
+============================================================
+
+The next product-quality boundary is instructional content, not additional marketing polish and not a larger animation catalogue.
+
+The primary teaching asset is now treated as one authored unit:
+
+spoken script -> visual explanation -> learner prediction -> observed mechanism -> controlled failure -> diagnosis -> recovery -> proof
+
+The target quality bar is:
+- natural spoken English at roughly B1–B2 general English around exact DevOps terms
+- technical claims no stronger than the evidence supports
+- real system mechanisms instead of decorative diagrams
+- visual state changes that correspond to the narrated mechanism
+- explicit prediction, operation, failure, diagnosis and recovery moments
+- deliberate misconception handling
+- hands-on evidence that proves the mechanism rather than only proving that a command returned successfully.
+
+Current exemplar slice:
+- lesson: B1.4 — Why Containers Exist
+- script: podcasts/beginner/B1.4.txt
+- visual model: app/src/data/lessonIllustration.ts
+- renderer: app/src/components/LessonIllustration.tsx
+- lesson feed integration: app/src/components/LessonContentFeed.tsx
+- content contract: app/src/data/lessonContent.ts
+- spoken classifier: app/src/data/podcastsRaw.ts
+
+B1.4 now teaches a concrete model:
+Image -> Container -> Process
+with Shared host kernel underneath, then two boundary concepts (persistent data and published ports), followed by a real diagnostic sequence for a running-but-unreachable service:
+1. process listening
+2. container port
+3. host port
+4. network path.
+
+This is intentionally a gold-standard exemplar, not yet a claim that all 53 lessons meet this level. Future lessons should be upgraded against this standard in batches, with tests and documentation updated in the same slice.
+
+A real defect was found and fixed in spoken-turn classification: a generic word match on "prediction" could pause the co-teacher during an explanatory sentence. The classifier now requires an actual prediction prompt pattern and has a regression test.
+
+Current TDD status:
+- PR #33: draft, branch feature/gold-standard-script-illustration
+- current head: e3dab979e123bb38ee20a63f8765d8a433f1f765
+- first full gate: run 36102249143 failed only because the new illustration test fixture omitted the authored variant; all 49 previous test files passed and 334 tests passed before that single failure.
+- the fixture correction and fail-closed model validation test are now committed; rerun the full gate before making PR #33 mergeable.
+
+Do not scale the animation catalogue before the script+illustration quality gate is stable. Reusable animations remain capabilities; curriculum remains the instructional authority.
+============================================================
+END CONTENT QUALITY OVERRIDE
 ============================================================
