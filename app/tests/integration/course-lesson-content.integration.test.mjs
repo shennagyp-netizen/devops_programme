@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored routing-boundary visual for D1.6", () => {
+    const lesson = allLessons.find((item) => item.id === "D1.6");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d1-6-routing-model",
+      bindingId: "D1.6:d1-6-routing-model",
+      variant: "routing-boundary-v1"
+    });
+  });
+
   it("uses the authored CIDR boundary visual for D1.5", () => {
     const lesson = allLessons.find((item) => item.id === "D1.5");
     expect(lesson).toBeDefined();

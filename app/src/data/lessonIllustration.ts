@@ -16,7 +16,8 @@ export type LessonIllustrationVariantV1 =
   | "terminal-composition-v1"
   | "service-permission-model-v1"
   | "network-operating-model-v1"
-  | "cidr-boundary-v1";
+  | "cidr-boundary-v1"
+  | "routing-boundary-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -505,6 +506,36 @@ const CIDR_BOUNDARY_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const ROUTING_BOUNDARY_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "routing-boundary-v1",
+  title: "The routing decision",
+  stages: [
+    { id: "destination", label: "Destination", detail: "Start with the packet's destination address and ask which route should match." },
+    { id: "route", label: "Route", detail: "The routing table chooses the most specific applicable route." },
+    { id: "next-hop", label: "Next hop", detail: "Traffic is sent directly when appropriate or toward the selected next hop, often a gateway." },
+    { id: "boundary", label: "Boundary", detail: "A network boundary may transform or translate addressing before the packet continues." },
+    { id: "evidence", label: "Evidence", detail: "Route tables, neighbor state, packet captures and return-path behavior expose different parts of the decision." }
+  ],
+  foundation: {
+    label: "Routing chooses where the packet goes next",
+    detail: "Routing decides forwarding based on destination and route selection; NAT can change address representation at a boundary but is a different mechanism."
+  },
+  callouts: [
+    { id: "specific-route", label: "Specific route", detail: "A more specific route can match before a broader default route." },
+    { id: "default-route", label: "Default route", detail: "The default route is the fallback when no more specific route matches." },
+    { id: "gateway", label: "Gateway", detail: "A gateway is a next hop toward another network, not a synonym for routing itself." },
+    { id: "nat", label: "NAT", detail: "Network address translation changes address representation at a boundary; it does not replace route selection." }
+  ],
+  failureChecks: [
+    { id: "destination-match", label: "1. Destination match", detail: "Which route actually matches this destination address?" },
+    { id: "next-hop", label: "2. Next hop", detail: "Is the selected next hop reachable through the local network context?" },
+    { id: "return-path", label: "3. Return path", detail: "Can the response find its way back, or is the problem asymmetric?" },
+    { id: "boundary-change", label: "4. Boundary change", detail: "Did NAT or another boundary rule change the addresses or path you expected?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -635,6 +666,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "routing-boundary-v1") {
+    return {
+      ...ROUTING_BOUNDARY_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -665,7 +703,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "terminal-composition-v1" &&
     model.variant !== "service-permission-model-v1" &&
     model.variant !== "network-operating-model-v1" &&
-    model.variant !== "cidr-boundary-v1"
+    model.variant !== "cidr-boundary-v1" &&
+    model.variant !== "routing-boundary-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }

@@ -1471,74 +1471,321 @@ Speaker A: Now run the calculations yourself and prove each result.
 
 EPISODE D1.6 — Routing, Gateways and NAT
 
+Speaker A: We know what an interface is, what an IP address is, and what a subnet boundary is.
 
+Speaker B: Now we need to answer the next question.
 
-Speaker A: Routing answers: where should this packet go next?
+Speaker A: Where should this packet go?
 
-Speaker B: Like Google Maps, except the packet is not allowed to ask for coffee.
+Speaker B: Routing.
 
-Speaker A: And it does not appreciate scenic routes.
+Speaker A: Exactly. And the visual for this lesson is:
 
-Speaker A: A route table contains decisions about destinations and next hops. The default gateway handles traffic that does not match a more specific route.
+Speaker B: Destination -> Route -> Next hop -> Boundary -> Evidence.
 
-Speaker A: Think of a courier company. The local driver does not know every street in every city. They know which distribution center receives the package next.
+Speaker A: Keep that sequence in your head. It will stop routing from feeling like a list of commands.
 
-Speaker A: NAT changes addressing at a boundary. Do not confuse NAT with routing or security.
+Speaker B: Make a prediction.
 
-Speaker A: Lab: inspect your Mac's routing information and trace a destination. In a safe environment, change one route and predict the effect.
+Speaker A: A destination is on the local subnet. Should the host normally send the packet to the default gateway?
 
-Speaker B: So the practical rule is: identify the destination, the next hop, and what changes at the boundary.
+Speaker B: No. The host can usually deliver directly on the local link.
 
-Speaker A: Exactly.
-Speaker B: Routing finally feels intuitive to me when I imagine a courier network.
+Speaker A: Good. Why?
 
-Speaker A: That's a good model, as long as we don't forget it is a model.
-
-Speaker B: Local courier knows local streets. If the package is going elsewhere, it goes to a distribution center.
-
-Speaker A: Exactly. A route table is a set of decisions about destinations and the next place to send the packet. More specific routes can override the default route.
-
-Speaker B: And the default gateway is basically, “I don't have a better answer; send it here.”
-
-Speaker A: That's the operational idea.
-
-Speaker B: Where people get confused is NAT.
-
-Speaker A: Right. NAT can modify addresses as traffic crosses a boundary. Routing decides where packets go. NAT can change what addresses appear on the other side. Those are related, but not the same job.
-
-Speaker B: So saying “the NAT routes the packet” is sloppy.
-
-Speaker A: It can be sloppy enough to hide a real bug.
-
-Speaker B: Real-life example?
-
-Speaker A: Imagine a company with one public phone number and hundreds of internal extensions. The outside world sees one boundary address. Inside, calls get mapped to particular people. The analogy is imperfect, but it gives you the idea that one visible address can represent many private identities.
-
-Speaker B: And the packet path has a story.
-
-Speaker A: Yes. Source, destination, route choice, next hop, boundary transformations. Follow that story one step at a time.
-
-Speaker B: Prediction. If a destination is reachable on the local subnet, should the packet use the default gateway?
-
-Speaker A: Normally, no. A directly connected destination can be reached without sending the packet to the default router. That's why the route table matters. It isn't just a list of where the Internet lives.
-
-Speaker B: So route specificity changes behavior.
+Speaker B: Because the destination matches the directly connected network, so a more specific local route wins over the default route.
 
 Speaker A: Exactly.
+
+Speaker B: So the route table is not just a list of Internet destinations.
+
+Speaker A: Right. It is a set of forwarding decisions.
+
+Speaker B: Stage one: destination.
+
+Speaker A: Every routing decision begins with the destination address.
+
+Speaker B: IPv4 or IPv6 address.
+
+Speaker A: Yes. The host asks: which route applies to this destination?
+
+Speaker B: Stage two: route.
+
+Speaker A: The routing table contains destinations, prefixes and often a next hop or interface choice.
+
+Speaker B: So the host compares the destination against those entries.
+
+Speaker A: Exactly.
+
+Speaker B: And if several routes match?
+
+Speaker A: The routing rules prefer the most specific applicable route in normal IP routing behavior.
+
+Speaker B: Which means a narrow route can override a broad default route.
+
+Speaker A: Correct.
+
+Speaker B: Give me a real example.
+
+Speaker A: Suppose the host has a route for `192.168.10.0/24` and a default route through `192.168.10.1`.
+
+Speaker B: A packet for `192.168.10.42` should use the more specific local route.
+
+Speaker A: Right.
+
+Speaker B: A packet for `8.8.8.8` would use the default route if no more specific route exists.
+
+Speaker A: Exactly.
+
+Speaker B: So the routing question is not 'is the Internet working?'
+
+Speaker A: It is 'which route matches this destination?'
+
+Speaker B: That is much more testable.
+
+Speaker A: Good.
+
+Speaker B: Stage three: next hop.
+
+Speaker A: Once the route is chosen, the host needs to know where to send the packet next.
+
+Speaker B: Directly to the destination on the local network.
+
+Speaker A: Or toward a router when the destination is remote.
+
+Speaker B: So the default gateway is a common next hop, not a magic Internet box.
+
+Speaker A: Exactly.
+
+Speaker B: That distinction matters.
+
+Speaker A: It does.
+
+Speaker B: The gateway is useful because the host cannot know every remote network itself.
+
+Speaker A: Right. A router becomes the next decision point.
+
+Speaker B: Human example?
+
+Speaker A: A courier receives a package.
+
+Speaker B: The local driver knows nearby streets.
+
+Speaker A: If the destination is outside the driver's local area, the package goes to a distribution center.
+
+Speaker B: The distribution center is like a next hop.
+
+Speaker A: Roughly. The analogy helps with the idea of forwarding decisions, not every protocol detail.
+
+Speaker B: Stage four: boundary.
+
+Speaker A: Now we meet NAT.
+
+Speaker B: The thing people often mix up with routing.
+
+Speaker A: Exactly. Routing decides where traffic goes. NAT can change address information as traffic crosses a boundary.
+
+Speaker B: So NAT is not the thing choosing the route.
+
+Speaker A: Correct.
+
+Speaker B: In a common home network, a private host may send traffic toward the router, and the router may translate the source address at the Internet boundary.
+
+Speaker A: Good.
+
+Speaker B: The outside service then sees the translated source address rather than the private address.
+
+Speaker A: Exactly.
+
+Speaker B: But that does not mean NAT is a security policy by itself.
+
+Speaker A: Good. NAT can change addressing. Firewalls and security policies decide what traffic is allowed.
+
+Speaker B: Another important distinction.
+
+Speaker A: Many production bugs come from combining three different ideas into one.
+
+Speaker B: Route selection.
+
+Speaker A: Address translation.
+
+Speaker B: Access control.
+
+Speaker A: Exactly.
+
+Speaker B: Make another prediction.
+
+Speaker A: DNS resolves the server name correctly. The destination is unreachable. Does that prove the route is correct?
+
+Speaker B: No. DNS only proves the name resolved to an address. The route still has to send traffic toward that address.
+
+Speaker A: Good.
+
+Speaker B: So naming and routing are separate evidence layers.
+
+Speaker A: Exactly.
+
+Speaker B: Now the failure cases.
+
+Speaker A: First: wrong specific route.
+
+Speaker B: The destination matches a route that sends traffic in the wrong direction.
+
+Speaker A: Right.
+
+Speaker B: The host can reach some networks but not that one.
+
+Speaker A: Partial reachability is valuable evidence.
+
+Speaker B: Second: gateway unreachable.
+
+Speaker A: The route exists, but the selected next hop cannot be reached through the local network.
+
+Speaker B: So I inspect neighbor state and interface context.
+
+Speaker A: Good.
+
+Speaker B: Third: asymmetric path.
+
+Speaker A: The packet can leave, but the response takes a different path or cannot return.
+
+Speaker B: Which is why one-way reachability can be confusing.
+
+Speaker A: Exactly.
+
+Speaker B: Fourth: NAT changes what the remote side sees.
+
+Speaker A: Correct. That can affect logs, allowlists, return paths, and debugging assumptions.
+
+Speaker B: So when I debug, I need the packet story:
+
+Speaker A: Source.
+
+Speaker B: Destination.
+
+Speaker A: Route.
+
+Speaker B: Next hop.
+
+Speaker A: Boundary transformation.
+
+Speaker B: Return path.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction pause.
+
+Speaker A: A destination is local, but the host sends it to the default gateway anyway. What does that suggest?
+
+Speaker B: The route table or interface/network configuration is wrong. I would check the directly connected route and the prefix on the interface.
+
+Speaker A: Good.
+
+Speaker B: Another prediction.
+
+Speaker A: The route is correct, the next hop is reachable, but the application still times out. What now?
+
+Speaker B: Move upward. Routing may be working, so I inspect transport and application evidence instead of changing the route again.
+
+Speaker A: Exactly.
+
+Speaker B: That is the same diagnostic discipline as earlier lessons.
+
+Speaker A: Yes. Each layer gets a chance to answer the question.
 
 Speaker B: Mac lab?
 
-Speaker A: Inspect the route table. Pick one destination on your local network and one remote destination. Predict the next hop for each. Then trace a remote path. Don't treat traceroute output as a perfect map of reality; firewalls and routing policy can make individual hops disappear.
+Speaker A: Inspect the route table.
 
-Speaker B: Another warning against superstition.
+Speaker B: Pick one local destination and one remote destination.
 
-Speaker A: You are going to hear that phrase a lot this week.
+Speaker A: Good.
 
-Speaker B: And the production connection?
+Speaker B: Predict which route matches and what the next hop should be.
 
-Speaker A: In a large service, routing decisions exist everywhere: host routes, container networks, load balancers, cloud subnets, service meshes, and inter-region paths. When something breaks, ask where the packet is supposed to go before asking why the application is unhappy.
+Speaker A: Good.
 
-Speaker B: That's a much better order.
+Speaker B: Verify the route with the operating system.
 
-Speaker A: Exactly. The packet doesn't care about your architecture diagram. It follows the actual state of the system.
+Speaker A: Good.
+
+Speaker B: Then trace one remote destination.
+
+Speaker A: Good, with one warning.
+
+Speaker B: Traceroute is not a perfect map.
+
+Speaker A: Exactly. Firewalls, load balancing, rate limits and routing policy can hide hops or make them look different.
+
+Speaker B: So a missing hop is not automatically a broken route.
+
+Speaker A: Correct.
+
+Speaker B: Controlled failure?
+
+Speaker A: Use a disposable network namespace or similarly isolated environment you control.
+
+Speaker B: Change one route.
+
+Speaker A: Predict the affected destination.
+
+Speaker B: Observe the failure.
+
+Speaker A: Restore the original route.
+
+Speaker B: Verify the original path recovers.
+
+Speaker A: Exactly.
+
+Speaker B: What should I record?
+
+Speaker A: Destination. Matching route. Next hop. Boundary transformation if any. Evidence before the change. Evidence after the change. Recovery proof.
+
+Speaker B: So the command is not the answer.
+
+Speaker A: The packet path is the answer.
+
+Speaker B: Recall.
+
+Speaker A: What does a route table decide?
+
+Speaker B: Which route applies to a destination and where the packet should go next.
+
+Speaker A: What is the default route?
+
+Speaker B: A fallback route used when no more specific route matches.
+
+Speaker A: What is a gateway?
+
+Speaker B: A next hop toward another network; it is not a synonym for routing.
+
+Speaker A: What does NAT do?
+
+Speaker B: It can change address representation at a boundary. It does not replace route selection or access control.
+
+Speaker A: Why does the return path matter?
+
+Speaker B: Because a request can leave successfully but the response can fail to return, creating one-way or asymmetric connectivity.
+
+Speaker A: Final challenge.
+
+Speaker B: A server name resolves. The interface is up. The IP is correct. One remote network is unreachable.
+
+Speaker A: Your first model?
+
+Speaker B: Destination -> Route -> Next hop -> Boundary -> Evidence.
+
+Speaker A: And your evidence sequence?
+
+Speaker B: Check the matching route. Check the next hop and local neighbor state. Check any boundary translation. Then move upward to transport and application evidence only if the packet path is supported.
+
+Speaker A: Good.
+
+Speaker B: So routing is not a command.
+
+Speaker A: It is a decision about where the packet goes next.
+
+Speaker B: And the evidence is the path.
+
+Speaker A: Exactly. Run the lab, change one route safely, and prove recovery.
 
