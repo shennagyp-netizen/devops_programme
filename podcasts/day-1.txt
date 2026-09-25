@@ -4,96 +4,329 @@ DAY 1 — LINUX + NETWORKING FOUNDATIONS
 
 EPISODE D1.1 — Linux Operating Model
 
+Speaker A: Before we touch DevOps platforms, let's look at the machine underneath them.
 
+Speaker B: Linux.
 
-Speaker A: Before we touch DevOps tools, let's talk about the machine underneath the drama. Your application is ultimately a collection of processes asking an operating system for CPU time, memory, files, and network access.
+Speaker A: Linux. And the goal is not to memorize commands. It is to understand what an application is asking the operating system to do.
 
-Speaker B: So the cloud is just a very expensive machine room with better marketing?
+Speaker B: So what is the first model?
 
-Speaker A: That's a dangerous oversimplification... but a useful starting point.
+Speaker A: Application work becomes one or more processes.
 
-Speaker A: Think about a restaurant. The customer sees the waiter carrying food. Behind that waiter are the kitchen, refrigerators, staff, inventory, electricity, and a manager deciding what gets attention first. A Linux process is one active piece of work. The kernel manages access to shared resources.
+Speaker B: The process needs CPU, memory, files and network access.
 
-Speaker B: And when the restaurant becomes slow, yelling at the waiter is probably not root-cause analysis.
+Speaker A: And the kernel mediates access to those resources.
 
-Speaker A: Exactly. You inspect the kitchen.
+Speaker B: So the picture is Application -> Process -> Kernel -> Resources -> Evidence.
 
-Speaker A: Linux gives processes identifiers, memory, file descriptors, scheduling, signals, filesystem access, and network sockets. The shell is itself a process; it asks the kernel to launch or control other processes.
+Speaker A: Exactly.
 
-Speaker B: File descriptors always sound like something invented by people who hate newcomers.
+Speaker B: Evidence is the last box because operators need a way to observe what happened.
 
-Speaker A: They are just numbered handles to communication channels. Standard input, standard output, and standard error are the famous ones. Pipes connect channels so processes can compose.
+Speaker A: Good. Now make a prediction.
 
-Speaker A: When you run ps, top, lsof, kill, or inspect logs, you are asking the system to reveal state.
+Speaker A: A user says the application is slow. CPU is low. Does that prove the application is healthy?
 
-Speaker B: Real-life version?
+Speaker B: No. The process could be waiting on a database, a lock, storage or a network dependency.
 
-Speaker A: If a clinic says, 'the lab is slow,' the useful questions are: Which machine? Which process? CPU? Memory? Disk? Network? One user or everyone? That is the same diagnostic mindset.
+Speaker A: Good. Now the important word is why.
 
-Speaker A: Mac lab: inspect processes and listening sockets. Pick one harmless process, predict what happens if it stops, then verify.
+Speaker B: Because low CPU only tells me how much CPU work the process was doing. It does not tell me what it was waiting for.
 
+Speaker A: Exactly. A metric becomes useful when you know which claim it supports and which claims it does not.
 
+Speaker B: That sounds like the Beginner course.
 
-Recall: What is a process? What is the kernel responsible for? What is a file descriptor? Why is the shell not the kernel? What evidence do you collect before blaming the machine?
-Speaker B: Let me test the model. If my application is slow, I shouldn't start by restarting it.
+Speaker A: It is the same engineering habit at a deeper level. Intermediate should make the mechanism explicit.
 
-Speaker A: Right. You can restart it. I'm not banning the button. I'm saying you don't get to use the button as a substitute for a question.
+Speaker B: So let's define a process properly.
 
-Speaker B: So first question?
+Speaker A: A program is stored code. A process is a running instance with state, an address space, an identity, open resources and an execution context.
 
-Speaker A: What is actually slow? The process? The machine? The disk? A downstream call? A lock? A network round trip? You want the first observation that separates those possibilities.
+Speaker B: Process ID.
 
-Speaker B: Okay, suppose CPU is at ninety-nine percent.
+Speaker A: Yes. PID.
 
-Speaker A: That's evidence, but it still isn't the whole diagnosis. Which process owns the CPU? Is that process supposed to be busy? Did traffic increase? Did one code path change? Is the process spinning because something else failed?
+Speaker B: And the process can have a parent.
 
-Speaker B: So even a metric can be a symptom, not a cause.
+Speaker A: Yes. A process can be started by a shell, a service manager, a supervisor, a container runtime, or another process.
 
-Speaker A: Exactly. Never fall in love with the first metric that looks dramatic.
+Speaker B: So process ownership matters.
+
+Speaker A: Very much.
+
+Speaker B: What does the kernel do?
+
+Speaker A: It provides controlled access to system resources and coordinates competing work. For our model, think about scheduling CPU time, virtual memory, filesystems, networking, devices, signals and process isolation.
+
+Speaker B: The application does not just reach into the CPU directly.
+
+Speaker A: Correct. It asks the operating system to perform operations on its behalf.
+
+Speaker B: So when I open a file, there is a kernel boundary involved.
+
+Speaker A: Yes.
+
+Speaker B: When I create a network connection, same idea.
+
+Speaker A: Yes.
+
+Speaker B: When a process receives a signal, the operating system is involved again.
+
+Speaker A: Exactly.
+
+Speaker B: This makes the kernel feel less like a mysterious black box.
+
+Speaker A: Good. It is a very large system, but the questions are concrete.
+
+Speaker B: Let's talk about process state.
+
+Speaker A: A process can be running, waiting or sleeping, stopped, or exited. Linux exposes more detailed states, but operationally the question is: what is the process doing right now?
+
+Speaker B: A process can be alive and still not be doing useful work.
+
+Speaker A: Exactly.
+
+Speaker B: Because it can be blocked on something else.
+
+Speaker A: Yes.
+
+Speaker B: So a green process list is weak evidence.
+
+Speaker A: It proves the process exists. It does not prove the user path works.
+
+Speaker B: Another prediction.
+
+Speaker A: A process has been alive for one hour. Its CPU is near zero. Its memory is stable. The service response is slow. What do you inspect next?
+
+Speaker B: I want to know what the process is waiting on.
+
+Speaker A: Good.
+
+Speaker B: Network sockets, files, locks, dependency timing, logs.
+
+Speaker A: Good. Notice that you are moving from the process to its resources and dependencies.
+
+Speaker B: Which is the third and fourth box.
+
+Speaker A: Exactly.
+
+Speaker B: Let's make file descriptors concrete.
+
+Speaker A: A process uses file descriptors as handles for things such as files, sockets and pipes. Standard input, standard output and standard error are the familiar descriptors.
+
+Speaker B: So stdout is not special magic. It is a file descriptor connected to something.
+
+Speaker A: Correct.
+
+Speaker B: And a socket is another kind of descriptor.
+
+Speaker A: Exactly.
+
+Speaker B: A pipe lets one process feed another.
+
+Speaker A: Yes.
+
+Speaker B: That means the shell is itself participating in the process model.
+
+Speaker A: Very much so. The shell is a process that creates and connects other processes. It is not the kernel.
+
+Speaker B: That's a beginner distinction, but still useful here.
+
+Speaker A: The distinction matters more as you debug supervision, pipelines and process ownership.
 
 Speaker B: What about memory?
 
-Speaker A: Same idea. Linux gives processes address spaces and manages memory on their behalf. A process can ask for memory, the kernel can reclaim pages, files can be cached, and a machine can look “full” in one view without meaning what a beginner thinks it means.
+Speaker A: Processes use virtual address spaces. The kernel manages physical memory and virtual-memory mechanisms. For operations, start with the evidence: which process is consuming memory, how that changes over time, and whether the system is under memory pressure.
 
-Speaker B: And file descriptors?
+Speaker B: So a large memory number is not automatically a leak.
 
-Speaker A: Think of them as little handles the process uses to talk to the outside world. A file. A socket. A pipe. Standard input, output, and error are just the famous three.
+Speaker A: Correct.
 
-Speaker B: So when I pipe one command into another, I'm literally connecting process output to process input.
+Speaker B: And a small process can still be the cause of an incident if it holds a critical resource or blocks a dependency.
 
-Speaker A: Exactly. And that is why the shell matters. The shell is not secretly running the whole operating system. It's coordinating processes and asking the kernel to do things.
+Speaker A: Exactly.
 
-Speaker B: Pause. Prediction time. If I start a process, then close the terminal, what should I expect?
+Speaker B: CPU has the same problem.
 
-Speaker A: Good. Don't look it up yet. Predict what happens to the process, and then tell me what observation would prove your prediction.
+Speaker A: Yes. High CPU can be expected work, wasteful work, or a symptom of another failure. Low CPU can be healthy waiting or pathological waiting.
 
-Speaker B: My first instinct is that the process dies because the terminal dies.
+Speaker B: Context before conclusions.
 
-Speaker A: That's a reasonable first guess. But now ask the better question: what relationship does that process have to the terminal, and what signal or session behavior is involved? Linux has more structure there than “terminal closed, process dead.”
+Speaker A: Exactly.
 
-Speaker B: So the goal isn't memorizing that one result. It's learning how to ask what owns the lifecycle.
+Speaker B: Now process control.
 
-Speaker A: Yes. Ownership, state, evidence. You'll hear those three words a lot.
+Speaker A: Linux provides signals as one mechanism for communicating with processes.
 
-Speaker B: Give me a production version.
+Speaker B: So when I ask a process to stop, the operating system does not just erase it.
 
-Speaker A: Imagine a service with three hundred workers. One disappears. A weak investigation says, “The service crashed.” A stronger one asks whether one child process exited, whether the supervisor restarted it, whether traffic was redistributed, and whether the process was killed by a resource limit. Same symptom, very different system states.
+Speaker A: Correct. Different signals have different semantics, and the process may handle some of them.
 
-Speaker B: That sounds like hospital triage again.
+Speaker B: Which means I should not learn process termination as one universal button.
 
-Speaker A: It is. You don't diagnose “the patient” as a single object. You measure the signals and narrow the failing subsystem.
+Speaker A: Right. You need to know what signal you are sending and what the process is expected to do.
 
-Speaker B: Mac lab?
+Speaker B: Prediction pause.
 
-Speaker A: Open a terminal. Find a harmless process. Inspect it. Find what sockets it owns. Look at its parent process. Then predict what changes if you terminate that process. Do the experiment on something disposable, not on the application you happen to be relying on.
+Speaker A: Go ahead.
 
-Speaker B: And what should I say out loud after?
+Speaker B: If I start a long-running process from a terminal and close the terminal, will the process always die?
 
-Speaker A: Explain, in plain language, what the kernel did for the process and what the process had to do itself.
+Speaker A: What is your evidence plan?
 
-Speaker B: That's harder than memorizing ten commands.
+Speaker B: I inspect the process relationship to the terminal session, its parent, and the signals or supervision involved.
 
-Speaker A: Good. The commands are the easy part.
+Speaker A: Good. The exact outcome depends on how the process was started and what controls its lifecycle.
+
+Speaker B: So I should not teach the slogan 'closing the terminal kills the process.'
+
+Speaker A: Correct. Teach the mechanism.
+
+Speaker B: That's one of the big differences between a command course and systems engineering.
+
+Speaker A: Exactly.
+
+Speaker B: Now let's create a production symptom.
+
+Speaker A: A service has three hundred worker processes.
+
+Speaker B: One worker disappears.
+
+Speaker A: What do we need to know?
+
+Speaker B: Did it exit normally? Did a supervisor restart it? Was it killed by a resource limit? Did a signal stop it? Did the application itself terminate?
+
+Speaker A: Excellent.
+
+Speaker B: So saying 'the service crashed' hides the process lifecycle.
+
+Speaker A: Yes.
+
+Speaker B: And the right evidence might be process state, parent relationship, logs, exit status, and resource pressure.
+
+Speaker A: Exactly.
+
+Speaker B: Let's connect that to observability.
+
+Speaker A: Commands such as ps and lsof expose current state. Logs expose recorded events. Service managers expose lifecycle state. Metrics show values over time.
+
+Speaker B: Different windows into the same system.
+
+Speaker A: Exactly.
+
+Speaker B: So no single tool owns the truth.
+
+Speaker A: Correct. The job is to correlate evidence.
+
+Speaker B: That sounds familiar.
+
+Speaker A: It should.
+
+Speaker B: Mac lab.
+
+Speaker A: Choose a harmless process you own.
+
+Speaker B: Inspect it with ps.
+
+Speaker A: Good.
+
+Speaker B: Find its PID, state and useful resource information.
+
+Speaker A: Good.
+
+Speaker B: Inspect one of its open network endpoints or files.
+
+Speaker A: Good.
+
+Speaker B: Inspect its parent or supervisor when available.
+
+Speaker A: Good.
+
+Speaker B: Then predict what changes if I stop that disposable process.
+
+Speaker A: Run the controlled experiment.
+
+Speaker B: Observe which process state, socket, log entry or service state changes.
+
+Speaker A: Good.
+
+Speaker B: Restart or recreate only the disposable component.
+
+Speaker A: Good.
+
+Speaker B: Verify the original path is healthy.
+
+Speaker A: Exactly.
+
+Speaker B: What counts as success?
+
+Speaker A: You should be able to explain the chain without naming a command first.
+
+Speaker B: Application work.
+
+Speaker A: Then?
+
+Speaker B: Process.
+
+Speaker A: Then?
+
+Speaker B: Kernel-managed resources.
+
+Speaker A: Then?
+
+Speaker B: Evidence that tells me what is happening.
+
+Speaker A: Good.
+
+Speaker B: And if something is slow?
+
+Speaker A: Ask which process, which resource, which dependency, and which observation can separate the remaining hypotheses.
+
+Speaker B: Recall.
+
+Speaker A: What is the difference between a program and a process?
+
+Speaker B: A program is stored code. A process is a running instance with state, identity and resources.
+
+Speaker A: What does the kernel do in this model?
+
+Speaker B: It mediates controlled access to CPU, memory, files, networking, signals and other system resources.
+
+Speaker A: Why can a process be alive while the service is unhealthy?
+
+Speaker B: It can be waiting, blocked, misconfigured, or unable to reach a required dependency.
+
+Speaker A: What is a file descriptor?
+
+Speaker B: A handle a process uses for resources such as files, sockets and pipes.
+
+Speaker A: Why is CPU not a complete diagnosis?
+
+Speaker B: High CPU can be normal or pathological, and low CPU can happen while the process waits on another resource or dependency.
+
+Speaker A: Final challenge.
+
+Speaker B: A Linux service is slow.
+
+Speaker A: Your model?
+
+Speaker B: Identify the process. Inspect its state. Inspect resource usage and open endpoints. Identify what it may be waiting on. Then choose evidence that separates the leading causes.
+
+Speaker A: And after a safe change?
+
+Speaker B: Prove the service behavior recovered.
+
+Speaker A: Exactly.
+
+Speaker B: So the Linux operating model is not a list of commands.
+
+Speaker A: It is a way to explain how application work becomes processes, how the kernel mediates resources, and how operators observe the resulting state.
+
+Speaker B: Good.
+
+Speaker A: Now run the lab and explain the machine, not just the command.
 
 
 EPISODE D1.2 — Terminal as an Engineering Tool
