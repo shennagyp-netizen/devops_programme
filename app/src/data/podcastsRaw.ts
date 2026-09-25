@@ -26,7 +26,7 @@ function classifyTurn(text: string): Turn["kind"] {
   const normalized = text.toLowerCase();
 
   if (
-    /((\\bpredict\\b|pause me|prediction time|make a prediction|what do you think happens|what evidence would you expect|don't look it up yet))/i.test(
+    /(\bpredict\b|pause me|prediction time|make a prediction|what do you think happens|what evidence would you expect|don't look it up yet)/i.test(
       normalized
     )
   ) {
