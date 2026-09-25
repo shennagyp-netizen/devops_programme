@@ -60,6 +60,21 @@ describe("course lesson content integration", () => {
       expect(lesson.content.blocks[1].type, lesson.id).toBe("illustration");
     }
   });
+  it("uses the authored safe-delivery visual for B2.1", () => {
+    const lesson = allLessons.find((item) => item.id === "B2.1");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "b2-1-safe-delivery",
+      bindingId: "B2.1:b2-1-safe-delivery",
+      variant: "delivery-pipeline-v1"
+    });
+  });
+
   it("uses the authored repeatability visual for B1.5", () => {
     const lesson = allLessons.find((item) => item.id === "B1.5");
     expect(lesson).toBeDefined();
