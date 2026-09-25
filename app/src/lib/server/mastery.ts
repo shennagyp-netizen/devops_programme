@@ -39,7 +39,7 @@ async function ensureMasterySchema() {
   await db.execute(sql.raw(`
     CREATE INDEX IF NOT EXISTS "learner_mastery_attempts_user_assignment_idx"
       ON "learner_mastery_attempts" ("user_id", "lesson_id", "assignment_id")
-  `);
+  `));
 
   masterySchemaReady = true;
 }
