@@ -2004,5 +2004,13 @@ Merged PR #68:
 - Controlled lab makes one declared or external change, predicts the plan, detects drift, restores state and proves the clean plan.
 - Next content boundary: **D4.5 — Terraform Lifecycle**.
 
+
+Merged PR #69:
+- D4.5 -> `terraform-lifecycle-v1`: Configuration -> Init -> Plan -> Apply -> Observe.
+- Merge commit: `efc16df80ff091206717f9ad9bbd6a28b5e1a699`.
+- GitHub Actions run **36152596669** passed successfully.
+- D4.5 now treats plan as a safety checkpoint, state locking as a coordination boundary, destroy as a high-impact lifecycle operation, and post-apply observation as required proof.
+- Next content boundary: **D4.6 — Cloud Primitives**.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
