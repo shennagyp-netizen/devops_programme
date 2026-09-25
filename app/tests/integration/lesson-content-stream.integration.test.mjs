@@ -29,9 +29,11 @@ describe("lesson content feed integration contract", () => {
     const code = feed();
     expect(code).toContain('block.type === "text"');
     expect(code).toContain('block.type === "illustration"');
+    expect(code).toContain('block.type === "interactive-illustration"');
     expect(code).toContain('block.type === "video"');
     expect(code).toContain("lesson-content-copy");
     expect(code).toContain("lesson-visual-card");
+    expect(code).toContain("lesson-interactive-visual-card");
     expect(code).toContain("lesson-video-card");
   });
 
