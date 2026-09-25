@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import App from "../../App";
 import { requireCurrentUser } from "../../lib/server/auth";
-import { listCompletionHistoryForUser } from "../../lib/server/progress";
+import { listCompletionHistoryForUser, listMasteryHistoryForUser } from "../../lib/server/progress";
 
 export default async function LearnPage() {
   const user = await requireCurrentUser().catch((error) => {
@@ -18,11 +18,13 @@ export default async function LearnPage() {
   }
 
   const completionHistory = await listCompletionHistoryForUser(user.id);
+  const masteryHistory = await listMasteryHistoryForUser(user.id);
 
   return (
     <App
       currentUser={{ email: user.email }}
       initialCompletionHistory={completionHistory}
+      initialMasteryHistory={masteryHistory}
     />
   );
 }
