@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #44, commit `de0a4893f272640f2d02b54dd45ecc397acc6bf2` (D1.3 service execution-context script + illustration quality slice).
+**Latest main architecture/content merge:** PR #45, commit `7ffa6edd1fd266fa0d3b585e674ae885c709b81a` (D1.4 network operating model script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #44 has merged to `main`.
+**Active content-quality branch:** none. PR #45 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1880,18 +1880,13 @@ Merged PR #43:
 Merged PR #44:
 - D1.3 -> `service-permission-model-v1`: Process -> Identity -> Resource -> Service -> Logs.
 - Merge commit: `de0a4893f272640f2d02b54dd45ecc397acc6bf2`.
-- D1.3 now teaches execution context as part of the system: user/group identity, permissions, environment, service supervision and log evidence.
-- Final PR #44 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- Next content boundary: **D1.4 — What Is a Network?**.
 
-
-Active PR #45 scope:
-- D1.4 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `network-operating-model-v1`.
-- Teaching model: Interface -> Link -> IP -> Route -> Evidence.
-- The rewritten script separates MAC, IP, ARP and routing roles and deliberately keeps DNS outside the link/IP model.
-- Controlled failure/recovery is isolated to a disposable network context.
-- TDD/full-programme gate is required before merge.
+Merged PR #45:
+- D1.4 -> `network-operating-model-v1`: Interface -> Link -> IP -> Route -> Evidence.
+- Merge commit: `7ffa6edd1fd266fa0d3b585e674ae885c709b81a`.
+- D1.4 now separates interface/link/MAC/ARP/IP/routing roles and deliberately keeps DNS as a separate naming layer.
+- Final PR #45 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- Next content boundary: **D1.5 — IP Addresses, Subnets and CIDR**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
