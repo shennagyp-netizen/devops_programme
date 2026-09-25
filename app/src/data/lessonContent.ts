@@ -30,7 +30,8 @@ export type LessonIllustrationVariantV1 =
   | "container-execution-v1"
   | "docker-network-storage-v1"
   | "docker-failure-loop-v1"
-  | "kubernetes-reconciliation-v1";
+  | "kubernetes-reconciliation-v1"
+  | "kubernetes-networking-v1";
 
 export type LessonContentBlock =
   | {
@@ -83,6 +84,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D3.2": {
+    version: 1,
+    blocks: [
+      {
+        id: "d3-2-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Kubernetes networking stays understandable when you separate stable Service identity, selector matching, the current endpoint set, Pod lifecycle and the evidence from a real request."
+      },
+      {
+        id: "d3-2-kubernetes-networking",
+        type: "illustration",
+        heading: "The Kubernetes network path",
+        alt: "A client resolves a Kubernetes Service, the selector determines its endpoint set, traffic reaches a selected Pod, and evidence exposes the path",
+        bindingId: "D3.2:d3-2-kubernetes-networking",
+        nodes: ["Service", "Selector", "Endpoint set", "Pod", "Evidence"],
+        variant: "kubernetes-networking-v1",
+        caption:
+          "Trace a request through stable Service identity, selector matching, endpoint membership and Pod availability."
+      }
+    ]
+  },
+
+
   "D3.1": {
     version: 1,
     blocks: [
@@ -765,6 +791,7 @@ export function validateLessonContent(
         block.variant !== "docker-network-storage-v1" &&
         block.variant !== "docker-failure-loop-v1" &&
         block.variant !== "kubernetes-reconciliation-v1" &&
+        block.variant !== "kubernetes-networking-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
