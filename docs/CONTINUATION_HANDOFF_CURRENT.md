@@ -2025,5 +2025,13 @@ Merged PR #96:
 - The short note was replaced with a full lesson covering partial failure, timeout ambiguity, idempotency, replication consistency, ordering, clock uncertainty and controlled retry/delay experiments.
 - Fresh Vercel validation for PR #96 remained blocked by build-rate-limit infrastructure.
 
+
+Active PR #97 scope:
+- D5.7 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `global-architecture-v1`.
+- Teaching model: Users -> Routing -> Regions -> Dependencies -> Capacity -> Recovery.
+- The short 303-word architecture note is replaced with a full failure-domain lesson covering regional loss, routing, survivor capacity, data placement, shared dependencies, deployment blast radius, controlled design experiments, recall and transfer.
+- Fresh Vercel validation may be blocked by the current build-rate-limit infrastructure condition.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
