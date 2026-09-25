@@ -141,14 +141,34 @@ describe("animation geometry red team", () => {
 
   it("rejects connection crossings unless explicitly allowed", () => {
     const definition = baseDefinition();
-    definition.primitives.push(
+    definition.primitives = [
+      {
+        kind: "node",
+        id: "a",
+        label: "A",
+        role: "service",
+        x: 100,
+        y: 100,
+        width: 180,
+        height: 90
+      },
+      {
+        kind: "node",
+        id: "b",
+        label: "B",
+        role: "database",
+        x: 500,
+        y: 500,
+        width: 180,
+        height: 90
+      },
       {
         kind: "node",
         id: "c",
         label: "C",
         role: "service",
-        x: 500,
-        y: 460,
+        x: 100,
+        y: 500,
         width: 180,
         height: 90
       },
@@ -158,7 +178,7 @@ describe("animation geometry red team", () => {
         label: "D",
         role: "service",
         x: 500,
-        y: 40,
+        y: 100,
         width: 180,
         height: 90
       },
@@ -174,7 +194,21 @@ describe("animation geometry red team", () => {
         from: "c",
         to: "b"
       }
-    );
+    ];
+    definition.events = [
+      {
+        id: "show",
+        action: "connect",
+        targetId: "a-d",
+        targetStateId: "initial"
+      }
+    ];
+    definition.states[0].targetStatuses = [
+      { targetId: "a", status: "neutral" },
+      { targetId: "b", status: "neutral" },
+      { targetId: "c", status: "neutral" },
+      { targetId: "d", status: "neutral" }
+    ];
 
     const failures = validateAnimationDefinition(definition).failures.join(" ");
     expect(failures).toContain("connection crossing");
@@ -182,14 +216,34 @@ describe("animation geometry red team", () => {
 
   it("permits an explicitly declared connection crossing exception", () => {
     const definition = baseDefinition();
-    definition.primitives.push(
+    definition.primitives = [
+      {
+        kind: "node",
+        id: "a",
+        label: "A",
+        role: "service",
+        x: 100,
+        y: 100,
+        width: 180,
+        height: 90
+      },
+      {
+        kind: "node",
+        id: "b",
+        label: "B",
+        role: "database",
+        x: 500,
+        y: 500,
+        width: 180,
+        height: 90
+      },
       {
         kind: "node",
         id: "c",
         label: "C",
         role: "service",
-        x: 500,
-        y: 460,
+        x: 100,
+        y: 500,
         width: 180,
         height: 90
       },
@@ -199,7 +253,7 @@ describe("animation geometry red team", () => {
         label: "D",
         role: "service",
         x: 500,
-        y: 40,
+        y: 100,
         width: 180,
         height: 90
       },
@@ -216,7 +270,21 @@ describe("animation geometry red team", () => {
         to: "b",
         allowCrossingWith: ["a-d"]
       }
-    );
+    ];
+    definition.events = [
+      {
+        id: "show",
+        action: "connect",
+        targetId: "a-d",
+        targetStateId: "initial"
+      }
+    ];
+    definition.states[0].targetStatuses = [
+      { targetId: "a", status: "neutral" },
+      { targetId: "b", status: "neutral" },
+      { targetId: "c", status: "neutral" },
+      { targetId: "d", status: "neutral" }
+    ];
 
     const result = validateAnimationDefinition(definition);
     expect(result.failures.join(" ")).not.toContain("connection crossing");
