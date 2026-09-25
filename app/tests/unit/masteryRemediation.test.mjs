@@ -51,6 +51,6 @@ describe("mastery remediation engine", () => {
 
     expect(combined).toContain("recovery");
     expect(combined).toContain("alternative");
-    expect(combined).toContain("mechanism");
+    expect(plan.steps.some((step) => step.method === "mechanism")).toBe(true);
   });
 });
