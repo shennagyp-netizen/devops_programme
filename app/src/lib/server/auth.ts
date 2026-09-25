@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { and, eq, gt } from "drizzle-orm";
+import { and, eq, gt, sql } from "drizzle-orm";
 import {
   createHash,
   randomBytes,
@@ -39,6 +39,50 @@ export type CurrentUser = {
   id: string;
   email: string;
 };
+
+let authSchemaReady = false;
+
+async function ensureAuthSchema() {
+  if (authSchemaReady) return;
+
+  const db = getDb();
+
+  await db.execute(sql.raw(`
+    CREATE TABLE IF NOT EXISTS "auth_users" (
+      "id" text PRIMARY KEY NOT NULL,
+      "email" text NOT NULL,
+      "password_hash" text NOT NULL,
+      "created_at" timestamptz DEFAULT now() NOT NULL
+    )
+  `));
+
+  await db.execute(sql.raw(`
+    CREATE UNIQUE INDEX IF NOT EXISTS "auth_users_email_uq"
+      ON "auth_users" ("email")
+  `));
+
+  await db.execute(sql.raw(`
+    CREATE TABLE IF NOT EXISTS "auth_sessions" (
+      "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+      "user_id" text NOT NULL REFERENCES "auth_users"("id") ON DELETE CASCADE,
+      "token_hash" text NOT NULL,
+      "expires_at" timestamptz NOT NULL,
+      "created_at" timestamptz DEFAULT now() NOT NULL
+    )
+  `));
+
+  await db.execute(sql.raw(`
+    CREATE UNIQUE INDEX IF NOT EXISTS "auth_sessions_token_hash_uq"
+      ON "auth_sessions" ("token_hash")
+  `));
+
+  await db.execute(sql.raw(`
+    CREATE INDEX IF NOT EXISTS "auth_sessions_user_id_idx"
+      ON "auth_sessions" ("user_id")
+  `));
+
+  authSchemaReady = true;
+}
 
 export function normalizeEmail(value: string) {
   return value.trim().toLowerCase();
@@ -164,6 +208,7 @@ export async function registerUserAndCreateSession(
   rawEmail: string,
   password: string
 ): Promise<CurrentUser> {
+  await ensureAuthSchema();
   const email = normalizeEmail(rawEmail);
   const passwordHash = await hashPassword(password);
   const id = `user_${randomUUID()}`;
@@ -193,6 +238,7 @@ export async function loginUserAndCreateSession(
   rawEmail: string,
   password: string
 ): Promise<CurrentUser> {
+  await ensureAuthSchema();
   const email = normalizeEmail(rawEmail);
   const [user] = await getDb()
     .select()
@@ -212,6 +258,8 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   const token = (await cookies()).get(SESSION_COOKIE_NAME)?.value;
 
   if (!token) return null;
+
+  await ensureAuthSchema();
 
   const tokenHash = hashSessionToken(token);
   const [row] = await getDb()
