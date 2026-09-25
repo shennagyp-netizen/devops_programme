@@ -58,6 +58,6 @@ describe("curriculum/animation dependency boundary", () => {
     );
 
     expect(content).toContain("bindingId: string");
-    expect(content).toContain("type: "interactive-illustration"");
+    expect(content).toContain('type: "interactive-illustration"');
   });
 });
