@@ -59,6 +59,38 @@ describe("lesson illustration teaching model", () => {
 
 
 
+  it("models queue work as producer, queued state, consumer and outcome", () => {
+    const model = getLessonIllustrationModel({
+      id: "b3-1-queue",
+      type: "illustration",
+      heading: "Where the work is now",
+      alt: "Work moves from a producer into a queue, through a consumer, and into an outcome while queue depth and duplicate delivery remain visible",
+      bindingId: "B3.1:b3-1-queue",
+      nodes: ["Producer", "Queue", "Consumer", "Outcome"],
+      variant: "queue-state-v1"
+    });
+
+    expect(model.variant).toBe("queue-state-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "producer",
+      "queue",
+      "consumer",
+      "outcome"
+    ]);
+    expect(model.foundation.label).toBe("Backpressure");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "retry",
+      "idempotency",
+      "dead-letter"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "arrival-rate",
+      "queue-depth",
+      "consumer-throughput",
+      "duplicate-safety"
+    ]);
+  });
+
   it("models recovery as backup, restore, compatibility and proven service recovery", () => {
     const model = getLessonIllustrationModel({
       id: "b2-3-recovery",
