@@ -2,6 +2,7 @@ import {
   ANIMATION_CONTRACT_VERSION,
   type AnimationDefinitionV1,
   type AnimationEventV1,
+  type AnimationValidationResultV1,
   type AnimationPrimitiveV1,
   type AnimationStatusV1,
   resolveAnimationCustomization,
@@ -14,11 +15,6 @@ export type AnimationTimedCueV1 = {
   endMs?: number;
   offsetMs?: number;
   eventIds: string[];
-};
-
-export type AnimationValidationResultV1 = {
-  valid: boolean;
-  failures: string[];
 };
 
 export type AnimationTargetProjectionV1 = {
@@ -155,13 +151,18 @@ export function validateAnimationTimedCueSchedule(
       cueIds.add(voiceCueId);
     }
 
-    if (!isFiniteNumber(cue.startMs) || cue.startMs < 0) {
+    const startMs = cue.startMs;
+    const validStartMs = isFiniteNumber(startMs);
+
+    if (!validStartMs || startMs < 0) {
       failures.push(`voice cue ${String(voiceCueId)} startMs is invalid`);
     }
 
     if (
       cue.endMs !== undefined &&
-      (!isFiniteNumber(cue.endMs) || cue.endMs < cue.startMs)
+      (!isFiniteNumber(cue.endMs) ||
+        !validStartMs ||
+        cue.endMs < startMs)
     ) {
       failures.push(`voice cue ${String(voiceCueId)} endMs is invalid`);
     }
