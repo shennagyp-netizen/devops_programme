@@ -879,7 +879,6 @@ const KUBERNETES_HEALTH_SCALING_VARIANT: LessonIllustrationModelV1 = {
 };
 
 
-// Gold-standard D3.5 failure-loop semantic model.
 const KUBERNETES_FAILURE_LOOP_VARIANT: LessonIllustrationModelV1 = {
   version: 1,
   variant: "kubernetes-failure-loop-v1",
@@ -894,7 +893,7 @@ const KUBERNETES_FAILURE_LOOP_VARIANT: LessonIllustrationModelV1 = {
   foundation: {
     label: "One controlled change keeps the evidence interpretable",
     detail: "Failure drills are useful only when the baseline is known, the changed boundary is isolated and recovery is proven against the original behavior."
-  ],
+  },
   callouts: [
     { id: "crash-loop", label: "CrashLoopBackOff", detail: "Repeated container restarts with increasing backoff; the status identifies behavior, not root cause." },
     { id: "image-pull", label: "ImagePullBackOff", detail: "The workload cannot successfully obtain or prepare the referenced image; inspect image reference, registry access, credentials and events." },
