@@ -49,7 +49,9 @@ export type LessonIllustrationVariantV1 =
   | "capacity-system-v1"
   | "queue-backpressure-v1"
   | "replication-tradeoff-v1"
-  | "failure-domain-ladder-v1";
+  | "failure-domain-ladder-v1"
+  | "global-traffic-v1"
+  | "data-locality-v1";
 
 export type LessonContentBlock =
   | {
@@ -102,6 +104,55 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "A1.5": {
+    version: 1,
+    blocks: [
+      {
+        id: "a1-5-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Global traffic routing is a capacity and failure-domain problem. A second region only helps if routing can detect the failure and the surviving region has the data, dependencies and capacity needed to serve the added load."
+      },
+      {
+        id: "a1-5-global-traffic",
+        type: "illustration",
+        heading: "The global traffic system",
+        alt: "Users are routed to regions with health and capacity constraints, and failover depends on survivor capacity and routing evidence",
+        bindingId: "A1.5:a1-5-global-traffic",
+        nodes: ["Users", "Routing", "Regions", "Capacity", "Failover"],
+        variant: "global-traffic-v1",
+        caption:
+          "Separate route choice, regional health, survivor capacity and actual failover proof."
+      }
+    ]
+  },
+
+  "A1.6": {
+    version: 1,
+    blocks: [
+      {
+        id: "a1-6-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Data locality trades network distance against replication and consistency complexity. Moving data closer can reduce latency while changing freshness, write coordination and failure behavior."
+      },
+      {
+        id: "a1-6-data-locality",
+        type: "illustration",
+        heading: "The data-locality trade-off",
+        alt: "A user accesses data across regional boundaries where distance changes latency, cross-region cost and consistency behavior",
+        bindingId: "A1.6:a1-6-data-locality",
+        nodes: ["User", "Region", "Data", "Latency", "Consistency"],
+        variant: "data-locality-v1",
+        caption:
+          "Trace the data path before choosing where state should live."
+      }
+    ]
+  },
+
+
   "A1.1": {
     version: 1,
     blocks: [
@@ -1246,6 +1297,8 @@ export function validateLessonContent(
         block.variant !== "queue-backpressure-v1" &&
         block.variant !== "replication-tradeoff-v1" &&
         block.variant !== "failure-domain-ladder-v1" &&
+        block.variant !== "global-traffic-v1" &&
+        block.variant !== "data-locality-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
