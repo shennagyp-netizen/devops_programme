@@ -2012,5 +2012,13 @@ Merged PR #69:
 - D4.5 now treats plan as a safety checkpoint, state locking as a coordination boundary, destroy as a high-impact lifecycle operation, and post-apply observation as required proof.
 - Next content boundary: **D4.6 — Cloud Primitives**.
 
+
+Merged PR #70:
+- D4.6 -> `cloud-primitives-v1`: Workload -> Compute -> Network -> State -> Identity -> Data Services.
+- Merge commit: `404638fd337cefd6de3e48d390f9d6fd47bedd84`.
+- GitHub Actions run **36153116757** passed successfully.
+- D4.6 is provider-neutral and teaches managed services, dependency graphs, identity, durable state and cost as architecture boundaries.
+- Next content boundary: **D5.1 — Scaling**.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
