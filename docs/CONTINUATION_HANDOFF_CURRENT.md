@@ -255,9 +255,13 @@ Tests:
 - Red-team content tests extend that baseline with security and malformed-input boundaries.
 
 Validation state:
-- The expanded feature-focused suite now contains 95 unit/integration tests across the affected lesson-content, podcast, feed, panel and continuous-voice contracts.
-- CI is executing the current branch head; no green result is claimed until the complete programme gate finishes.
+- The canonical programme gate completed green on current branch head `10e8efc572465c7f4feb4d68e184a7d6f3db7d00`.
+- The full unit/integration suite completed green with 209 tests across 26 test files.
+- Content, assessment, diagnostics, project, platform, hands-on, beginner/intermediate/advanced/programme completeness, runtime verification and authenticated progress architecture contracts all completed green.
+- TypeScript typecheck and the Next.js production build completed green.
+- The assessment bank contract now accepts the authored diagnostic response shape where `itemType` is a string or non-empty string array and `expectedElements` is a positive count or string list; this matches the existing authored pilot banks and is explicitly validated.
 - The project contract checker was corrected to inspect intermediate project mappings in `courseLessons.ts`; the hands-on contract checker was corrected so its JavaScript template literals parse correctly.
+- Live browser/visual verification is not yet validated because the connected Vercel account exposes no project/team deployment access in this session. No preview browser result is claimed.
 
 ============================================================
 5. PROJECT CONTRACT
