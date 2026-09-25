@@ -1980,5 +1980,14 @@ Active PR #67 scope:
 - TDD/full-programme gate is required before merge.
 
 
+
+Active PR #68 scope:
+- D4.4 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `iac-control-loop-v1`.
+- Teaching model: Intent -> Plan -> Apply -> State -> Drift.
+- The rewritten script separates declared intent, proposed plan, provider reality, state coordination and drift detection.
+- Controlled lab changes one declared property and, where safe, one external property, then uses plan evidence to detect and recover the drift.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
