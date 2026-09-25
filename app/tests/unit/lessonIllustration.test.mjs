@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models Git production workflow as change, review, commit, release and recovery", () => {
+    const model = getLessonIllustrationModel({
+      id: "d4-1-git-workflow",
+      type: "illustration",
+      heading: "The Git production workflow",
+      alt: "A production change is isolated, reviewed, committed with identity, released with a stable version, and recoverable to a known-good state",
+      bindingId: "D4.1:d4-1-git-workflow",
+      nodes: ["Change", "Review", "Commit", "Release", "Recovery"],
+      variant: "git-production-workflow-v1"
+    });
+
+    expect(model.variant).toBe("git-production-workflow-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "change",
+      "review",
+      "commit",
+      "release",
+      "recovery"
+    ]);
+    expect(model.foundation.label).toBe("Source identity is part of production evidence");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "branch",
+      "diff",
+      "commit-id",
+      "release-id"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "change-scope",
+      "review-scope",
+      "release-identity",
+      "recovery-path"
+    ]);
+  });
+
   it("models Kubernetes health and scaling as startup, readiness, liveness, capacity and rollout", () => {
     const model = getLessonIllustrationModel({
       id: "d3-4-kubernetes-health-scaling",
