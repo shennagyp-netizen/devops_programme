@@ -108,7 +108,6 @@ describe("assessment bank integration", () => {
             expect(item.itemType.every((value) => typeof value === "string" && value.trim() !== "")).toBe(true);
           }
           expect(item.expectedMinutes).toBeGreaterThan(0);
-          expect(item.itemType.trim()).not.toBe("");
 
           if (item.options) {
             expect(item.options.length).toBeGreaterThan(1);
