@@ -1470,6 +1470,27 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "reliability-patterns-v1") {
+    return {
+      ...RELIABILITY_PATTERNS_VARIANT,
+      title: block.heading
+    };
+  }
+
+  if (block.variant === "observability-control-v1") {
+    return {
+      ...OBSERVABILITY_CONTROL_VARIANT,
+      title: block.heading
+    };
+  }
+
+  if (block.variant === "disaster-recovery-system-v1") {
+    return {
+      ...DISASTER_RECOVERY_SYSTEM_VARIANT,
+      title: block.heading
+    };
+  }
+
   if (block.variant === "ci-cd-pipeline-v1") {
     return {
       ...CI_CD_PIPELINE_VARIANT,
