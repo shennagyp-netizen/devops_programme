@@ -4,7 +4,12 @@ import { requireCurrentUser } from "../../lib/server/auth";
 import { listCompletionHistoryForUser } from "../../lib/server/progress";
 
 export default async function LearnPage() {
-  const user = await requireCurrentUser().catch(() => null);
+  const user = await requireCurrentUser().catch((error) => {
+    if (error instanceof Error && error.message === "Authentication required.") {
+      return null;
+    }
+    throw error;
+  });
 
   if (!user) {
     redirect("/sign-in");
@@ -14,7 +19,7 @@ export default async function LearnPage() {
 
   return (
     <App
-      currentUser={user}
+      currentUser={{ email: user.email }}
       initialCompletionHistory={completionHistory}
     />
   );
