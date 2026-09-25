@@ -1995,5 +1995,13 @@ Merged PR #94:
 - The script now attaches an explicit evidence question to each primitive and keeps provider names secondary to the engineering concept.
 - Fresh Vercel validation for PR #94 was blocked by the same build-rate-limit infrastructure status; this remains infrastructure-blocked, not a claimed green build.
 
+
+Active PR #95 scope:
+- D5.2 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `database-scaling-v1`.
+- Teaching model: Workload -> Query -> Index -> Copies -> Partitions -> Evidence.
+- The old ~360-word concept note has been replaced with a full mechanism-first lesson covering query plans, index trade-offs, replication lag/consistency, partition keys, cross-partition work, controlled experiments, recall and transfer.
+- Fresh Vercel validation may be blocked by the current build-rate-limit infrastructure condition.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
