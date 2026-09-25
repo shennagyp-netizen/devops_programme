@@ -1684,6 +1684,8 @@ Speaker A: They are separate boundaries that meet in the same system.
 
 Speaker B: Run the stack, break one boundary at a time, and prove recovery.
 
+
+
 EPISODE D2.7 — Break Docker
 
 Speaker A: You now know how containers run, how they communicate, and how their data can persist.
