@@ -203,6 +203,32 @@ Every hands-on lesson should make clear:
 - how to recover
 - what proves recovery.
 
+## 4.2 CONTINUOUS CO-TEACHER VOICE — CURRENT
+
+The spoken layer is now explicitly a continuous co-teacher attached to the active lesson.
+
+Current UI contract:
+- there is no separate top-level Listen/co-teacher lesson mode
+- `PodcastCoach` remains mounted while the learner switches between Learn, Do, Recall, Design and Assessment
+- the voice/transcript control is a persistent lesson layer
+- real aligned audio drives transcript position and authored prediction/lab/recall pauses
+- authored learner-action cues pause speech deliberately; they do not terminate the lesson voice session
+- the learner can resume the same voice session after completing the relevant action
+- the learner may explicitly pause or seek
+- browser autoplay restrictions may require one initial user gesture
+- changing lesson resets the voice session for the new lesson.
+
+This is different from the old implementation, where the co-teacher appeared only under a separate `listen` mode and its flow stopped at the lab. That old interaction is superseded.
+
+Video/content-feed rule:
+- video is a content block inside the ordered lesson feed
+- video does not own the learner's voice session
+- the continuous co-teacher remains the primary spoken companion while the learner reads, watches or operates
+- authored video may have its own cues, but it must not create a second competing spoken-session architecture.
+
+TDD coverage:
+- `app/tests/integration/lesson-voice-continuity.integration.test.mjs` rejects the separate listen mode and verifies the persistent co-teacher source contract.
+
 ## 4.1 ORDERED LESSON CONTENT STREAM
 
 The lesson presentation now supports an ordered content stream.
