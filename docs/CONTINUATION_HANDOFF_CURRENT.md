@@ -2044,5 +2044,14 @@ Active PR #56 scope:
 - Spoken script explicitly covers indexes, transactions/concurrency, replication freshness, partitioning/sharding and their trade-offs.
 - TDD/full-programme gate is required before merge.
 
+
+Active PR #57 scope:
+- D5.3 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `distributed-failure-v1`.
+- Teaching model: Request -> Observation -> Replica State -> Agreement -> User Outcome.
+- The rewritten script teaches partial failure, timeout uncertainty, replica lag, consistency, quorum and idempotent retries through a state/evidence model.
+- The lab records what each service knows at each step before and after a controlled delay or lost response.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
