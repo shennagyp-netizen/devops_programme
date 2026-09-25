@@ -34,7 +34,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-networking-v1"
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
-  | "kubernetes-failure-loop-v1";
+  | "kubernetes-failure-loop-v1"
+  | "git-production-workflow-v1";
 
 export type LessonContentBlock =
   | {
@@ -87,6 +88,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D4.1": {
+    version: 1,
+    blocks: [
+      {
+        id: "d4-1-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Git becomes a production control layer when a change has a known starting point, review evidence, durable commit identity, release identity and a recoverable path."
+      },
+      {
+        id: "d4-1-git-workflow",
+        type: "illustration",
+        heading: "The Git production workflow",
+        alt: "A change moves from working tree to staged state, commit, review and merged release identity with evidence at each boundary",
+        bindingId: "D4.1:d4-1-git-workflow",
+        nodes: ["Working tree", "Staged", "Commit", "Review", "Release"],
+        variant: "git-production-workflow-v1",
+        caption:
+          "Trace one production change from local edit to a recoverable release identity."
+      }
+    ]
+  },
+
+
   "D3.5": {
     version: 1,
     blocks: [
