@@ -4,6 +4,8 @@ import type {
 } from "../animations/contracts";
 
 export const ILLUSTRATION_BINDING_CONTRACT_VERSION = 1 as const;
+export const STATIC_ILLUSTRATION_CAPABILITY_V1 = "semantic-flow-v1";
+export const ANIMATED_ILLUSTRATION_CAPABILITY_V1 = "animation-stage-v1";
 
 export type IllustrationBindingPresentationV1 = "static" | "animated";
 export type IllustrationInteractionModeV1 = "sequential" | "free";
@@ -228,6 +230,10 @@ function validateInteractionSteps(
       );
     }
 
+    const declaredInteraction = isNonEmptyString(rawStep.interactionId)
+      ? interactions.get(rawStep.interactionId)
+      : undefined;
+
     if (!isNonEmptyString(rawStep.prompt)) {
       failures.push(
         `interaction step ${String(rawStep.id)} prompt is required`
@@ -243,6 +249,15 @@ function validateInteractionSteps(
         if (!eventIds.has(eventId)) {
           failures.push(
             `success event does not exist: ${String(eventId)}`
+          );
+        } else if (
+          declaredInteraction &&
+          !declaredInteraction.eventIds.includes(eventId)
+        ) {
+          failures.push(
+            `success event is not declared by interaction ${String(
+              rawStep.interactionId
+            )}: ${eventId}`
           );
         }
       }
@@ -292,7 +307,7 @@ export function buildDefaultIllustrationBinding(
     contentBlockId: block.id,
     contentIndex,
     presentation: "static",
-    visualCapabilityId: "semantic-flow-v1",
+    visualCapabilityId: STATIC_ILLUSTRATION_CAPABILITY_V1,
     voiceCueBindings: [],
     interactionSteps: []
   };
@@ -379,6 +394,20 @@ export function validateCurriculumIllustrationBinding(
     failures.push("visualCapabilityId is required");
   }
 
+  if (
+    value.presentation === "static" &&
+    value.visualCapabilityId !== STATIC_ILLUSTRATION_CAPABILITY_V1
+  ) {
+    failures.push("static illustration visual capability is invalid");
+  }
+
+  if (
+    value.presentation === "animated" &&
+    value.visualCapabilityId !== ANIMATED_ILLUSTRATION_CAPABILITY_V1
+  ) {
+    failures.push("animated illustration visual capability is invalid");
+  }
+
   let definition: AnimationDefinitionV1 | undefined;
 
   if (value.presentation === "animated") {
@@ -462,10 +491,17 @@ export function validateLessonIllustrationBindings(
 } {
   const failures: string[] = [];
   const bindings: CurriculumIllustrationBindingV1[] = [];
-  const authoredBindings = new Map(
-    (options.bindings ?? []).map((binding) => [binding.id, binding])
-  );
+  const authoredBindings = new Map<string, CurriculumIllustrationBindingV1>();
+  const usedBindingIds = new Set<string>();
   const animationDefinitions = options.animationDefinitions ?? [];
+
+  for (const binding of options.bindings ?? []) {
+    if (authoredBindings.has(binding.id)) {
+      failures.push(`duplicate authored illustration binding: ${binding.id}`);
+    } else {
+      authoredBindings.set(binding.id, binding);
+    }
+  }
 
   for (const lesson of lessons) {
     const blocks = lesson.content.blocks;
@@ -492,6 +528,7 @@ export function validateLessonIllustrationBindings(
       );
       const binding =
         authoredBindings.get(block.bindingId) ?? canonicalBinding;
+      usedBindingIds.add(binding.id);
 
       if (block.bindingId !== binding.id) {
         failures.push(
@@ -513,6 +550,14 @@ export function validateLessonIllustrationBindings(
       failures.push(...result.failures.map((failure) => `${lesson.id}:${block.id}: ${failure}`));
       bindings.push(binding);
     });
+  }
+
+  for (const binding of authoredBindings.values()) {
+    if (!usedBindingIds.has(binding.id)) {
+      failures.push(
+        `orphan authored illustration binding: ${binding.id}`
+      );
+    }
   }
 
   return {
