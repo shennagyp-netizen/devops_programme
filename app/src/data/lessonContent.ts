@@ -7,7 +7,9 @@ export type LessonVideoCue = {
 
 export type LessonIllustrationVariantV1 =
   | "causal-flow-v1"
-  | "container-boundary-v1";
+  | "container-boundary-v1"
+  | "request-path-v1"
+  | "https-stack-v1";
 
 export type LessonContentBlock =
   | {
@@ -98,7 +100,7 @@ const authoredLessonContent: Record<string, LessonContent> = {
         type: "illustration",
         heading: "One HTTPS request",
         alt: "DNS, routing, transport, TLS and HTTP cooperate to produce an HTTPS response",
-        bindingId: "B1.3:request-stack",
+        bindingId: "B1.3:b1-3-request-stack",
         nodes: ["DNS", "Route", "Transport", "TLS", "HTTP"],
         variant: "https-stack-v1",
         caption:
@@ -207,7 +209,9 @@ export function validateLessonContent(
       if (
         block.variant !== undefined &&
         block.variant !== "causal-flow-v1" &&
-        block.variant !== "container-boundary-v1"
+        block.variant !== "container-boundary-v1" &&
+        block.variant !== "request-path-v1" &&
+        block.variant !== "https-stack-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }
