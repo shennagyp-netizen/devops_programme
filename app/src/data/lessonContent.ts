@@ -152,7 +152,7 @@ export function validateLessonContent(
     }
 
     if (block.type !== "video") {
-      failures.push(`unsupported content block type: ${String(block.type)}`);
+      failures.push(`unsupported content block type: ${String((block as { type?: unknown }).type)}`);
       continue;
     }
 
