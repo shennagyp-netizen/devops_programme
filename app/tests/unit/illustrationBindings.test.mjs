@@ -68,7 +68,9 @@ describe("curriculum illustration binding v1", () => {
     binding.contentIndex = 2;
 
     const result = validateCurriculumIllustrationBinding(binding, staticBlock, {
-      animationDefinitions: []
+      animationDefinitions: [],
+      expectedLessonId: "B1.1",
+      expectedContentIndex: 1
     });
 
     expect(result.valid).toBe(false);
