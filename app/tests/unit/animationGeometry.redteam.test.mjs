@@ -371,12 +371,23 @@ describe("animation geometry red team", () => {
 
   it("rejects packet routes whose endpoints are not nodes", () => {
     const definition = baseDefinition();
-    definition.primitives.push({
-      kind: "packet",
-      id: "invalid-packet-endpoint",
-      from: "a",
-      to: "missing"
-    });
+    definition.primitives.push(
+      {
+        kind: "label",
+        id: "packet-label-endpoint",
+        text: "Not a node",
+        x: 320,
+        y: 80,
+        width: 120,
+        height: 40
+      },
+      {
+        kind: "packet",
+        id: "invalid-packet-endpoint",
+        from: "a",
+        to: "packet-label-endpoint"
+      }
+    );
 
     const failures = validateAnimationDefinition(definition).failures.join(" ");
     expect(failures).toContain("endpoint must reference a node");
