@@ -1,5 +1,6 @@
 import { difficultyLabel, getSectionAssessments } from "../data/assessment";
 import type { CourseLevel } from "../data/programme";
+import { AssessmentPracticePanel } from "./AssessmentPracticePanel";
 
 const labels = {
   conceptual: "Conceptual",
@@ -57,9 +58,17 @@ export function AssessmentPanel({
 
           <p className="range">
             {assessment.status === "pilot"
-              ? "A pilot item bank exists for this section. These forms are for architecture and item-writing validation, not operational certification."
+              ? "A pilot item bank exists for this section. Practice is interactive, adaptive and mastery-oriented; it is not an operational certification exam."
               : "The item bank for this section is still being authored. These values are the target form mix, not a score."}
           </p>
+
+          {assessment.status === "pilot" ? (
+            <AssessmentPracticePanel
+              courseId={courseId}
+              sectionId={sectionId}
+              family={assessment.family}
+            />
+          ) : null}
         </div>
       ))}
     </div>
