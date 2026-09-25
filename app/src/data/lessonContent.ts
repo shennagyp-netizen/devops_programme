@@ -88,6 +88,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D4.6": {
+    version: 1,
+    blocks: [
+      {
+        id: "d4-6-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Cloud products become easier to reason about when provider names are reduced to engineering primitives: workload, compute, network, durable state, identity and data services."
+      },
+      {
+        id: "d4-6-cloud-primitives",
+        type: "illustration",
+        heading: "The cloud primitive map",
+        alt: "A workload depends on compute capacity, network paths, durable state, identity controls and data services",
+        bindingId: "D4.6:d4-6-cloud-primitives",
+        nodes: ["Workload", "Compute", "Network", "State", "Identity", "Data Services"],
+        variant: "cloud-primitives-v1",
+        caption:
+          "Choose the engineering primitive first; map it to a provider product only after the mechanism is clear."
+      }
+    ]
+  },
+
+
   "D4.1": {
     version: 1,
     blocks: [
@@ -895,6 +920,7 @@ export function validateLessonContent(
         block.variant !== "docker-network-storage-v1" &&
         block.variant !== "kubernetes-reconciliation-v1" &&
         block.variant !== "docker-failure-loop-v1" &&
+        block.variant !== "cloud-primitives-v1" &&
         block.variant !== "kubernetes-service-path-v1" &&
         block.variant !== "kubernetes-config-storage-v1" &&
         block.variant !== "kubernetes-health-scaling-v1" &&
