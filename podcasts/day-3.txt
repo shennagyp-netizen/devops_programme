@@ -252,203 +252,157 @@ Speaker B: Run the lab, delete one pod, watch the replacement, then make one dis
 
 EPISODE D3.2 — Kubernetes Networking
 
-Speaker A: We have a Kubernetes controller keeping workloads alive.
+Speaker A: Yesterday we saw that Pods are replaceable.
 
-Speaker B: Now the next question is: how does traffic find the right workload when Pods can disappear and return with new IP addresses?
+Speaker B: Which means clients should not depend on a Pod IP staying alive.
 
-Speaker A: Exactly. The visual for today is:
+Speaker A: Exactly. Today the stable abstraction is the Service.
 
-Speaker B: Service -> Selector -> Endpoint set -> Pod -> Evidence.
+Speaker B: The picture is:
 
-Speaker A: Five boundaries. Each answers a different question.
+Speaker A: Service -> Selector -> Endpoints -> Pod -> Path.
 
-Speaker B: Start with the Service.
+Speaker B: So the Service is the stable front door.
 
-Speaker A: A Service gives callers a stable identity while the backend Pods can change.
+Speaker A: Yes.
 
-Speaker B: So the client should not need the current Pod IP.
+Speaker B: Stage one: Service.
 
-Speaker A: Exactly.
+Speaker A: A Service gives clients a stable destination while the Pods behind it can change.
 
-Speaker B: That is the main abstraction.
+Speaker B: So the client does not need to know which Pod currently serves the request.
 
-Speaker A: Make a prediction.
-
-Speaker A: One Pod is deleted. Should a client that uses the Service normally need to learn the new Pod IP?
-
-Speaker B: No. The Service abstraction should keep the caller on the stable path while Kubernetes updates the available endpoint set.
-
-Speaker A: Good.
+Speaker A: Correct.
 
 Speaker B: Stage two: selector.
 
-Speaker A: The Service needs a rule that says which Pods belong to its backend set.
+Speaker A: A Service needs a way to decide which Pods belong to its backend set.
 
 Speaker B: Labels and selectors.
 
 Speaker A: Exactly.
 
-Speaker B: So a Service can exist while matching zero Pods.
+Speaker B: If the selector is wrong, the Service can exist while having no useful backends.
 
-Speaker A: Yes. That is an important failure state.
+Speaker A: Good.
 
-Speaker B: The Service name can resolve correctly and still have no usable backends.
+Speaker B: Stage three: endpoints.
+
+Speaker A: The endpoint set represents the backend addresses available for the Service to use.
+
+Speaker B: So the endpoint set is a view of the current backend state.
+
+Speaker A: Right.
+
+Speaker B: A Pod can be Running and still not be a good endpoint if it is not ready.
+
+Speaker A: Correct.
+
+Speaker B: That connects to the health lesson later.
+
+Speaker A: Exactly.
+
+Speaker B: Stage four: Pod.
+
+Speaker A: Pods are replaceable workload instances.
+
+Speaker B: Which is why Service identity must not depend on one Pod IP.
 
 Speaker A: Exactly.
 
 Speaker B: Prediction.
 
-Speaker A: The Service is healthy, DNS resolves, but there are no endpoints.
+Speaker A: One Pod behind a Service dies. Should a client using the Service need to change its destination?
 
-Speaker B: I inspect the selector and the labels on the Pods before blaming the network path.
-
-Speaker A: Good.
-
-Speaker B: If the selector is wrong, the abstraction is correct but the backend set is empty.
-
-Speaker A: Precisely.
-
-Speaker B: Stage three: endpoint set.
-
-Speaker A: Kubernetes maintains information about which Pod endpoints currently back the Service path.
-
-Speaker B: So this is where the changing Pod set becomes concrete.
-
-Speaker A: Exactly.
-
-Speaker B: If a Pod is not ready, it may be excluded from normal ready traffic.
-
-Speaker A: Right. The exact behavior depends on the controller and Service implementation, but the operational model is that traffic-ready endpoints are not simply every Pod object that happens to exist.
-
-Speaker B: So running is not the same as ready for Service traffic.
-
-Speaker A: Exactly.
-
-Speaker B: That sounds like the liveness versus readiness lesson.
-
-Speaker A: It is the networking consequence of that distinction.
-
-Speaker B: A Pod can exist, the process can be running, and the Service can still have a smaller endpoint set.
+Speaker B: Ideally no. The Service name stays stable while the endpoint set changes and a replacement Pod becomes available.
 
 Speaker A: Good.
 
-Speaker B: Stage four: Pod.
+Speaker B: But if no healthy endpoints remain?
 
-Speaker A: Eventually the request must reach a concrete Pod endpoint.
+Speaker A: Then the failure becomes visible at the Service path.
 
-Speaker B: The Pod owns the process and its network namespace.
+Speaker B: So we inspect the endpoint set instead of just saying 'networking is broken.'
 
-Speaker A: Yes.
-
-Speaker B: But the caller should not have to manage the Pod lifecycle.
-
-Speaker A: Correct. That is exactly what the Service abstraction is trying to hide.
+Speaker A: Exactly.
 
 Speaker B: Real-life analogy?
 
-Speaker A: Think of a hospital department.
+Speaker A: A hospital visitor knows the department, not the exact bed where a doctor is sitting today.
 
-Speaker B: A visitor asks for cardiology.
+Speaker B: Reception routes them to the department.
 
-Speaker A: The visitor does not need today's room number for the doctor.
+Speaker A: Yes. The visitor-facing identity stays stable while the internal assignment changes.
 
-Speaker B: Reception routes them to the current available room.
+Speaker B: So Service is like the stable department name.
 
-Speaker A: Exactly. The department identity is stable; the assignment changes.
-
-Speaker B: Now the evidence stage.
-
-Speaker A: When traffic fails, do not jump straight to the Pod.
-
-Speaker B: First Service lookup.
-
-Speaker A: Good.
-
-Speaker B: Then selector match.
-
-Speaker A: Good.
-
-Speaker B: Then endpoint membership.
-
-Speaker A: Good.
-
-Speaker B: Then real traffic to the backend.
-
-Speaker A: Exactly.
-
-Speaker B: That is the diagnostic sequence.
-
-Speaker A: It keeps the abstractions separate.
-
-Speaker B: Failure one: the Service name does not resolve.
-
-Speaker A: Start with DNS and Service identity.
-
-Speaker B: Failure two: Service resolves but has no endpoints.
-
-Speaker A: Check selector and Pod labels.
-
-Speaker B: Failure three: endpoint set contains no ready Pod.
-
-Speaker A: Inspect Pod readiness, startup and the conditions that remove it from the ready path.
-
-Speaker B: Failure four: endpoints exist but requests still fail.
-
-Speaker A: Now inspect the Pod process, container port, network policy, application listener and the actual request path.
-
-Speaker B: So the endpoint list narrows the problem, but it does not prove the application is healthy.
-
-Speaker A: Exactly.
+Speaker A: Roughly. The mechanisms are different, but the abstraction is useful.
 
 Speaker B: Prediction pause.
 
-Speaker A: A Service has two endpoints. We delete one Pod.
+Speaker A: DNS for the Service name works, but the client still gets no useful response.
 
-Speaker B: The endpoint set should shrink and then recover when the replacement Pod becomes ready.
+Speaker B: I inspect the Service selector and endpoint set next.
 
 Speaker A: Good.
 
-Speaker B: Another one.
+Speaker B: Why not inspect the Pod IP first?
 
-Speaker A: We change the Service selector so it matches no Pods. What do we predict?
+Speaker A: Because the abstraction says the Service should choose available backends for you. A Pod IP is lower-level evidence.
 
-Speaker B: The Service identity may still resolve, but the backend endpoint set should become empty.
+Speaker B: Good.
+
+Speaker A: Now another failure.
+
+Speaker B: The Service selector is `app=api`, but the Pods are labeled `app=web`.
+
+Speaker A: Prediction?
+
+Speaker B: The Service exists, but the selector may match no Pods, so the endpoint set is empty.
 
 Speaker A: Exactly.
 
-Speaker B: Another.
+Speaker B: Another failure.
 
-Speaker A: The Pod is running but readiness fails.
+Speaker A: The selector is correct, but the endpoint disappears when the Pod stops.
 
-Speaker B: The Pod can exist while being removed from the ready traffic path.
-
-Speaker A: Good.
-
-Speaker B: That is the visible connection between health and networking.
+Speaker B: That is expected. The endpoint set should change with the Pod lifecycle.
 
 Speaker A: Exactly.
 
-Speaker B: Now a subtle boundary.
+Speaker B: So endpoint churn is not automatically a bug.
 
-Speaker A: A Service and an Ingress are not the same abstraction.
+Speaker A: Right. The question is whether the replacement path restores a healthy backend.
 
-Speaker B: Service gives a stable in-cluster service path.
+Speaker B: Now the external path.
 
-Speaker A: And Ingress or another gateway layer can expose and route external HTTP traffic according to another set of rules.
+Speaker A: An external load balancer or ingress may sit above the Service.
 
-Speaker B: So if external traffic fails, I should not immediately blame the Service.
+Speaker B: So the complete request can have several stable and dynamic layers.
 
-Speaker A: Correct. Start at the layer where the evidence says the request stopped.
+Speaker A: Exactly.
 
-Speaker B: Mac lab?
+Speaker B: External name.
 
-Speaker A: Deploy two Pods with a label set.
+Speaker A: Load balancer or ingress.
 
-Speaker B: Create a Service with a selector matching those labels.
+Speaker B: Service.
+
+Speaker A: Endpoint set.
+
+Speaker B: Pod.
 
 Speaker A: Good.
 
-Speaker B: Verify the Service name resolves.
+Speaker B: Controlled failure?
+
+Speaker A: Deploy two simple Pods with the same label.
+
+Speaker B: Expose them with a Service.
+
+Speaker A: Good.
+
+Speaker B: Prove the client can reach the Service.
 
 Speaker A: Good.
 
@@ -456,988 +410,242 @@ Speaker B: Inspect the endpoint set.
 
 Speaker A: Good.
 
-Speaker B: Send a real request through the Service.
-
-Speaker A: Good.
-
 Speaker B: Delete one Pod.
 
-Speaker A: Observe the endpoint set change.
+Speaker A: Predict what should happen.
 
-Speaker B: Wait for the replacement to become ready.
-
-Speaker A: Verify the Service still works.
-
-Speaker B: Then deliberately change the selector so it matches nothing.
-
-Speaker A: Predict the result before observing it.
-
-Speaker B: Observe the empty endpoint set.
-
-Speaker A: Restore the selector and prove the request path recovers.
-
-Speaker B: That is much stronger than memorizing Service YAML.
+Speaker B: The endpoint set shrinks, then the replacement Pod appears and the endpoint set returns to the expected healthy size.
 
 Speaker A: Exactly.
 
-Speaker B: What should the lab record contain?
-
-Speaker A: Service name. Selector. Pod labels. Endpoint set before and after. Pod readiness. Real request result. Recovery evidence.
-
-Speaker B: So the whole network model can be written as one path.
-
-Speaker A: Yes.
-
-Speaker B: Service -> Selector -> Endpoint set -> Pod -> Evidence.
-
-Speaker A: Exactly.
-
-Speaker B: Recall.
-
-Speaker A: What problem does a Service solve?
-
-Speaker B: It gives a stable network identity over a changing set of backend Pods.
-
-Speaker A: What does the selector do?
-
-Speaker B: It determines which Pods are candidates for the Service backend set.
-
-Speaker A: What does the endpoint set tell you?
-
-Speaker B: Which backend endpoints Kubernetes currently considers available for the Service path.
-
-Speaker A: Why can a running Pod still fail to receive Service traffic?
-
-Speaker B: It may not be ready, or it may not match the Service selector, or another network condition may exclude it.
-
-Speaker A: Final challenge.
-
-Speaker B: The Service name resolves, but users get no response.
-
-Speaker A: Your model?
-
-Speaker B: Service -> Selector -> Endpoint set -> Pod -> Evidence. I check the Service identity, selector match, endpoint membership and Pod readiness before moving into the application process or lower network layers.
-
-Speaker A: Good.
-
-Speaker B: And after deleting a Pod?
-
-Speaker A: What proves recovery?
-
-Speaker B: The replacement becomes ready, the endpoint set returns to the expected state, and the real request succeeds again.
-
-Speaker A: Exactly.
-
-Speaker B: Kubernetes networking is not a Service object.
-
-Speaker A: It is the relationship among stable identity, selection, endpoint state and Pod lifecycle.
-
-Speaker B: Run the lab, break one boundary, and prove the Service path converges again.
-
-EPISODE D3.3 — Kubernetes Configuration and Storage
-
-Speaker A: We have a Service path now.
-
-Speaker B: Next comes a common operational mistake: putting everything inside the image or inside the Pod.
-
-Speaker A: Exactly.
-
-Speaker B: The picture is:
-
-Speaker A: Config -> Secret -> Mount -> Pod -> Persistence.
-
-Speaker B: Five boxes again, but this time about state and lifecycle.
-
-Speaker A: Right. Configuration, secrets and persistent data should not be treated as the same thing.
-
-Speaker B: Stage one: Config.
-
-Speaker A: Non-secret configuration can change without rebuilding the application image.
-
-Speaker B: ConfigMap is one Kubernetes mechanism for that.
-
-Speaker A: Yes.
-
-Speaker B: So the image can stay the same while the environment-specific configuration changes.
-
-Speaker A: Exactly.
-
-Speaker B: Prediction.
-
-Speaker A: The same application image runs in two environments, but each environment needs a different API endpoint. Should we build two images?
-
-Speaker B: No. Put the environment-specific endpoint in configuration and provide the correct value at runtime.
-
-Speaker A: Good.
-
-Speaker B: Stage two: Secret.
-
-Speaker A: Secrets need a different operational treatment because they contain sensitive values.
-
-Speaker B: Kubernetes Secret gives us an object and a mechanism for exposing the value.
-
-Speaker A: Correct. But the object type itself does not make the whole secret-handling process secure.
-
-Speaker B: We still need access control.
-
-Speaker A: Yes.
-
-Speaker B: Avoid leaking the value to logs.
-
-Speaker A: Yes.
-
-Speaker B: Protect transport and storage according to the platform's security model.
-
-Speaker A: Exactly.
-
-Speaker B: So a Secret is a boundary, not a magic security guarantee.
-
-Speaker A: Keep that sentence.
-
-Speaker B: Stage three: mount.
-
-Speaker A: Configuration and secrets are useful only when the application can actually consume them.
-
-Speaker B: Environment variable.
-
-Speaker A: One option.
-
-Speaker B: Mounted file.
-
-Speaker A: Another.
-
-Speaker B: The important thing is that the application expects a specific path or key.
-
-Speaker A: Exactly.
-
-Speaker B: Prediction.
-
-Speaker A: The Secret exists and the Pod is running, but the application says a required token is missing.
-
-Speaker B: I check how the Pod exposes the Secret and how the application reads it before recreating the container.
-
-Speaker A: Good.
-
-Speaker B: So object existence is not proof of successful consumption.
-
-Speaker A: Exactly.
-
-Speaker B: Stage four: Pod.
-
-Speaker A: The Pod is where the application process consumes these values.
-
-Speaker B: But the Pod is still replaceable.
-
-Speaker A: Correct.
-
-Speaker B: So we should ask which state belongs to the Pod and which state must outlive it.
-
-Speaker A: Excellent.
-
-Speaker B: That leads to persistence.
-
-Speaker A: Stage five.
-
-Speaker B: A database writes important data.
-
-Speaker A: Where should that data live if the Pod can be replaced?
-
-Speaker B: In persistent storage with a lifecycle independent from one Pod instance.
-
-Speaker A: Exactly.
-
-Speaker B: PersistentVolume and PersistentVolumeClaim are Kubernetes mechanisms around that storage model.
-
-Speaker A: Yes. The exact storage behavior still depends on the storage class and environment.
-
-Speaker B: So persistent does not mean magically indestructible.
-
-Speaker A: Correct. It means the data lifecycle is designed to outlive the workload instance within the intended storage guarantees.
-
-Speaker B: Prediction.
-
-Speaker A: I write a file into the Pod's temporary writable filesystem. I replace the Pod.
-
-Speaker B: I should not assume the file survives.
-
-Speaker A: Good.
-
-Speaker B: If the file is on correctly configured persistent storage, then the replacement can use the same data, subject to attachment and application behavior.
-
-Speaker A: Exactly.
-
-Speaker B: Human example?
-
-Speaker A: A theater production.
-
-Speaker B: Actors change.
-
-Speaker A: The script can stay.
-
-Speaker B: Sensitive backstage notes need restricted handling.
-
-Speaker A: Good.
-
-Speaker B: And the archive is stored somewhere that survives when one actor leaves.
-
-Speaker A: Exactly. The analogy is about lifecycle separation, not literal Kubernetes behavior.
-
-Speaker B: Now make the failure matrix.
-
-Speaker A: Config value is wrong.
-
-Speaker B: Inspect the configuration object and the actual consumed value.
-
-Speaker A: Secret exists but the application cannot see it.
-
-Speaker B: Inspect Secret reference, mount or environment configuration, Pod spec and application expectations.
-
-Speaker A: Secret is present but appears in logs.
-
-Speaker B: That is a handling failure. Fix the logging path and access controls rather than calling the Secret object secure.
-
-Speaker A: Good.
-
-Speaker B: Data disappears after Pod replacement.
-
-Speaker A: Inspect whether the data lived only in the Pod filesystem or was backed by the intended persistent storage.
-
-Speaker B: So all four failures look like 'the app lost state,' but they are different boundaries.
-
-Speaker A: Exactly.
-
-Speaker B: Prediction pause.
-
-Speaker A: ConfigMap value changes but the running application still behaves as before. What do you ask?
-
-Speaker B: Did the application consume the new value yet? Was the Pod restarted or reloaded as required? Which path does the application read?
-
-Speaker A: Good. Configuration lifecycle and application reload behavior are separate questions.
-
-Speaker B: Another.
-
-Speaker A: The database volume exists, but the replacement Pod cannot mount or use it.
-
-Speaker B: Persistent storage exists as an object, but the workload still needs a valid attachment, mount and application-compatible filesystem.
-
-Speaker A: Exactly.
-
-Speaker B: Mac lab?
-
-Speaker A: Put one non-secret setting in a ConfigMap.
-
-Speaker B: Consume it through a clear application path.
-
-Speaker A: Good.
-
-Speaker B: Put one test credential in a Secret.
-
-Speaker A: Consume it without printing the value.
-
-Speaker B: Good.
-
-Speaker A: Write a known record to persistent storage.
-
-Speaker B: Replace the Pod.
-
-Speaker A: Verify which values and data survived.
-
-Speaker B: Then deliberately break one boundary.
-
-Speaker A: Choose one.
-
-Speaker B: Wrong ConfigMap key.
-
-Speaker A: Good.
-
-Speaker B: Or missing Secret reference.
-
-Speaker A: Good.
-
-Speaker B: Or remove the persistent mount from the disposable test workload.
-
-Speaker A: Good.
-
-Speaker B: Predict the symptom before observing it.
-
-Speaker A: Exactly.
-
-Speaker B: Restore the configuration and prove the original behavior.
-
-Speaker A: Exactly.
-
-Speaker B: What should the evidence record contain?
-
-Speaker A: Source object. Consumed value path. Secret reference without exposing its value. Mount path. Storage claim. Pod before and after replacement. Recovery evidence.
-
-Speaker B: So the lesson is not ConfigMap versus Secret syntax.
-
-Speaker A: It is lifecycle design.
-
-Speaker B: Config can change independently.
-
-Speaker A: Secret handling has a security boundary.
-
-Speaker B: Mounts connect those values to the application.
-
-Speaker A: And persistent storage keeps important data beyond one Pod.
-
-Speaker B: Recall.
-
-Speaker A: What is ConfigMap for?
-
-Speaker B: A common Kubernetes mechanism for non-secret configuration.
-
-Speaker A: What is Secret for?
-
-Speaker B: A mechanism for sensitive values, with security still depending on permissions, transport, logging and handling.
-
-Speaker A: Why can a Secret exist while the application still fails?
-
-Speaker B: The Pod may not expose it where the application expects, or the application may read the wrong key or path.
-
-Speaker A: Why can data disappear after a Pod replacement?
-
-Speaker B: The data may have lived only in the Pod's temporary filesystem instead of intended persistent storage.
-
-Speaker A: Final challenge.
-
-Speaker B: The image is correct, the Pod starts, but configuration is wrong and database data disappears after replacement.
-
-Speaker A: Your model?
-
-Speaker B: Config -> Secret -> Mount -> Pod -> Persistence. I diagnose configuration source and consumption separately from secret handling and separately from persistent storage.
-
-Speaker A: Good.
-
-Speaker B: Kubernetes configuration and storage are not one feature.
-
-Speaker A: They are different lifecycles that meet inside a Pod.
-
-Speaker B: Run the lab, replace the Pod, break one boundary, and prove what should survive.
-
-EPISODE D3.4 — Kubernetes Health and Scaling
-
-Speaker A: A process can be running and still be unable to serve traffic.
-
-Speaker B: The classic alive-but-useless state.
-
-Speaker A: Exactly. Kubernetes gives us several signals, and they answer different questions.
-
-Speaker B: The picture is:
-
-Speaker A: Startup -> Readiness -> Liveness -> Capacity -> Rollout.
-
-Speaker B: Five states to keep separate.
-
-Speaker A: Right.
-
-Speaker B: Stage one: startup.
-
-Speaker A: Some applications need time to initialize.
-
-Speaker B: Database migrations. Cache warm-up. Loading a large model.
-
-Speaker A: Exactly.
-
-Speaker B: So a workload can be alive but still initializing.
-
-Speaker A: Correct.
-
-Speaker B: Prediction.
-
-Speaker A: A service takes thirty seconds to start. If we use the wrong health check from the first second, what can happen?
-
-Speaker B: The platform may treat the workload as unhealthy before it has had enough time to initialize.
-
-Speaker A: Good.
-
-Speaker B: Stage two: readiness.
-
-Speaker A: Readiness answers a traffic question.
-
-Speaker B: Should this workload receive normal traffic now?
-
-Speaker A: Exactly.
-
-Speaker B: So readiness can fail while the process stays alive.
-
-Speaker A: Yes. That is often the correct behavior during startup or a temporary dependency problem.
-
-Speaker B: Prediction.
-
-Speaker A: Readiness fails but liveness succeeds. Should the workload necessarily be restarted?
-
-Speaker B: No. It may be healthy enough to keep running while being kept out of the ready traffic set.
-
-Speaker A: Exactly.
-
-Speaker B: That is an important operational distinction.
-
-Speaker A: Stage three: liveness.
-
-Speaker B: Liveness asks whether the workload has become unhealthy enough that restarting it is an appropriate response.
-
-Speaker A: Good.
-
-Speaker B: So liveness is not a better version of readiness.
-
-Speaker A: Correct. It controls a different decision.
-
-Speaker B: A bad liveness check can create restart loops.
-
-Speaker A: Exactly.
-
-Speaker B: If the check fails during a normal slow startup, Kubernetes could restart a workload that only needed more time.
-
-Speaker A: That is why startup behavior matters.
-
-Speaker B: Prediction.
-
-Speaker A: The application is alive but waiting for a required initialization step. Readiness is false; liveness is true.
-
-Speaker B: The application can remain running while traffic stays away until readiness becomes true.
-
-Speaker A: Good.
-
-Speaker B: Stage four: capacity.
-
-Speaker A: A healthy Pod is not enough if there are not enough healthy Pods or resources for the workload.
-
-Speaker B: Replica count.
-
-Speaker A: Yes.
-
-Speaker B: Resource requests and limits.
-
-Speaker A: Yes.
-
-Speaker B: CPU and memory behavior.
-
-Speaker A: Yes.
-
-Speaker B: So scaling is not simply 'add more replicas.'
-
-Speaker A: Correct. More replicas may help, but another resource or dependency may become the bottleneck.
-
-Speaker B: Requests also matter to scheduling.
-
-Speaker A: Exactly. They are part of the capacity contract.
-
-Speaker B: Prediction.
-
-Speaker A: The application has one healthy Pod but CPU demand doubles.
-
-Speaker B: One Pod may become insufficient. If the workload is designed to scale horizontally, more replicas can spread the work, subject to the application's architecture and its dependencies.
-
-Speaker A: Good.
-
-Speaker B: What if the database is already the bottleneck?
-
-Speaker A: Then more Pods may increase the pressure on the database instead of fixing the system.
-
-Speaker B: So scaling needs evidence.
-
-Speaker A: Exactly.
-
-Speaker B: Stage five: rollout.
-
-Speaker A: A rollout changes the version while the service is still expected to work.
-
-Speaker B: So the health model controls which new Pods are allowed into the ready path.
-
-Speaker A: Yes.
-
-Speaker B: Old and new replicas can overlap for a while.
-
-Speaker A: Exactly.
-
-Speaker B: Which gives us a safe place to watch the new version before all traffic moves.
-
-Speaker A: That's the idea behind rolling updates and readiness-aware deployment behavior.
-
-Speaker B: Prediction.
-
-Speaker A: A new version starts, but readiness stays false.
-
-Speaker B: The rollout should not treat that Pod as healthy traffic capacity. Depending on rollout policy, old healthy replicas can continue serving while the new Pod is investigated.
-
-Speaker A: Good.
-
-Speaker B: Real-life analogy?
-
-Speaker A: A restaurant kitchen.
-
-Speaker B: A cook can arrive for work.
-
-Speaker A: That is process existence.
-
-Speaker B: The ovens still need to heat.
-
-Speaker A: Startup.
-
-Speaker B: The kitchen can accept orders only when it is ready.
-
-Speaker A: Readiness.
-
-Speaker B: If the cook becomes completely unable to work, management may replace them.
-
-Speaker A: Liveness.
-
-Speaker B: If the restaurant gets twice as many customers, you need capacity.
-
-Speaker A: Exactly.
-
-Speaker B: And while replacing the kitchen team, you keep enough healthy staff serving customers.
-
-Speaker A: That is the rollout idea.
-
-Speaker B: Failure matrix.
-
-Speaker A: Startup probe fails.
-
-Speaker B: Check whether the application is still initializing or genuinely failing to start.
-
-Speaker A: Readiness fails.
-
-Speaker B: Inspect traffic readiness conditions and dependencies. Do not assume restart is required.
-
-Speaker A: Liveness fails.
-
-Speaker B: Inspect whether the process is stuck or unhealthy enough to need restart, and check for restart loops.
-
-Speaker A: Capacity fails.
-
-Speaker B: Inspect requests, limits, replica count, workload behavior and dependency capacity.
-
-Speaker A: Rollout stalls.
-
-Speaker B: Inspect the new version's readiness, events, resources and application behavior before increasing traffic or replacing more replicas.
-
-Speaker B: Prediction pause.
-
-Speaker A: Readiness fails for all new replicas during a rollout, while old replicas remain ready. What should we infer?
-
-Speaker B: The new version is not ready to receive traffic. The rollout has evidence of a problem, but the old ready set may still protect users while we investigate.
-
-Speaker A: Good.
-
-Speaker B: Another.
-
-Speaker A: A liveness probe starts failing every few seconds and the Pod keeps restarting.
-
-Speaker B: I investigate the probe itself, startup timing, logs and the process behavior. The restart loop may be caused by the health check rather than by the original application failure.
-
-Speaker A: Exactly.
-
-Speaker B: Another.
-
-Speaker A: CPU is high after scaling from two Pods to six.
-
-Speaker B: More replicas do not prove the capacity problem is fixed. I look at per-Pod CPU, request rate, latency and dependencies such as the database.
-
-Speaker A: Good.
-
-Speaker B: Mac lab?
-
-Speaker A: Create a workload with a deliberate startup delay.
-
-Speaker B: Add a readiness check.
-
-Speaker A: Good.
-
-Speaker B: Watch the moment the Pod enters the ready set.
-
-Speaker A: Good.
-
-Speaker B: Add a liveness check that fails only after a controlled local condition.
-
-Speaker A: Good.
-
-Speaker B: Observe the restart and prove the workload returns to the expected state.
-
-Speaker A: Good.
-
-Speaker B: Then change replica count and inspect resource behavior.
-
-Speaker A: Good.
-
-Speaker B: Finally perform a rolling update and watch old and new versions overlap while readiness controls traffic.
-
-Speaker A: Exactly.
-
-Speaker B: What should the evidence record contain?
-
-Speaker A: Startup duration. Readiness transition. Liveness results. Replica count. Resource requests and limits. Latency or workload evidence. Rollout version. Recovery evidence.
-
-Speaker B: So the lesson is not 'learn three probes.'
-
-Speaker A: It is to understand the decision each signal controls.
-
-Speaker B: Startup decides when initialization is complete.
-
-Speaker A: Readiness decides traffic inclusion.
-
-Speaker B: Liveness decides whether restart may be appropriate.
-
-Speaker A: Capacity decides whether the healthy system can handle the load.
-
-Speaker B: Rollout changes the version while protecting the ready path.
-
-Speaker A: Exactly.
-
-Speaker B: Recall.
-
-Speaker A: Why is readiness different from liveness?
-
-Speaker B: Readiness controls traffic inclusion; liveness addresses whether a running workload should be restarted.
-
-Speaker A: Why can startup behavior need its own check?
-
-Speaker B: Because a workload can need time to initialize, and an early health check can create false failures or restart loops.
-
-Speaker A: Why can more replicas fail to solve an incident?
-
-Speaker B: Another dependency may be the bottleneck, or the application may not scale horizontally as expected.
-
-Speaker A: What do resource requests and limits affect?
-
-Speaker B: Scheduling and resource protection, which makes them part of capacity design.
-
-Speaker A: Final challenge.
-
-Speaker B: A new Pod runs but never becomes ready, while old Pods continue serving.
-
-Speaker A: Your model?
-
-Speaker B: Startup -> Readiness -> Liveness -> Capacity -> Rollout. I investigate initialization and readiness first, keep the ready path stable, and only restart or scale after the evidence identifies the right boundary.
-
-Speaker A: Good.
-
-Speaker B: Kubernetes health is not one green or red signal.
-
-Speaker A: It is a set of decisions that control traffic, restart behavior, capacity and release safety.
-
-Speaker B: Run the lab, make one health boundary fail, and prove the workload returns to a stable ready state.
-
-EPISODE D3.5 — Kubernetes Failure Lab
-
-Speaker A: This is the Kubernetes failure lab.
-
-Speaker B: The part where we stop being polite to the cluster.
-
-Speaker A: Carefully.
-
-Speaker B: Right.
-
-Speaker A: The visual is:
-
-Speaker B: Baseline -> Fault -> Symptom -> Evidence -> Recovery.
-
-Speaker A: The most important word is baseline.
-
-Speaker B: Start with a known-good workload.
-
-Speaker A: Exactly. Prove the user path before breaking anything.
-
-Speaker B: Then change one boundary.
+Speaker B: Now break the selector.
 
 Speaker A: Predict the symptom.
 
-Speaker B: Observe it.
-
-Speaker A: Collect evidence.
-
-Speaker B: Repair the smallest broken boundary.
-
-Speaker A: Then prove recovery.
-
-Speaker B: So a red status is never the end of the lesson.
-
-Speaker A: Correct. It is the start of the question.
-
-Speaker B: Let's take CrashLoopBackOff.
-
-Speaker A: What does it tell you?
-
-Speaker B: The container is being restarted repeatedly and the backoff is increasing.
-
-Speaker A: Good. Does it tell you why?
-
-Speaker B: No.
-
-Speaker A: So what are the leading hypotheses?
-
-Speaker B: Process exits. Bad configuration. Missing file. Failed dependency. Bad command. Probe failure. Resource problem.
+Speaker B: The Service can still resolve, but it can have no matching endpoints.
 
 Speaker A: Good.
 
-Speaker B: Evidence sequence?
+Speaker B: Restore the selector.
 
-Speaker A: Describe the Pod. Inspect events. Read container logs. Check last termination state and restart count.
+Speaker A: Then prove the client request works again.
 
-Speaker B: That is much better than searching the status name online.
+Speaker B: So the experiment separates Service identity from backend selection.
 
 Speaker A: Exactly.
-
-Speaker B: Next: ImagePullBackOff.
-
-Speaker A: What does that narrow?
-
-Speaker B: Image retrieval or startup preparation: image name, registry reachability, credentials, tag or network path.
-
-Speaker A: Good.
-
-Speaker B: Again, status is a clue.
-
-Speaker A: Exactly.
-
-Speaker B: Next: OOMKilled.
-
-Speaker A: What is the signal?
-
-Speaker B: The process was killed in an out-of-memory condition, often related to resource limits or system memory pressure.
-
-Speaker A: Good. What do you inspect?
-
-Speaker B: Memory requests, limits, actual usage, recent workload change and whether the application has a memory-growth problem.
-
-Speaker A: Good.
-
-Speaker B: And a failed readiness probe?
-
-Speaker A: What does it mean?
-
-Speaker B: The workload is not currently considered ready for normal traffic.
-
-Speaker A: Does it necessarily mean the process should be restarted?
-
-Speaker B: No. Readiness controls traffic inclusion, not automatic restart.
-
-Speaker A: Excellent.
-
-Speaker B: That distinction is the whole health lesson coming back.
-
-Speaker A: Exactly.
-
-Speaker B: Now bad selector.
-
-Speaker A: What would you expect?
-
-Speaker B: The Service may still resolve, but the endpoint set can become empty because no Pods match the selector.
-
-Speaker A: Good.
-
-Speaker B: So now we have five failures.
-
-Speaker A: And five different evidence paths.
-
-Speaker B: Which means the lab should not just be a list of red screens.
-
-Speaker A: Correct. We are training a decision process.
-
-Speaker B: Prediction first.
-
-Speaker A: Always.
-
-Speaker B: Failure one: wrong image name.
-
-Speaker A: Predict.
-
-Speaker B: Pod never reaches normal startup because the image cannot be pulled.
-
-Speaker A: Evidence?
-
-Speaker B: Events, Pod status and image configuration.
-
-Speaker A: Recovery?
-
-Speaker B: Restore the correct image reference and prove the Pod becomes ready.
-
-Speaker A: Good.
-
-Speaker B: Failure two: wrong Service selector.
-
-Speaker A: Predict.
-
-Speaker B: Service still exists. DNS can still resolve. Endpoint set becomes empty.
-
-Speaker A: Evidence?
-
-Speaker B: Service selector, Pod labels, endpoint objects and a real client request.
-
-Speaker A: Recovery?
-
-Speaker B: Restore the selector and prove endpoints return and the request succeeds.
-
-Speaker A: Exactly.
-
-Speaker B: Failure three: liveness probe fails.
-
-Speaker A: Predict.
-
-Speaker B: Restart count rises and the workload may enter a restart loop.
-
-Speaker A: Evidence?
-
-Speaker B: Probe configuration, logs, events and process behavior.
-
-Speaker A: Recovery?
-
-Speaker B: Fix the actual health boundary, then prove the workload stays alive and ready.
-
-Speaker A: Good.
-
-Speaker B: Failure four: memory limit too low.
-
-Speaker A: Predict.
-
-Speaker B: The process may be killed under memory pressure and restart repeatedly.
-
-Speaker A: Evidence?
-
-Speaker B: Resource limits, termination state, usage and workload behavior.
-
-Speaker A: Recovery?
-
-Speaker B: Restore an appropriate resource contract or application behavior, then prove stable operation.
-
-Speaker A: Good.
-
-Speaker B: Failure five: dependency unavailable.
-
-Speaker A: Predict.
-
-Speaker B: The process may stay alive but readiness can fail, requests can time out or application errors can increase.
-
-Speaker A: Evidence?
-
-Speaker B: Dependency health, application logs, readiness condition and real request behavior.
-
-Speaker A: Good.
-
-Speaker B: Now the red-team rule.
-
-Speaker A: Never change three things at once.
-
-Speaker B: Otherwise I won't know which change caused the recovery.
-
-Speaker A: Exactly.
-
-Speaker B: Human analogy?
-
-Speaker A: A hospital monitor shows an unstable patient.
-
-Speaker B: You do not restart random equipment.
-
-Speaker A: Right. You collect vital signs, identify the failing subsystem, make one safe intervention and check whether the patient stabilizes.
-
-Speaker B: That maps well.
-
-Speaker A: The same principle applies here.
-
-Speaker B: Controlled lab.
-
-Speaker A: Start with a working Deployment and Service.
-
-Speaker B: Prove the request path.
-
-Speaker A: Good.
-
-Speaker B: Write down the baseline.
-
-Speaker A: Good.
-
-Speaker B: Break the image.
-
-Speaker A: Predict the status.
-
-Speaker B: Observe events and logs.
-
-Speaker A: Repair it.
-
-Speaker B: Prove recovery.
-
-Speaker A: Then reset to baseline.
-
-Speaker B: Break the selector.
-
-Speaker A: Predict the endpoint set.
-
-Speaker B: Observe it.
-
-Speaker A: Repair.
-
-Speaker B: Prove recovery.
-
-Speaker A: Repeat with readiness or memory.
-
-Speaker B: So every exercise follows the same loop.
-
-Speaker A: Exactly.
-
-Speaker B: Baseline -> Fault -> Symptom -> Evidence -> Recovery.
-
-Speaker A: And every iteration should answer one question better than the previous one.
 
 Speaker B: Mac lab?
 
-Speaker A: Keep the failures safe and disposable.
+Speaker A: Deploy two Pods.
 
-Speaker B: Never use a production cluster for deliberate breakage.
+Speaker B: Give them the expected labels.
 
-Speaker A: Correct.
+Speaker A: Create the Service.
 
-Speaker B: Keep a record of predicted evidence and observed evidence.
+Speaker B: Inspect the selector and endpoint set.
 
 Speaker A: Good.
 
-Speaker B: What if the prediction is wrong?
+Speaker B: Make a request through the Service.
 
-Speaker A: That is valuable.
+Speaker A: Good.
 
-Speaker B: Because the mismatch exposes a bad mental model.
+Speaker B: Delete one Pod and watch the endpoint set.
 
-Speaker A: Exactly. Record the mismatch, update the hypothesis and repeat.
+Speaker A: Good.
 
-Speaker B: That is the real exercise.
+Speaker B: Then change the selector so it matches nothing.
 
-Speaker A: Yes.
+Speaker A: Observe the difference.
+
+Speaker B: Restore it and prove recovery.
+
+Speaker A: Exactly.
 
 Speaker B: Recall.
 
-Speaker A: What does CrashLoopBackOff tell you?
+Speaker A: What does a Service provide?
 
-Speaker B: Repeated restart behavior with backoff. It does not tell me the root cause.
+Speaker B: A stable logical destination while the Pods behind it can change.
 
-Speaker A: ImagePullBackOff?
+Speaker A: What does the selector do?
 
-Speaker B: The workload is failing to pull or prepare the referenced image. I inspect image name, registry access, credentials and events.
+Speaker B: It defines which Pods belong to the Service backend set.
 
-Speaker A: OOMKilled?
+Speaker A: What is the endpoint set?
 
-Speaker B: A memory-related kill. I inspect requests, limits, usage and application memory behavior.
+Speaker B: The current backend addresses that the Service can use.
 
-Speaker A: Failed readiness?
+Speaker A: Why should clients avoid Pod IPs?
 
-Speaker B: The workload is not ready for normal traffic. It does not by itself mean the process should be restarted.
-
-Speaker A: Bad selector?
-
-Speaker B: The Service can exist while its endpoint set becomes empty.
+Speaker B: Pod IPs are tied to replaceable Pod instances, while the Service abstraction is designed to stay stable.
 
 Speaker A: Final challenge.
 
-Speaker B: A Kubernetes workload is red.
+Speaker B: The Service name resolves, but there are zero endpoints.
 
-Speaker A: Your method?
+Speaker A: Your model?
 
-Speaker B: Start from the last known-good baseline. Identify one fault boundary. Predict the symptom. Observe the exact Kubernetes state. Collect the smallest useful evidence sequence. Repair one boundary. Then prove the original user path recovers.
+Speaker B: Service -> Selector -> Endpoints -> Pod -> Path. I inspect the selector, current matching Pods and endpoint readiness before blaming the network.
 
 Speaker A: Good.
 
-Speaker B: So Kubernetes failure status is not a dictionary to memorize.
+Speaker B: So Kubernetes networking is not one object.
 
-Speaker A: It is a map for choosing the next evidence.
+Speaker A: It is a chain of abstractions that separates stable discovery from changing workload instances.
 
-Speaker B: Run the lab, break one boundary, and prove the recovery.
+Speaker B: Run the lab, delete one Pod, break one selector, restore it, and explain the endpoint evidence.
+
+EPISODE D3.3 — Kubernetes Configuration and Storage
+
+Speaker A: Configuration and persistent data should not be confused with the container image.
+
+Speaker B: Because configuration changes more often than the image?
+
+Speaker A: Often, yes. ConfigMaps hold non-secret configuration. Secrets provide a mechanism for sensitive values, but security still depends on how those values are handled. Volumes provide storage behavior beyond the temporary container filesystem.
+
+Speaker A: Think of a theater production. The actors are the containers. The script configuration is separate. The stage props and persistent archive are another concern entirely.
+
+Speaker A: Real-life example: replacing an actor should not erase the production's historical records.
+
+Speaker A: Lab: mount configuration and persistent storage separately and observe what survives a container restart.
+Speaker B: Configuration and storage feel like two different kinds of “outside the container.”
+
+Speaker A: That's a good instinct. Configuration describes how the application should behave. Persistent storage is data the application needs to survive process replacement.
+
+Speaker B: ConfigMap for normal configuration. Secret for sensitive values.
+
+Speaker A: Yes, with the caveat that putting something in a Secret object doesn't automatically make your whole secret-handling process secure. Access control, transport, logging, and the way applications consume the value still matter.
+
+Speaker B: Right. Security isn't a magic type.
+
+Speaker A: Exactly.
+
+Speaker B: Theater analogy?
+
+Speaker A: The actors can change without rewriting the script. Props and archived records are another thing entirely. You don't throw away the production's history because one actor left.
+
+Speaker B: Prediction. I restart a pod and a generated file disappears.
+
+Speaker A: Where was that file stored?
+
+Speaker B: If it lived only in the container's writable filesystem, I shouldn't assume it survives.
+
+Speaker A: Good. Now suppose the file is on a persistent volume.
+
+Speaker B: Then replacing the pod may leave the data available to the replacement, assuming the volume attachment and application behavior are correct.
+
+Speaker A: Exactly. “Persistent” doesn't mean “immune to bugs.”
+
+Speaker B: Mac lab?
+
+Speaker A: Mount configuration separately from persistent data. Change the configuration, restart the workload, and verify what changed. Then write data, replace the pod, and verify what survived.
+
+Speaker B: The lesson is to know which state belongs to the process and which state belongs to the workload.
+
+Speaker A: That's the lesson. Containers and pods are allowed to be disposable. Your data may not be.
+
+
+EPISODE D3.4 — Kubernetes Health and Scaling
+
+Speaker A: A running process is not necessarily ready to serve traffic.
+
+Speaker B: The classic 'technically alive, practically useless' state.
+
+Speaker A: Exactly. Startup, readiness, and liveness probes answer different questions.
+
+Speaker A: Imagine a restaurant. A cook may have arrived for work, but the kitchen is not ready because the ovens are still cold. A readiness check should keep new orders away until the kitchen can actually serve them.
+
+Speaker A: Resource requests and limits help the scheduler and runtime make capacity decisions. Horizontal scaling adds replicas when the workload requires it.
+
+Speaker A: Lab: create probes, impose a startup delay, scale replicas, and perform a rolling update.
+Speaker B: This is the “alive but useless” problem.
+
+Speaker A: Exactly. A process can be running and still be unable to serve traffic.
+
+Speaker B: So now we need readiness and liveness.
+
+Speaker A: And startup behavior. Those checks answer different questions. A workload might need time to initialize. It might be alive but not ready. Or it might be wedged and need a restart.
+
+Speaker B: Restaurant analogy again.
+
+Speaker A: A cook can be standing in the kitchen and still be unable to serve because the ovens aren't ready. “Person present” is not the same as “kitchen ready.”
+
+Speaker B: Prediction pause. If readiness fails but liveness succeeds, should traffic still be sent there?
+
+Speaker A: No, not if the readiness mechanism is wired correctly. The workload can stay running while being removed from the set of traffic-ready endpoints.
+
+Speaker B: That's elegant.
+
+Speaker A: It's also extremely practical. It lets you use health information to control traffic without necessarily killing the process.
+
+Speaker B: And resources?
+
+Speaker A: Requests and limits influence scheduling and resource protection. If you ignore resource behavior, scaling becomes guesswork.
+
+Speaker B: Mac lab?
+
+Speaker A: Create a workload with a deliberate startup delay. Add a readiness probe. Watch when it enters the ready set. Then scale replicas and observe how capacity changes. Finally perform a rolling update and watch the old and new versions overlap.
+
+Speaker B: So the system has state transitions I can actually observe.
+
+Speaker A: Yes. That's why you should watch the objects instead of only reading configuration files.
+
+
+EPISODE D3.5 — Kubernetes Failure Lab
+
+Speaker A: Today we deliberately produce the ugly statuses engineers learn to fear: CrashLoopBackOff, ImagePullBackOff, OOMKilled, bad selectors, and failed readiness.
+
+Speaker B: This feels like learning medicine by reading symptoms and then creating them in a simulator.
+
+Speaker A: That is actually a very good analogy.
+
+Speaker A: Real-life incident: if a hospital monitor says 'patient unstable,' you do not restart random machines. You collect vital signs and locate the failing subsystem.
+
+Speaker A: Same here: inspect events, describe the object, logs, probes, resources, image state, and service endpoints.
+
+Speaker A: Lab: break one thing at a time. Before running diagnostics, write down your hypothesis and predicted evidence.
+
+Speaker B: The point is to train the diagnostic sequence, not memorize the names of red statuses.
+
+Speaker A: Exactly.
+Speaker B: I recognize the statuses now, but I don't want to memorize a red-flag dictionary.
+
+Speaker A: Good. A status name is a clue, not a diagnosis.
+
+Speaker B: CrashLoopBackOff means something about repeated restarts.
+
+Speaker A: Yes. But then you ask why. Logs? Exit code? Configuration? Dependency? Resource limit?
+
+Speaker B: ImagePullBackOff points somewhere else.
+
+Speaker A: Image retrieval, registry access, image name, credentials, network path. Again, use the status to narrow the search.
+
+Speaker B: OOMKilled means memory pressure or a memory limit event.
+
+Speaker A: Right. Then inspect requests, limits, actual usage, and whether the workload's memory behavior changed.
+
+Speaker B: Hospital monitor analogy?
+
+Speaker A: “Patient unstable” is not a diagnosis. It's an alarm that tells you to inspect vital signs and identify the failing subsystem.
+
+Speaker B: Prediction. Bad Service selector.
+
+Speaker A: What would you expect?
+
+Speaker B: The Service may exist, DNS may resolve, but there may be no endpoints behind it.
+
+Speaker A: Good. That is a much more useful hypothesis than “Kubernetes networking is broken.”
+
+Speaker B: Mac lab?
+
+Speaker A: Break exactly one thing at a time. Bad image name. Then bad selector. Then failing readiness. Then a memory limit. Before every change, write the predicted evidence.
+
+Speaker B: And then compare prediction to reality.
+
+Speaker A: Exactly. The mismatch is often the most valuable part of the exercise.
+
+Speaker B: Because it exposes where my mental model was wrong.
+
+Speaker A: Now you're using Kubernetes as a laboratory instead of as a YAML typing competition.
+
