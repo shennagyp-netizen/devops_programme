@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #42, commit `7feba39f6d02e9b8783744a9ffeb0db7050efeef` (D1.1 Linux operating model script + illustration quality slice).
+**Latest main architecture/content merge:** PR #43, commit `3ba501eea24abfc7788837dc2a443c2e28ad7f95` (D1.2 terminal-composition script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #42 has merged to `main`.
+**Active content-quality branch:** none. PR #43 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1872,18 +1872,13 @@ Merged PR #41:
 Merged PR #42:
 - D1.1 -> `linux-operating-model-v1`: Application -> Process -> Kernel -> Resources -> Evidence.
 - Merge commit: `7feba39f6d02e9b8783744a9ffeb0db7050efeef`.
-- D1.1 now teaches process identity/state, kernel-mediated resources, file descriptors, signals, execution context and evidence correlation at Intermediate depth.
-- Final PR #42 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- Next content boundary: **D1.2 — Terminal as an Engineering Tool**.
 
-
-Active PR #43 scope:
-- D1.2 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `terminal-composition-v1`.
-- Teaching model: Question -> Producer -> Transform -> Route -> Evidence.
-- The rewritten script teaches pipes, redirection, stderr, filtering, remote boundaries and command-result interpretation as one evidence pipeline.
-- Controlled failures include incorrect filtering, hidden stderr and wrong evidence boundary.
-- TDD/full-programme gate is required before merge.
+Merged PR #43:
+- D1.2 -> `terminal-composition-v1`: Question -> Producer -> Transform -> Route -> Evidence.
+- Merge commit: `3ba501eea24abfc7788837dc2a443c2e28ad7f95`.
+- D1.2 now teaches pipes, redirection, stderr, filtering, remote boundaries and command-result interpretation as a single evidence-routing model.
+- Final PR #43 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- Next content boundary: **D1.3 — Processes, Services, Permissions and Logs**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
