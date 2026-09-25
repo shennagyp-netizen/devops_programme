@@ -1032,6 +1032,37 @@ const DISTRIBUTED_PARTIAL_FAILURE_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const GLOBAL_ARCHITECTURE_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "global-architecture-v1",
+  title: "The global failure-domain map",
+  stages: [
+    { id: "users", label: "Users", detail: "Start with where users enter the system and what latency and availability they experience." },
+    { id: "routing", label: "Routing", detail: "Global traffic steering decides which region receives each request and how failover is triggered." },
+    { id: "regions", label: "Regions", detail: "Each region contains its own workload and regional dependencies, creating a separate failure domain." },
+    { id: "dependencies", label: "Dependencies", detail: "Data, identity, queues, third-party services and control planes can still be shared or cross regional boundaries." },
+    { id: "capacity", label: "Capacity", detail: "A surviving region must have enough headroom to absorb the traffic that failover sends to it." },
+    { id: "recovery", label: "Recovery", detail: "Prove the degraded path, data behavior, operational controls and return-to-normal process under a regional loss." }
+  ],
+  foundation: {
+    label: "Multi-region changes failure domains, not just location",
+    detail: "Adding another region helps only when routing, capacity, state, dependencies and recovery are designed so one region can fail without creating a second outage."
+  },
+  callouts: [
+    { id: "latency", label: "Latency", detail: "Geography changes network distance and therefore the latency experienced by users and cross-region dependencies." },
+    { id: "headroom", label: "Headroom", detail: "Failover capacity is only useful if the surviving region has enough safe capacity for the added load." },
+    { id: "data-placement", label: "Data placement", detail: "Where state lives determines what can survive a regional loss and what consistency or recovery trade-offs appear." },
+    { id: "blast-radius", label: "Blast radius", detail: "Shared dependencies can turn a regional failure into a global failure unless their failure domains are deliberately separated." }
+  ],
+  failureChecks: [
+    { id: "regional-loss", label: "1. Regional loss", detail: "What traffic and dependencies disappear when one region is unavailable?" },
+    { id: "survivor-capacity", label: "2. Survivor capacity", detail: "Can the remaining region handle the failover load without crossing its own safety limits?" },
+    { id: "data-consistency", label: "3. Data consistency", detail: "What state is current in the surviving region, and what recovery or consistency compromise is required?" },
+    { id: "dependency-isolation", label: "4. Dependency isolation", detail: "Which identity, data, control-plane or third-party dependencies remain shared across regions?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1281,6 +1312,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "global-architecture-v1") {
+    return {
+      ...GLOBAL_ARCHITECTURE_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1324,6 +1362,7 @@ export function validateLessonIllustrationModel(
     model.variant !== "cloud-primitives-v1" &&
     model.variant !== "database-scaling-v1" &&
     model.variant !== "distributed-partial-failure-v1" &&
+    model.variant !== "global-architecture-v1" &&
     model.variant !== "kubernetes-service-path-v1" &&
     model.variant !== "kubernetes-config-storage-v1" &&
     model.variant !== "kubernetes-health-scaling-v1" &&
