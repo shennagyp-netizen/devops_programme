@@ -218,7 +218,7 @@ export function validateMachineVerification(
       failures.push(`Captured command output is missing for runtime step ${result.stepId}.`);
     }
 
-    if (result.stdout.length > 65536 || result.stderr.length > 65536) {
+    if (\n      (typeof result.stdout === "string" && result.stdout.length > 65536) ||\n      (typeof result.stderr === "string" && result.stderr.length > 65536)\n    ) {
       failures.push(`Captured command output is too large for runtime step ${result.stepId}.`);
     }
 
