@@ -1444,7 +1444,7 @@ Speaker B: Because /26 leaves fewer host bits.
 
 Speaker A: Why do boundaries matter operationally?
 
-Speaker B: They affect which addresses belong together and therefore influence routing, segmentation and address allocation.
+Speaker B: They affect which addresses belong together, so they influence routing, segmentation and address allocation.
 
 Speaker A: What should you verify?
 
