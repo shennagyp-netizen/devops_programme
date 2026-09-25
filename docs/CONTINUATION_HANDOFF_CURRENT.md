@@ -1952,5 +1952,14 @@ Merged PR #62:
 - Day 3 is now gold-standard from D3.1 through D3.5.
 - Next content boundary: inspect the following Intermediate lesson after D3.5 in the current programme source.
 
+
+Active PR #65 scope:
+- D4.1 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `git-production-workflow-v1`.
+- Teaching model: Change -> Review -> Commit -> Release -> Recovery.
+- The rewritten script teaches production traceability, review as a control point, commit/release identity, and recovery without confusing Git history with deployment state.
+- The lab deliberately creates one local bad release, records its identity, and proves recovery to a known-good version.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
