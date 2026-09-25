@@ -1867,7 +1867,7 @@ Merged PR #40:
 Merged PR #41:
 - B1.1 -> `process-diagnosis-v1`: Symptom -> Process -> Resource -> Dependency -> Proof.
 - Merge commit: `b8e8456d19be162c64850bdaa01f319101153885`.
-- All 10 Beginner lessons meet the gold-standard script+illustration contract.
+- All 10 Beginner lessons now meet the gold-standard script+illustration contract.
 
 Merged PR #42:
 - D1.1 -> `linux-operating-model-v1`: Application -> Process -> Kernel -> Resources -> Evidence.
@@ -1880,6 +1880,8 @@ Merged PR #43:
 Merged PR #44:
 - D1.3 -> `service-permission-model-v1`: Process -> Identity -> Resource -> Service -> Logs.
 - Merge commit: `de0a4893f272640f2d02b54dd45ecc397acc6bf2`.
+- Final PR #44 gate passed **347 tests**, all programme contracts, TypeScript and the Next.js production build.
+- Red-team caught a duplicate D1.3 illustration declaration; it was removed without weakening tests.
 
 Merged PR #45:
 - D1.4 -> `network-operating-model-v1`: Interface -> Link -> IP -> Route -> Evidence.
@@ -1892,6 +1894,7 @@ Merged PR #46:
 Merged PR #47:
 - D1.6 -> `routing-boundary-v1`: Destination -> Route -> Next hop -> Boundary -> Evidence.
 - Merge commit: `417cf8ec4ce899623f705708e839214591ac1acb`.
+- Final PR #47 gate passed **369 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #48:
 - D2.1 -> `transport-contract-v1`: Endpoint -> Port -> Transport -> Delivery -> Evidence.
@@ -1900,141 +1903,31 @@ Merged PR #48:
 Merged PR #49:
 - D2.2 -> `dns-resolution-v1`: Name -> Resolver -> Cache -> Authority -> Freshness.
 - Merge commit: `79dd956303907480c20091debfcff2f0500661a8`.
+- Final PR #49 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
+- Red-team caught a missing DNS variant registration and one spoken-English complexity issue; both were corrected.
 
 Merged PR #50:
 - D2.3 -> `http-exchange-v1`: Request -> Headers -> Route -> Response -> Evidence.
 - Merge commit: `b2932a7ee3ebe61e206f1f49f9da5943106a2727`.
+- Final PR #50 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #51:
 - D2.4 -> `tls-trust-v1`: Client -> Certificate -> Handshake -> Secure Session -> Evidence.
 - Merge commit: `faee8ec98812592b20c7b854bc506c47f86247e0`.
+- Final PR #51 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #52:
 - D2.5 -> `container-execution-v1`: Image -> Container -> Process -> Namespaces -> Host Kernel.
 - Merge commit: `ffb17b61597e7a8b1e25139bcd634fba0719523c`.
+- Final PR #52 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 
-Merged PR #53:
+Merged PR #77:
 - D2.6 -> `docker-network-storage-v1`: Service -> Network -> Name -> Port -> Volume.
-- Merge commit: `d1884d9443a7e2c2f8eff85822307604ea5d865d`.
-
-Merged PR #54:
-- D2.7 -> `docker-failure-loop-v1`: Baseline -> Change -> Symptom -> Evidence -> Recovery.
-- Merge commit: `03849b29c7d108797858fe2a91491d89bb91385e`.
-- Day 2 is gold-standard from D2.1 through D2.7.
-
-Merged PR #55:
-- D3.1 -> `kubernetes-reconciliation-v1`: Desired State -> Controller -> Observe -> Act -> Converge.
-- Merge commit: `a66a3abb9be8db6b867f85d1430b4dba35934af1`.
-
-Merged PR #59:
-- D3.2 -> `kubernetes-networking-v1`: Service -> Selector -> Endpoint set -> Pod -> Evidence.
-- Merge commit: `e634e8709a7cfe642b59c6f3966f700ea10947ab`.
-
-Merged PR #60:
-- D3.3 -> `kubernetes-config-storage-v1`: Config -> Secret -> Mount -> Pod -> Persistence.
-- Merge commit: `68ee5fb403fc0a729dcef2d26ad3da587abd247f`.
-
-Merged PR #61:
-- D3.4 -> `kubernetes-health-scaling-v1`: Startup -> Readiness -> Liveness -> Capacity -> Rollout.
-- Merge commit: `95bd718feb0344789fd6ce4cdb68dd9bb89f3cce`.
-
-Merged PR #62:
-- D3.5 -> `kubernetes-failure-loop-v1`: Baseline -> Fault -> Symptom -> Evidence -> Recovery.
-- Merge commit: `049d6ddeb8b3f7ec41eef59d4a88292f288de0dc`.
-- Day 3 is gold-standard from D3.1 through D3.5.
-
-Merged PR #65:
-- D4.1 -> `git-production-workflow-v1`: Change -> Review -> Commit -> Release -> Recovery.
-- Merge commit: `6f42ff6fb143deca8fef328badb3424edab1c6b7`.
-- D4.1 final gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
-
-Merged PR #66:
-- D4.2 -> `cicd-control-path-v1`: Source -> Validate -> Artifact -> Promote -> Verify.
-- Merge commit: `dcc336d2362def4a804e021bf8b1b6af7d59dfcd`.
-- Final PR #66 gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
-
-Merged PR #67:
-- D4.3 -> `github-actions-execution-v1`: Workflow -> Job -> Runner -> Steps -> Artifact.
-- Merge commit: `0376a9fa4406f6afb9d8baed1184c09c6bb0a2d2`.
-- Final PR #67 gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
-
-Merged PR #68:
-- D4.4 -> `iac-control-loop-v1`: Intent -> Plan -> Apply -> State -> Drift.
-- Merge commit: `d8d8d029334279ba4a9c86f8f40a000a0cc06127`.
-- Final PR #68 gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
-
-Merged PR #69:
-- D4.5 -> `terraform-lifecycle-v1`: Configuration -> Init -> Plan -> Apply -> Observe.
-- Merge commit: `efc16df80ff091206717f9ad9bbd6a28b5e1a699`.
-- D4.5 final gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
-- Language gate caught “therefore” and it was simplified.
-
-Merged PR #70:
-- D4.6 -> `cloud-primitives-v1`: Workload -> Compute -> Network -> State -> Identity -> Data Services.
-- Merge commit: `404638fd337cefd6de3e48d390f9d6fd47bedd84`.
-- D4.6 is provider-neutral: managed boundaries, dependency graphs, identity, durable state and cost are taught before vendor products.
-- Final PR #70 gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
-- **Day 4 is now gold-standard from D4.1 through D4.6.**
-- Next content boundary: **D5.1 — Scaling**.
-
-
-Active PR #66 scope:
-- D4.2 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `cicd-control-path-v1`.
-- Teaching model: Source -> Validate -> Artifact -> Promote -> Verify.
-- The rewritten script treats CI/CD as a risk-control path, explicitly distinguishes validation from production health, and makes artifact identity and provenance first-class evidence.
-- Controlled exercise removes one pipeline gate and asks the learner to explain the new risk before restoring the gate.
-- TDD/full-programme gate is required before merge.
-
-
-
-Active PR #67 scope:
-- D4.3 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `github-actions-execution-v1`.
-- Teaching model: Workflow -> Job -> Runner -> Steps -> Artifact.
-- The rewritten script distinguishes jobs as execution boundaries, runner context, step-level logs, cache versus artifact, and secret-handling boundaries.
-- Controlled failure makes one step fail, diagnoses it from step logs, restores it, and proves workflow recovery; artifact transfer is then used to reinforce cross-job identity.
-- TDD/full-programme gate is required before merge.
-
-
-
-Active PR #68 scope:
-- D4.4 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `iac-control-loop-v1`.
-- Teaching model: Intent -> Plan -> Apply -> State -> Drift.
-- The rewritten script separates declared intent, proposed plan, provider reality, state coordination and drift detection.
-- Controlled lab changes one declared property and, where safe, one external property, then uses plan evidence to detect and recover the drift.
-- TDD/full-programme gate is required before merge.
-
-
-
-Active PR #69 scope:
-- D4.5 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `terraform-lifecycle-v1`.
-- Teaching model: Configuration -> Init -> Plan -> Apply -> Observe.
-- The rewritten script treats plan as a safety checkpoint, state locking as a coordination boundary, destroy as a high-impact lifecycle operation, and post-apply observation as required proof.
-- Controlled lab covers initial plan/apply, repeat plan, one declared change, controlled drift, recovery, and disposable destroy.
-- TDD/full-programme gate is required before merge.
-
-
-
-Active PR #70 scope:
-- D4.6 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `cloud-primitives-v1`.
-- Teaching model: Workload -> Compute -> Network -> State -> Identity -> Data Services.
-- The rewritten script is provider-neutral and treats managed services, dependency graphs, identity, durable state and cost as architecture boundaries.
-- Controlled exercises remove one primitive boundary and require a prediction about the resulting user-facing failure.
-- TDD/full-programme gate is required before merge.
-
-
-
-Active PR #55 scope:
-- D5.1 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `scaling-control-loop-v1`.
-- Teaching model: Workload -> Capacity -> Distribution -> Shared State -> Bottleneck -> Evidence.
-- The rewritten script makes vertical/horizontal scaling, statelessness, shared state, queues/caches, bottleneck movement and user proof one coherent mechanism.
-- The lab now requires baseline capacity evidence, a controlled workload increase, one scaling change, and measurement of the next bottleneck.
-- TDD/full-programme gate is required before merge.
+- Merge commit: `cfa8718b193591be1a86770a43fe455b59b2bb7b`.
+- D2.6 teaches internal Docker service discovery, internal service ports versus published host ports, and volume-backed persistence as separate boundaries.
+- The initial PR #71 became stale after `main` advanced; it was closed. The validated content was carried onto current `main` in PR #77 without deleting newer Day-2 content.
+- Final refreshed PR #77 gate passed all programme contracts, full unit/integration tests, TypeScript and the Next.js production build.
+- Next content boundary: **D2.7 — Break Docker**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
