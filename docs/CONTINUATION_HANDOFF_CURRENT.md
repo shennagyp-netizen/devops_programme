@@ -8,7 +8,7 @@
 
 **Latest main architecture/content merge:** PR #62, commit `049d6ddeb8b3f7ec41eef59d4a88292f288de0dc` (D3.5 Kubernetes failure-loop script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #68 has merged to `main`.
+**Active content-quality branch:** none. PR #69 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1961,9 +1961,15 @@ Merged PR #67:
 Merged PR #68:
 - D4.4 -> `iac-control-loop-v1`: Intent -> Plan -> Apply -> State -> Drift.
 - Merge commit: `d8d8d029334279ba4a9c86f8f40a000a0cc06127`.
-- D4.4 now teaches declared intent, plan evidence, provider reality, state coordination and drift detection as separate boundaries.
 - Final PR #68 gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
-- Next content boundary: **D4.5 — Terraform Lifecycle**.
+
+Merged PR #69:
+- D4.5 -> `terraform-lifecycle-v1`: Configuration -> Init -> Plan -> Apply -> Observe.
+- Merge commit: `efc16df80ff091206717f9ad9bbd6a28b5e1a699`.
+- D4.5 now teaches Terraform lifecycle evidence, plan review, state locking, drift, high-impact destroy, and post-apply observation.
+- A language gate caught “therefore” in the spoken script; it was simplified without weakening the technical content.
+- Final PR #69 gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
+- Next content boundary: **D4.6 — Cloud Primitives**.
 
 
 Active PR #66 scope:
@@ -2003,6 +2009,7 @@ Active PR #69 scope:
 - The rewritten script treats plan as a safety checkpoint, state locking as a coordination boundary, destroy as a high-impact lifecycle operation, and post-apply observation as required proof.
 - Controlled lab covers initial plan/apply, repeat plan, one declared change, controlled drift, recovery, and disposable destroy.
 - TDD/full-programme gate is required before merge.
+
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
