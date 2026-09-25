@@ -1936,7 +1936,7 @@ Merged PR #90:
 Merged PR #82:
 - D3.3 -> `kubernetes-config-storage-v1`: Config -> Secret -> Mount -> Pod -> Persistence.
 - Merge commit: `2a7c58e9f8ab25264744bd9d5de62286bcc7284c`.
-- Merge status: **Vercel build-rate-limit failure**; treat D3.3 as **infrastructure-blocked**, not code-green.
+- Merge status: **Vercel build-rate-limit failure**; treat as infrastructure-blocked, not code-green.
 - D3.3 separates configuration lifecycle, secret handling, consumption/mounting and persistent storage lifecycle.
 
 Merged PR #83:
@@ -1945,9 +1945,16 @@ Merged PR #83:
 - Merge status: **Vercel success**.
 - D3.4 covers startup/readiness/liveness, capacity and rollout evidence.
 
+Merged PR #84:
+- D3.5 -> `kubernetes-failure-loop-v1`.
+- Merge commit: `e9858af68efe906a3e6c20c01e71e3b8c067c4b2`.
+- Merge status: **Vercel build-rate-limit failure**; treat as infrastructure-blocked, not code-green.
+- D3.5 turns CrashLoopBackOff, ImagePullBackOff, OOMKilled, readiness failures, selector failures and dependency failures into distinct evidence paths with one-change recovery experiments.
+
 Active validation state:
-- D3.2 current head is still pending current-head validation because the repository's Vercel build-rate-limit has intermittently blocked current deployments. Do not infer current-head green status from the older successful branch run.
-- Next authored boundary: **D3.5 — Kubernetes Failure Lab**.
+- D3.2 current head is pending current-head validation because Vercel build-rate-limit intermittently blocks fresh deployments.
+- D3.3 and D3.5 are merged but infrastructure-blocked on their merge commits.
+- Next authored boundary: **D4.1 — Git as a Production Workflow**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
