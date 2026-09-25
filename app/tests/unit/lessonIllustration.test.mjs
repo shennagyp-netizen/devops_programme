@@ -295,6 +295,41 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models reliability as bounded waiting, retry control, duplicate safety and overload protection", () => {
+    const model = getLessonIllustrationModel({
+      id: "d5-4-reliability",
+      type: "illustration",
+      heading: "The reliability control path",
+      alt: "A dependency failure is bounded by timeouts, controlled by retries with backoff and jitter, protected by a circuit breaker and backpressure, and made safe by idempotency",
+      bindingId: "D5.4:d5-4-reliability",
+      nodes: ["Failure", "Timeout", "Retry Policy", "Load Control", "Idempotent Outcome", "Recovery"],
+      variant: "reliability-control-v1"
+    });
+
+    expect(model.variant).toBe("reliability-control-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "failure",
+      "timeout",
+      "retry-policy",
+      "load-control",
+      "idempotent-outcome",
+      "recovery"
+    ]);
+    expect(model.foundation.label).toBe("Every recovery mechanism changes load and correctness");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "timeout",
+      "backoff-jitter",
+      "circuit-breaker",
+      "backpressure"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "attempt-budget",
+      "retry-amplification",
+      "duplicate-safety",
+      "overload-protection"
+    ]);
+  });
+
   it("models distributed work as request, observation, replica state, agreement and user outcome", () => {
     const model = getLessonIllustrationModel({
       id: "d5-3-distributed",
