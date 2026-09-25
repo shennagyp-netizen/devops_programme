@@ -560,6 +560,19 @@ function validateGeometry(
       } => primitive.kind === "connection" && isNonEmptyString(primitive.id)
     );
 
+  const packets = primitives
+    .filter(isObject)
+    .filter(
+      (
+        primitive
+      ): primitive is Record<string, unknown> & {
+        kind: "packet";
+        id: string;
+        from: string;
+        to: string;
+      } => primitive.kind === "packet" && isNonEmptyString(primitive.id)
+    );
+
   for (const connection of connections) {
     const source = nodeRects.get(String(connection.from));
     const target = nodeRects.get(String(connection.to));
@@ -574,6 +587,25 @@ function validateGeometry(
       if (segmentIntersectsRect(start, end, nodeRect, clearance)) {
         failures.push(
           `connection crosses shape: ${connection.id} crosses ${nodeId}`
+        );
+      }
+    }
+  }
+
+  for (const packet of packets) {
+    const source = nodeRects.get(String(packet.from));
+    const target = nodeRects.get(String(packet.to));
+
+    if (!source || !target) continue;
+
+    const start = center(source);
+    const end = center(target);
+
+    for (const [nodeId, nodeRect] of nodeRects) {
+      if (nodeId === packet.from || nodeId === packet.to) continue;
+      if (segmentIntersectsRect(start, end, nodeRect, clearance)) {
+        failures.push(
+          `packet crosses shape: ${packet.id} crosses ${nodeId}`
         );
       }
     }
