@@ -610,49 +610,321 @@ Speaker B: Run the lab. Remove one gate. Explain what risk appears. Then restore
 
 EPISODE D4.3 — GitHub Actions
 
-Speaker A: Now turn the pipeline into executable automation.
+Speaker A: D4.2 gave us the CI/CD control model.
 
-Speaker B: Workflow, job, step, runner.
+Speaker B: Source -> Validate -> Artifact -> Promote -> Verify.
 
-Speaker A: Think of a factory. The workflow is the production order, jobs are workstations, steps are operations, and runners are machines executing them.
+Speaker A: Now we turn that model into executable automation with GitHub Actions.
 
-Speaker A: Artifacts are the packaged outputs that move between stages.
+Speaker B: The visual is:
 
-Speaker A: Real-life example: a bakery does not ask a different employee to guess the recipe every morning. The process is written down and reproducible.
+Speaker A: Workflow -> Job -> Runner -> Steps -> Artifact.
 
-Speaker A: Lab: test, build, package, and publish a container artifact.
-
-Speaker B: And secrets?
-
-Speaker A: Credentials should enter securely at the boundary, not be baked into source or artifacts.
-Speaker B: GitHub Actions gives the model a concrete shape: workflows, jobs, steps, runners.
-
-Speaker A: Right. But don't mistake syntax for architecture. A workflow is a way to encode the pipeline you already understand.
-
-Speaker B: Cache and artifacts always confuse people.
-
-Speaker A: Cache is about reusing data to make work faster. An artifact is a produced result you may need later. Those are different purposes.
-
-Speaker B: And the runner is just where the job executes.
+Speaker B: Five terms, five boundaries.
 
 Speaker A: Exactly.
 
-Speaker B: Real-life version?
+Speaker B: Stage one: workflow.
 
-Speaker A: Think of a bakery. The recipe is the workflow. Each station performs a step. Ingredients already prepared can be reused. The finished cake is an artifact. You don't confuse the stored flour with the cake.
+Speaker A: A workflow is the automation definition. It says when the automation runs and which jobs belong to it.
 
-Speaker B: Prediction. A cached dependency is corrupted. Why is “the cache restored successfully” not proof the build is healthy?
+Speaker B: Push event.
 
-Speaker A: Because the cache is an optimization, not the semantic authority of the build. Your build should still validate the result.
+Speaker A: Pull request event.
+
+Speaker B: Manual trigger.
+
+Speaker A: Yes. The trigger changes when the control system runs.
+
+Speaker B: Stage two: job.
+
+Speaker A: A job groups related work and runs in one execution environment.
+
+Speaker B: Build job.
+
+Speaker A: Test job.
+
+Speaker B: Publish job.
+
+Speaker A: Exactly.
+
+Speaker B: So separate jobs create separate execution boundaries.
+
+Speaker A: Correct.
+
+Speaker B: Prediction.
+
+Speaker A: A test command passes in one job. Can a later job assume every file and process from the first job still exists?
+
+Speaker B: No. Jobs normally run in separate execution environments unless we explicitly pass state between them.
+
+Speaker A: Exactly.
+
+Speaker B: That is why artifacts and explicit outputs matter.
+
+Speaker A: Good.
+
+Speaker B: Stage three: runner.
+
+Speaker A: The runner is where the job actually executes.
+
+Speaker B: Operating system.
+
+Speaker A: Yes.
+
+Speaker B: Installed tools.
+
+Speaker A: Yes.
+
+Speaker B: Network access.
+
+Speaker A: Yes.
+
+Speaker B: Temporary filesystem and environment.
+
+Speaker A: Exactly.
+
+Speaker B: So the same YAML can behave differently when the runner context changes.
+
+Speaker A: Correct. Runner state is part of the execution evidence.
+
+Speaker B: Stage four: steps.
+
+Speaker A: Steps run commands or actions in order.
+
+Speaker B: Checkout.
+
+Speaker A: Good.
+
+Speaker B: Setup runtime.
+
+Speaker A: Good.
+
+Speaker B: Test.
+
+Speaker A: Good.
+
+Speaker B: Build.
+
+Speaker A: Good.
+
+Speaker B: Publish artifact.
+
+Speaker A: Exactly.
+
+Speaker B: The important thing is that every step creates evidence.
+
+Speaker A: Logs, exit status and outputs.
+
+Speaker B: So a red job is only a summary.
+
+Speaker A: Exactly. The useful evidence usually lives in the failing step's logs.
+
+Speaker B: Prediction.
+
+Speaker A: A workflow is red. Where do you look first?
+
+Speaker B: The failed job, then the exact failed step and its logs.
+
+Speaker A: Good.
+
+Speaker B: Not the top-level red badge only.
+
+Speaker A: Correct.
+
+Speaker B: Stage five: artifact.
+
+Speaker A: A produced result can move to another job or later stage.
+
+Speaker B: Container image.
+
+Speaker A: Example.
+
+Speaker B: Build output.
+
+Speaker A: Example.
+
+Speaker B: Test report.
+
+Speaker A: Also an artifact in many workflows, even when it is not the production package.
+
+Speaker B: Now cache.
+
+Speaker A: Different purpose.
+
+Speaker B: Cache reuses data to make work faster.
+
+Speaker A: Yes.
+
+Speaker B: Artifact is a produced result that later stages may consume.
+
+Speaker A: Exactly.
+
+Speaker B: So if a cache is corrupted, the build should fail or produce different evidence; I should not treat the cache itself as the release.
+
+Speaker A: Good.
+
+Speaker B: Prediction.
+
+Speaker A: A cache restore succeeds. Does that prove the build is correct?
+
+Speaker B: No. The cache is an optimization. The build and tests still have to prove the result.
+
+Speaker A: Exactly.
+
+Speaker B: What about secrets?
+
+Speaker A: Credentials belong at a secure runtime boundary.
+
+Speaker B: Not in source.
+
+Speaker A: Correct.
+
+Speaker B: Not in a public artifact.
+
+Speaker A: Correct.
+
+Speaker B: And not in logs.
+
+Speaker A: Exactly.
+
+Speaker B: So a secret is another boundary we must protect.
+
+Speaker A: Yes.
+
+Speaker B: Failure case.
+
+Speaker A: A deployment token appears in a build log.
+
+Speaker B: The pipeline has a credential-handling failure even if the deployment succeeded.
+
+Speaker A: Exactly.
+
+Speaker B: The pipeline control model must include secret safety.
+
+Speaker A: Right.
+
+Speaker B: Now a complete workflow.
+
+Speaker A: Pull request opens.
+
+Speaker B: Workflow starts.
+
+Speaker A: Test job runs.
+
+Speaker B: Build job runs.
+
+Speaker A: Artifact is produced.
+
+Speaker B: Publish job moves it to the next stage.
+
+Speaker A: Production deployment happens in a controlled stage.
+
+Speaker B: Runtime verification runs.
+
+Speaker A: Exactly.
+
+Speaker B: The Actions file is just the executable description of that control path.
+
+Speaker A: Good.
+
+Speaker B: Controlled failure?
+
+Speaker A: Use a disposable workflow branch.
+
+Speaker B: First make the workflow green.
+
+Speaker A: Good.
+
+Speaker B: Then make one step fail intentionally.
+
+Speaker A: Good.
+
+Speaker B: Read the exact step logs.
+
+Speaker A: Good.
+
+Speaker B: Restore the step and verify the workflow returns green.
+
+Speaker A: Exactly.
+
+Speaker B: Then add one artifact output between jobs.
+
+Speaker A: Good.
+
+Speaker B: Prove the later job uses the artifact rather than rebuilding silently.
+
+Speaker A: Excellent.
+
+Speaker B: That turns the lab from YAML typing into execution reasoning.
+
+Speaker A: Exactly.
 
 Speaker B: Mac lab?
 
-Speaker A: Create a small workflow with checkout, setup, build, and artifact upload. Make one step fail intentionally. Read the logs from the failed step, not just the red status at the top.
+Speaker A: Build a tiny workflow with checkout, runtime setup, test, build and artifact upload.
 
-Speaker B: Because the red status tells me it failed, not why.
+Speaker B: Make one step fail.
 
-Speaker A: Exactly. Statuses are summaries. Logs are evidence.
+Speaker A: Good.
 
+Speaker B: Use the logs to diagnose it.
+
+Speaker A: Good.
+
+Speaker B: Restore the step.
+
+Speaker A: Good.
+
+Speaker B: Then add a cache.
+
+Speaker A: Good.
+
+Speaker B: Ask what happens if the cache disappears.
+
+Speaker A: Excellent question. The workflow should still be semantically correct without the optimization.
+
+Speaker B: Recall.
+
+Speaker A: What is a workflow?
+
+Speaker B: The automation definition that controls when jobs run and how they form the pipeline.
+
+Speaker A: What is a job?
+
+Speaker B: A unit of grouped work that runs in one execution environment.
+
+Speaker A: What is a runner?
+
+Speaker B: The machine or execution environment where a job actually runs.
+
+Speaker A: What are steps?
+
+Speaker B: Ordered commands or actions that create execution results and evidence inside a job.
+
+Speaker A: Cache versus artifact?
+
+Speaker B: Cache reuses data to make work faster. An artifact is a produced result that later stages or humans may consume.
+
+Speaker A: Where should secrets live?
+
+Speaker B: In secure runtime configuration, not source code, public artifacts or logs.
+
+Speaker A: Final challenge.
+
+Speaker B: A GitHub Actions workflow is red.
+
+Speaker A: Your model?
+
+Speaker B: Workflow -> Job -> Runner -> Steps -> Artifact. I identify the failed job, inspect the failed step logs, understand the runner context, verify the intended output, and then prove the corrected workflow completes.
+
+Speaker A: Good.
+
+Speaker B: So GitHub Actions is an execution system for the CI/CD model.
+
+Speaker A: Exactly.
+
+Speaker B: Run one failure, read the real evidence, and make the workflow prove its own recovery.
 
 EPISODE D4.4 — Infrastructure as Code
 

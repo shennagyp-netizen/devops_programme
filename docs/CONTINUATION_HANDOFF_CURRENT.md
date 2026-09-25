@@ -1965,5 +1965,14 @@ Active PR #66 scope:
 - TDD/full-programme gate is required before merge.
 
 
+
+Active PR #67 scope:
+- D4.3 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `github-actions-execution-v1`.
+- Teaching model: Workflow -> Job -> Runner -> Steps -> Artifact.
+- The rewritten script distinguishes jobs as execution boundaries, runner context, step-level logs, cache versus artifact, and secret-handling boundaries.
+- Controlled failure makes one step fail, diagnoses it from step logs, restores it, and proves workflow recovery; artifact transfer is then used to reinforce cross-job identity.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================

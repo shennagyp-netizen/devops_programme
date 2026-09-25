@@ -36,7 +36,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-health-scaling-v1"
   | "kubernetes-failure-loop-v1"
   | "git-production-workflow-v1"
-  | "cicd-control-path-v1";
+  | "cicd-control-path-v1"
+  | "github-actions-execution-v1";
 
 export type LessonContentBlock =
   | {
@@ -89,6 +90,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D4.3": {
+    version: 1,
+    blocks: [
+      {
+        id: "d4-3-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "GitHub Actions turns the CI/CD control model into executable automation. Learn workflow, job, runner, steps and artifact as separate execution boundaries."
+      },
+      {
+        id: "d4-3-github-actions",
+        type: "illustration",
+        heading: "The GitHub Actions execution model",
+        alt: "A workflow creates jobs that run on runners through ordered steps and produce artifacts while caches and secrets serve separate purposes",
+        bindingId: "D4.3:d4-3-github-actions",
+        nodes: ["Workflow", "Job", "Runner", "Steps", "Artifact"],
+        variant: "github-actions-execution-v1",
+        caption:
+          "Use the Actions vocabulary to inspect execution and evidence, not to replace the underlying CI/CD model."
+      }
+    ]
+  },
+
+
   "D4.2": {
     version: 1,
     blocks: [
@@ -927,6 +953,7 @@ export function validateLessonContent(
         block.variant !== "kubernetes-failure-loop-v1" &&
         block.variant !== "git-production-workflow-v1" &&
         block.variant !== "cicd-control-path-v1" &&
+        block.variant !== "github-actions-execution-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
