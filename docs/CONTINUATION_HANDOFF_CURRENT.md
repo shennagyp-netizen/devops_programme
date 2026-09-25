@@ -1927,5 +1927,14 @@ Merged PR #54:
 - **Day 2 is now gold-standard from D2.1 through D2.7.**
 - Next content boundary: **D3.1** (first lesson of the next Intermediate curriculum block).
 
+
+Active PR #55 scope:
+- D3.1 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `kubernetes-reconciliation-v1`.
+- Teaching model: Desired State -> Controller -> Observe -> Act -> Converge.
+- The rewritten script teaches Kubernetes as an ongoing reconciliation system rather than YAML execution.
+- Controlled failure covers pod deletion and an impossible image state, distinguishing controller behavior from workload feasibility.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
