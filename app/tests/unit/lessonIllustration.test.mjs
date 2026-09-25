@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models HTTP as an application exchange from request to response evidence", () => {
+    const model = getLessonIllustrationModel({
+      id: "d2-3-http",
+      type: "illustration",
+      heading: "The HTTP exchange",
+      alt: "An HTTP request carries method, path and headers to an application route that returns a status, headers and body for the client to interpret",
+      bindingId: "D2.3:d2-3-http",
+      nodes: ["Request", "Headers", "Route", "Response", "Evidence"],
+      variant: "http-exchange-v1"
+    });
+
+    expect(model.variant).toBe("http-exchange-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "request",
+      "headers",
+      "route",
+      "response",
+      "evidence"
+    ]);
+    expect(model.foundation.label).toBe("HTTP is an application protocol, not the network itself");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "request-line",
+      "status-code",
+      "headers",
+      "body"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "request-shape",
+      "route-selection",
+      "status-meaning",
+      "user-proof"
+    ]);
+  });
+
   it("models DNS as a naming path from query to resolver, authority and freshness", () => {
     const model = getLessonIllustrationModel({
       id: "d2-2-dns",
