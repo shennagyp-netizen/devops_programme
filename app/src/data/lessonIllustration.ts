@@ -39,7 +39,8 @@ export type LessonIllustrationVariantV1 =
   | "scaling-control-loop-v1"
   | "database-scale-v1"
   | "distributed-failure-v1"
-  | "reliability-control-v1";
+  | "reliability-control-v1"
+  | "observability-decision-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -1217,6 +1218,37 @@ const RELIABILITY_CONTROL_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const OBSERVABILITY_DECISION_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "observability-decision-v1",
+  title: "The observability decision path",
+  stages: [
+    { id: "question", label: "Question", detail: "Start with a user or operational question that needs an answer." },
+    { id: "signal", label: "Signal", detail: "Choose logs, metrics or traces that can answer the specific question without collecting noise for its own sake." },
+    { id: "correlation", label: "Correlation", detail: "Compare signals over the same time window and request context to separate plausible causes." },
+    { id: "objective", label: "Objective", detail: "Use an SLI and SLO to define the service behavior that matters and the tolerated error budget." },
+    { id: "decision", label: "Decision", detail: "Turn evidence into an operational action such as mitigation, capacity work, alert tuning or a rollback." },
+    { id: "user-proof", label: "User Proof", detail: "Verify the real user path and objective after the action rather than trusting a single green dashboard." }
+  ],
+  foundation: {
+    label: "Observability exists to answer operational questions",
+    detail: "Instrumentation has cost. The right signals are the ones that reduce uncertainty about the service behavior the team actually needs to control."
+  ],
+  callouts: [
+    { id: "logs", label: "Logs", detail: "Time-stamped events provide detailed context about what a component recorded." },
+    { id: "metrics", label: "Metrics", detail: "Measured values over time make rates, latency, saturation and error ratios visible at service scale." },
+    { id: "traces", label: "Traces", detail: "Request-level spans show where one operation spent time across distributed components." },
+    { id: "slo", label: "SLI + SLO", detail: "An SLI measures service behavior; an SLO sets the target and turns reliability into an explicit operating objective." }
+  ],
+  failureChecks: [
+    { id: "signal-fit", label: "1. Signal fit", detail: "Which signal can answer the operational question with the least ambiguity and acceptable cost?" },
+    { id: "correlation", label: "2. Correlation", detail: "Do independent signals change together, or is one alarming graph being mistaken for a cause?" },
+    { id: "objective-gap", label: "3. Objective gap", detail: "Is observed service behavior inside or outside the SLO and error-budget policy?" },
+    { id: "action-proof", label: "4. Action proof", detail: "Did the operational action improve the SLO-relevant user behavior after the change?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1508,6 +1540,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "observability-decision-v1") {
+    return {
+      ...OBSERVABILITY_DECISION_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1561,7 +1600,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "scaling-control-loop-v1" &&
     model.variant !== "database-scale-v1" &&
     model.variant !== "distributed-failure-v1" &&
-    model.variant !== "reliability-control-v1"
+    model.variant !== "reliability-control-v1" &&
+    model.variant !== "observability-decision-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
