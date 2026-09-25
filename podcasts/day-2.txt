@@ -1412,67 +1412,277 @@ Speaker A: Exactly. Build one, break one safely, recover it, and explain what th
 
 EPISODE D2.6 — Docker Networking and Storage
 
-Speaker A: Now connect the networking theory to containers.
+Speaker A: We know what a container is.
 
-Speaker B: So all those IPs and ports were secretly preparing us for this.
-
-Speaker A: Precisely. A container can have a network namespace and an address inside a Docker network. Port publishing connects host-side access to a container service.
-
-Speaker A: Think of an apartment complex. Internal apartment numbers work inside the complex. Visitors enter through the building entrance. Docker network addressing and published ports are different paths.
-
-Speaker A: Volumes solve another problem: data that must outlive a container process.
-
-Speaker A: Real-life example: throwing away a restaurant kitchen staff should not destroy the restaurant's inventory database.
-
-Speaker B: That's a slightly dramatic way to explain a volume.
-
-Speaker A: You remembered it, though.
-
-Speaker A: Lab: run a frontend, API, and database. Break the database hostname, then break the published port, and identify why the symptoms differ.
-Speaker B: Now the networking day finally connects to Docker.
-
-Speaker A: This is where your earlier work pays off. Container networking is easier once ports, addresses, routing, and name resolution are already familiar.
-
-Speaker B: Inside a Docker network, containers can discover one another.
-
-Speaker A: Through the mechanisms Docker provides, yes. And port publishing is a separate concern: exposing a container service through the host.
-
-Speaker B: So container port eighty and host port eighty are not automatically the same thing.
-
-Speaker A: Right.
-
-Speaker B: Apartment complex again?
-
-Speaker A: Apartment numbers work inside the building. Visitors still need an entrance. Internal service discovery and published access are different paths.
-
-Speaker B: Storage has a similar boundary.
-
-Speaker A: Exactly. The writable layer of a container is associated with that container's lifecycle. Persistent application data usually belongs in a volume or another external storage mechanism.
-
-Speaker B: Meaning if I delete and recreate the database container, I shouldn't expect the database files inside the disposable container filesystem to survive.
-
-Speaker A: Correct. That's one of the first painful lessons people learn.
-
-Speaker B: Prediction. Database container is healthy. Application says “cannot resolve database.”
-
-Speaker A: What does that point you toward?
-
-Speaker B: Name resolution or network configuration before database credentials.
-
-Speaker A: Good. Now change the symptom: the hostname resolves, but the TCP connection is refused.
-
-Speaker B: Different hypothesis. Something is reachable, but the service isn't accepting connections on that port.
+Speaker B: Now we need to connect multiple containers and keep important data alive.
 
 Speaker A: Exactly.
 
+Speaker B: The picture is:
+
+Speaker A: Service -> Network -> Name -> Port -> Volume.
+
+Speaker B: Five boxes. Five different questions.
+
+Speaker A: That is the point.
+
+Speaker B: Stage one: service.
+
+Speaker A: Imagine a small application with a frontend, an API and a database.
+
+Speaker B: Each runs as a separate container.
+
+Speaker A: Right. The goal is to let them work together without hard-coding fragile container IP addresses.
+
+Speaker B: Stage two: network.
+
+Speaker A: Docker networks create an internal communication boundary for connected containers.
+
+Speaker B: So the API can talk to the database over the Docker network.
+
+Speaker A: Yes.
+
+Speaker B: Stage three: name.
+
+Speaker A: Docker can provide service discovery so one service can reach another by a stable service name on the intended network.
+
+Speaker B: So the application should not depend on the current container IP.
+
+Speaker A: Exactly. Container IPs are runtime details, not good permanent application configuration.
+
+Speaker B: Prediction.
+
+Speaker A: The database container is healthy. The API says it cannot resolve `db`.
+
+Speaker B: I investigate the network and service name before changing database credentials.
+
+Speaker A: Good.
+
+Speaker B: Now change the symptom.
+
+Speaker A: The API resolves `db`, but the TCP connection to the database port is refused.
+
+Speaker B: Different evidence. Name resolution worked. I now check whether the database process is listening on the expected internal port and whether the network path is correct.
+
+Speaker A: Exactly.
+
+Speaker B: Stage four: port.
+
+Speaker A: Here we need one of the most common Docker distinctions.
+
+Speaker B: Container port versus published host port.
+
+Speaker A: Correct.
+
+Speaker B: Containers on the same Docker network can often talk to the service's internal port directly.
+
+Speaker A: Yes.
+
+Speaker B: Publishing a port exposes a container service through a host-side port.
+
+Speaker A: Exactly.
+
+Speaker B: So host port 8080 mapping to container port 80 is an external access path.
+
+Speaker A: Right. It is not the same thing as one container calling another container on the internal network.
+
+Speaker B: Prediction.
+
+Speaker A: The API and database are on the same Docker network. The database has internal port 5432. Does the API need the host's published port just to reach the database?
+
+Speaker B: Normally no. It can use the internal service name and internal service port on the Docker network.
+
+Speaker A: Good.
+
+Speaker B: So publishing database port 5432 for host access is a separate decision.
+
+Speaker A: Exactly.
+
+Speaker B: That distinction prevents a lot of bad configuration.
+
+Speaker A: Yes.
+
+Speaker B: Stage five: volume.
+
+Speaker A: Now leave networking behind and think about data lifetime.
+
+Speaker B: The database process writes data.
+
+Speaker A: Where should important data live if the container itself is disposable?
+
+Speaker B: In a volume or another storage system whose lifecycle is separate from the container.
+
+Speaker A: Exactly.
+
+Speaker B: So the database container can be replaced while the data survives.
+
+Speaker A: That is the goal.
+
+Speaker B: Prediction.
+
+Speaker A: I delete the database container but keep its volume. Do I expect the database data to disappear just because the container was removed?
+
+Speaker B: No. The volume is separate state. A new database container can use it, assuming the database and schema are compatible.
+
+Speaker A: Good.
+
+Speaker B: That is the storage version of the same boundary idea.
+
+Speaker A: Exactly.
+
+Speaker B: The container is disposable. The important data is not.
+
+Speaker A: Usually. The exact design depends on the application.
+
+Speaker B: Real-life example?
+
+Speaker A: Think of an apartment building.
+
+Speaker B: The tenants can change apartments, but the building's storage room can keep the inventory.
+
+Speaker A: Roughly. The important lesson is that process lifecycle and data lifecycle do not have to be the same.
+
+Speaker B: Now build the full stack.
+
+Speaker A: Frontend.
+
+Speaker B: API.
+
+Speaker A: Database.
+
+Speaker B: Each container has its own process.
+
+Speaker A: The API reaches the database through an internal network and service name.
+
+Speaker B: The user reaches the frontend through a published host port.
+
+Speaker A: And the database stores important data in a volume.
+
+Speaker B: That is a much clearer picture than one giant Docker command.
+
+Speaker A: Exactly.
+
+Speaker B: Now the failure matrix.
+
+Speaker A: Wrong database hostname.
+
+Speaker B: Name resolution or service-discovery failure.
+
+Speaker A: Correct hostname, refused database connection.
+
+Speaker B: The network name works, but the service is not accepting connections on that port or the internal path is wrong.
+
+Speaker A: Correct internal path, but the browser cannot reach the frontend.
+
+Speaker B: Check published host port and host-side access path.
+
+Speaker A: Database comes back empty after container recreation.
+
+Speaker B: Check whether the database used a persistent volume and whether the new container attached the expected volume.
+
+Speaker A: Good.
+
+Speaker B: So four similar user complaints can come from four different boundaries.
+
+Speaker A: Exactly.
+
+Speaker B: Controlled experiment?
+
+Speaker A: Build a tiny three-service stack.
+
+Speaker B: Frontend, API and database.
+
+Speaker A: Good.
+
+Speaker B: First make the known-good stack work.
+
+Speaker A: Good.
+
+Speaker B: Then break only the database hostname.
+
+Speaker A: Predict the API symptom.
+
+Speaker B: Name-resolution failure.
+
+Speaker A: Restore it.
+
+Speaker B: Then break only the published frontend port.
+
+Speaker A: Predict the user symptom.
+
+Speaker B: Host-side connection failure while internal API-to-database communication can still work.
+
+Speaker A: Exactly.
+
+Speaker B: Finally write data to the database, remove the database container but keep the volume, recreate the container and verify the data survives.
+
+Speaker A: Good.
+
+Speaker B: That is one lesson combining network and storage lifecycle.
+
+Speaker A: Yes, because production systems combine them too.
+
 Speaker B: Mac lab?
 
-Speaker A: Run a tiny frontend, API, and database stack. Break the database hostname. Then restore it and break the published port. Compare the evidence. Finally remove the database container while keeping the volume and verify what survives.
+Speaker A: Run the three-service stack.
 
-Speaker B: So the lab makes the abstractions collide with reality.
+Speaker B: Record service names, internal ports, published ports and volume names.
 
-Speaker A: That's the idea. Otherwise Docker remains a vocabulary lesson.
+Speaker A: Good.
 
+Speaker B: Verify an internal API-to-database request.
+
+Speaker A: Good.
+
+Speaker B: Verify the external user path through the published port.
+
+Speaker A: Good.
+
+Speaker B: Break the database hostname.
+
+Speaker A: Observe.
+
+Speaker B: Restore.
+
+Speaker A: Then break the published port.
+
+Speaker B: Observe the different evidence.
+
+Speaker A: Finally test volume persistence across container recreation.
+
+Speaker B: Recall.
+
+Speaker A: What is the internal network for?
+
+Speaker B: Container-to-container communication inside the Docker network boundary.
+
+Speaker A: Why use a service name?
+
+Speaker B: To give internal clients a stable discovery name instead of depending on a changing container IP.
+
+Speaker A: What is a published port?
+
+Speaker B: A host-side access path to a container service; it is separate from internal service-to-service traffic.
+
+Speaker A: Why use a volume?
+
+Speaker B: To keep important data beyond one container's lifecycle.
+
+Speaker A: Final challenge.
+
+Speaker B: The database is healthy. The API cannot resolve `db`. Then I fix that and the API reaches `db` but the user still cannot reach the frontend.
+
+Speaker A: Your model?
+
+Speaker B: Service -> Network -> Name -> Port -> Volume. I diagnose internal name resolution first, then internal transport, then the published host port for the user path, and I keep database data lifecycle separate from the container lifecycle.
+
+Speaker A: Good.
+
+Speaker B: So Docker networking and storage are not one feature.
+
+Speaker A: They are separate boundaries that meet in the same system.
+
+Speaker B: Run the stack, break one boundary at a time, and prove recovery.
 
 EPISODE D2.7 — Break Docker
 
