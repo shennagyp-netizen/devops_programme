@@ -433,14 +433,26 @@ export function validateAnimationDefinition(
   }
 
   const primitiveIds = new Set<string>();
-  const primitiveKinds = new Map<string, string>();
 
   if (Array.isArray(value.primitives)) {
     for (const primitive of value.primitives) {
-      const before = primitiveIds.size;
       validatePrimitive(primitive, primitiveIds, failures);
-      if (primitiveIds.size > before && isObject(primitive) && isNonEmptyString(primitive.id)) {
-        primitiveKinds.set(primitive.id, String(primitive.kind));
+    }
+
+    for (const primitive of value.primitives) {
+      if (!isObject(primitive) || !isNonEmptyString(primitive.id)) continue;
+
+      if (primitive.kind === "connection" || primitive.kind === "packet") {
+        if (isNonEmptyString(primitive.from) && !primitiveIds.has(primitive.from)) {
+          failures.push(
+            `primitive ${primitive.id} source does not exist: ${primitive.from}`
+          );
+        }
+        if (isNonEmptyString(primitive.to) && !primitiveIds.has(primitive.to)) {
+          failures.push(
+            `primitive ${primitive.id} target does not exist: ${primitive.to}`
+          );
+        }
       }
     }
   }
@@ -577,19 +589,6 @@ export function validateAnimationDefinition(
     }
     if (value.accessibility.reducedMotion !== "supported") {
       failures.push("animation reduced-motion support is required");
-    }
-  }
-
-  for (const [id, kind] of primitiveKinds) {
-    if (
-      (kind === "connection" || kind === "packet") &&
-      isObject(value.primitives?.find?.(() => false))
-    ) {
-      // Intentionally empty: endpoint validation below is performed without
-      // reaching into animation implementation details.
-    }
-    if (!primitiveIds.has(id)) {
-      failures.push(`primitive id is missing: ${id}`);
     }
   }
 
