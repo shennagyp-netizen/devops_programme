@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models Kubernetes networking as service, selector, endpoint set, pod and evidence", () => {
+    const model = getLessonIllustrationModel({
+      id: "d3-2-kubernetes-networking",
+      type: "illustration",
+      heading: "The Kubernetes network path",
+      alt: "A client resolves a Kubernetes Service, the selector determines its endpoint set, traffic reaches a selected Pod, and evidence exposes the path",
+      bindingId: "D3.2:d3-2-kubernetes-networking",
+      nodes: ["Service", "Selector", "Endpoint set", "Pod", "Evidence"],
+      variant: "kubernetes-networking-v1"
+    });
+
+    expect(model.variant).toBe("kubernetes-networking-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "service",
+      "selector",
+      "endpoint-set",
+      "pod",
+      "evidence"
+    ]);
+    expect(model.foundation.label).toBe("A Service is a stable abstraction over a changing set of Pods");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "service-identity",
+      "selector",
+      "endpoints",
+      "pod-readiness"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "service-lookup",
+      "selector-match",
+      "endpoint-membership",
+      "traffic-proof"
+    ]);
+  });
+
   it("models Kubernetes reconciliation as desired state, controller, observation, action and convergence", () => {
     const model = getLessonIllustrationModel({
       id: "d3-1-kubernetes-model",
