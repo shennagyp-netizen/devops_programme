@@ -25,7 +25,8 @@ export type LessonIllustrationVariantV1 =
   | "container-execution-v1"
   | "docker-network-storage-v1"
   | "docker-failure-loop-v1"
-  | "kubernetes-reconciliation-v1";
+  | "kubernetes-reconciliation-v1"
+  | "kubernetes-service-path-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -784,6 +785,36 @@ const KUBERNETES_RECONCILIATION_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const KUBERNETES_SERVICE_PATH_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "kubernetes-service-path-v1",
+  title: "The Kubernetes Service path",
+  stages: [
+    { id: "service", label: "Service", detail: "A Service gives clients a stable logical destination while the Pods behind it can change." },
+    { id: "selector", label: "Selector", detail: "Label selectors define which Pods belong to the Service's backend set." },
+    { id: "endpoints", label: "Endpoints", detail: "The endpoint set represents the current backend addresses available to receive traffic." },
+    { id: "pod", label: "Pod", detail: "Pods are replaceable workload instances whose lifecycle can change without changing the Service identity." },
+    { id: "path", label: "Path", detail: "Client traffic follows the Service abstraction to an available backend rather than targeting a Pod IP directly." }
+  ],
+  foundation: {
+    label: "A Service gives clients stable discovery while Pods can change",
+    detail: "The Service identity stays stable while selectors and endpoint state adapt to the current Pod set."
+  },
+  callouts: [
+    { id: "stable-name", label: "Stable name", detail: "Clients use the Service identity instead of tracking individual Pod IP addresses." },
+    { id: "selector", label: "Selector", detail: "Labels determine which Pods are included in the Service backend set." },
+    { id: "endpoint-set", label: "Endpoint set", detail: "The current endpoint set shows which backends are actually available to receive traffic." },
+    { id: "pod-lifecycle", label: "Pod lifecycle", detail: "A Pod can die and be replaced while the Service abstraction remains unchanged." }
+  ],
+  failureChecks: [
+    { id: "selector-match", label: "1. Selector match", detail: "Do the Service selector labels actually match the intended Pods?" },
+    { id: "endpoint-health", label: "2. Endpoint health", detail: "Does the current endpoint set contain the backends that should receive traffic?" },
+    { id: "service-path", label: "3. Service path", detail: "Does a client request use the expected Service name and port?" },
+    { id: "pod-replacement", label: "4. Pod replacement", detail: "When a Pod dies, does the replacement become a usable endpoint?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -977,6 +1008,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "kubernetes-service-path-v1") {
+    return {
+      ...KUBERNETES_SERVICE_PATH_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1016,7 +1054,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "container-execution-v1" &&
     model.variant !== "docker-network-storage-v1" &&
     model.variant !== "docker-failure-loop-v1" &&
-    model.variant !== "kubernetes-reconciliation-v1"
+    model.variant !== "kubernetes-reconciliation-v1" &&
+    model.variant !== "kubernetes-service-path-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
