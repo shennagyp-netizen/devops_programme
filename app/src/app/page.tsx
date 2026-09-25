@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { courses } from "../data/programme";
+import { MarketingHeroIllustration } from "../components/MarketingHeroIllustration";
 
 export const metadata: Metadata = {
   title: "DevOps Programme — Production Engineering",
@@ -76,21 +77,13 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="marketing-hero-panel" aria-label="Learning loop">
+        <div className="marketing-hero-panel">
           <div className="eyebrow">THE OPERATING LOOP</div>
-          <div className="marketing-loop">
-            {["Understand", "Predict", "Operate", "Break", "Diagnose", "Repair"].map(
-              (step, index) => (
-                <div className="marketing-loop-step" key={step}>
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <strong>{step}</strong>
-                </div>
-              )
-            )}
-          </div>
+          <MarketingHeroIllustration />
           <p>
-            The goal is not to finish pages. The goal is to make a system
-            behave correctly and explain why it failed.
+            The programme turns each concept into an operating loop: understand
+            the mechanism, predict the result, make a controlled change, create
+            a failure, diagnose the cause, repair it, and prove recovery.
           </p>
         </div>
       </section>
