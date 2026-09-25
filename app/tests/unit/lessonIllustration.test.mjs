@@ -329,6 +329,39 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models CI/CD as source validation artifact promotion and runtime proof", () => {
+    const model = getLessonIllustrationModel({
+      id: "d4-2-ci-cd",
+      type: "illustration",
+      heading: "The CI/CD control path",
+      alt: "A source change is validated, built into an identified artifact, promoted through controlled environments and verified in the running system",
+      bindingId: "D4.2:d4-2-ci-cd",
+      nodes: ["Source", "Validate", "Artifact", "Promote", "Verify"],
+      variant: "ci-cd-pipeline-v1"
+    });
+
+    expect(model.variant).toBe("ci-cd-pipeline-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "source",
+      "validate",
+      "artifact",
+      "promote",
+      "verify"
+    ]);
+    expect(model.foundation.label).toBe("A pipeline is an evidence chain, not just an automation script");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "risk-gate",
+      "artifact-identity",
+      "promotion",
+      "runtime-proof"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "source-identity",
+      "validation-evidence",
+      "artifact-match",
+      "runtime-health"
+    ]);
+  });
   it("models Git production workflow as change, review, commit, release and recovery", () => {
     const model = getLessonIllustrationModel({
       id: "d4-1-git-workflow",
