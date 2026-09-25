@@ -59,6 +59,38 @@ describe("lesson illustration teaching model", () => {
 
 
 
+  it("models repeatable service operation as build, configure, start, health and user proof", () => {
+    const model = getLessonIllustrationModel({
+      id: "b1-5-repeatability",
+      type: "illustration",
+      heading: "The repeatable service contract",
+      alt: "An application image receives environment configuration, starts with its dependencies, becomes ready, and is proven through a real user request",
+      bindingId: "B1.5:b1-5-repeatability",
+      nodes: ["Image", "Configuration", "Runtime", "Health", "User path"],
+      variant: "repeatable-service-v1"
+    });
+
+    expect(model.variant).toBe("repeatable-service-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "image",
+      "configuration",
+      "runtime",
+      "health",
+      "user-path"
+    ]);
+    expect(model.foundation.label).toBe("Persistent data has its own lifecycle");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "config-secrets",
+      "startup-contract"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "configuration-loaded",
+      "process-running",
+      "service-ready",
+      "user-path-works"
+    ]);
+  });
+
   it("models the request path as address, route, transport and application", () => {
     const model = getLessonIllustrationModel({
       id: "b1-2-request-path",
