@@ -177,8 +177,7 @@ Expected lesson ingredients:
 - section ID
 - project ID
 - objective
-- human example
-- lab/command entry point
+- human example- lab/command entry point
 - challenge
 - recall
 - spoken asset
@@ -262,6 +261,41 @@ Validation state:
 - The assessment bank contract now accepts the authored diagnostic response shape where `itemType` is a string or non-empty string array and `expectedElements` is a positive count or string list; this matches the existing authored pilot banks and is explicitly validated.
 - The project contract checker was corrected to inspect intermediate project mappings in `courseLessons.ts`; the hands-on contract checker was corrected so its JavaScript template literals parse correctly.
 - Live browser/visual verification is not yet validated because the connected Vercel account exposes no project/team deployment access in this session. No preview browser result is claimed.
+
+
+
+============================================================
+ANIMATION / CURRICULUM BINDING — CURRENT OVERRIDE
+============================================================
+
+As of 2026-09-25, the animation platform is merged to main at commit 97d4f25345a7cae09b393f3b017e7e5d3502c22d.
+
+Post-merge workflow run 36082470933 completed successfully. The full-programme-gate job completed all programme-contract, unit/integration, TypeScript typecheck and Next.js production-build steps successfully.
+
+The next animation implementation boundary is the curriculum-to-illustration binding contract. Do not scale the scenario catalogue before this contract is implemented and tested.
+
+Authoritative rule:
+Curriculum determines the exact instructional sequence. Illustration bindings connect curriculum content to reusable animation capabilities. The animation library does not decide lesson order, learner progression or instructional intent.
+
+The normative binding document is docs/curriculum/CURRICULUM_ILLUSTRATION_BINDING.md.
+The animation-specific continuation addendum is docs/CONTINUATION_HANDOFF_ANIMATION.md.
+
+The current animation platform already includes reusable contracts, deterministic runtime, shared SVG rendering, accessibility/reduced-motion behavior, geometry validation and the HTTP request reference scenario. Browser visual validation remains unclaimed.
+
+The immediate implementation order is:
+1. curriculum illustration-binding contract
+2. binding validators
+3. unit/integration/red-team coverage
+4. full programme gate
+5. browser visual validation when a real preview is accessible
+6. additional reusable animation scenarios.
+
+Do not let animation definitions accumulate lesson-specific IDs or lesson-order logic.
+
+============================================================
+END ANIMATION / CURRICULUM BINDING OVERRIDE
+============================================================
+
 
 ============================================================
 5. PROJECT CONTRACT
@@ -357,8 +391,7 @@ Difficult items can use incomplete evidence, interacting failures, misleading he
 
 Challenge items require transfer to a novel architecture, scale, failure pattern or trade-off.
 
-============================================================
-8. SPOKEN CONTENT CONTRACT
+============================================================8. SPOKEN CONTENT CONTRACT
 ============================================================
 
 Total authored spoken lessons: 53.
@@ -538,7 +571,6 @@ runtimeVerification.test.mjs:
 - valid envelope acceptance.
 
 Current integration suites:
-
 assessment-banks.integration.test.mjs:
 - every authored bank
 - 40 items per bank
@@ -717,7 +749,6 @@ Do not add random CI probes without a specific isolation hypothesis.
 
 When creating a new file through the GitHub connector, ALWAYS provide:
 branch: clearance/learning-assessment-architecture
-
 If the branch is omitted, a create-file operation can land on the default branch.
 
 This happened previously with runtime/hands-on files and caused cleanup commits on the default branch.
@@ -897,8 +928,7 @@ Project-contract gap still open:
 - The evidence ledger is not being treated as a substitute for those project history records.
 - Do not silently mark this requirement complete.
 
-Next gate:
-1. obtain observable test-stage evidence from CI or a working local checkout/dependency environment.
+Next gate:1. obtain observable test-stage evidence from CI or a working local checkout/dependency environment.
 2. resolve any actual test/build failures.
 3. only after the test/build gate is green, continue runtime expansion from observation-only tasks toward reversible changes, controlled failures, recovery and finally reset verification.
 ============================================================
@@ -1078,7 +1108,6 @@ Important:
 ============================================================
 
 Repository-level structural clearance is complete for the active branch.
-
 Authoritative counts:
 - Beginner: 7 sections, 10 lessons, 3 projects, 7 diagnostics, 7 banks, 280 items.
 - Intermediate: 8 sections, 32 lessons, 3 projects, 8 diagnostics, 8 banks, 320 items.
@@ -1257,7 +1286,6 @@ Browser UI
 -> PostgreSQL.
 
 There is no custom progress REST API.
-
 There is no client-generated learner ID.
 
 There is no client authority over the learner identity.
