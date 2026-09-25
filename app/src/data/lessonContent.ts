@@ -18,7 +18,8 @@ export type LessonIllustrationVariantV1 =
   | "incident-loop-v1"
   | "process-diagnosis-v1"
   | "linux-operating-model-v1"
-  | "terminal-composition-v1";
+  | "terminal-composition-v1"
+  | "service-permission-model-v1";
 
 export type LessonContentBlock =
   | {
@@ -71,6 +72,30 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D1.3": {
+    version: 1,
+    blocks: [
+      {
+        id: "d1-3-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Production behavior depends on more than application code. User identity, permissions, environment, service supervision and logs form the execution context around the process."
+      },
+      {
+        id: "d1-3-service-context",
+        type: "illustration",
+        heading: "The service execution context",
+        alt: "A service process runs with an identity and environment, accesses resources under permissions, follows a lifecycle, and leaves log evidence",
+        bindingId: "D1.3:d1-3-service-context",
+        nodes: ["Process", "Identity", "Resource", "Service", "Logs"],
+        variant: "service-permission-model-v1",
+        caption:
+          "Same code, different execution context, different system behavior."
+      }
+    ]
+  },
+
   "D1.2": {
     version: 1,
     blocks: [
@@ -444,7 +469,8 @@ export function validateLessonContent(
         block.variant !== "incident-loop-v1" &&
         block.variant !== "process-diagnosis-v1" &&
         block.variant !== "linux-operating-model-v1" &&
-        block.variant !== "terminal-composition-v1"
+        block.variant !== "terminal-composition-v1" &&
+        block.variant !== "service-permission-model-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }
