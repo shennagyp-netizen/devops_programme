@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #47, commit `417cf8ec4ce899623f705708e839214591ac1acb` (D1.6 routing-boundary script + illustration quality slice).
+**Latest main architecture/content merge:** PR #48, commit `7b9244616e707037c074fe3c1032f13aaa94ab58` (D2.1 transport-contract script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #47 has merged to `main`.
+**Active content-quality branch:** none. PR #48 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1880,36 +1880,27 @@ Merged PR #43:
 Merged PR #44:
 - D1.3 -> `service-permission-model-v1`: Process -> Identity -> Resource -> Service -> Logs.
 - Merge commit: `de0a4893f272640f2d02b54dd45ecc397acc6bf2`.
-- Final PR #44 gate passed **347 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #45:
 - D1.4 -> `network-operating-model-v1`: Interface -> Link -> IP -> Route -> Evidence.
 - Merge commit: `7ffa6edd1fd266fa0d3b585e674ae885c709b81a`.
-- CI run 36106220995 passed.
 
 Merged PR #46:
 - D1.5 -> `cidr-boundary-v1`: Address -> Prefix -> Boundary -> Range -> Verify.
 - Merge commit: `1d427a9c24e6b24954857f43eaf34981b5e67ebb`.
-- CI run 36106580796 passed.
-- D1.5 teaches CIDR as a network-boundary design decision and requires manual range reasoning before tool verification.
 
 Merged PR #47:
 - D1.6 -> `routing-boundary-v1`: Destination -> Route -> Next hop -> Boundary -> Evidence.
 - Merge commit: `417cf8ec4ce899623f705708e839214591ac1acb`.
 - Final PR #47 gate passed **369 tests**, all programme contracts, TypeScript and the Next.js production build.
-- A red-team typecheck failure caught the missing `routing-boundary-v1` entry in the shared lesson-content variant union; the type contract was corrected rather than suppressed.
-- D1.6 now separates route selection, gateway/next-hop behavior, NAT and access control, and explicitly teaches return-path evidence.
-- **Day 1 is now gold-standard from D1.1 through D1.6.**
-- Next content boundary: **D2.1** (first lesson of the next Intermediate curriculum block).
+- A red-team typecheck failure caught the missing `routing-boundary-v1` entry in the shared lesson-content variant union; it was corrected.
 
-
-Active PR #48 scope:
-- D2.1 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `transport-contract-v1`.
-- Teaching model: Endpoint -> Port -> Transport -> Delivery -> Evidence.
-- TCP and UDP are taught as different transport contracts; timeout, refusal, reset and application errors remain distinct evidence.
-- Controlled failure stops a disposable local service and verifies recovery.
-- TDD/full-programme gate is required before merge.
+Merged PR #48:
+- D2.1 -> `transport-contract-v1`: Endpoint -> Port -> Transport -> Delivery -> Evidence.
+- Merge commit: `7b9244616e707037c074fe3c1032f13aaa94ab58`.
+- D2.1 now teaches TCP and UDP as different transport contracts, and keeps refusal, timeout, reset and application errors as separate evidence.
+- Final PR #48 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- Next content boundary: **D2.2 — DNS**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
