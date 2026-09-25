@@ -10,6 +10,7 @@ const validIllustration = {
   type: "illustration",
   heading: "Flow",
   alt: "A simple flow",
+  bindingId: "TEST:visual",
   nodes: ["A", "B", "C"]
 };
 
