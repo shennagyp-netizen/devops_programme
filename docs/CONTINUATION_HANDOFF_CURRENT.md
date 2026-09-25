@@ -1893,5 +1893,14 @@ Merged PR #46:
 - Final PR #46 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 - Next content boundary: **D1.6 — Routing, Gateways and NAT**.
 
+
+Active PR #47 scope:
+- D1.6 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `routing-boundary-v1`.
+- Teaching model: Destination -> Route -> Next hop -> Boundary -> Evidence.
+- The rewritten script separates route selection, gateway/next-hop behavior, NAT and access control, and explicitly teaches return-path evidence.
+- Controlled failure changes one disposable route, predicts the affected destination, then restores and proves recovery.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
