@@ -760,36 +760,6 @@ const DOCKER_FAILURE_LOOP_VARIANT: LessonIllustrationModelV1 = {
 };
 
 
-const KUBERNETES_RECONCILIATION_VARIANT: LessonIllustrationModelV1 = {
-  version: 1,
-  variant: "kubernetes-reconciliation-v1",
-  title: "The Kubernetes reconciliation loop",
-  stages: [
-    { id: "desired-state", label: "Desired State", detail: "A Kubernetes object declares the state the workload should have." },
-    { id: "controller", label: "Controller", detail: "A controller owns a reconciliation loop that compares desired and actual state and decides what action is needed." },
-    { id: "observe", label: "Observe", detail: "The system observes current objects, health, scheduling state and other facts about actual state." },
-    { id: "act", label: "Act", detail: "The controller creates, updates or removes resources to reduce the difference between desired and actual state." },
-    { id: "converge", label: "Converge", detail: "Repeated observation and action move the system toward the desired state when that state is feasible." }
-  ],
-  foundation: {
-    label: "Kubernetes is a reconciliation system",
-    detail: "YAML describes desired state, but controllers continuously observe and act so the real system can converge toward that state."
-  },
-  callouts: [
-    { id: "desired-state", label: "Desired state", detail: "The specification says what should exist, not how to perform every individual repair." },
-    { id: "controller", label: "Controller", detail: "Controllers implement control loops that respond to differences between desired and actual state." },
-    { id: "actual-state", label: "Actual state", detail: "Running pods, scheduling, image state and health checks are part of the observed system." },
-    { id: "feasibility", label: "Feasibility", detail: "Reconciliation can keep trying while the desired state remains impossible because of an image, resource, configuration or scheduling problem." }
-  ],
-  failureChecks: [
-    { id: "specification", label: "1. Specification", detail: "Is the desired state actually what you intended to declare?" },
-    { id: "controller-action", label: "2. Controller action", detail: "What controller is responsible, and what action did it take after observing the difference?" },
-    { id: "replacement-health", label: "3. Replacement health", detail: "Did the new or updated resource become scheduled, running and ready?" },
-    { id: "feasibility", label: "4. Feasibility", detail: "If the controller keeps acting, what evidence shows the desired state itself is currently impossible to satisfy?" }
-  ]
-};
-
-
 const KUBERNETES_SERVICE_PATH_VARIANT: LessonIllustrationModelV1 = {
   version: 1,
   variant: "kubernetes-service-path-v1",
