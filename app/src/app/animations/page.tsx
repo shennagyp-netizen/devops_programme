@@ -44,7 +44,7 @@ export default function AnimationsPage() {
         </div>
       </section>
 
-      <Link className="secondary animation-back-link" href="/">
+      <Link className="secondary animation-back-link" href="/learn">
         Return to learning gateway
       </Link>
     </main>
