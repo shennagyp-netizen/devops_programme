@@ -2036,5 +2036,13 @@ Active PR #55 scope:
 - The lab now requires baseline capacity evidence, a controlled workload increase, one scaling change, and measurement of the next bottleneck.
 - TDD/full-programme gate is required before merge.
 
+
+Active PR #56 scope:
+- D5.2 is the database-scale quality slice replayed cleanly onto current `main` after the D5.1 squash merge.
+- New semantic illustration: `database-scale-v1`.
+- Teaching model: Query -> Access Path -> Correctness -> Copies -> Distribution -> Evidence.
+- Spoken script explicitly covers indexes, transactions/concurrency, replication freshness, partitioning/sharding and their trade-offs.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
