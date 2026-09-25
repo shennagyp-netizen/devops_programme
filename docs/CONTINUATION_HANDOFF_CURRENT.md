@@ -1930,5 +1930,13 @@ Merged PR #78:
 - **Day 2 Docker/TCP/DNS/HTTP/TLS block is now gold-standard through D2.7.**
 - Next content boundary: inspect the next lesson after D2.7 in the current 53-lesson programme source.
 
+
+Active PR D3.1 scope:
+- D3.1 (Kubernetes Mental Model) is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `kubernetes-reconciliation-v1`.
+- Teaching model: Desired State -> Controller -> Observe -> Act -> Converge.
+- The existing D3.1 script already contains prediction, controlled pod deletion, impossible desired-state conditions, evidence, and recovery proof; the work here connects that script to a semantic visual model rather than replacing useful instructional content.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
