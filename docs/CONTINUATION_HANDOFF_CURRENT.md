@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #55, commit `a66a3abb9be8db6b867f85d1430b4dba35934af1` (D3.1 Kubernetes reconciliation script + illustration quality slice).
+**Latest main architecture/content merge:** PR #59, commit `e634e8709a7cfe642b59c6f3966f700ea10947ab` (D3.2 Kubernetes networking script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #55 has merged to `main`.
+**Active content-quality branch:** none. PR #59 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1926,18 +1926,15 @@ Merged PR #54:
 Merged PR #55:
 - D3.1 -> `kubernetes-reconciliation-v1`: Desired State -> Controller -> Observe -> Act -> Converge.
 - Merge commit: `a66a3abb9be8db6b867f85d1430b4dba35934af1`.
-- D3.1 teaches Kubernetes as a reconciliation system, separates desired state from actual state, and demonstrates both successful replacement and impossible desired state.
 - Final PR #55 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- Next content boundary: **D3.2 — Kubernetes Networking**.
 
-
-Active PR D3.2 scope:
-- D3.2 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `kubernetes-networking-v1`.
-- Teaching model: Service -> Selector -> Endpoint set -> Pod -> Evidence.
-- The rewritten script separates stable Service identity, selector matching, endpoint membership, Pod readiness and the actual request path.
-- Controlled failures remove one Pod, break the Service selector, and verify endpoint/routing recovery.
-- TDD/full-programme gate is required before merge.
+Merged PR #59:
+- D3.2 -> `kubernetes-networking-v1`: Service -> Selector -> Endpoint set -> Pod -> Evidence.
+- Merge commit: `e634e8709a7cfe642b59c6f3966f700ea10947ab`.
+- D3.2 now teaches stable Service identity, selector matching, endpoint membership, Pod readiness and real request evidence as one diagnostic path.
+- Controlled failures remove a Pod, break the Service selector, and prove endpoint/routing recovery.
+- Final PR #59 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- Next content boundary: **D3.3 — Kubernetes Configuration and Storage**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
