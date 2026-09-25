@@ -58,7 +58,6 @@ export function LessonPanel({
   const [exerciseRecorded, setExerciseRecorded] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
   const [remediationFailure, setRemediationFailure] = useState<RemediationFailure | null>(null);
-  const remediationKey = `devops-programme-remediation:${lesson.id}:${handsOnTask.id}`;
   const [remediationAttempt, setRemediationAttempt] = useState(0);
   const [machineVerificationMessage, setMachineVerificationMessage] = useState("");
   const [localAgentAvailable, setLocalAgentAvailable] = useState(false);
@@ -77,6 +76,7 @@ export function LessonPanel({
   >([]);
   const command = commandForPlatform(lesson, platform);
   const handsOnTask: HandsOnTask = getHandsOnTask(lesson);
+  const remediationKey = `devops-programme-remediation:${lesson.id}:${handsOnTask.id}`;
   const runtimeTask = runtimeTaskForLesson(lesson.id);
 
   useEffect(() => {
