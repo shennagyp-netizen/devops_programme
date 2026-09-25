@@ -60,6 +60,21 @@ describe("course lesson content integration", () => {
       expect(lesson.content.blocks[1].type, lesson.id).toBe("illustration");
     }
   });
+  it("uses the authored repeatability visual for B1.5", () => {
+    const lesson = allLessons.find((item) => item.id === "B1.5");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "b1-5-repeatability",
+      bindingId: "B1.5:b1-5-repeatability",
+      variant: "repeatable-service-v1"
+    });
+  });
+
   it("keeps B1.2 and B1.3 semantic visuals in their own lesson streams", () => {
     const b12 = allLessons.find((item) => item.id === "B1.2");
     const b13 = allLessons.find((item) => item.id === "B1.3");
