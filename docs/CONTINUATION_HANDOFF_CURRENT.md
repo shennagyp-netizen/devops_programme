@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #39, commit `f4fed3b13a019c9b9834bbef15f2a240f2a12362` (B3.1 queue-state script + illustration quality slice).
+**Latest main architecture/content merge:** PR #40, commit `7d8cf51cab91ba7eb41dedce19a1d1b6cab4135a` (B3.2 incident-loop capstone script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #39 has merged to `main`.
+**Active content-quality branch:** none. PR #40 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1862,19 +1862,16 @@ Merged PR #38:
 Merged PR #39:
 - B3.1 -> `queue-state-v1`: Producer -> Queue -> Consumer -> Outcome.
 - Merge commit: `f4fed3b13a019c9b9834bbef15f2a240f2a12362`.
-- Backpressure, queue depth, consumer throughput, retry, duplicate delivery, idempotency and dead-letter behavior are explicit teaching boundaries.
-- PR #39 final gate passed all programme contracts, unit/integration tests, TypeScript and the production Next.js build.
-- The gold-standard script+illustration sequence now covers B1.2, B1.3, B1.4, B1.5, B2.1, B2.2, B2.3 and B3.1.
-- Next content boundary: B3.2 — The First Real Incident.
+- Backpressure, queue depth, consumer throughput, retry, duplicate delivery, idempotency and dead-letter behavior are explicit boundaries.
 
-
-Active PR #40 scope:
-- B3.2 is upgraded to the same script+illustration quality standard as the preceding Beginner and B2 units.
-- New semantic illustration: `incident-loop-v1`.
-- Teaching model: Impact -> Scope -> Evidence -> Mitigate -> Recover -> Learn.
-- The incident loop explicitly separates user impact from diagnosis, safe mitigation from root-cause certainty, and recovery proof from deployment-command success.
-- The rewritten script closes Beginner with a complete controlled incident drill.
-- TDD/full-programme gate is required before merge.
+Merged PR #40:
+- B3.2 -> `incident-loop-v1`: Impact -> Scope -> Evidence -> Mitigate -> Recover -> Learn.
+- Merge commit: `7d8cf51cab91ba7eb41dedce19a1d1b6cab4135a`.
+- The Beginner capstone now explicitly separates active incident mitigation from later root-cause learning and requires stable user-path recovery proof.
+- Final PR #40 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- The gold-standard script+illustration sequence now covers **B1.2, B1.3, B1.4, B1.5, B2.1, B2.2, B2.3, B3.1 and B3.2**.
+- The Beginner course's 10 lessons are now all represented in the completed course: B1.1 remains the foundational lesson to upgrade next against the same visual/script standard.
+- Next content boundary: **B1.1 — The App Is Slow — Where Do We Look?**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
