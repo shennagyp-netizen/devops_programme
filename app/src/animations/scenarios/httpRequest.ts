@@ -28,7 +28,8 @@ export const httpRequestAnimation: AnimationDefinitionV1 = {
     { kind: "connection", id: "browser-gateway", from: "browser", to: "gateway" },
     { kind: "connection", id: "gateway-api", from: "gateway", to: "api" },
     { kind: "connection", id: "api-database", from: "api", to: "database" },
-    { kind: "packet", id: "http-request", label: "GET", from: "browser", to: "api" }
+    { kind: "packet", id: "request-browser-gateway", label: "GET", from: "browser", to: "gateway" },
+    { kind: "packet", id: "request-gateway-api", label: "GET", from: "gateway", to: "api" }
   ],
   states: [
     {
@@ -48,7 +49,8 @@ export const httpRequestAnimation: AnimationDefinitionV1 = {
     }
   ],
   events: [
-    { id: "send-request", action: "send", targetId: "http-request", targetStateId: "initial" },
+    { id: "send-browser-gateway", action: "send", targetId: "request-browser-gateway", targetStateId: "initial" },
+    { id: "send-gateway-api", action: "send", targetId: "request-gateway-api", targetStateId: "initial" },
     { id: "activate-api", action: "set-status", targetId: "api", targetStateId: "api-active" }
   ],
   interactions: [],
