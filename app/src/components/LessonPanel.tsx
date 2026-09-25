@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CourseLesson } from "../data/courseLessons";
 import type { PlatformId } from "../data/programme";
 import type { DiagnosticRecommendation } from "../data/diagnostics";
@@ -68,6 +68,7 @@ export function LessonPanel({
   const [masteryPlan, setMasteryPlan] = useState<MasteryPlan | null>(null);
   const [masteryReadyForRetry, setMasteryReadyForRetry] = useState(true);
   const [masteryAttempts, setMasteryAttempts] = useState(0);
+  const [exerciseCheckpointAnswer, setExerciseCheckpointAnswer] = useState<number | null>(null);
   const [machineVerificationMessage, setMachineVerificationMessage] = useState("");
   const [localAgentAvailable, setLocalAgentAvailable] = useState(false);
   const [localAgentPlatform, setLocalAgentPlatform] = useState<string | null>(null);
@@ -86,6 +87,10 @@ export function LessonPanel({
   const command = commandForPlatform(lesson, platform);
   const handsOnTask: HandsOnTask = getHandsOnTask(lesson);
   const runtimeTask = runtimeTaskForLesson(lesson.id);
+  const masteryCheckpoint = useMemo(
+    () => getMasteryPlan(lesson, handsOnTask, [], 0).checkpoint,
+    [lesson, handsOnTask]
+  );
   const masteryKey = masteryStorageKey(lesson.id);
   const serverAttemptsForLesson = initialMasteryHistory.filter((item) => item.lessonId === lesson.id).length;
 
@@ -120,6 +125,7 @@ export function LessonPanel({
     setMasteryAttempts(attempts);
     setMasteryPlan(null);
     setMasteryReadyForRetry(true);
+    setExerciseCheckpointAnswer(null);
   }, [lesson.id, masteryKey, serverAttemptsForLesson]);
 
   useEffect(() => {
@@ -188,6 +194,7 @@ export function LessonPanel({
         setMachineVerificationMessage(
           `Laptop execution returned invalid evidence: ${result.failures.join(" ")}`
         );
+        startMasteryRemediation(result.failures, "mechanism-reteach");
         return;
       }
 
@@ -202,11 +209,12 @@ export function LessonPanel({
       onEvidenceRecorded?.();
     } catch (error) {
       setExerciseRecorded(false);
-      setMachineVerificationMessage(
+      const message =
         error instanceof Error
-          ? `Laptop terminal execution failed: ${error.message}`
-          : "Laptop terminal execution failed."
-      );
+          ? error.message
+          : "Laptop terminal execution failed.";
+      setMachineVerificationMessage(`Laptop terminal execution failed: ${message}`);
+      startMasteryRemediation([message], "mechanism-reteach");
     } finally {
       setLocalAgentRunning(false);
     }
@@ -257,6 +265,37 @@ export function LessonPanel({
           : "Could not read machine evidence."
       );
     }
+  }
+
+  function startMasteryRemediation(failures: string[], stageOverride?: MasteryPlan["stage"]) {
+    const attempt = recordMasteryFailure(lesson.id);
+    const plan = getMasteryPlan(
+      lesson,
+      handsOnTask,
+      failures,
+      attempt - 1
+    );
+
+    const finalPlan =
+      stageOverride && stageOverride !== plan.stage
+        ? { ...plan, stage: stageOverride }
+        : plan;
+
+    setMasteryAttempts(attempt);
+    setMasteryPlan(finalPlan);
+    setMasteryReadyForRetry(false);
+    setExerciseRecorded(false);
+    setExerciseCheckpointAnswer(null);
+
+    void recordMasteryAttemptAction({
+      lessonId: lesson.id,
+      taskId: handsOnTask.id,
+      outcome: "failure",
+      stage: finalPlan.stage,
+      summary: failures.join(" ")
+    }).catch(() => {
+      // Local evidence remains available if server history is temporarily unavailable.
+    });
   }
 
   const remediationTarget =
@@ -514,6 +553,28 @@ export function LessonPanel({
               ))}
             </ol>
 
+            {masteryCheckpoint ? (
+              <div className="content-card">
+                <span className="eyebrow">MASTERY PROOF CHECK</span>
+                <h4>Predict before you submit</h4>
+                <p>{masteryCheckpoint.prompt}</p>
+                <div className="difficulty-grid">
+                  {masteryCheckpoint.options.map((option, index) => (
+                    <button
+                      key={option}
+                      className={exerciseCheckpointAnswer === index ? "active" : ""}
+                      onClick={() => {
+                        setExerciseCheckpointAnswer(index);
+                        setValidationMessage("");
+                      }}
+                    >
+                      {String.fromCharCode(65 + index)}. {option}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
             <h4>Evidence required</h4>
             {handsOnTask.evidenceFields.map((field) => (
               <label key={field.id} className="evidence-field">
@@ -536,8 +597,22 @@ export function LessonPanel({
 
             <button
               className="primary"
-              disabled={!masteryReadyForRetry}
+              disabled={!masteryReadyForRetry || Boolean(masteryCheckpoint && exerciseCheckpointAnswer === null)}
               onClick={() => {
+                if (
+                  masteryCheckpoint &&
+                  exerciseCheckpointAnswer !== masteryCheckpoint.correctOption
+                ) {
+                  startMasteryRemediation(
+                    ["The mastery proof check was answered incorrectly. Rebuild the concept before retrying."],
+                    "foundation-reteach"
+                  );
+                  setValidationMessage(
+                    "The proof check did not match the required prediction. Complete the remediation before retrying."
+                  );
+                  return;
+                }
+
                 const validation = validateHandsOnEvidence(
                   handsOnTask,
                   handsOnEvidence
@@ -635,6 +710,7 @@ export function LessonPanel({
                 setMasteryAttempts(0);
                 setMasteryPlan(null);
                 setMasteryReadyForRetry(true);
+                setExerciseCheckpointAnswer(null);
                 setExerciseRecorded(true);
                 setValidationMessage("Evidence structure validated and saved locally.");
 
@@ -660,6 +736,7 @@ export function LessonPanel({
                 plan={masteryPlan}
                 onReadyForRetry={() => {
                   setMasteryReadyForRetry(true);
+                  setExerciseCheckpointAnswer(null);
                   setValidationMessage(
                     "Remediation complete after attempt " +
                       masteryAttempts +

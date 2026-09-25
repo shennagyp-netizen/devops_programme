@@ -90,4 +90,30 @@ describe("lesson panel integration contract", () => {
       "This task is structurally validated. It is not yet machine-verified"
     );
   });
+  it("requires a conceptual proof check before accepting hands-on evidence", () => {
+    const code = source();
+
+    expect(code).toContain("masteryCheckpoint");
+    expect(code).toContain("Predict before you submit");
+    expect(code).toContain("exerciseCheckpointAnswer === null");
+    expect(code).toContain("answered incorrectly");
+    expect(code).toContain("startMasteryRemediation");
+  });
+
+  it("routes machine-verification failure into the same remediation loop", () => {
+    const code = source();
+
+    expect(code).toContain("startMasteryRemediation(result.failures, \"mechanism-reteach\")");
+    expect(code).toContain("Laptop execution returned invalid evidence");
+    expect(code).toContain("Laptop terminal execution failed");
+  });
+
+  it("keeps authenticated mastery history visible to the lesson model", () => {
+    const code = source();
+
+    expect(code).toContain("initialMasteryHistory");
+    expect(code).toContain("serverAttemptsForLesson");
+    expect(code).toContain("Math.max(readMasteryAttempts(lesson.id), serverAttemptsForLesson)");
+  });
+
 });
