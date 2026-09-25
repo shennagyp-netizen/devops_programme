@@ -465,6 +465,41 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models a production incident as impact, diagnosis, mitigation, recovery, root cause and learning", () => {
+    const model = getLessonIllustrationModel({
+      id: "d5-8-production-incident",
+      type: "illustration",
+      heading: "The production incident loop",
+      alt: "A production incident moves from impact through diagnosis and mitigation to recovery, root cause and learning",
+      bindingId: "D5.8:d5-8-production-incident",
+      nodes: ["Impact", "Diagnosis", "Mitigate", "Recover", "Root Cause", "Learn"],
+      variant: "production-incident-v1"
+    });
+
+    expect(model.variant).toBe("production-incident-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "impact",
+      "diagnosis",
+      "mitigate",
+      "recover",
+      "root-cause",
+      "learn"
+    ]);
+    expect(model.foundation.label).toBe("Stabilize the system while preserving evidence");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "blast-radius",
+      "timeline",
+      "hypothesis",
+      "communication"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "user-impact",
+      "safe-action",
+      "recovery-proof",
+      "prevention-test"
+    ]);
+  });
+
   it("models global architecture as users, routing, regions, dependencies, capacity and recovery", () => {
     const model = getLessonIllustrationModel({
       id: "d5-7-global-architecture",
