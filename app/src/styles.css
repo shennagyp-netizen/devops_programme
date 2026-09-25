@@ -266,3 +266,80 @@ textarea{width:100%;min-height:110px;resize:vertical;border:1px solid #2b385b;bo
     justify-content: flex-start;
   }
 }
+
+
+.podcast-coach-continuous {
+  margin-top: 14px;
+  position: sticky;
+  top: 16px;
+  z-index: 4;
+  border: 1px solid #334269;
+  border-radius: 20px;
+  background: rgba(15, 23, 48, .97);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .24);
+  backdrop-filter: blur(12px);
+  padding: 16px;
+}
+
+.continuous-voice-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.continuous-voice-row > div:first-child {
+  min-width: 0;
+}
+
+.continuous-voice-row strong {
+  display: block;
+  color: #eef2ff;
+  font-size: 15px;
+}
+
+.continuous-transcript {
+  margin-top: 4px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #0b1124;
+  border: 1px solid #273354;
+}
+
+.continuous-transcript p {
+  margin: 6px 0 0;
+  color: #eef2ff;
+  line-height: 1.65;
+}
+
+.continuous-prompt {
+  margin-top: 10px;
+  padding: 14px 16px;
+  border: 1px solid #334269;
+  border-radius: 14px;
+  background: #111a34;
+}
+
+.continuous-prompt h4 {
+  margin: 6px 0 8px;
+}
+
+.continuous-prompt p {
+  margin: 6px 0;
+}
+
+@media(max-width:800px) {
+  .podcast-coach-continuous {
+    position: static;
+  }
+
+  .continuous-voice-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .continuous-voice-row .audio-controls {
+    margin: 0;
+  }
+}
