@@ -2,65 +2,295 @@ DAY 2 — NETWORKING PROTOCOLS + DOCKER
 
 EPISODE D2.1 — TCP and UDP
 
-Speaker A: Yesterday we reached IP. Today we ask how two endpoints actually communicate.
+Speaker A: Yesterday we ended with IP.
 
-Speaker B: This is where TCP, ports, sockets, and the mysterious handshake enter the room.
+Speaker B: So today we ask what happens after the packet reaches the right host.
 
-Speaker A: Think of a phone call. An IP address is roughly the phone number; a port identifies the service; a socket represents an endpoint of communication. TCP establishes a connection and provides ordered, reliable delivery.
+Speaker A: Exactly. The new question is:
 
-Speaker B: So TCP is the person who keeps saying, 'I did send that message, please stop sending it again.'
+Speaker B: Which service is listening, and what transport contract does it expect?
 
-Speaker A: Fair. TCP has mechanisms for acknowledgement, retransmission, ordering, flow control, and congestion control.
+Speaker A: The visual is:
 
-Speaker A: UDP is different: it gives you datagrams without TCP's connection and reliability machinery. That can be useful when the application prefers timeliness or implements its own reliability.
+Speaker B: Endpoint -> Port -> Transport -> Delivery -> Evidence.
 
-Speaker A: Real-life example: a live sports commentator may prefer the latest score to arrive quickly rather than replaying every missed sentence. Other applications absolutely need every byte in order.
+Speaker A: Good. Keep that model. It separates several things that people often call the network.
 
-Speaker A: Mac lab: inspect listening TCP ports and make a simple localhost connection. Then compare the behavior with a UDP experiment.
+Speaker B: IP identifies the destination host.
 
-Speaker B: What failure should I learn to recognize?
+Speaker A: Roughly, yes. Then a transport port identifies the service endpoint on that host.
 
-Speaker A: Connection refused, timeout, connection reset, and application-level error are different observations. Do not collapse them into 'the network is broken.'
-Speaker B: Let me check the layers again. IP gets the packet toward a host. Then TCP or UDP gets it toward a service.
+Speaker B: And TCP or UDP tells us how the application data is carried.
 
-Speaker A: Good. A port is part of the endpoint identity at the transport layer. A socket is the actual communication endpoint represented to the operating system.
+Speaker A: Exactly.
 
-Speaker B: And TCP adds all the machinery people forget until something is slow.
+Speaker B: Make a prediction.
 
-Speaker A: Right. Sequence numbers. Acknowledgements. Retransmission. Flow control. Congestion control. The important thing isn't memorizing every field. It's understanding why the machinery exists.
+Speaker A: A server has the correct IP address and my packets reach the host, but no application is listening on TCP port 8080. What should I expect?
 
-Speaker B: Because packets can be lost, duplicated, reordered, or delayed.
+Speaker B: The service connection should fail at the transport endpoint. If the host is reachable and the port actively refuses the connection, I may see connection refused.
 
-Speaker A: Exactly. The network is not a perfect pipe. TCP gives the application a much more useful abstraction on top of that imperfect environment.
+Speaker A: Good.
 
-Speaker B: And UDP says, basically, “Here's a datagram. Good luck.”
+Speaker B: That is different from a timeout.
 
-Speaker A: That's funny, but slightly unfair. UDP is valuable precisely because it stays simple. Applications can choose different trade-offs.
+Speaker A: Exactly.
 
-Speaker B: Prediction. A server has a listening TCP port, but my client gets a timeout. Is that the same as connection refused?
+Speaker B: So our first lesson is to stop saying simply, 'the network is broken.'
 
-Speaker A: No. And I want you to feel the difference. A refusal tells you something answered and rejected the connection at that point. A timeout tells you that the expected response didn't arrive in the allowed time. The underlying causes can be completely different.
+Speaker A: Yes. Say which layer produced the evidence.
 
-Speaker B: So “can't connect” is almost useless information.
+Speaker B: Stage one: endpoint.
 
-Speaker A: It's a starting symptom, not a diagnosis.
+Speaker A: An application wants to communicate with another service.
 
-Speaker B: Real-life version?
+Speaker B: It needs a destination address and a service endpoint.
 
-Speaker A: Imagine a phone call. “The call failed” could mean the number doesn't exist, the person rejected it, the network never delivered the call, or your phone had no signal. Same complaint. Different evidence.
+Speaker A: Right.
 
-Speaker B: That's annoyingly familiar.
+Speaker B: Stage two: port.
 
-Speaker A: Good. Use that feeling when you debug.
+Speaker A: A transport port identifies the service endpoint on a host.
+
+Speaker B: So two services can use different ports on the same IP address.
+
+Speaker A: Exactly.
+
+Speaker B: What about sockets?
+
+Speaker A: A socket is the operating-system communication endpoint used by an application. Think of it as the application-side representation of the transport communication.
+
+Speaker B: So a port is part of the endpoint identity, while a socket is the operating-system communication object.
+
+Speaker A: Good enough for this lesson.
+
+Speaker B: Stage three: transport.
+
+Speaker A: Here TCP and UDP differ.
+
+Speaker B: TCP is connection-oriented.
+
+Speaker A: Yes. It establishes connection state and gives applications ordered, reliable byte-stream delivery.
+
+Speaker B: Through acknowledgements and retransmission.
+
+Speaker A: Yes.
+
+Speaker B: And sequence numbers.
+
+Speaker A: Yes.
+
+Speaker B: Flow control and congestion control too.
+
+Speaker A: Exactly.
+
+Speaker B: So TCP is doing a lot of work to give the application a stronger abstraction than raw packets.
+
+Speaker A: That's the point.
+
+Speaker B: What about UDP?
+
+Speaker A: UDP sends datagrams without TCP's connection and retransmission machinery.
+
+Speaker B: So UDP is not 'bad TCP'.
+
+Speaker A: Correct.
+
+Speaker B: It gives the application a simpler contract.
+
+Speaker A: Exactly. That can be useful when the application wants low overhead, can tolerate loss, or implements its own recovery logic.
+
+Speaker B: So saying 'UDP is faster' is too vague.
+
+Speaker A: Yes. Speed depends on the whole application and network behavior. The useful statement is that UDP provides a different transport contract.
+
+Speaker B: Human example?
+
+Speaker A: Imagine a live sports commentary.
+
+Speaker B: Latest score now may matter more than replaying every missed sentence.
+
+Speaker A: Right. A different application may need every byte in order.
+
+Speaker B: Such as a file transfer.
+
+Speaker A: Exactly.
+
+Speaker B: Stage four: delivery behavior.
+
+Speaker A: TCP tries to turn an unreliable packet network into an ordered byte stream for the application.
+
+Speaker B: Lost data can be retransmitted.
+
+Speaker A: Yes.
+
+Speaker B: Data can be reordered before the application sees it.
+
+Speaker A: Yes.
+
+Speaker B: Flow control prevents the sender from overwhelming the receiver.
+
+Speaker A: And congestion control reacts to network conditions so the sender does not simply push as fast as possible.
+
+Speaker B: So the transport layer is actively managing risk.
+
+Speaker A: Exactly.
+
+Speaker B: Another prediction.
+
+Speaker A: A TCP server is listening. The client gets a timeout. Is that the same evidence as connection refused?
+
+Speaker B: No. Refused means something responded with a refusal at the connection point. A timeout means the expected response did not arrive within the allowed time.
+
+Speaker A: Good.
+
+Speaker B: The underlying cause could be very different.
+
+Speaker A: Exactly.
+
+Speaker B: A firewall could drop traffic. A route could be wrong. The service could be absent. The endpoint could be overloaded.
+
+Speaker A: Those are different hypotheses.
+
+Speaker B: So timeout does not prove one specific failure.
+
+Speaker A: Correct.
+
+Speaker B: Another failure: the connection establishes, but the application returns a 500.
+
+Speaker A: What does that tell you?
+
+Speaker B: Transport worked well enough for the application to receive the request. The failure is now at the application layer.
+
+Speaker A: Exactly.
+
+Speaker B: So 500 is very different from timeout.
+
+Speaker A: Yes.
+
+Speaker B: What about connection reset?
+
+Speaker A: It means the established connection was actively terminated rather than simply receiving no response. The next question is which component reset it and why.
+
+Speaker B: So the words are evidence, not final answers.
+
+Speaker A: Exactly.
+
+Speaker B: Let's build the full path.
+
+Speaker A: Client.
+
+Speaker B: Destination IP.
+
+Speaker A: Port.
+
+Speaker B: TCP or UDP.
+
+Speaker A: Application protocol.
+
+Speaker B: Application response.
+
+Speaker A: Good.
+
+Speaker B: And each boundary produces a different kind of evidence.
+
+Speaker A: That's the model.
 
 Speaker B: Mac lab?
 
-Speaker A: First find listening TCP ports on your machine. Then make a local connection. Next try a port you know is closed. Compare the errors. You're training yourself to recognize evidence, not memorize screenshots.
+Speaker A: First inspect listening TCP ports on your machine.
 
-Speaker B: And UDP?
+Speaker B: Predict what the result means.
 
-Speaker A: Use a tiny local experiment. Observe that a UDP send can succeed without the same connection behavior as TCP. The lesson is not “UDP is faster.” That's too vague. The lesson is that the transport contract is different.
+Speaker A: Good.
 
+Speaker B: Then make a localhost TCP connection to a known listening service.
+
+Speaker A: Good.
+
+Speaker B: Then try a known-closed TCP port.
+
+Speaker A: Good.
+
+Speaker B: Compare the evidence.
+
+Speaker A: Good.
+
+Speaker B: Then make a small UDP experiment.
+
+Speaker A: Observe the key difference: a UDP send does not require the same connection-establishment behavior as TCP.
+
+Speaker B: So the experiment teaches the contract difference.
+
+Speaker A: Exactly.
+
+Speaker B: Controlled failure?
+
+Speaker A: Stop a disposable local service.
+
+Speaker B: Try the same TCP connection again.
+
+Speaker A: Predict the new evidence.
+
+Speaker B: Observe it.
+
+Speaker A: Restart the service.
+
+Speaker B: Verify the connection works again.
+
+Speaker A: Good.
+
+Speaker B: What should I record?
+
+Speaker A: Endpoint. Port. Transport. Expected behavior. Actual failure signal. Recovery evidence.
+
+Speaker B: So the lab is a mini incident.
+
+Speaker A: Yes.
+
+Speaker B: Recall.
+
+Speaker A: What does a port identify?
+
+Speaker B: A transport service endpoint on a host.
+
+Speaker A: What is a socket?
+
+Speaker B: An operating-system communication endpoint used by an application.
+
+Speaker A: What does TCP add?
+
+Speaker B: Connection state, ordered reliable byte-stream delivery, acknowledgements, retransmission, flow control and congestion control.
+
+Speaker A: What is UDP's key difference?
+
+Speaker B: It provides datagrams without TCP's connection and reliability machinery, leaving more trade-offs to the application.
+
+Speaker A: Why is timeout different from refusal?
+
+Speaker B: A refusal is active evidence at the connection point; a timeout means the expected response did not arrive in time.
+
+Speaker A: What does an HTTP 500 tell you after TCP succeeds?
+
+Speaker B: The application layer returned an error. It is not the same as a transport timeout.
+
+Speaker A: Final challenge.
+
+Speaker B: A server IP is reachable. The expected TCP port times out.
+
+Speaker A: Your model?
+
+Speaker B: Endpoint -> Port -> Transport -> Delivery -> Evidence. I first distinguish route and host reachability from the transport failure, then inspect whether traffic is being dropped, whether the service is listening, and finally the application response if transport succeeds.
+
+Speaker A: Good.
+
+Speaker B: So TCP and UDP are not just names to memorize.
+
+Speaker A: They are transport contracts with different behavior and different evidence.
+
+Speaker B: And the lab makes that visible.
+
+Speaker A: Exactly. Make the local service fail, predict the signal, recover it, and explain what changed.
 
 EPISODE D2.2 — DNS
 
