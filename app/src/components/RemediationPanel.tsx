@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { completeMasteryRemediationAction } from "../app/actions/mastery";
 import {
   methodsForAttempt,
   type RemediationPlan
@@ -7,10 +8,12 @@ import {
 export function RemediationPanel({
   plan,
   attemptNumber,
+  attemptId,
   onRetry
 }: {
   plan: RemediationPlan;
   attemptNumber: number;
+  attemptId: string | null;
   onRetry: () => void;
 }) {
   const methods = useMemo(() => methodsForAttempt(attemptNumber), [attemptNumber]);
@@ -65,7 +68,14 @@ export function RemediationPanel({
       <button
         className="secondary"
         disabled={response.trim().length < 20}
-        onClick={() => setCompleted(true)}
+        onClick={() => {
+          setCompleted(true);
+          if (attemptId) {
+            void completeMasteryRemediationAction(attemptId).catch(() => {
+              // Local remediation remains usable if persistence is temporarily unavailable.
+            });
+          }
+        }}
       >
         I completed the remediation step
       </button>
