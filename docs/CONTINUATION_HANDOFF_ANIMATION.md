@@ -329,3 +329,17 @@ Current architecture:
 Browser visual validation remains **Not yet validated**. CI success proves contract/build correctness, not rendered browser appearance or live audio/animation synchronization.
 
 The next boundary is the first real curriculum-authored animated binding using the actual PodcastCoach clock.
+
+
+## 2026-09-25 Vercel visual-gate deployment finding
+
+Vercel authorization is now working for `shennagyp-8842`. The newly created `devops-programme` production project is reachable, but its current project Root Directory is incorrect: Vercel is building the repository root instead of the Next.js application under `app/`.
+
+The resulting deployment is READY but serves `404 NOT_FOUND` for `/`, `/animations`, and the authentication routes. Build logs show a 141 ms root build with no Next.js execution.
+
+The repository-level Vercel workaround was intentionally removed. The correct project-level setting is:
+- Root Directory: `app`
+- Framework: Next.js
+- Build/Install/Output: auto-detected defaults.
+
+No animation implementation work should proceed past this visual gate until the corrected deployment is reachable and visually inspected.
