@@ -1988,5 +1988,12 @@ Active PR #94 scope:
 - The rewritten D4.6 script now ends each primitive with an observable evidence question instead of leaving the lesson at architecture vocabulary.
 - TDD/full-programme gate is required; Vercel build-rate-limit infrastructure may block fresh validation.
 
+
+Merged PR #94:
+- Merge commit: `ef49c72664ae226a1a579c8ac1010472490b3ed2`.
+- D4.6 now uses `cloud-primitives-v1`: Workload -> Compute -> Network -> State -> Identity -> Data Services.
+- The script now attaches an explicit evidence question to each primitive and keeps provider names secondary to the engineering concept.
+- Fresh Vercel validation for PR #94 was blocked by the same build-rate-limit infrastructure status; this remains infrastructure-blocked, not a claimed green build.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
