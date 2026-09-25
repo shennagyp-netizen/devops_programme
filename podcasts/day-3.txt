@@ -6,61 +6,249 @@ Speaker A: Kubernetes becomes much easier when you stop seeing YAML and start se
 
 Speaker B: Desired state versus actual state.
 
-Speaker A: Exactly. You declare what you want; controllers keep trying to make reality converge toward it.
+Speaker A: Exactly.
 
-Speaker A: Think of hotel management. The desired state is 'ten rooms ready.' If one room becomes unavailable, management works to restore the target. Kubernetes performs this kind of reconciliation continuously.
+Speaker B: So the picture is:
 
-Speaker B: So the magic is actually control loops.
+Speaker A: Desired State -> Controller -> Observe -> Act -> Converge.
 
-Speaker A: Yes. Pods, deployments, ReplicaSets, scheduling and controllers become understandable once the loop is clear.
+Speaker B: That is the mental model.
 
-Speaker A: Real-life example: if an employee leaves unexpectedly, a good operation does not merely record that fact; it activates a process to restore service capacity.
+Speaker A: Yes. YAML is a way to describe desired state. The control loops are the part that keeps the system working toward it.
 
-Speaker A: Lab: create a deployment, scale it, delete a pod, and watch Kubernetes recreate it.
-Speaker B: Kubernetes clicked when you said “reconciliation” instead of “YAML.”
+Speaker B: Stage one: desired state.
 
-Speaker A: That's the whole trick. YAML is how you describe desired state. The interesting part is what the controllers do with that declaration.
+Speaker A: A Deployment can say it wants three replicas.
 
-Speaker B: So if I say three replicas, Kubernetes doesn't just remember the number.
+Speaker B: That is a condition the system should keep trying to satisfy.
 
-Speaker A: Right. It keeps observing actual state and acts when actual state differs from desired state.
+Speaker A: Exactly. It is not a command that runs once and disappears.
 
-Speaker B: That's basically a control loop.
+Speaker B: Stage two: controller.
 
-Speaker A: Exactly. Observe. Compare. Act. Repeat.
+Speaker A: Controllers watch resources and reconcile differences between what should exist and what actually exists.
 
-Speaker B: Real-life example?
+Speaker B: So a Deployment controller is responsible for keeping the workload aligned with the requested state.
 
-Speaker A: Hotel management says twenty rooms should be ready. At three in the afternoon, two rooms are unexpectedly unavailable. A good operation doesn't write “twenty” in a notebook and hope the rooms fix themselves. Someone cleans, repairs, reallocates, or changes the operating plan.
+Speaker A: Good.
 
-Speaker B: The desired state is not an instruction that runs once. It's a condition the system keeps trying to satisfy.
+Speaker B: Stage three: observe.
+
+Speaker A: Kubernetes has to know what is happening now.
+
+Speaker B: Pods exist or do not exist.
 
 Speaker A: Yes.
 
-Speaker B: Prediction pause. I delete a pod from a Deployment. Is that deletion permanent?
+Speaker B: Pods may be Pending, Running or failing.
 
-Speaker A: What do you think?
+Speaker A: Yes.
 
-Speaker B: The pod disappears, the controller notices the replica count is wrong, and another pod appears.
+Speaker B: Scheduling, image pulls and readiness all affect actual state.
 
-Speaker A: Exactly. The interesting failure question is not “why did Kubernetes delete my pod?” The useful question is “why did the controller decide another pod was necessary, and did the replacement become healthy?”
+Speaker A: Exactly.
 
-Speaker B: So the replacement itself can fail.
+Speaker B: Stage four: act.
 
-Speaker A: Of course. Maybe the image can't be pulled. Maybe startup crashes. Maybe readiness never succeeds. Reconciliation only means Kubernetes keeps trying. It doesn't mean your desired state is feasible.
+Speaker A: The controller takes an action that should reduce the difference.
 
-Speaker B: That's an important distinction.
+Speaker B: Create a replacement pod.
 
-Speaker A: Very. A controller can repeatedly do the correct thing and still produce a system that never becomes ready.
+Speaker A: Or update a resource.
+
+Speaker B: Or remove an object that should no longer exist.
+
+Speaker A: Exactly.
+
+Speaker B: Stage five: converge.
+
+Speaker A: The loop repeats. Observe. Compare. Act. Observe again.
+
+Speaker B: So reconciliation is continuous.
+
+Speaker A: Yes.
+
+Speaker B: Prediction.
+
+Speaker A: I delete one pod from a Deployment that wants three replicas. Is that deletion permanent?
+
+Speaker B: No. The Deployment controller should observe that only two replicas remain and create a replacement.
+
+Speaker A: Exactly.
+
+Speaker B: But the new pod might still fail.
+
+Speaker A: Correct.
+
+Speaker B: Maybe the image cannot be pulled.
+
+Speaker A: Maybe the process crashes.
+
+Speaker B: Maybe readiness never succeeds.
+
+Speaker A: Exactly.
+
+Speaker B: So reconciliation means Kubernetes keeps trying. It does not guarantee success.
+
+Speaker A: That distinction is critical.
+
+Speaker B: A controller can do the right action over and over while the desired state stays impossible.
+
+Speaker A: Exactly.
+
+Speaker B: Real-life analogy?
+
+Speaker A: Imagine hotel management wants ten rooms ready.
+
+Speaker B: Two rooms become unavailable.
+
+Speaker A: Management observes the difference and acts: clean, repair or reassign rooms.
+
+Speaker B: If the building has no water, management can keep trying but still cannot satisfy the target.
+
+Speaker A: Good. The desired state may be impossible under the current conditions.
+
+Speaker B: That sounds like Kubernetes.
+
+Speaker A: Because it is.
+
+Speaker B: Prediction pause.
+
+Speaker A: I set replicas to five, but the cluster has no available capacity. Should five healthy pods necessarily appear?
+
+Speaker B: No. The controller can keep trying, but scheduling constraints can make the desired state impossible at that moment.
+
+Speaker A: Good.
+
+Speaker B: So 'I asked for five' is not evidence that five are actually running.
+
+Speaker A: Correct.
+
+Speaker B: I need to inspect actual state.
+
+Speaker A: Exactly.
+
+Speaker B: Another prediction.
+
+Speaker A: The Deployment says three replicas. The cluster shows three pods. Are we done?
+
+Speaker B: Not necessarily. They might be Running but not Ready, or one may be restarting, or the application may still be failing.
+
+Speaker A: Good.
+
+Speaker B: So desired count is only one piece of the truth.
+
+Speaker A: Yes.
+
+Speaker B: What makes Kubernetes different from a script that creates three containers?
+
+Speaker A: The system keeps observing and reconciling after the initial creation. The desired state remains an ongoing target.
+
+Speaker B: So a script says, 'do this now.'
+
+Speaker A: And reconciliation says, 'keep reality aligned with this condition.'
+
+Speaker B: That is the important shift.
+
+Speaker A: Exactly.
+
+Speaker B: Controlled failure?
+
+Speaker A: Create a small Deployment.
+
+Speaker B: Verify the desired replica count and actual running state.
+
+Speaker A: Good.
+
+Speaker B: Delete one pod deliberately.
+
+Speaker A: Predict what the controller should do.
+
+Speaker B: Create a replacement.
+
+Speaker A: Observe it.
+
+Speaker B: Verify that it becomes Ready.
+
+Speaker A: Good.
+
+Speaker B: Then create one impossible condition, such as a bad image reference.
+
+Speaker A: Predict the difference.
+
+Speaker B: The controller should keep the desired replica count, but the replacement can fail to start because the image cannot be pulled.
+
+Speaker A: Exactly.
+
+Speaker B: So the controller is still working.
+
+Speaker A: Yes. The desired state is just not feasible.
 
 Speaker B: Mac lab?
 
-Speaker A: Create a small Deployment. Watch the pods. Scale it. Delete one pod deliberately. Watch the new one appear. Then describe the sequence without using the word “magic.”
+Speaker A: Create the Deployment.
 
-Speaker B: Harder than it sounds.
+Speaker B: Watch the pods.
 
-Speaker A: Good. “Magic” ends debugging conversations. Control loops start them.
+Speaker A: Scale it.
 
+Speaker B: Good.
+
+Speaker A: Delete one pod.
+
+Speaker B: Predict the replacement.
+
+Speaker A: Observe.
+
+Speaker B: Then make the image reference invalid in a disposable test workload.
+
+Speaker A: Predict the result.
+
+Speaker B: Observe the failed replacement and the repeated reconciliation attempts.
+
+Speaker A: Exactly.
+
+Speaker B: Restore the valid image.
+
+Speaker A: Verify that the workload returns to the expected healthy state.
+
+Speaker B: So the lab teaches both success and impossible desired state.
+
+Speaker A: Yes.
+
+Speaker B: Recall.
+
+Speaker A: What does YAML describe?
+
+Speaker B: Desired state.
+
+Speaker A: What does the controller do?
+
+Speaker B: It observes actual state, compares it with desired state and takes actions to reduce the difference.
+
+Speaker A: Is reconciliation one action?
+
+Speaker B: No. It is an ongoing loop.
+
+Speaker A: Can reconciliation fail to reach the desired state?
+
+Speaker B: Yes. The controller can keep trying while the desired state is blocked by an image, resource, configuration or scheduling problem.
+
+Speaker A: Final challenge.
+
+Speaker B: I delete a Deployment pod and another appears, but the new pod never becomes Ready.
+
+Speaker A: Your model?
+
+Speaker B: Desired State -> Controller -> Observe -> Act -> Converge. Kubernetes is doing the replacement work, so I now inspect why the replacement cannot become healthy instead of blaming reconciliation itself.
+
+Speaker A: Good.
+
+Speaker B: So Kubernetes is not mainly YAML.
+
+Speaker A: It is a reconciliation system that uses declarations to drive control loops.
+
+Speaker B: Run the lab, delete one pod, watch the replacement, then make one disposable desired-state condition impossible and explain the evidence.
 
 EPISODE D3.2 — Kubernetes Networking
 
