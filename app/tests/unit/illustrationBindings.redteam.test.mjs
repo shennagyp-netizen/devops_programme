@@ -40,6 +40,7 @@ const block = {
   type: "illustration",
   heading: "Request flow",
   alt: "Request flow",
+  bindingId: "B1.2:http-flow",
   nodes: ["Client", "Service"]
 };
 
