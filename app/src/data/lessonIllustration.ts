@@ -939,6 +939,36 @@ const GIT_PRODUCTION_WORKFLOW_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const KUBERNETES_RECONCILIATION_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "kubernetes-reconciliation-v1",
+  title: "The Kubernetes control loop",
+  stages: [
+    { id: "desired", label: "Desired State", detail: "A declared workload says what should exist and how it should behave." },
+    { id: "controller", label: "Controller", detail: "Controllers watch observed state and take actions to move the cluster toward the desired state." },
+    { id: "scheduler", label: "Scheduler", detail: "The scheduler chooses a suitable node for pods that need placement." },
+    { id: "pod", label: "Pod", detail: "A pod is the unit Kubernetes schedules; its containers share the pod's execution context." },
+    { id: "node", label: "Node", detail: "A node runs the pod through a container runtime while reporting observed state back to the control plane." }
+  ],
+  foundation: {
+    label: "Kubernetes continuously reconciles desired state with observed state",
+    detail: "Kubernetes is not a one-time deployment command; controllers repeatedly observe state and act to move the system toward the declared goal."
+  },
+  callouts: [
+    { id: "api", label: "API server", detail: "The API server is the control-plane entry point through which Kubernetes objects are stored and observed." },
+    { id: "controller", label: "Controller", detail: "A controller watches relevant objects and performs reconciliation actions when actual state differs from desired state." },
+    { id: "scheduler", label: "Scheduler", detail: "The scheduler selects a node for an unscheduled pod based on current cluster constraints and policy." },
+    { id: "pod-node", label: "Pod on node", detail: "A pod is scheduled onto a node; the node then runs its containers and reports status." }
+  ],
+  failureChecks: [
+    { id: "desired-state", label: "1. Desired state", detail: "What object and specification say the workload should exist, and with what parameters?" },
+    { id: "reconciliation", label: "2. Reconciliation", detail: "Which controller should notice and act when observed state differs from the specification?" },
+    { id: "placement", label: "3. Placement", detail: "Why is the pod pending, and what scheduling constraint or resource condition prevents placement?" },
+    { id: "observed-state", label: "4. Observed state", detail: "What do pod, node and controller status show about what the cluster actually did?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1205,6 +1235,7 @@ export function validateLessonIllustrationModel(
     model.variant !== "tls-trust-v1" &&
     model.variant !== "container-execution-v1" &&
     model.variant !== "docker-network-storage-v1" &&
+    model.variant !== "kubernetes-reconciliation-v1" &&
     model.variant !== "docker-failure-loop-v1" &&
     model.variant !== "kubernetes-reconciliation-v1" &&
     model.variant !== "kubernetes-service-path-v1" &&
