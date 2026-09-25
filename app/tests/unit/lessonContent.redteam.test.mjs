@@ -80,7 +80,7 @@ describe("lesson content validation red-team contract", () => {
       version: 1,
       blocks: [
         { id: "same", type: "text", body: "first" },
-        { id: "same", ...validIllustration }
+        { ...validIllustration, id: "same" }
       ]
     });
 
