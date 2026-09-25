@@ -37,7 +37,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-failure-loop-v1"
   | "git-production-workflow-v1"
   | "scaling-control-loop-v1"
-  | "database-scale-v1";
+  | "database-scale-v1"
+  | "distributed-failure-v1";
 
 export type LessonContentBlock =
   | {
@@ -90,6 +91,32 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D5.3": {
+    version: 1,
+    blocks: [
+      {
+        id: "d5-3-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Distributed systems fail partially. A request can succeed remotely while its response is lost, replicas can disagree for a time, and a retry can repeat a side effect unless the operation is safe to repeat."
+      },
+      {
+        id: "d5-3-distributed",
+        type: "illustration",
+        heading: "The distributed-system evidence path",
+        alt: "A request crosses a distributed boundary where responses can be delayed or lost, replicas can disagree temporarily, and user outcomes depend on recovery rules",
+        bindingId: "D5.3:d5-3-distributed",
+        nodes: ["Request", "Observation", "Replica State", "Agreement", "User Outcome"],
+        variant: "distributed-failure-v1",
+        caption:
+          "Reason from incomplete information before retrying, reconciling replicas or changing consistency."
+      }
+    ]
+  },
+
+
+
   "D5.1": {
     version: 1,
     blocks: [
@@ -954,6 +981,7 @@ export function validateLessonContent(
         block.variant !== "git-production-workflow-v1" &&
         block.variant !== "scaling-control-loop-v1" &&
         block.variant !== "database-scale-v1" &&
+        block.variant !== "distributed-failure-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
