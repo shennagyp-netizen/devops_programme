@@ -191,6 +191,21 @@ describe("course lesson content integration", () => {
     });
   });
 
+  it("uses the authored cloud-primitives visual for D4.6", () => {
+    const lesson = allLessons.find((item) => item.id === "D4.6");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d4-6-cloud-primitives",
+      bindingId: "D4.6:d4-6-cloud-primitives",
+      variant: "cloud-primitives-v1"
+    });
+  });
+
   it("uses the authored Git production workflow visual for D4.1", () => {
     const lesson = allLessons.find((item) => item.id === "D4.1");
     expect(lesson).toBeDefined();

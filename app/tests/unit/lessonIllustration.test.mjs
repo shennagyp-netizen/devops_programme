@@ -465,6 +465,41 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models cloud primitives as workload, compute, network, state, identity and data services", () => {
+    const model = getLessonIllustrationModel({
+      id: "d4-6-cloud-primitives",
+      type: "illustration",
+      heading: "The cloud primitive map",
+      alt: "A workload depends on compute capacity, network paths, durable state, identity controls and data services",
+      bindingId: "D4.6:d4-6-cloud-primitives",
+      nodes: ["Workload", "Compute", "Network", "State", "Identity", "Data Services"],
+      variant: "cloud-primitives-v1"
+    });
+
+    expect(model.variant).toBe("cloud-primitives-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "workload",
+      "compute",
+      "network",
+      "state",
+      "identity",
+      "data-services"
+    ]);
+    expect(model.foundation.label).toBe("Cloud products implement general engineering primitives");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "dependency-graph",
+      "ownership",
+      "identity",
+      "cost"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "compute-capacity",
+      "network-path",
+      "state-lifecycle",
+      "access-boundary"
+    ]);
+  });
+
   it("models Kubernetes as desired state, controller, scheduler, pod and node", () => {
     const model = getLessonIllustrationModel({
       id: "d3-1-kubernetes-model",
