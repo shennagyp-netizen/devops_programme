@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #54, commit `03849b29c7d108797858fe2a91491d89bb91385e` (D2.7 controlled Docker failure script + illustration quality slice).
+**Latest main architecture/content merge:** PR #55, commit `a66a3abb9be8db6b867f85d1430b4dba35934af1` (D3.1 Kubernetes reconciliation script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #54 has merged to `main`.
+**Active content-quality branch:** none. PR #55 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1900,7 +1900,6 @@ Merged PR #48:
 Merged PR #49:
 - D2.2 -> `dns-resolution-v1`: Name -> Resolver -> Cache -> Authority -> Freshness.
 - Merge commit: `79dd956303907480c20091debfcff2f0500661a8`.
-- Final PR #49 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #50:
 - D2.3 -> `http-exchange-v1`: Request -> Headers -> Route -> Response -> Evidence.
@@ -1909,7 +1908,6 @@ Merged PR #50:
 Merged PR #51:
 - D2.4 -> `tls-trust-v1`: Client -> Certificate -> Handshake -> Secure Session -> Evidence.
 - Merge commit: `faee8ec98812592b20c7b854bc506c47f86247e0`.
-- Final PR #51 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #52:
 - D2.5 -> `container-execution-v1`: Image -> Container -> Process -> Namespaces -> Host Kernel.
@@ -1922,19 +1920,15 @@ Merged PR #53:
 Merged PR #54:
 - D2.7 -> `docker-failure-loop-v1`: Baseline -> Change -> Symptom -> Evidence -> Recovery.
 - Merge commit: `03849b29c7d108797858fe2a91491d89bb91385e`.
-- D2.7 turns Docker troubleshooting into controlled experimentation: one change, one prediction, evidence, restoration and recovery proof.
 - Final PR #54 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- **Day 2 is now gold-standard from D2.1 through D2.7.**
-- Next content boundary: **D3.1** (first lesson of the next Intermediate curriculum block).
+- Day 2 is now gold-standard from D2.1 through D2.7.
 
-
-Active PR #55 scope:
-- D3.1 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `kubernetes-reconciliation-v1`.
-- Teaching model: Desired State -> Controller -> Observe -> Act -> Converge.
-- The rewritten script teaches Kubernetes as an ongoing reconciliation system rather than YAML execution.
-- Controlled failure covers pod deletion and an impossible image state, distinguishing controller behavior from workload feasibility.
-- TDD/full-programme gate is required before merge.
+Merged PR #55:
+- D3.1 -> `kubernetes-reconciliation-v1`: Desired State -> Controller -> Observe -> Act -> Converge.
+- Merge commit: `a66a3abb9be8db6b867f85d1430b4dba35934af1`.
+- D3.1 teaches Kubernetes as a reconciliation system, separates desired state from actual state, and demonstrates both successful replacement and impossible desired state.
+- Final PR #55 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- Next content boundary: **D3.2 — Kubernetes Networking**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
