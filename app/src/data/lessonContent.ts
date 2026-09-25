@@ -10,7 +10,8 @@ export type LessonIllustrationVariantV1 =
   | "container-boundary-v1"
   | "request-path-v1"
   | "https-stack-v1"
-  | "repeatable-service-v1";
+  | "repeatable-service-v1"
+  | "delivery-pipeline-v1";
 
 export type LessonContentBlock =
   | {
@@ -63,6 +64,30 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "B2.1": {
+    version: 1,
+    blocks: [
+      {
+        id: "b2-1-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "A production change should remain traceable from source change to tested artifact to deployed release and then to runtime evidence. The goal is not slower delivery; it is controlled delivery that can be explained and recovered."
+      },
+      {
+        id: "b2-1-safe-delivery",
+        type: "illustration",
+        heading: "The release path",
+        alt: "A code change is reviewed, tested, built into an identified artifact, deployed, and verified in the running service",
+        bindingId: "B2.1:b2-1-safe-delivery",
+        nodes: ["Change", "Review", "Test", "Artifact", "Deploy", "Verify"],
+        variant: "delivery-pipeline-v1",
+        caption:
+          "A release is a traceable path from source change to verified runtime behavior."
+      }
+    ]
+  },
+
   "B1.5": {
     version: 1,
     blocks: [
@@ -236,7 +261,8 @@ export function validateLessonContent(
         block.variant !== "container-boundary-v1" &&
         block.variant !== "request-path-v1" &&
         block.variant !== "https-stack-v1" &&
-        block.variant !== "repeatable-service-v1"
+        block.variant !== "repeatable-service-v1" &&
+        block.variant !== "delivery-pipeline-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
       }
