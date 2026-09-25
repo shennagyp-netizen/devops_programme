@@ -1880,10 +1880,16 @@ Merged PR #43:
 Merged PR #44:
 - D1.3 -> `service-permission-model-v1`: Process -> Identity -> Resource -> Service -> Logs.
 - Merge commit: `de0a4893f272640f2d02b54dd45ecc397acc6bf2`.
-- D1.3 teaches execution context as part of system behavior: user/group, permissions, environment, service supervision and timestamped log evidence.
-- A red-team CI run caught a duplicate illustration-model declaration introduced during authoring; the duplicate declaration and duplicate validator entry were removed, then the full gate passed.
 - Final PR #44 gate passed **347 tests**, all programme contracts, TypeScript and the Next.js production build.
-- Next content boundary: **D1.4 — What Is a Network?**.
+- Red-team caught a duplicate D1.3 model/validator registration during development; the duplicate was removed without weakening the tests.
+
+Merged PR #45:
+- D1.4 -> `network-operating-model-v1`: Interface -> Link -> IP -> Route -> Evidence.
+- Merge commit: `7ffa6edd1fd266fa0d3b585e674ae885c709b81a`.
+- CI run 36106220995 passed.
+- D1.4 separates MAC, IP, ARP and routing roles and keeps DNS outside the local link/IP model.
+- The controlled lab isolates one disposable network boundary and proves recovery.
+- Next content boundary: **D1.5 — IP Addresses, Subnets and CIDR**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
