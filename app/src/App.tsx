@@ -1,6 +1,6 @@
 "use client";
 
-import { UserButton } from "@clerk/nextjs";
+import { logoutAction } from "./app/actions/auth";
 import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
 import { courses, platformProfiles, type CourseLevel, type PlatformId } from "./data/programme";
@@ -15,8 +15,10 @@ import { completeLearningItemAction } from "./app/actions/progress";
 import type { CompletionRecord } from "./lib/progress-contract";
 
 export default function App({
+  currentUser,
   initialCompletionHistory
 }: {
+  currentUser: { id: string; email: string };
   initialCompletionHistory: CompletionRecord[];
 }) {
   const [course, setCourse] = useState<CourseLevel>("intermediate");
@@ -112,7 +114,14 @@ export default function App({
             <span className="gateway-label">LEARNING GATEWAY</span>
           </div>
           <Progress total={selectedLessons.length} completed={completedInCourse} />
-          <UserButton />
+          <div className="account-area">
+            <span className="account-email">{currentUser.email}</span>
+            <form action={logoutAction}>
+              <button className="secondary account-logout" type="submit">
+                Sign out
+              </button>
+            </form>
+          </div>
         </div>
       </header>
 
