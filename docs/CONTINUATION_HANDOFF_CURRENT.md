@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #59, commit `e634e8709a7cfe642b59c6f3966f700ea10947ab` (D3.2 Kubernetes networking script + illustration quality slice).
+**Latest main architecture/content merge:** PR #60, commit `68ee5fb403fc0a729dcef2d26ad3da587abd247f` (D3.3 Kubernetes config-storage script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #59 has merged to `main`.
+**Active content-quality branch:** none. PR #60 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1931,19 +1931,15 @@ Merged PR #55:
 Merged PR #59:
 - D3.2 -> `kubernetes-networking-v1`: Service -> Selector -> Endpoint set -> Pod -> Evidence.
 - Merge commit: `e634e8709a7cfe642b59c6f3966f700ea10947ab`.
-- D3.2 now teaches stable Service identity, selector matching, endpoint membership, Pod readiness and real request evidence as one diagnostic path.
-- Controlled failures remove a Pod, break the Service selector, and prove endpoint/routing recovery.
 - Final PR #59 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- Next content boundary: **D3.3 — Kubernetes Configuration and Storage**.
 
-
-Active PR D3.3 scope:
-- D3.3 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `kubernetes-config-storage-v1`.
-- Teaching model: Config -> Secret -> Mount -> Pod -> Persistence.
-- The rewritten script separates non-secret configuration, secret handling, application consumption, Pod lifecycle and persistent storage lifecycle.
-- Controlled failures cover wrong configuration, missing secret consumption and data behavior across Pod replacement.
-- TDD/full-programme gate is required before merge.
+Merged PR #60:
+- D3.3 -> `kubernetes-config-storage-v1`: Config -> Secret -> Mount -> Pod -> Persistence.
+- Merge commit: `68ee5fb403fc0a729dcef2d26ad3da587abd247f`.
+- D3.3 now separates non-secret configuration, secret handling, application consumption, Pod lifecycle and persistent storage lifecycle.
+- Controlled failures cover wrong configuration, secret-consumption paths and data behavior across Pod replacement.
+- Final PR #60 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- Next content boundary: **D3.4 — Kubernetes Health and Scaling**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
