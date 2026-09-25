@@ -1839,5 +1839,14 @@ Do not scale the animation catalogue before the script+illustration quality gate
 - Red-team/CI caught two contract issues during development: the validator did not know the new variants and B1.3 used a non-canonical binding identity. Both were corrected before the final green run.
 - The final PR #34 programme gate passed 342 tests, all contract checks, TypeScript typecheck and the Next.js production build.
 
+
+Active PR #35 scope:
+- B1.5 is being upgraded to the same script+illustration quality standard.
+- New semantic illustration: `repeatable-service-v1`.
+- Teaching model: Image -> Configuration -> Runtime -> Health -> User path, with persistent data as an independent lifecycle.
+- The rewritten script explicitly distinguishes process running from service readiness and health from real user-path proof.
+- Controlled failures cover missing configuration, dependency readiness, misleading health checks and persistence across container replacement.
+- TDD is required before merge; the branch must finish the full programme gate.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
