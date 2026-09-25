@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #50, commit `b2932a7ee3ebe61e206f1f49f9da5943106a2727` (D2.3 HTTP exchange script + illustration quality slice).
+**Latest main architecture/content merge:** PR #51, commit `faee8ec98812592b20c7b854bc506c47f86247e0` (D2.4 TLS trust script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #50 has merged to `main`.
+**Active content-quality branch:** none. PR #51 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1902,23 +1902,20 @@ Merged PR #49:
 - D2.2 -> `dns-resolution-v1`: Name -> Resolver -> Cache -> Authority -> Freshness.
 - Merge commit: `79dd956303907480c20091debfcff2f0500661a8`.
 - Final PR #49 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
-- Red-team caught and corrected a missing DNS variant in the lesson-content type/validator and one harder spoken-English word.
+- Red-team caught and corrected a missing DNS variant in lesson-content typing and one harder spoken-English word.
 
 Merged PR #50:
 - D2.3 -> `http-exchange-v1`: Request -> Headers -> Route -> Response -> Evidence.
 - Merge commit: `b2932a7ee3ebe61e206f1f49f9da5943106a2727`.
-- D2.3 explicitly separates HTTP application evidence from DNS, transport and TLS failures and teaches status codes as evidence rather than slogans.
 - Final PR #50 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
-- Next content boundary: **D2.4 — TLS and HTTPS**.
+- D2.3 separates HTTP application evidence from DNS, transport and TLS failures and teaches status codes as evidence.
 
-
-Active PR #51 scope:
-- D2.4 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `tls-trust-v1`.
-- Teaching model: Client -> Certificate -> Handshake -> Secure Session -> Evidence.
-- The rewritten script separates encryption from authentication, hostname identity, certificate trust, handshake behavior and post-TLS HTTP evidence.
-- Controlled failure uses a disposable/local HTTPS setup with a certificate mismatch, then restores and proves the HTTPS request.
-- TDD/full-programme gate is required before merge.
+Merged PR #51:
+- D2.4 -> `tls-trust-v1`: Client -> Certificate -> Handshake -> Secure Session -> Evidence.
+- Merge commit: `faee8ec98812592b20c7b854bc506c47f86247e0`.
+- D2.4 teaches certificate identity, hostname matching, trust chains, private-key proof, TLS handshake behavior and the difference between encryption and authentication.
+- Final PR #51 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
+- Next content boundary: **D2.5 — Why Containers Exist**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
