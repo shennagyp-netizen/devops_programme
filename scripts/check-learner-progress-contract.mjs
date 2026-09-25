@@ -23,6 +23,7 @@ const files = {
   authActionsTest: "../app/tests/integration/auth-actions.integration.test.mjs",
   authBoundaryTest: "../app/tests/integration/auth-boundary.integration.test.mjs",
   migrationAuth: "../app/drizzle/migrations/0001_self_hosted_auth.sql",
+  migrationMastery: "../app/drizzle/migrations/0002_learner_mastery_attempts.sql",
   migrationRunner: "../scripts/run-production-migrations.mjs",
   gitignore: "../.gitignore"
 };
@@ -69,6 +70,8 @@ assert.match(content.gitignore, /\.env\*\.local/);
 
 assert.match(content.schema, /userId\s*:\s*text\("user_id"\)/);
 assert.match(content.schema, /learner_progress_history_user_item_uq/);
+assert.match(content.schema, /learnerMasteryAttempts/);
+assert.match(content.schema, /learner_mastery_attempts_user_task_attempt_uq/);
 assert.match(content.schema, /item_type IN/);
 assert.doesNotMatch(content.schema, /learnerId/);
 
@@ -78,7 +81,10 @@ assert.match(content.migration, /learner_progress_history_item_type_ck/);
 
 assert.match(content.progress, /onConflictDoNothing/);
 assert.match(content.progress, /orderBy\([\s\S]*completedAt/);
-assert.doesNotMatch(content.progress, /stdout|stderr|attempt|machineEnvelope/);
+assert.match(content.progress, /recordMasteryAttemptForUser/);
+assert.match(content.progress, /attemptNumber/);
+assert.match(content.progress, /listMasteryHistoryForUser/);
+assert.doesNotMatch(content.progress, /stdout|stderr|machineEnvelope/);
 
 assert.match(content.action, /"use server"/);
 assert.match(content.action, /requireCurrentUser/);
@@ -102,6 +108,8 @@ assert.match(content.page, /DevOps/);
 
 assert.match(content.learnPage, /requireCurrentUser/);
 assert.match(content.learnPage, /listCompletionHistoryForUser/);
+assert.match(content.learnPage, /listMasteryHistoryForUser/);
+assert.match(content.app, /initialMasteryHistory/);
 assert.match(content.learnPage, /redirect\("\/sign-in"\)/);
 
 assert.match(content.layout, /<body>/);
@@ -125,6 +133,9 @@ assert.match(content.authBoundaryTest, /no Clerk dependency/);
 assert.match(content.migrationAuth, /auth_users/);
 assert.match(content.migrationAuth, /auth_sessions/);
 assert.match(content.migrationAuth, /auth_users/);
+assert.match(content.migrationMastery, /learner_mastery_attempts/);
+assert.match(content.migrationMastery, /attempt_number/);
+assert.match(content.migrationMastery, /outcome/);
 assert.match(content.migrationAuth, /auth_sessions/);
 assert.match(content.migrationRunner, /_devops_programme_migrations/);
 
