@@ -30,7 +30,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
   | "kubernetes-failure-loop-v1"
-  | "git-production-workflow-v1";
+  | "git-production-workflow-v1"
+  | "ci-cd-pipeline-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -939,6 +940,36 @@ const KUBERNETES_RECONCILIATION_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const CI_CD_PIPELINE_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "ci-cd-pipeline-v1",
+  title: "The CI/CD control path",
+  stages: [
+    { id: "source", label: "Source", detail: "A known source change identifies exactly what triggered the delivery path." },
+    { id: "validate", label: "Validate", detail: "Automated tests, security checks and policy gates provide evidence about defined risks." },
+    { id: "artifact", label: "Artifact", detail: "The build produces a concrete artifact with an identity that can be matched to validation." },
+    { id: "promote", label: "Promote", detail: "The identified artifact moves through environments under explicit controls appropriate to the system risk." },
+    { id: "verify", label: "Verify", detail: "Runtime health and a real user path prove what happened after deployment." }
+  ],
+  foundation: {
+    label: "A pipeline is an evidence chain, not just an automation script",
+    detail: "Each stage should control a real risk and produce evidence strong enough to support the next promotion decision."
+  },
+  callouts: [
+    { id: "risk-gate", label: "Risk gate", detail: "A gate is useful when it answers a real risk question rather than existing only because a template includes it." },
+    { id: "artifact-identity", label: "Artifact identity", detail: "The artifact that passed validation should be identifiable when it is promoted and running." },
+    { id: "promotion", label: "Promotion", detail: "Higher-risk environments should require stronger or more explicit controls than lower-risk environments." },
+    { id: "runtime-proof", label: "Runtime proof", detail: "A green pipeline job does not by itself prove the deployed application is healthy for users." }
+  ],
+  failureChecks: [
+    { id: "source-identity", label: "1. Source identity", detail: "Which exact source state triggered the pipeline?" },
+    { id: "validation-evidence", label: "2. Validation evidence", detail: "Which risk questions did the gates answer, and what evidence says they passed?" },
+    { id: "artifact-match", label: "3. Artifact match", detail: "Is the artifact being promoted the one that was validated?" },
+    { id: "runtime-health", label: "4. Runtime health", detail: "After deployment, what proves the running service and real user path are healthy?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1156,6 +1187,13 @@ export function getLessonIllustrationModel(
   if (block.variant === "kubernetes-failure-loop-v1") {
     return {
       ...KUBERNETES_FAILURE_LOOP_VARIANT,
+      title: block.heading
+    };
+  }
+
+  if (block.variant === "ci-cd-pipeline-v1") {
+    return {
+      ...CI_CD_PIPELINE_VARIANT,
       title: block.heading
     };
   }
