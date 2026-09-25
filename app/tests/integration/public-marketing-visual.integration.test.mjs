@@ -20,7 +20,7 @@ describe("public marketing visual contract", () => {
     expect(illustration).toContain("Understand");
     expect(illustration).toContain("Diagnose");
     expect(illustration).toContain("Repair");
-    expect(illustration).toContain("motion-reduced");
+    expect(illustration).toContain("marketing-packet-static");
     expect(illustration).toContain("marketing-packet");
   });
 
