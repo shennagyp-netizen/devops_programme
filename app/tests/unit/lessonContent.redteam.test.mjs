@@ -2,8 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildDefaultLessonContent,
   getLessonContent,
-  validateLessonContent,
-  type LessonContent
+  validateLessonContent
 } from "../../src/data/lessonContent.ts";
 
 const validIllustration = {
@@ -395,7 +394,7 @@ describe("lesson content generation and programme integration", () => {
     ];
 
     for (const [id, title, objective, humanExample] of seeds) {
-      const content: LessonContent = buildDefaultLessonContent({
+      const content = buildDefaultLessonContent({
         id,
         title,
         objective,
