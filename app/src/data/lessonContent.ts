@@ -88,6 +88,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D5.3": {
+    version: 1,
+    blocks: [
+      {
+        id: "d5-3-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Distributed systems fail differently because execution and communication can fail independently. A timeout tells you what the caller did not observe, not automatically what happened remotely."
+      },
+      {
+        id: "d5-3-distributed-systems",
+        type: "illustration",
+        heading: "The partial-failure model",
+        alt: "A distributed request crosses a network between separate states, and the caller must reason about incomplete information and evidence",
+        bindingId: "D5.3:d5-3-distributed-systems",
+        nodes: ["Request", "Local State", "Network", "Remote State", "Uncertainty", "Evidence"],
+        variant: "distributed-partial-failure-v1",
+        caption:
+          "Separate execution state, communication state and observation so a timeout does not become a false diagnosis."
+      }
+    ]
+  },
+
+
   "D5.2": {
     version: 1,
     blocks: [
@@ -947,6 +972,7 @@ export function validateLessonContent(
         block.variant !== "docker-failure-loop-v1" &&
         block.variant !== "cloud-primitives-v1" &&
         block.variant !== "database-scaling-v1" &&
+        block.variant !== "distributed-partial-failure-v1" &&
         block.variant !== "kubernetes-service-path-v1" &&
         block.variant !== "kubernetes-config-storage-v1" &&
         block.variant !== "kubernetes-health-scaling-v1" &&

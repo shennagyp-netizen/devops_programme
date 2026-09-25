@@ -2010,5 +2010,13 @@ Merged PR #95:
 - The old short concept note was replaced with a full lesson covering query shape, index trade-offs, replication lag/consistency, partition keys, cross-partition work, controlled experiments, recall and transfer.
 - Fresh Vercel validation for PR #95 remained blocked by build-rate-limit infrastructure; this is not claimed as green.
 
+
+Active PR #96 scope:
+- D5.3 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `distributed-partial-failure-v1`.
+- Teaching model: Request -> Local State -> Network -> Remote State -> Uncertainty -> Evidence.
+- The old short distributed-systems note is replaced with a full lesson covering partial failure, timeout ambiguity, idempotency, replication consistency, ordering, clock uncertainty, controlled delay/retry experiments, recall and transfer.
+- Fresh Vercel validation may be blocked by the current build-rate-limit infrastructure condition.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
