@@ -43,7 +43,8 @@ export type LessonIllustrationVariantV1 =
   | "cloud-primitives-v1"
   | "scaling-control-loop-v1"
   | "database-scale-v1"
-  | "distributed-failure-v1";
+  | "distributed-failure-v1"
+  | "reliability-control-v1";
 
 export type LessonContentBlock =
   | {
@@ -96,6 +97,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D5.4": {
+    version: 1,
+    blocks: [
+      {
+        id: "d5-4-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Retries, timeouts, circuit breakers and backpressure can help a failing dependency recover, but each mechanism also changes load and correctness."
+      },
+      {
+        id: "d5-4-reliability",
+        type: "illustration",
+        heading: "The reliability control path",
+        alt: "A dependency failure is bounded by timeouts, controlled by retries with backoff and jitter, protected by a circuit breaker and backpressure, and made safe by idempotency",
+        bindingId: "D5.4:d5-4-reliability",
+        nodes: ["Failure", "Timeout", "Retry Policy", "Load Control", "Idempotent Outcome", "Recovery"],
+        variant: "reliability-control-v1",
+        caption:
+          "Reliability patterns are safe only when their load and correctness effects are understood."
+      }
+    ]
+  },
+
+
   "D5.3": {
     version: 1,
     blocks: [
@@ -1116,6 +1142,7 @@ export function validateLessonContent(
         block.variant !== "scaling-control-loop-v1" &&
         block.variant !== "database-scale-v1" &&
         block.variant !== "distributed-failure-v1" &&
+        block.variant !== "reliability-control-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);
