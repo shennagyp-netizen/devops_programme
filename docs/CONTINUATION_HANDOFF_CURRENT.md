@@ -1876,5 +1876,14 @@ Merged PR #42:
 - Final PR #42 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 - Next content boundary: **D1.2 — Terminal as an Engineering Tool**.
 
+
+Active PR #43 scope:
+- D1.2 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `terminal-composition-v1`.
+- Teaching model: Question -> Producer -> Transform -> Route -> Evidence.
+- The rewritten script teaches pipes, redirection, stderr, filtering, remote boundaries and command-result interpretation as one evidence pipeline.
+- Controlled failures include incorrect filtering, hidden stderr and wrong evidence boundary.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================

@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored terminal-composition visual for D1.2", () => {
+    const lesson = allLessons.find((item) => item.id === "D1.2");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d1-2-terminal-tool",
+      bindingId: "D1.2:d1-2-terminal-tool",
+      variant: "terminal-composition-v1"
+    });
+  });
+
   it("uses the authored Linux operating model visual for D1.1", () => {
     const lesson = allLessons.find((item) => item.id === "D1.1");
     expect(lesson).toBeDefined();

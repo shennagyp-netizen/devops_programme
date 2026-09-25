@@ -59,6 +59,40 @@ describe("lesson illustration teaching model", () => {
 
 
 
+  it("models terminal work as a composed evidence flow", () => {
+    const model = getLessonIllustrationModel({
+      id: "d1-2-terminal-tool",
+      type: "illustration",
+      heading: "The terminal as an evidence pipeline",
+      alt: "A diagnostic question is answered by composing commands, transforming output, routing it through pipes or files, and interpreting the resulting evidence",
+      bindingId: "D1.2:d1-2-terminal-tool",
+      nodes: ["Question", "Producer", "Transform", "Route", "Evidence"],
+      variant: "terminal-composition-v1"
+    });
+
+    expect(model.variant).toBe("terminal-composition-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "question",
+      "producer",
+      "transform",
+      "route",
+      "evidence"
+    ]);
+    expect(model.foundation.label).toBe("Small tools become a dataflow system");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "pipes",
+      "redirection",
+      "filtering",
+      "stderr"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "right-question",
+      "right-producer",
+      "output-routing",
+      "evidence-meaning"
+    ]);
+  });
+
   it("models the Linux operating model from application work to kernel-managed evidence", () => {
     const model = getLessonIllustrationModel({
       id: "d1-1-linux-model",

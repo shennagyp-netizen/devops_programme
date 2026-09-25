@@ -12,7 +12,8 @@ export type LessonIllustrationVariantV1 =
   | "queue-state-v1"
   | "incident-loop-v1"
   | "process-diagnosis-v1"
-  | "linux-operating-model-v1";
+  | "linux-operating-model-v1"
+  | "terminal-composition-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -381,6 +382,36 @@ const LINUX_OPERATING_MODEL_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const TERMINAL_COMPOSITION_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "terminal-composition-v1",
+  title: "The terminal as an evidence pipeline",
+  stages: [
+    { id: "question", label: "Question", detail: "Start from the system claim you need to test, not from a command you happen to remember." },
+    { id: "producer", label: "Producer", detail: "Choose the program that can expose the evidence you need." },
+    { id: "transform", label: "Transform", detail: "Filter, sort or reshape the output so the relevant evidence is visible." },
+    { id: "route", label: "Route", detail: "Use pipes, redirection or files to move output between commands and inspection points." },
+    { id: "evidence", label: "Evidence", detail: "Interpret the result and state what it proves and what remains unresolved." }
+  ],
+  foundation: {
+    label: "Small tools become a dataflow system",
+    detail: "A shell pipeline composes independent programs by connecting their input and output rather than turning the terminal into one giant command."
+  },
+  callouts: [
+    { id: "pipes", label: "Pipes", detail: "Connect one process's output to another process's input." },
+    { id: "redirection", label: "Redirection", detail: "Send standard output or error to a file or another destination." },
+    { id: "filtering", label: "Filtering", detail: "Use a focused transform such as grep, awk or sed to expose the evidence you need." },
+    { id: "stderr", label: "stderr matters", detail: "A command can appear empty while its useful error evidence is going to standard error." }
+  ],
+  failureChecks: [
+    { id: "right-question", label: "1. Right question", detail: "What system claim are you trying to prove or disprove?" },
+    { id: "right-producer", label: "2. Right producer", detail: "Which command exposes the smallest useful evidence for that claim?" },
+    { id: "output-routing", label: "3. Output routing", detail: "Did you connect, filter and redirect the streams you actually intended to inspect?" },
+    { id: "evidence-meaning", label: "4. Evidence meaning", detail: "What does the output prove, and what alternative explanation remains?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -483,6 +514,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "terminal-composition-v1") {
+    return {
+      ...TERMINAL_COMPOSITION_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -509,7 +547,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "queue-state-v1" &&
     model.variant !== "incident-loop-v1" &&
     model.variant !== "process-diagnosis-v1" &&
-    model.variant !== "linux-operating-model-v1"
+    model.variant !== "linux-operating-model-v1" &&
+    model.variant !== "terminal-composition-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
