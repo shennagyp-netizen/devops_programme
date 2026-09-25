@@ -1,6 +1,6 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import type { NextFetchEvent, NextRequest } from "next/server";
 
 const hasClerkConfiguration = Boolean(
   process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
@@ -9,7 +9,7 @@ const hasClerkConfiguration = Boolean(
 
 const protectedMiddleware = hasClerkConfiguration ? clerkMiddleware() : null;
 
-export default function proxy(request: NextRequest) {
+export default function proxy(request: NextRequest, event: NextFetchEvent) {
   if (!hasClerkConfiguration) {
     if (request.nextUrl.pathname.startsWith("/visual-audit")) {
       return NextResponse.next();
@@ -21,7 +21,7 @@ export default function proxy(request: NextRequest) {
     });
   }
 
-  return protectedMiddleware!(request);
+  return protectedMiddleware!(request, event);
 }
 
 export const config = {
