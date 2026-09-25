@@ -2027,12 +2027,15 @@ Merged PR #96:
 
 
 
-Active PR #99 scope:
-- D5.8 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `production-incident-v1`.
-- Teaching model: Impact -> Diagnosis -> Mitigate -> Recover -> Root Cause -> Learn.
-- The rewritten script replaces the short incident note with a full advanced capstone covering blast radius, timelines, competing hypotheses, safe mitigation, stable recovery proof, root-cause evidence, communication and prevention tests.
-- TDD/full-programme gate is required before merge.
+
+Merged PR #99:
+- D5.8 -> `production-incident-v1`: Impact -> Diagnosis -> Mitigate -> Recover -> Root Cause -> Learn.
+- Merge commit: `445013eaac3ead95ccd273d70d2c3613d8c0a1cf`.
+- D5.8 is now the advanced production-incident capstone: blast radius, timeline, competing hypotheses, safe mitigation, stable user-path recovery, root-cause evidence, communication and prevention tests.
+- Red-team caught a shared illustration-union defect: five advanced variants existed in implementation but were missing from the shared TypeScript unions; the unions were corrected without casts or test weakening.
+- Final PR #99 gate passed **407 tests**, all programme contracts, TypeScript and the Next.js production build.
+- Day 5 D5.1-D5.8 now all meet the gold-standard script+illustration standard.
+- Next outstanding mainline quality gap: **D3.2 — Kubernetes Networking** (PR #91 is open and main-based); D4.2 is also open as PR #92.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
