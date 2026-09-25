@@ -1939,5 +1939,14 @@ Active PR D3.2 scope:
 - Controlled failures remove one Pod, break the Service selector, and verify endpoint/routing recovery.
 - TDD/full-programme gate is required before merge.
 
+
+Active PR #56 scope:
+- D3.2 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `kubernetes-networking-v1`.
+- Teaching model: Service -> Selector -> Endpoint set -> Pod -> Evidence.
+- The rewritten script separates stable Service identity, selector matching, endpoint membership, Pod readiness and real request proof.
+- Controlled labs delete a disposable Pod and deliberately break the Service selector, then restore and prove the Service path recovers.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
