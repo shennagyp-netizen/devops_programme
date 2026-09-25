@@ -296,6 +296,21 @@ describe("course lesson content integration", () => {
     });
   });
 
+  it("uses the authored Kubernetes reconciliation visual for D3.1", () => {
+    const lesson = allLessons.find((item) => item.id === "D3.1");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d3-1-kubernetes-model",
+      bindingId: "D3.1:d3-1-kubernetes-model",
+      variant: "kubernetes-reconciliation-v1"
+    });
+  });
+
   it("uses the authored container execution visual for D2.5", () => {
     const lesson = allLessons.find((item) => item.id === "D2.5");
     expect(lesson).toBeDefined();
