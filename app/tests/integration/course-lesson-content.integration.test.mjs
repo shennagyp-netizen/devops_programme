@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored observability-decision visual for D5.5", () => {
+    const lesson = allLessons.find((item) => item.id === "D5.5");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d5-5-observability",
+      bindingId: "D5.5:d5-5-observability",
+      variant: "observability-decision-v1"
+    });
+  });
+
   it("uses the authored reliability-control visual for D5.4", () => {
     const lesson = allLessons.find((item) => item.id === "D5.4");
     expect(lesson).toBeDefined();
