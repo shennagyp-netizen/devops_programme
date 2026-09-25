@@ -1961,5 +1961,15 @@ Merged PR #86:
 - PR #85 was closed as stale after D3.5 changed the main lineage; D4.1 was safely re-ported as PR #86.
 - Next content boundary: **D4.2 — Continuous Integration and Quality Gates**.
 
+
+Current merge gate blocker — PR #88 / D2.6:
+- D2.6 is authored, tested at the source-contract level, and PR #88 is ready for review.
+- GitHub combined status for head `517e9f5b77913ca1f61217700ccb45efbaec02db` is **Vercel: failure** with target `build-rate-limit`.
+- This is an external deployment-rate limitation, not a reported TypeScript/test failure.
+- Green-only main merge rule: **do not merge PR #88 while the Vercel gate is red**.
+- Independent container-side GitHub access is unavailable in this environment, so a fresh local production build cannot be claimed.
+- D3.1 already has the same strong semantic script+illustration structure on main and is not being rewritten merely to create churn.
+- Content audit found 29 lessons with explicit authored semantic illustration variants currently registered in `lessonContent.ts`; further work should target real gaps after the D2.6 gate recovers.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
