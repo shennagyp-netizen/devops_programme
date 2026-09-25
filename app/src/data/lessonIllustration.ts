@@ -1063,6 +1063,37 @@ const GLOBAL_ARCHITECTURE_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const PRODUCTION_INCIDENT_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "production-incident-v1",
+  title: "The production incident loop",
+  stages: [
+    { id: "impact", label: "Impact", detail: "Establish what users and business operations are actually experiencing." },
+    { id: "diagnosis", label: "Diagnosis", detail: "Correlate timing, symptoms, changes and system signals while keeping competing hypotheses explicit." },
+    { id: "mitigate", label: "Mitigate", detail: "Choose the smallest safe action that reduces harm and limits blast radius without destroying useful evidence." },
+    { id: "recover", label: "Recover", detail: "Return the real user path to stable behavior and prove the system remains healthy." },
+    { id: "root-cause", label: "Root Cause", detail: "After stabilization, explain the causal chain with evidence rather than the most convenient story." },
+    { id: "learn", label: "Learn", detail: "Convert the incident into tested changes: detection, safeguards, runbooks, capacity or architecture." }
+  ],
+  foundation: {
+    label: "Stabilize the system while preserving evidence",
+    detail: "An incident response can reduce harm before every causal detail is known; mitigation and diagnosis should reinforce each other rather than compete."
+  },
+  callouts: [
+    { id: "blast-radius", label: "Blast radius", detail: "Prefer actions that reduce how many users, workloads or dependencies are exposed to the failure." },
+    { id: "timeline", label: "Timeline", detail: "Keep user reports, deployments, observations and actions tied to exact times." },
+    { id: "hypothesis", label: "Competing hypotheses", detail: "A plausible story is not enough; keep alternatives alive until evidence eliminates them." },
+    { id: "communication", label: "Communication", detail: "State facts, decisions, owners and uncertainty clearly so the response itself does not become a second failure." }
+  ],
+  failureChecks: [
+    { id: "user-impact", label: "1. User impact", detail: "Which user actions are failing, for whom, and how severe is the business impact?" },
+    { id: "safe-action", label: "2. Safe action", detail: "What reversible or bounded action reduces harm without hiding the evidence needed for diagnosis?" },
+    { id: "recovery-proof", label: "3. Recovery proof", detail: "Did the original user path recover and remain stable after the mitigation?" },
+    { id: "prevention-test", label: "4. Prevention test", detail: "What concrete test or control will prove that the same failure is less likely to recur?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1319,6 +1350,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "production-incident-v1") {
+    return {
+      ...PRODUCTION_INCIDENT_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1363,6 +1401,7 @@ export function validateLessonIllustrationModel(
     model.variant !== "database-scaling-v1" &&
     model.variant !== "distributed-partial-failure-v1" &&
     model.variant !== "global-architecture-v1" &&
+    model.variant !== "production-incident-v1" &&
     model.variant !== "kubernetes-service-path-v1" &&
     model.variant !== "kubernetes-config-storage-v1" &&
     model.variant !== "kubernetes-health-scaling-v1" &&
