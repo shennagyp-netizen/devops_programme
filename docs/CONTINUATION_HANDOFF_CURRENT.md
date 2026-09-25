@@ -1647,3 +1647,55 @@ Next gate:
 ============================================================
 END VERCEL VISUAL GATE — READY DEPLOYMENT CONFIRMED
 ============================================================
+
+============================================================
+35. PUBLIC PROGRAMME SITE + AUTHENTICATED LEARNER GATEWAY — 2026-09-25
+============================================================
+
+The application now has two deliberate surfaces.
+
+PUBLIC PROGRAMME SITE:
+- Route: / 
+- Purpose: explain and market the DevOps Programme without requiring an account.
+- It contains the programme hero, course levels, learning method, project spine and a clear entry point into the learner gateway.
+- The public route must not call Clerk auth(), require a Clerk provider, or depend on learner-progress storage.
+- The public route is therefore expected to render even when Clerk runtime credentials are not present.
+
+AUTHENTICATED LEARNER GATEWAY:
+- Route: /learn
+- Purpose: the actual course workspace and learner-state surface.
+- /learn calls Clerk auth().
+- Missing authentication redirects to /sign-in.
+- Authenticated completion history is loaded from PostgreSQL using the authenticated Clerk user ID.
+- The existing interactive App component remains the learner workspace.
+
+AUTHENTICATION MEANING:
+Authentication answers: "Which signed-in account is this learner?"
+It does not mean that the whole public website must be hidden.
+Authorization/data ownership then uses that authenticated identity to decide whether the learner can access /learn and which completion history belongs to that account.
+
+CLERK BOUNDARY:
+- Root layout no longer wraps the entire public application in ClerkProvider.
+- /learn has its own ClerkProvider layout.
+- sign-in and sign-up pages each provide their own ClerkProvider.
+- src/proxy.ts only routes Clerk middleware through authenticated application surfaces and the explicit auth paths; the public marketing route is outside that request matcher.
+
+ROUTE OWNERSHIP:
+- / = public programme website.
+- /learn = authenticated learning gateway.
+- /sign-in and /sign-up = authentication entry points.
+- /animations and /animations/[animationId] = public reusable animation previews; they are not a learner-progress or curriculum state owner.
+
+UX INTENT:
+The public site should feel like a normal professional course platform landing page. The learner gateway should feel like the focused working environment, similar to the distinction between a course platform's public catalogue/marketing layer and its signed-in classroom.
+
+TESTING:
+- app/tests/integration/public-learning-boundary.integration.test.mjs defines the public/authenticated route boundary.
+- scripts/check-learner-progress-contract.mjs now enforces that boundary.
+- TDD sequence: the boundary test was introduced before the implementation and initially failed against the old root-authenticated architecture; implementation then moved the authenticated workspace to /learn.
+
+IMPORTANT:
+Do not reintroduce root-level authentication solely to protect learner progress. Progress is protected by the /learn server boundary and, independently, every progress Server Action re-derives the Clerk user ID on the server.
+============================================================
+END PUBLIC PROGRAMME SITE + AUTHENTICATED LEARNER GATEWAY
+============================================================

@@ -1,6 +1,7 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
+import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
 import { courses, platformProfiles, type CourseLevel, type PlatformId } from "./data/programme";
 import { lessonsByCourse } from "./data/courseLessons";
@@ -104,6 +105,12 @@ export default function App({
           </p>
         </div>
         <div className="hero-actions">
+          <div className="gateway-nav">
+            <Link className="gateway-home-link" href="/">
+              Programme home
+            </Link>
+            <span className="gateway-label">LEARNING GATEWAY</span>
+          </div>
           <Progress total={selectedLessons.length} completed={completedInCourse} />
           <UserButton />
         </div>
