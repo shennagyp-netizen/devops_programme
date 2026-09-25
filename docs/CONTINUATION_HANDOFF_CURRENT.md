@@ -1,6 +1,6 @@
 # Current Continuation Handoff — DevOps Programme
 
-**Status snapshot:** 2026-09-24
+**Status snapshot:** 2026-09-25
 
 **Repository:** `shennagyp-netizen/devops_programme`
 
@@ -20,7 +20,7 @@
 
 **TDD rule:** unit tests define the completion input contract; integration tests define the authentication/Server Action boundary; repository contract tests reject the obsolete Vite/API/anonymous-progress architecture.
 
-**CI truth:** the full workflow is configured for the current architecture, but the repository's previously observed GitHub-hosted runner startup failure occurred before visible workflow steps. No hosted-green result is claimed without an executed runner.
+**CI truth:** current GitHub-hosted runners are executing the workflow. The latest standalone-animation branch gate completed successfully at workflow run `36089003221`; exact post-merge main validation must still be recorded after merge.
 
 **Historical sections:** earlier sections record previous milestones and superseded designs. Sections 30–31 are retained for audit history only; section 32 and the final authenticated architecture are current.
 
@@ -1447,3 +1447,53 @@ Next implementation:
 - connect it to the actual PodcastCoach audio clock
 - validate rendered behavior in an accessible browser preview
 - then expand the reusable animation scenario library.
+
+
+============================================================
+ANIMATION / STANDALONE PREVIEW — CURRENT OVERRIDE — 2026-09-25
+============================================================
+
+PR #22 establishes a true standalone launch surface for the reusable animation library.
+
+Branch:
+- `feature/standalone-animation-playground-v1`
+
+Latest branch head:
+- `7d9330dfb81ffdacb96440421c36038de87df9bf`
+
+Latest green branch gate:
+- workflow run `36089003221`
+- `full-programme-gate`
+- completed success
+- 44 test files / 310 tests
+- programme contracts passed
+- TypeScript typecheck passed
+- Next.js production build passed.
+
+Standalone routes:
+- `/animations`
+- `/animations/[animationId]`
+
+The distinction is now explicit:
+
+1. Reusable animation library: definitions/contracts/runtime/stage, independent of curriculum.
+2. Standalone preview host: local development/inspection clock and controls.
+3. Curriculum binding: production instructional use, authored by curriculum.
+4. PodcastCoach: production audio-clock authority.
+
+The preview host must never become a second curriculum, learner-progress system or production audio owner.
+
+Preview cue fixtures are demonstration material only. Production curriculum bindings must use the actual PodcastCoach audio clock.
+
+Browser visual validation remains **Not yet validated** until an accessible preview deployment exists.
+
+The next work boundary after merge is:
+- confirm post-merge main green;
+- browser visual validation when available;
+- author the first real interactive/animated curriculum binding;
+- connect it to the existing PodcastCoach audio clock;
+- then expand animation scenarios.
+
+============================================================
+END ANIMATION / STANDALONE PREVIEW CURRENT OVERRIDE
+============================================================
