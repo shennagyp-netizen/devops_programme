@@ -2026,6 +2026,14 @@ Merged PR #96:
 - Fresh Vercel validation for PR #96 remained blocked by build-rate-limit infrastructure.
 
 
+
+Active PR #99 scope:
+- D5.8 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `production-incident-v1`.
+- Teaching model: Impact -> Diagnosis -> Mitigate -> Recover -> Root Cause -> Learn.
+- The rewritten script replaces the short incident note with a full advanced capstone covering blast radius, timelines, competing hypotheses, safe mitigation, stable recovery proof, root-cause evidence, communication and prevention tests.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
 
