@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #35, commit `0eae3678c22641e3db2802f24689554278d0280c` (B1.5 repeatability script + illustration quality slice).
+**Latest main architecture/content merge:** PR #36, commit `e5ff9ff66ca5f38276a082c3d61180ddce986c64` (B2.1 safe-delivery script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #35 has merged to `main`.
+**Active content-quality branch:** none. PR #36 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1842,21 +1842,18 @@ Do not scale the animation catalogue before the script+illustration quality gate
 
 Merged PR #35:
 - merge commit: `0eae3678c22641e3db2802f24689554278d0280c`
-- B1.5 now uses the `repeatable-service-v1` semantic illustration.
-- Teaching model: Image -> Configuration -> Runtime -> Health -> User path, with persistent data as an independent lifecycle.
-- B1.5 script explicitly teaches repeatability as an operating contract rather than a one-time successful startup.
-- Controlled failures cover missing configuration, dependency readiness, misleading health checks and persistence across container replacement.
-- Final PR #35 gate passed all programme contracts, the complete test suite, TypeScript and the Next.js production build.
-- Next content boundary: B2.1 — From Code Change to Safe Delivery.
+- B1.5 uses the `repeatable-service-v1` semantic illustration.
+- B1.5 teaches repeatability as an explicit operating contract.
+- Final PR #35 gate passed the complete programme suite and production build.
 
-
-Active PR #36 scope:
-- B2.1 is upgraded to the same script+illustration quality standard.
-- New semantic illustration: `delivery-pipeline-v1`.
-- Teaching model: Change -> Review -> Test -> Artifact -> Deploy -> Verify, with fixed release identity as the evidence spine.
-- The rewritten script distinguishes deployment success from runtime health and treats rollback as a system-level recovery decision.
-- Controlled failures cover runtime regression, release-identity mismatch and application/data rollback boundaries.
-- TDD/full-programme gate is required before merge.
+Merged PR #36:
+- merge commit: `e5ff9ff66ca5f38276a082c3d61180ddce986c64`
+- B2.1 uses the `delivery-pipeline-v1` semantic illustration.
+- Teaching model: Change -> Review -> Test -> Artifact -> Deploy -> Verify, with release identity as the evidence spine.
+- B2.1 explicitly distinguishes deployment success from runtime health and treats rollback as a system-level recovery decision.
+- Final PR #36 gate passed **347 tests**, all programme contracts, TypeScript and the Next.js production build.
+- Red-team caught the same authored-stream fallback risk before the final green revision; the B2.1 lesson registry was corrected rather than weakening the test.
+- Next content boundary: B2.2 — When "Everything Is Slow" Is Not Enough.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
