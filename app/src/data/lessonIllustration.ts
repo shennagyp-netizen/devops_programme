@@ -29,7 +29,8 @@ export type LessonIllustrationVariantV1 =
   | "kubernetes-service-path-v1"
   | "kubernetes-config-storage-v1"
   | "kubernetes-health-scaling-v1"
-  | "kubernetes-failure-loop-v1";
+  | "kubernetes-failure-loop-v1"
+  | "git-production-workflow-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -908,6 +909,36 @@ const KUBERNETES_FAILURE_LOOP_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const GIT_PRODUCTION_WORKFLOW_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "git-production-workflow-v1",
+  title: "The Git production workflow",
+  stages: [
+    { id: "change", label: "Change", detail: "Isolate one intentional source change from a known starting point." },
+    { id: "review", label: "Review", detail: "Inspect the diff and supporting evidence before treating the change as releasable." },
+    { id: "commit", label: "Commit", detail: "Give the reviewed source state a durable identity with a known parent." },
+    { id: "release", label: "Release", detail: "Attach a stable release identity to the artifact or deployment that is intended to run." },
+    { id: "recovery", label: "Recovery", detail: "Use the source and release identity to return to a known-good operational state." }
+  ],
+  foundation: {
+    label: "Source identity is part of production evidence",
+    detail: "A running release should be traceable to an exact source state; repository recency alone does not identify what production is running."
+  },
+  callouts: [
+    { id: "branch", label: "Branch", detail: "An explicit change boundary makes the starting state and intended diff visible." },
+    { id: "diff", label: "Diff", detail: "The diff is the review surface; unexpected extra changes should stop the release path until understood." },
+    { id: "commit-id", label: "Commit ID", detail: "The commit ID gives a durable source identity and parent relationship." },
+    { id: "release-id", label: "Release ID", detail: "A tag, immutable artifact reference or deployment version identifies the thing intended or running in production." }
+  ],
+  failureChecks: [
+    { id: "change-scope", label: "1. Change scope", detail: "Is the change isolated from unrelated local or branch state?" },
+    { id: "review-scope", label: "2. Review scope", detail: "Does the diff match the intended change and its evidence?" },
+    { id: "release-identity", label: "3. Release identity", detail: "Can the running release be traced to the exact reviewed source state?" },
+    { id: "recovery-path", label: "4. Recovery path", detail: "Can the source and deployment system return to a known-good operational state without hiding history?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1129,6 +1160,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "git-production-workflow-v1") {
+    return {
+      ...GIT_PRODUCTION_WORKFLOW_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1172,7 +1210,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "kubernetes-service-path-v1" &&
     model.variant !== "kubernetes-config-storage-v1" &&
     model.variant !== "kubernetes-health-scaling-v1" &&
-    model.variant !== "kubernetes-failure-loop-v1"
+    model.variant !== "kubernetes-failure-loop-v1" &&
+    model.variant !== "git-production-workflow-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
