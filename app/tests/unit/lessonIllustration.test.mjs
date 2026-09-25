@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models containers as image, container, process, namespaces and host kernel", () => {
+    const model = getLessonIllustrationModel({
+      id: "d2-5-containers",
+      type: "illustration",
+      heading: "The container execution model",
+      alt: "An image creates a container that runs a process inside isolated namespaces while sharing the host kernel",
+      bindingId: "D2.5:d2-5-containers",
+      nodes: ["Image", "Container", "Process", "Namespaces", "Host Kernel"],
+      variant: "container-execution-v1"
+    });
+
+    expect(model.variant).toBe("container-execution-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "image",
+      "container",
+      "process",
+      "namespaces",
+      "host-kernel"
+    ]);
+    expect(model.foundation.label).toBe("A container is an isolated process environment, not a virtual machine");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "image",
+      "lifecycle",
+      "namespaces",
+      "kernel"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "process-command",
+      "filesystem",
+      "namespace-view",
+      "kernel-assumption"
+    ]);
+  });
+
   it("models HTTPS as certificate identity, handshake, secure session and evidence", () => {
     const model = getLessonIllustrationModel({
       id: "d2-4-tls",
