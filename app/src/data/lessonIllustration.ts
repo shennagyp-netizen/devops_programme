@@ -10,7 +10,8 @@ export type LessonIllustrationVariantV1 =
   | "observability-diagnosis-v1"
   | "backup-recovery-v1"
   | "queue-state-v1"
-  | "incident-loop-v1";
+  | "incident-loop-v1"
+  | "process-diagnosis-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -319,6 +320,36 @@ const INCIDENT_LOOP_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const PROCESS_DIAGNOSIS_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "process-diagnosis-v1",
+  title: "From symptom to process evidence",
+  stages: [
+    { id: "symptom", label: "Symptom", detail: "Start with the user-visible delay without assuming which layer caused it." },
+    { id: "process", label: "Process", detail: "Identify the actual running process and its current state." },
+    { id: "resource", label: "Resource", detail: "Check CPU, memory, files, sockets and other resource evidence." },
+    { id: "dependency", label: "Dependency", detail: "If the process is waiting, inspect the external system or operation it depends on." },
+    { id: "proof", label: "Proof", detail: "Choose the observation that separates the leading causes and verify the result after a safe change." }
+  ],
+  foundation: {
+    label: "A process is code running with state and resources",
+    detail: "The stored program is not the running process; the operating system manages the process's CPU, memory, files, sockets and state."
+  },
+  callouts: [
+    { id: "ps", label: "ps", detail: "Which processes exist, and what state and resource usage do they show?" },
+    { id: "open-endpoints", label: "Open endpoints", detail: "Which files, sockets or network endpoints does the process have open?" },
+    { id: "cpu-trap", label: "CPU can mislead", detail: "Low CPU can mean healthy idleness or waiting; high CPU can be normal for the current workload." },
+    { id: "state", label: "Process state", detail: "Running, waiting, stopped and exited states change which evidence is useful next." }
+  ],
+  failureChecks: [
+    { id: "scope-symptom", label: "1. Scope the symptom", detail: "Is one process slow, one machine slow, or the whole service affected?" },
+    { id: "process-identity", label: "2. Identify the process", detail: "Which process actually owns the behavior you are investigating?" },
+    { id: "resource-or-wait", label: "3. Resource or wait?", detail: "Is the process consuming a resource, waiting on one, or blocked on another system?" },
+    { id: "evidence-proof", label: "4. Prove the cause", detail: "Choose a measurement that separates the remaining hypotheses before changing the system." }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -407,6 +438,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "process-diagnosis-v1") {
+    return {
+      ...PROCESS_DIAGNOSIS_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -431,7 +469,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "observability-diagnosis-v1" &&
     model.variant !== "backup-recovery-v1" &&
     model.variant !== "queue-state-v1" &&
-    model.variant !== "incident-loop-v1"
+    model.variant !== "incident-loop-v1" &&
+    model.variant !== "process-diagnosis-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
