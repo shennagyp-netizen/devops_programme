@@ -1945,17 +1945,16 @@ Merged PR #83:
 - D3.4 -> `kubernetes-health-scaling-v1`: Startup -> Readiness -> Liveness -> Capacity -> Rollout.
 - Merge commit: `3514e356dbda8e1260e788d1e82c4864d7af009f`.
 - Final PR #83 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- D3.4 was ported from an older parallel branch onto current `main` without replaying stale predecessor history.
-- D3.4 now has explicit semantic binding/tests for startup, readiness, liveness, capacity and rollout.
-- Next content boundary: **D3.5 — Kubernetes Failure and Replacement**.
+- D3.4 was ported from the older parallel branch onto current `main` without replaying stale predecessor history.
 
-
-Active D3.5 current-main port:
-- D3.5 is upgraded to the script+illustration gold-standard on the current `main` lineage.
-- New semantic illustration: `kubernetes-failure-loop-v1`.
-- Teaching model: Baseline -> Fault -> Symptom -> Evidence -> Recovery.
-- The existing failure-lab script already teaches CrashLoopBackOff, ImagePullBackOff, OOMKilled, readiness failure, selector failure, controlled single-boundary changes and recovery proof; the new visual turns those mechanisms into one coherent loop.
-- TDD/full-programme gate is required before merge.
+Merged PR #84:
+- D3.5 -> `kubernetes-failure-loop-v1`: Baseline -> Fault -> Symptom -> Evidence -> Recovery.
+- Merge commit: `e9858af68efe906a3e6c20c01e71e3b8c067c4b2`.
+- Final PR #84 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- D3.5 now turns CrashLoopBackOff, ImagePullBackOff, OOMKilled, readiness failure and selector failure into one controlled diagnosis/recovery loop.
+- The illustration registry was rebuilt from green `main` before the final successful gate to eliminate a transient parser inconsistency.
+- **D3.1–D3.5 are now all gold-standard script+illustration units.**
+- Next content boundary: **D4.1 — Git as a Production Workflow**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
