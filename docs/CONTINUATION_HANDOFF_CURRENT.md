@@ -1840,76 +1840,98 @@ Do not scale the animation catalogue before the script+illustration quality gate
 - The final PR #34 programme gate passed 342 tests, all contract checks, TypeScript typecheck and the Next.js production build.
 
 
-Merged PR #35:,- B1.5 -> repeatable-service-v1: Image -> Configuration -> Runtime -> Health -> User path.,- Merge commit: 0eae3678c22641e3db2802f24689554278d0280c.,,Merged PR #36:,- B2.1 -> delivery-pipeline-v1: Change -> Review -> Test -> Artifact -> Deploy -> Verify.,- Merge commit: e5ff9ff66ca5f38276a082c3d61180ddce986c64.,,Merged PR #37:,- B2.2 -> observability-diagnosis-v1: Symptom -> Scope -> Service -> Dependency -> Proof.,- Merge commit: a5f77bda6927d01c7510cebbac272950b27db84a.,,Merged PR #38:,- B2.3 -> backup-recovery-v1: Backup -> Restore -> Compatibility -> Verify -> Recover.,- Merge commit: 55f43081f3aae067c66ae29e3e104da68e4d7a8.,,Merged PR #39:,- B3.1 -> queue-state-v1: Producer -> Queue -> Consumer -> Outcome.,- Merge commit: f4fed3b13a019c9b9834bbef15f2a240f2a12362.,,Merged PR #40:,- B3.2 -> incident-loop-v1: Impact -> Scope -> Evidence -> Mitigate -> Recover -> Learn.,- Merge commit: 7d8cf51cab91ba7eb41dedce19a1d1b6cab4135a.,,Merged PR #41:,- B1.1 -> process-diagnosis-v1: Symptom -> Process -> Resource -> Dependency -> Proof.,- Merge commit: b8e8456d19be162c64850bdaa01f319101153885.,- All 10 Beginner lessons meet the gold-standard script+illustration contract.,,Merged PR #42:,- D1.1 -> linux-operating-model-v1: Application -> Process -> Kernel -> Resources -> Evidence.,- Merge commit: 7feba39f6d02e9b8783744a9ffeb0db7050efeef.,,Merged PR #43:,- D1.2 -> terminal-composition-v1: Question -> Producer -> Transform -> Route -> Evidence.,- Merge commit: 3ba501eea24abfc7788837dc2a443c2e28ad7f95.,,Merged PR #44:,- D1.3 -> service-permission-model-v1: Process -> Identity -> Resource -> Service -> Logs.,- Merge commit: de0a4893f272640f2d02b54dd45ecc397acc6bf2.,,Merged PR #45:,- D1.4 -> network-operating-model-v1: Interface -> Link -> IP -> Route -> Evidence.,- Merge commit: 7ffa6edd1fd266fa0d3b585e674ae885c709b81a.,,Merged PR #46:,- D1.5 -> cidr-boundary-v1: Address -> Prefix -> Boundary -> Range -> Verify.,- Merge commit: 1d427a9c24e6b24954857f43eaf34981b5e67ebb.,,Merged PR #47:,- D1.6 -> routing-boundary-v1: Destination -> Route -> Next hop -> Boundary -> Evidence.,- Merge commit: 417cf8ec4ce899623f705708e839214591ac1acb.,- Final PR #47 gate passed 369 tests, all programme contracts, TypeScript and the Next.js production build.,,Merged PR #48:,- D2.1 -> transport-contract-v1: Endpoint -> Port -> Transport -> Delivery -> Evidence.,- Merge commit: 7b9244616e707037c074fe3c1032f13aaa94ab58.,,Merged PR #49:,- D2.2 -> dns-resolution-v1: Name -> Resolver -> Cache -> Authority -> Freshness.,- Merge commit: 79dd956303907480c20091debfcff2f0500661a8.,- Final PR #49 gate passed 373 tests, all programme contracts, TypeScript and the Next.js production build.,,Merged PR #50:,- D2.3 -> http-exchange-v1: Request -> Headers -> Route -> Response -> Evidence.,- Merge commit: b2932a7ee3ebe61e206f1f49f9da5943106a2727.,- Final PR #50 gate passed 373 tests, all programme contracts, TypeScript and the Next.js production build.,,Merged PR #51:,- D2.4 -> tls-trust-v1: Client -> Certificate -> Handshake -> Secure Session -> Evidence.,- Merge commit: faee8ec98812592b20c7b854bc506c47f86247e0.,- Final PR #51 gate passed 373 tests, all programme contracts, TypeScript and the Next.js production build.,,Merged PR #52:,- D2.5 -> container-execution-v1: Image -> Container -> Process -> Namespaces -> Host Kernel.,- Merge commit: ffb17b61597e7a8b1e25139bcd634fba0719523c.,- Final PR #52 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.,,Merged PR #53:,- D2.6 -> docker-network-storage-v1: Service -> Network -> Name -> Port -> Volume.,- Merge commit: d1884d9443a7e2c2f8eff85822307604ea5d865d.,,Merged PR #54 / #78:,- D2.7 -> docker-failure-loop-v1: Baseline -> Change -> Symptom -> Evidence -> Recovery.,- Later merge commit: 0d0c490b5a7f21f49f6d6ba25c763672cc5cd8ab.,,Merged PR #82:,- D3.3 -> kubernetes-config-storage-v1.,- Merge commit: 2a7c58e9f8ab25264744bd9d5de62286bcc7284c.,- Merge status: Vercel build-rate-limit infrastructure-blocked.,,Merged PR #83:,- D3.4 -> kubernetes-health-scaling-v1.,- Merge commit: 3514e356dbda8e1260e788d1e82c4864d7af009f.,- Merge status: Vercel success.,,Merged PR #84:,- D3.5 -> kubernetes-failure-loop-v1.,- Merge commit: e9858af68efe906a3e6c20c01e71e3b8c067c4b2.,- Merge status: Vercel build-rate-limit infrastructure-blocked.,,Merged PR #86:,- D4.1 -> git-production-workflow-v1.,- Merge commit: 0b39d885b8623d8e396da986b1b282e1b593f774.,- Merge status: Vercel build-rate-limit infrastructure-blocked.,,Merged PR #93:,- Merge commit: 12773b47a6354c6e7dc0a558e2093ec971df44e4.,- D2.6 canonical podcast now uses Service -> Network -> Name -> Port -> Volume.,- D3.5 now includes explicit prediction pauses for CrashLoopBackOff, ImagePullBackOff, OOMKilled, readiness and selector failure.,- Fresh Vercel validation was build-rate-limit blocked; this is infrastructure status only.,,Merged PR #94:,- D4.6 -> cloud-primitives-v1.,- Merge commit: ef49c72664ae226a1a579c8ac1010472490b3ed2.,- Fresh Vercel validation remained build-rate-limit blocked.,,Merged PR #95:,- D5.2 -> database-scaling-v1.,- Merge commit: 4da8a0cf865e644ffdd2f490e1b45581e32d397a.,- Fresh Vercel validation remained build-rate-limit blocked.,,Merged PR #96:,- D5.3 -> distributed-partial-failure-v1.,- Merge commit: 3c66d559e4e53216846f39ce4d2b1a5271dfd312.,- Fresh Vercel validation remained build-rate-limit blocked.,,Merged PR #97:,- D5.7 -> global-architecture-v1.,- Merge commit: 03f08276f24428967b46782c5fdb54e04a079118.,- Fresh Vercel validation remained build-rate-limit blocked.,,Merged PR #99:,- D5.8 -> production-incident-v1: Impact -> Diagnosis -> Mitigate -> Recover -> Root Cause -> Learn.,- Merge commit: 445013eaac3ead95ccd273d70d2c3613d8c0a1cf.,- Final PR #99 gate passed 407 tests, all programme contracts, TypeScript and the Next.js production build.,- Day 5 D5.1-D5.8 now all meet the gold-standard script+illustration standard.,,Merged PR #100:,- D3.2 -> kubernetes-networking-v1: Service -> Selector -> Endpoint set -> Pod -> Evidence.,- Merge commit: f584bce305faa9ba58404122efe21e6f79bf9e9e.,- Final PR #100 gate passed 409 tests, all programme contracts, TypeScript and the Next.js production build.,,Merged PR #101:,- D4.2 -> ci-cd-pipeline-v1: Source -> Validate -> Artifact -> Promote -> Verify.,- Merge commit: 5bea3b1154e75df2783bdb0f43ee77fbd5fe0ede.,- Final current-main validation passed 409 tests, all programme contracts, TypeScript and the Next.js production build.,,Merged PR #103:,- D5.4 -> reliability-patterns-v1: Request -> Timeout -> Policy -> Retry Load -> Recovery.,- D5.5 -> observability-control-v1: Question -> Signal -> Correlation -> Objective -> Decision.,- D5.6 -> disaster-recovery-system-v1: Assets -> Failure -> Restore -> Dependencies -> Recovery.,- Merge commit: 0166ba023b34877143e95bb58eaaef39d51bf672.,- Final PR #103 gate passed 416 tests, 50 test files, all programme contracts, TypeScript and the Next.js production build.,- D5.4-D5.6 spoken scripts are no longer short concept notes; each now contains mechanism, prediction, controlled experiment, evidence, recall and transfer.,- The first validation run caught the three missing variant routing cases; those were corrected without weakening tests.,- The initial Vercel preview status showed build-rate-limit infrastructure failure, but the GitHub full-programme gate independently passed the software/content build.,
-Active Advanced A1.1-A1.4 scope:
-- A1.1 now uses `capacity-system-v1`: Demand -> Service -> Bottleneck -> Queue -> Headroom.
-- A1.2 now uses `queue-backpressure-v1`: Producer -> Queue -> Consumer -> Capacity -> Backpressure.
-- A1.3 now uses `replication-tradeoff-v1`: Write -> Copies -> Lag -> Read -> Consistency.
-- A1.4 now uses `failure-domain-ladder-v1`: Process -> Host -> Zone -> Region -> Recovery.
-- The Advanced spoken scripts were already long-form; this batch upgrades their visual/mechanism contract without inflating scripts for word-count reasons.
-- Unit and integration tests lock exact visual identity and semantic model behavior.
-- TDD/full-programme gate is required before merge.
+Merged PR #35:
+- B1.5 -> `repeatable-service-v1`: Image -> Configuration -> Runtime -> Health -> User path.
+- Merge commit: `0eae3678c22641e3db2802f24689554278d0280c`.
 
-Merged PR #104:
-- A1.1 -> `capacity-system-v1`: Demand -> Service -> Bottleneck -> Queue -> Headroom.
-- A1.2 -> `queue-backpressure-v1`: Producer -> Queue -> Consumer -> Capacity -> Backpressure.
-- A1.3 -> `replication-tradeoff-v1`: Write -> Copies -> Lag -> Read -> Consistency.
-- A1.4 -> `failure-domain-ladder-v1`: Process -> Host -> Zone -> Region -> Recovery.
-- Merge commit: `28a131dc4d1f0ed00b7de883682e329d6af88423`.
-- Final PR #104 gate passed **424 tests**, 50 test files, all programme contracts, TypeScript and the Next.js production build.
-- Advanced scripts were already long-form; this batch upgraded their semantic visual contract without artificial script inflation.
-- Next Advanced boundary: **A1.5-A1.6 — global traffic routing and data locality**.
+Merged PR #36:
+- B2.1 -> `delivery-pipeline-v1`: Change -> Review -> Test -> Artifact -> Deploy -> Verify.
+- Merge commit: `e5ff9ff66ca5f38276a082c3d61180ddce986c64`.
 
+Merged PR #37:
+- B2.2 -> `observability-diagnosis-v1`: Symptom -> Scope -> Service -> Dependency -> Proof.
+- Merge commit: `a5f77bda6927d01c7510cebbac272950b27db84a`.
 
-Active Advanced A1.5-A1.6 scope:
-- A1.5 now uses `global-traffic-v1`: Users -> Routing -> Regions -> Capacity -> Failover.
-- A1.6 now uses `data-locality-v1`: User -> Region -> Data -> Latency -> Consistency.
-- Existing long-form Advanced scripts remain intact; the batch adds explicit semantic visual contracts, causal evidence and trade-off boundaries.
-- Unit and integration tests lock exact visual identity and model behavior.
-- TDD/full-programme gate is required before merge.
+Merged PR #38:
+- B2.3 -> `backup-recovery-v1`: Backup -> Restore -> Compatibility -> Verify -> Recover.
+- Merge commit: `55f43081f3aae067c66ae29e3e104da68e4d7a8e`.
 
-Merged PR #105:
-- A1.5 -> `global-traffic-v1`: Users -> Routing -> Regions -> Capacity -> Failover.
-- A1.6 -> `data-locality-v1`: User -> Region -> Data -> Latency -> Consistency.
-- Merge commit: `7eff6a379ae456391d0766153f682d7386cc1a67`.
-- Final PR #105 gate passed **428 tests**, 50 test files, all programme contracts, TypeScript and the Next.js production build.
-- Advanced A1.1-A1.6 now all have explicit semantic visual contracts.
-- Next Advanced boundary: **A2.1-A2.3 — dependency failure, retry storms and partial network failure**.
+Merged PR #39:
+- B3.1 -> `queue-state-v1`: Producer -> Queue -> Consumer -> Outcome.
+- Merge commit: `f4fed3b13a019c9b9834bbef15f2a240f2a12362`.
 
+Merged PR #40:
+- B3.2 -> `incident-loop-v1`: Impact -> Scope -> Evidence -> Mitigate -> Recover -> Learn.
+- Merge commit: `7d8cf51cab91ba7eb41dedce19a1d1b6cab4135a`.
 
-Active PR #89 scope:
-- D2.6 authored visual/test contracts already exist on current `main`.
-- This branch restores the rewritten D2.6 script as the canonical podcast teaching unit.
-- Teaching model: Service -> Network -> Name -> Port -> Volume.
-- The script separates internal service discovery, internal service ports, published host ports and persistent data lifecycle.
-- Controlled failures isolate service-name resolution, published-port access and persistence across container recreation.
-- Vercel validation is required; GitHub Actions is currently not exposing a run for this branch.
-- TDD/content contracts remain authoritative: the D2.6 tests are already present on `main`.
+Merged PR #41:
+- B1.1 -> `process-diagnosis-v1`: Symptom -> Process -> Resource -> Dependency -> Proof.
+- Merge commit: `b8e8456d19be162c64850bdaa01f319101153885`.
+- All 10 Beginner lessons now meet the gold-standard script+illustration contract.
 
+Merged PR #42:
+- D1.1 -> `linux-operating-model-v1`: Application -> Process -> Kernel -> Resources -> Evidence.
+- Merge commit: `7feba39f6d02e9b8783744a9ffeb0db7050efeef`.
 
-Current content-quality batch (PR #93):
-- D2.6 rewritten podcast: `Service -> Network -> Name -> Port -> Volume`.
-- D3.5 prediction layer strengthened without changing its existing `kubernetes-failure-loop-v1` visual/model/tests.
-- D3.5 now has explicit prediction pauses for CrashLoopBackOff, ImagePullBackOff, OOMKilled, readiness failure and Service-selector failure.
-- PR #93 is currently blocked by Vercel build-rate-limit infrastructure; no code/test failure is claimed from that status.
+Merged PR #43:
+- D1.2 -> `terminal-composition-v1`: Question -> Producer -> Transform -> Route -> Evidence.
+- Merge commit: `3ba501eea24abfc7788837dc2a443c2e28ad7f95`.
 
+Merged PR #44:
+- D1.3 -> `service-permission-model-v1`: Process -> Identity -> Resource -> Service -> Logs.
+- Merge commit: `de0a4893f272640f2d02b54dd45ecc397acc6bf2`.
+- Red-team caught a duplicate D1.3 model/validator registration before the final green revision.
 
-Active PR #52 scope:
-- D2.6 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `docker-network-storage-v1`.
-- Teaching model: Service -> Network -> Name -> Port -> Volume.
-- The rewritten script separates internal service discovery, internal service ports, published host ports and persistent volume lifecycle.
-- Controlled failures distinguish name-resolution failure, published-port failure and container recreation with persistent data.
-- TDD/full-programme gate is required before merge.
+Merged PR #45:
+- D1.4 -> `network-operating-model-v1`: Interface -> Link -> IP -> Route -> Evidence.
+- Merge commit: `7ffa6edd1fd266fa0d3b585e674ae885c709b81a`.
 
+Merged PR #46:
+- D1.5 -> `cidr-boundary-v1`: Address -> Prefix -> Boundary -> Range -> Verify.
+- Merge commit: `1d427a9c24e6b24954857f43eaf34981b5e67ebb`.
 
-Active PR #53 scope:
-- D2.6 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `docker-network-storage-v1`.
-- Teaching model: Service -> Network -> Name -> Port -> Volume.
-- The rewritten script separates internal service discovery, internal service ports, published host ports and persistent volumes.
-- Controlled failures isolate a bad database hostname, a bad published port and container recreation with a persistent volume.
-- TDD/full-programme gate is required before merge.
+Merged PR #47:
+- D1.6 -> `routing-boundary-v1`: Destination -> Route -> Next hop -> Boundary -> Evidence.
+- Merge commit: `417cf8ec4ce899623f705708e839214591ac1acb`.
+- Final PR #47 gate passed **369 tests**, all programme contracts, TypeScript and the Next.js production build.
+- Red-team caught a missing routing variant in the shared lesson-content union; it was corrected.
+
+Merged PR #48:
+- D2.1 -> `transport-contract-v1`: Endpoint -> Port -> Transport -> Delivery -> Evidence.
+- Merge commit: `7b9244616e707037c074fe3c1032f13aaa94ab58`.
+
+Merged PR #49:
+- D2.2 -> `dns-resolution-v1`: Name -> Resolver -> Cache -> Authority -> Freshness.
+- Merge commit: `79dd956303907480c20091debfcff2f0500661a8`.
+- Final PR #49 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
+- Red-team caught a missing DNS variant in the shared lesson-content type/validator and one harder spoken-English word; both were corrected.
+
+Merged PR #50:
+- D2.3 -> `http-exchange-v1`: Request -> Headers -> Route -> Response -> Evidence.
+- Merge commit: `b2932a7ee3ebe61e206f1f49f9da5943106a2727`.
+- Final PR #50 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
+
+Merged PR #51:
+- D2.4 -> `tls-trust-v1`: Client -> Certificate -> Handshake -> Secure Session -> Evidence.
+- Merge commit: `faee8ec98812592b20c7b854bc506c47f86247e0`.
+- Final PR #51 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
+
+Merged PR #52:
+- D2.5 -> `container-execution-v1`: Image -> Container -> Process -> Namespaces -> Host Kernel.
+- Merge commit: `ffb17b61597e7a8b1e25139bcd634fba0719523c`.
+- Final PR #52 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- D2.5 rejects the “tiny VM” model and teaches image packaging, container lifecycle, main-process behavior, namespace isolation and the shared host kernel.
+
+Merged PR #106:
+- D2.6 -> `docker-network-storage-v1`: Service -> Network -> Name -> Port -> Volume.
+- Merge commit: `685312b88268cd0d21425fda1d26dbe5b2544b40`.
+- D2.6 separates internal service discovery, published host ports and persistent data lifecycle, with controlled failures for each boundary.
+- Final PR #106 gate passed all programme contracts, full unit/integration tests, TypeScript and the Next.js production build.
+- D2.6 adds **993 spoken words** to the programme.
+- Current podcast baseline on `main`: **58,762 spoken words across 53 episodes**.
+- At 135 spoken words/minute, this is approximately **7h 15m** of narration before natural instructional pauses, lab execution, screen interaction or replay.
+- Course-level podcast baseline: Beginner **13,090 words / ~1h 37m**; Intermediate **32,892 words / ~4h 04m**; Advanced **12,780 words / ~1h 35m** at 135 wpm.
+- Next content boundary: **D2.7 — Break Docker**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
