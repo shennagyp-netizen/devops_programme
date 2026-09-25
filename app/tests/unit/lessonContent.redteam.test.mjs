@@ -151,6 +151,23 @@ describe("lesson content validation red-team contract", () => {
     expect(interactive.failures.join(" ")).toContain("bindingId");
   });
 
+  it("rejects an unknown authored illustration variant", () => {
+    const result = validateLessonContent({
+      version: 1,
+      blocks: [
+        {
+          ...validIllustration,
+          variant: "animation-v99"
+        }
+      ]
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.failures.join(" ")).toContain(
+      "illustration block visual has an invalid variant"
+    );
+  });
+
   it("accepts a well-formed illustration without optional caption", () => {
     const result = validateLessonContent({
       version: 1,

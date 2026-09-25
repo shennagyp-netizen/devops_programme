@@ -62,6 +62,19 @@ describe("podcast raw-script parsing contract", () => {
     ]);
   });
 
+  it("does not turn incidental mentions of prediction into learner pauses", () => {
+    const turns = parseTurns(
+      "Speaker A: Now we have a concrete prediction.\n" +
+      "Speaker B: Make a prediction before you run it. What do you expect?",
+      "B1.4"
+    );
+
+    expect(turns.map((turn) => turn.kind)).toEqual([
+      "dialogue",
+      "prediction"
+    ]);
+  });
+
   it("classifies recall turns as retrieval moments", () => {
     const turns = parseTurns(
       "Speaker A: Now use retrieval without notes.\n" +
