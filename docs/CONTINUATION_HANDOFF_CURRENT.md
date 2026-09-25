@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #38, commit `55f43081f3aae067c66ae29e3e104da68e4d7a8e` (B2.3 backup/recovery script + illustration quality slice).
+**Latest main architecture/content merge:** PR #39, commit `f4fed3b13a019c9b9834bbef15f2a240f2a12362` (B3.1 queue-state script + illustration quality slice).
 
-**Active content-quality branch:** none. PR #38 has merged to `main`.
+**Active content-quality branch:** none. PR #39 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1841,43 +1841,31 @@ Do not scale the animation catalogue before the script+illustration quality gate
 
 
 Merged PR #35:
-- merge commit: `0eae3678c22641e3db2802f24689554278d0280c`
-- B1.5 uses the `repeatable-service-v1` semantic illustration.
-- B1.5 teaches repeatability as an explicit operating contract.
-- Final PR #35 gate passed the complete programme suite and production build.
+- B1.5 -> `repeatable-service-v1`: Image -> Configuration -> Runtime -> Health -> User path.
+- Merge commit: `0eae3678c22641e3db2802f24689554278d0280c`.
 
 Merged PR #36:
-- merge commit: `e5ff9ff66ca5f38276a082c3d61180ddce986c64`
-- B2.1 uses the `delivery-pipeline-v1` semantic illustration.
-- Teaching model: Change -> Review -> Test -> Artifact -> Deploy -> Verify, with release identity as the evidence spine.
-- B2.1 explicitly distinguishes deployment success from runtime health and treats rollback as a system-level recovery decision.
-- Final PR #36 gate passed **347 tests**, all programme contracts, TypeScript and the Next.js production build.
+- B2.1 -> `delivery-pipeline-v1`: Change -> Review -> Test -> Artifact -> Deploy -> Verify.
+- Merge commit: `e5ff9ff66ca5f38276a082c3d61180ddce986c64`.
+- Release identity is the evidence spine; deployment success is not runtime health.
 
 Merged PR #37:
-- merge commit: `a5f77bda6927d01c7510cebbac272950b27db84a`
-- B2.2 uses the `observability-diagnosis-v1` semantic illustration.
-- Teaching model: Symptom -> Scope -> Service -> Dependency -> Proof.
-- Metrics, logs, health checks and traces are explicitly taught as different evidence types answering different questions.
-- The rewritten script distinguishes correlation from proof and includes misleading-signal cases.
-- Final PR #37 gate passed **347 tests**, all programme contracts, TypeScript and the Next.js production build.
+- B2.2 -> `observability-diagnosis-v1`: Symptom -> Scope -> Service -> Dependency -> Proof.
+- Merge commit: `a5f77bda6927d01c7510cebbac272950b27db84a`.
+- Metrics, logs, health and traces have explicit diagnostic roles.
 
 Merged PR #38:
-- merge commit: `55f43081f3aae067c66ae29e3e104da68e4d7a8e`
-- B2.3 uses the `backup-recovery-v1` semantic illustration.
-- Teaching model: Backup -> Restore -> Compatibility -> Verify -> Recover, with RPO/RTO as explicit constraints.
-- The rewritten script separates backup existence from restore capability and full service recovery, including compatibility, encryption-key and recovery-time risks.
-- Final PR #38 gate passed the complete programme suite, TypeScript and the Next.js production build.
-- Red-team again caught authored-stream fallback risk during development; B2.3 was explicitly registered instead of weakening the test.
-- Next content boundary: **B3.1 — Why Use a Queue?**. There is no authored B2.4 lesson in the current 53-lesson programme.
+- B2.3 -> `backup-recovery-v1`: Backup -> Restore -> Compatibility -> Verify -> Recover.
+- Merge commit: `55f43081f3aae067c66ae29e3e104da68e4d7a8e`.
+- RPO/RTO are explicit recovery constraints; restore is not treated as recovery proof.
 
-
-Active PR #39 scope:
-- B3.1 is upgraded to the same script+illustration quality standard.
-- New semantic illustration: `queue-state-v1`.
-- Teaching model: Producer -> Queue -> Consumer -> Outcome, with backpressure as the base mechanism.
-- Retry, idempotency and dead-letter behavior are explicit visual callouts.
-- The rewritten script teaches message state transitions and duplicate-delivery diagnosis instead of treating a queue as a generic scaling tool.
-- TDD/full-programme gate is required before merge.
+Merged PR #39:
+- B3.1 -> `queue-state-v1`: Producer -> Queue -> Consumer -> Outcome.
+- Merge commit: `f4fed3b13a019c9b9834bbef15f2a240f2a12362`.
+- Backpressure, queue depth, consumer throughput, retry, duplicate delivery, idempotency and dead-letter behavior are explicit teaching boundaries.
+- PR #39 final gate passed all programme contracts, unit/integration tests, TypeScript and the production Next.js build.
+- The gold-standard script+illustration sequence now covers B1.2, B1.3, B1.4, B1.5, B2.1, B2.2, B2.3 and B3.1.
+- Next content boundary: B3.2 — The First Real Incident.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
