@@ -158,7 +158,7 @@ describe("animation geometry red team", () => {
         label: "B",
         role: "database",
         x: 500,
-        y: 500,
+        y: 100,
         width: 180,
         height: 90
       },
@@ -178,7 +178,7 @@ describe("animation geometry red team", () => {
         label: "D",
         role: "service",
         x: 500,
-        y: 100,
+        y: 500,
         width: 180,
         height: 90
       },
