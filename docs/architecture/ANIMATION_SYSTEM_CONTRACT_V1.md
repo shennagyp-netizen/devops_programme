@@ -60,6 +60,23 @@ Each interactive action is declared in the animation contract and may trigger on
 
 The lesson/progress system remains responsible for learning state.
 
+## Geometry and collision contract
+
+The renderer receives geometry authored in the fixed SVG viewport. Before an animation can be used, the contract validator checks geometry deterministically.
+
+By default:
+
+- blocking shapes must not overlap
+- blocking shapes must maintain a positive clearance
+- labels must not overlap other labels
+- nodes and labels must remain inside the viewport
+- a connection must not pass through an unrelated node
+- connections must not cross each other
+
+The default shape clearance is 12 px. An individual animation may choose another clearance from 0 to 32 px through its approved customization field. A deliberate connection crossing may be explicitly declared with `allowCrossingWith`; this is an exception, not the default.
+
+Connections are currently validated using the straight center-to-center route. If a future renderer supports routed/orthogonal paths, the geometry contract should validate the actual authored route as well.
+
 ## Accessibility
 
 Every animation declares a title and description and must support reduced motion without removing instructional meaning.
