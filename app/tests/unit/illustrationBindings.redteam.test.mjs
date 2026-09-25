@@ -7,7 +7,7 @@ const validInteractiveBinding = () => ({
   lessonId: "B1.2",
   contentBlockId: "http-flow",
   contentIndex: 2,
-  visualKind: "animated",
+  presentation: "animated",
   visualCapabilityId: "animation",
   animationId: "http-request",
   voiceCueBindings: [
@@ -91,7 +91,7 @@ describe("curriculum illustration binding red team", () => {
       completion: { requiredStepIds: ["step-1", "missing-step"] }
     }, "completion"],
     ["silent fallback", {
-      visualKind: "animated",
+      presentation: "animated",
       animationId: undefined
     }, "animationId"]
   ])("rejects %s", (_name, patch, expected) => {
