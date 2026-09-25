@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored Terraform lifecycle visual for D4.5", () => {
+    const lesson = allLessons.find((item) => item.id === "D4.5");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d4-5-terraform-lifecycle",
+      bindingId: "D4.5:d4-5-terraform-lifecycle",
+      variant: "terraform-lifecycle-v1"
+    });
+  });
+
   it("uses the authored IaC control-loop visual for D4.4", () => {
     const lesson = allLessons.find((item) => item.id === "D4.4");
     expect(lesson).toBeDefined();

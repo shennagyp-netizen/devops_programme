@@ -1198,49 +1198,289 @@ Speaker B: Run the plan before the apply, and treat unexpected changes as eviden
 
 EPISODE D4.5 — Terraform Lifecycle
 
-Speaker A: Terraform's important loop is init, plan, review, apply, observe.
+Speaker A: Infrastructure as Code gave us the control loop.
 
-Speaker B: And state?
+Speaker B: Intent -> Plan -> Apply -> State -> Drift.
 
-Speaker A: State is part of Terraform's knowledge about what it manages. Drift means reality changed outside that expected path.
+Speaker A: Terraform makes that loop concrete.
 
-Speaker A: Think of inventory management. If the spreadsheet says ten devices exist and the warehouse actually contains eight, the discrepancy is operationally important.
+Speaker B: The lifecycle is:
 
-Speaker A: Real-life example: manual cloud console changes create exactly this kind of drift.
+Speaker A: Configuration -> Init -> Plan -> Apply -> Observe.
 
-Speaker A: Lab: apply an environment, change one property manually, then use plan to discover the difference.
-Speaker B: Terraform lifecycle sounds procedural even though the tool is declarative.
+Speaker B: So even declarative infrastructure has an operational workflow.
 
-Speaker A: That's because the operational workflow matters: initialize, inspect, plan, review, apply, and understand the resulting state.
+Speaker A: Exactly.
 
-Speaker B: Plan is the safety checkpoint.
+Speaker B: Stage one: configuration.
 
-Speaker A: It's a checkpoint, not a guarantee. You still need to understand what will change and what external systems may do.
+Speaker A: Terraform configuration describes the resources and provider settings the workflow intends to manage.
 
-Speaker B: State locking?
+Speaker B: Network.
 
-Speaker A: Shared state requires coordination. Two people applying changes against the same state at the same time can create conflicts or worse if coordination is missing.
+Speaker A: Example.
 
-Speaker B: Warehouse analogy?
+Speaker B: Compute.
 
-Speaker A: Imagine two workers updating the same inventory ledger simultaneously. Even if both have correct intentions, the shared state can become inconsistent without coordination.
+Speaker A: Example.
 
-Speaker B: Prediction. The configuration hasn't changed, but plan suddenly proposes a resource change.
+Speaker B: Storage.
 
-Speaker A: Possible explanations?
+Speaker A: Example.
 
-Speaker B: Drift. Provider behavior. State mismatch. A computed value changed.
+Speaker B: The configuration is still intent.
 
-Speaker A: Good. Now you're thinking in hypotheses instead of assuming the code file is guilty.
+Speaker A: Correct. It is not the cloud resource itself.
 
-Speaker B: Mac lab?
+Speaker B: Stage two: init.
 
-Speaker A: Work in a disposable environment. Initialize. Plan. Review the plan out loud. Apply. Plan again. You should see no unnecessary changes when the configuration and state are aligned.
+Speaker A: Initialization prepares providers, modules and the state backend or context needed for the workflow.
 
-Speaker B: And then deliberately create one controlled discrepancy.
+Speaker B: It does not create the production network.
 
-Speaker A: Exactly. Terraform becomes understandable when you can explain why the second plan changed.
+Speaker A: Correct. Init prepares Terraform to work.
 
+Speaker B: Prediction.
+
+Speaker A: Init succeeds. Does that prove the provider resources already match our configuration?
+
+Speaker B: No. Init proves the local Terraform working context is prepared. It says nothing by itself about the desired infrastructure being applied.
+
+Speaker A: Good.
+
+Speaker B: Stage three: plan.
+
+Speaker A: Plan is the most important safety checkpoint before apply.
+
+Speaker B: It shows what Terraform proposes to change.
+
+Speaker A: Exactly.
+
+Speaker B: Add.
+
+Speaker A: Good.
+
+Speaker B: Change.
+
+Speaker A: Good.
+
+Speaker B: Destroy.
+
+Speaker A: And that is why plan review matters.
+
+Speaker B: Prediction.
+
+Speaker A: Plan proposes deleting a database because of a one-line configuration change. Do you apply because the plan itself is successful?
+
+Speaker B: No. The plan ran successfully, but the proposed scope is unsafe for the intended change. I stop and investigate the dependency and lifecycle reason.
+
+Speaker A: Exactly.
+
+Speaker B: A successful plan is not automatically a good plan.
+
+Speaker A: Correct.
+
+Speaker B: Stage four: apply.
+
+Speaker A: Apply sends the accepted changes to the provider.
+
+Speaker B: Cloud API calls.
+
+Speaker A: Yes.
+
+Speaker B: Now real infrastructure changes.
+
+Speaker A: Exactly.
+
+Speaker B: Which means apply is the moment the proposal becomes operational reality.
+
+Speaker A: Good.
+
+Speaker B: Stage five: observe.
+
+Speaker A: After apply, do not stop at 'Terraform finished.'
+
+Speaker B: Inspect the provider.
+
+Speaker A: Yes.
+
+Speaker B: Run plan again.
+
+Speaker A: Yes.
+
+Speaker B: Check the service or resource behavior.
+
+Speaker A: Exactly.
+
+Speaker B: The post-apply state should agree with intent.
+
+Speaker A: When the managed resource and configuration are aligned, the next plan should normally show no unnecessary changes.
+
+Speaker B: Prediction.
+
+Speaker A: The configuration does not change, but the next plan proposes a resource update. What hypotheses do you consider?
+
+Speaker B: Drift. Provider-computed values. State mismatch. A dependency or lifecycle rule changing the result.
+
+Speaker A: Good.
+
+Speaker B: So we do not blame the code automatically.
+
+Speaker A: Exactly.
+
+Speaker B: State locking.
+
+Speaker A: Shared state introduces a coordination problem.
+
+Speaker B: Two people apply changes against the same state.
+
+Speaker A: That can create conflicts or unsafe assumptions if the backend does not coordinate access correctly.
+
+Speaker B: So state locking is a control boundary.
+
+Speaker A: Exactly.
+
+Speaker B: Another prediction.
+
+Speaker A: A second engineer starts an apply while someone else is already applying. What should happen in a properly coordinated shared-state workflow?
+
+Speaker B: The second operation should be blocked or coordinated rather than silently applying against stale assumptions.
+
+Speaker A: Good.
+
+Speaker B: What about destroy?
+
+Speaker A: Destroy is still part of the lifecycle, but it is a high-impact operation.
+
+Speaker B: So the same rule applies: inspect the plan before approving it.
+
+Speaker A: Especially.
+
+Speaker B: A destroy plan can be technically correct and still be operationally unacceptable.
+
+Speaker A: Exactly.
+
+Speaker B: That sentence is important.
+
+Speaker A: Keep it.
+
+Speaker B: Let's make the incident.
+
+Speaker A: A developer changes a storage setting.
+
+Speaker B: Plan proposes replacement of the storage resource.
+
+Speaker A: The developer clicks apply.
+
+Speaker B: That is the wrong control path if the data is important.
+
+Speaker A: Right. The plan needed a risk decision before apply.
+
+Speaker B: Another incident: someone changes production in the cloud console.
+
+Speaker A: What happens next?
+
+Speaker B: The next plan may show drift.
+
+Speaker A: Exactly.
+
+Speaker B: Then the team must decide whether to adopt the change into code, revert the real resource, or explicitly change ownership.
+
+Speaker A: Good.
+
+Speaker B: The worst response is to ignore the drift and keep applying blindly.
+
+Speaker A: Exactly.
+
+Speaker B: Controlled lab?
+
+Speaker A: Use a disposable Terraform environment.
+
+Speaker B: Initialize it.
+
+Speaker A: Good.
+
+Speaker B: Run plan before apply.
+
+Speaker A: Good.
+
+Speaker B: Review the plan out loud.
+
+Speaker A: Good.
+
+Speaker B: Apply.
+
+Speaker A: Good.
+
+Speaker B: Run plan again.
+
+Speaker A: Good.
+
+Speaker B: Now change one declared property.
+
+Speaker A: Predict the next plan.
+
+Speaker B: Then read it.
+
+Speaker A: Good.
+
+Speaker B: If the safe lab allows it, make one matching external change.
+
+Speaker A: Good.
+
+Speaker B: Run plan again and explain the drift.
+
+Speaker A: Good.
+
+Speaker B: Restore the intended state.
+
+Speaker A: Then prove the next plan is clean.
+
+Speaker B: Exactly.
+
+Speaker A: And for destroy?
+
+Speaker B: Practice only on disposable resources, review the plan, then prove the environment is gone.
+
+Speaker A: Good.
+
+Speaker B: Recall.
+
+Speaker A: What does init do?
+
+Speaker B: It prepares providers, modules and the state/backend context needed for Terraform operations.
+
+Speaker A: Why is plan a safety checkpoint?
+
+Speaker B: It shows the proposed change set before apply, so unexpected replacements, deletions or updates can be stopped.
+
+Speaker A: Is a successful plan automatically safe?
+
+Speaker B: No. The proposed changes still need human or policy review against the intended outcome.
+
+Speaker A: What is state locking for?
+
+Speaker B: Coordinating concurrent access to shared state so operations do not proceed on conflicting assumptions.
+
+Speaker A: What is destroy?
+
+Speaker B: A high-impact lifecycle operation that removes managed resources so it needs careful plan review and strict scope.
+
+Speaker A: Final challenge.
+
+Speaker B: Someone says Terraform is declarative, so you do not need to think about lifecycle.
+
+Speaker A: Your response?
+
+Speaker B: The configuration is declarative, but the operational workflow still has initialization, plan review, apply, observation, state coordination and recovery decisions.
+
+Speaker A: Good.
+
+Speaker B: So Terraform lifecycle is not just commands.
+
+Speaker A: It is the control path that turns declared infrastructure into real, observable and recoverable resources.
+
+Speaker B: Run the plan before the apply, and treat unexpected change as evidence.
 
 EPISODE D4.6 — Cloud Primitives
 

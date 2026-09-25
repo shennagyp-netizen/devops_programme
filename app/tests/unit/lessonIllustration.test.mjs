@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models Terraform lifecycle as configuration, init, plan, apply and observe", () => {
+    const model = getLessonIllustrationModel({
+      id: "d4-5-terraform-lifecycle",
+      type: "illustration",
+      heading: "The Terraform lifecycle",
+      alt: "Terraform loads configuration, initializes providers and state, creates a plan, applies changes and then observes the resulting infrastructure",
+      bindingId: "D4.5:d4-5-terraform-lifecycle",
+      nodes: ["Configuration", "Init", "Plan", "Apply", "Observe"],
+      variant: "terraform-lifecycle-v1"
+    });
+
+    expect(model.variant).toBe("terraform-lifecycle-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "configuration",
+      "init",
+      "plan",
+      "apply",
+      "observe"
+    ]);
+    expect(model.foundation.label).toBe("Terraform is a lifecycle around desired configuration and provider state");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "init",
+      "plan",
+      "state-lock",
+      "destroy"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "init-context",
+      "plan-scope",
+      "apply-result",
+      "state-coordination"
+    ]);
+  });
+
   it("models IaC as intent, plan, apply, state and drift", () => {
     const model = getLessonIllustrationModel({
       id: "d4-4-iac",

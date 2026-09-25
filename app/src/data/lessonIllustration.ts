@@ -33,7 +33,8 @@ export type LessonIllustrationVariantV1 =
   | "git-production-workflow-v1"
   | "cicd-control-path-v1"
   | "github-actions-execution-v1"
-  | "iac-control-loop-v1";
+  | "iac-control-loop-v1"
+  | "terraform-lifecycle-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -1028,6 +1029,36 @@ const IAC_CONTROL_LOOP_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const TERRAFORM_LIFECYCLE_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "terraform-lifecycle-v1",
+  title: "The Terraform lifecycle",
+  stages: [
+    { id: "configuration", label: "Configuration", detail: "Terraform configuration declares the infrastructure and provider settings the workflow intends to manage." },
+    { id: "init", label: "Init", detail: "Initialization prepares providers, modules and the state backend/context needed by the workflow." },
+    { id: "plan", label: "Plan", detail: "Plan compares configuration with known information and proposes changes before apply." },
+    { id: "apply", label: "Apply", detail: "Apply sends the accepted changes to the provider and updates the managed state information." },
+    { id: "observe", label: "Observe", detail: "A later plan, provider inspection and runtime evidence confirm whether the intended infrastructure actually exists and remains aligned." }
+  ],
+  foundation: {
+    label: "Terraform is a lifecycle around desired configuration and provider state",
+    detail: "Terraform does not replace provider reality; init, plan, apply and later observation coordinate how changes are proposed, executed and checked."
+  },
+  callouts: [
+    { id: "init", label: "Init", detail: "Initialization selects providers, modules and backend context; it does not create production resources by itself." },
+    { id: "plan", label: "Plan", detail: "Plan is the safety checkpoint where the proposed change set should be understood before apply." },
+    { id: "state-lock", label: "State locking", detail: "Shared state needs coordination so concurrent applies do not corrupt the workflow or overwrite assumptions." },
+    { id: "destroy", label: "Destroy", detail: "Destroy is a high-impact lifecycle operation; review its plan carefully and use it only in an intentional scope." }
+  ],
+  failureChecks: [
+    { id: "init-context", label: "1. Init context", detail: "Are the provider, module, backend and credentials the ones intended for this environment?" },
+    { id: "plan-scope", label: "2. Plan scope", detail: "Does the plan contain only the resources and changes you expected?" },
+    { id: "apply-result", label: "3. Apply result", detail: "Did the provider create or change the resources successfully, and does observation confirm the result?" },
+    { id: "state-coordination", label: "4. State coordination", detail: "Was shared state locked and updated consistently so the next run starts from a trustworthy coordination point?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1277,6 +1308,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "terraform-lifecycle-v1") {
+    return {
+      ...TERRAFORM_LIFECYCLE_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1324,7 +1362,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "git-production-workflow-v1" &&
     model.variant !== "cicd-control-path-v1" &&
     model.variant !== "github-actions-execution-v1" &&
-    model.variant !== "iac-control-loop-v1"
+    model.variant !== "iac-control-loop-v1" &&
+    model.variant !== "terraform-lifecycle-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
