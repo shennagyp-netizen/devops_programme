@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored reliability-control visual for D5.4", () => {
+    const lesson = allLessons.find((item) => item.id === "D5.4");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d5-4-reliability",
+      bindingId: "D5.4:d5-4-reliability",
+      variant: "reliability-control-v1"
+    });
+  });
+
   it("uses the authored distributed-failure visual for D5.3", () => {
     const lesson = allLessons.find((item) => item.id === "D5.3");
     expect(lesson).toBeDefined();
