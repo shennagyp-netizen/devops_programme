@@ -158,6 +158,13 @@ export function validateLessonContent(
       if (typeof block.bindingId !== "string" || !block.bindingId.trim()) {
         failures.push(`illustration block ${block.id} needs bindingId`);
       }
+      if (
+        block.variant !== undefined &&
+        block.variant !== "causal-flow-v1" &&
+        block.variant !== "container-boundary-v1"
+      ) {
+        failures.push(`illustration block ${block.id} has an invalid variant`);
+      }
       if (!Array.isArray(block.nodes) || block.nodes.length === 0) {
         failures.push(`illustration block ${block.id} needs nodes`);
       } else if (
