@@ -19,7 +19,8 @@ export type LessonIllustrationVariantV1 =
   | "cidr-boundary-v1"
   | "routing-boundary-v1"
   | "transport-contract-v1"
-  | "dns-resolution-v1";
+  | "dns-resolution-v1"
+  | "http-exchange-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -598,6 +599,36 @@ const DNS_RESOLUTION_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const HTTP_EXCHANGE_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "http-exchange-v1",
+  title: "The HTTP exchange",
+  stages: [
+    { id: "request", label: "Request", detail: "The client sends an HTTP method, target path and request data when needed." },
+    { id: "headers", label: "Headers", detail: "Request and response headers carry metadata such as content type, authorization context, caching and redirects." },
+    { id: "route", label: "Route", detail: "The HTTP server or application selects the handler for the requested host, method and path." },
+    { id: "response", label: "Response", detail: "The server returns an HTTP status, headers and an optional body." },
+    { id: "evidence", label: "Evidence", detail: "The status, headers and body tell the client what happened at the application protocol layer." }
+  ],
+  foundation: {
+    label: "HTTP is an application protocol, not the network itself",
+    detail: "DNS, IP, transport and TLS provide lower-layer mechanisms; HTTP defines the application request and response exchanged above them."
+  },
+  callouts: [
+    { id: "request-line", label: "Request shape", detail: "Method and target path tell the server what operation the client is requesting." },
+    { id: "status-code", label: "Status code", detail: "The status is application-layer evidence; 3xx redirects, 4xx client-side conditions and 5xx server-side conditions are not transport failures." },
+    { id: "headers", label: "Headers", detail: "Metadata controls or describes content, authentication context, caching, redirects and other HTTP behavior." },
+    { id: "body", label: "Body", detail: "The body carries representation or request data when the HTTP message has one." }
+  ],
+  failureChecks: [
+    { id: "request-shape", label: "1. Request shape", detail: "Is the method, path, host and relevant request data what the application expects?" },
+    { id: "route-selection", label: "2. Route selection", detail: "Did the server select the expected application handler for that method and path?" },
+    { id: "status-meaning", label: "3. Status meaning", detail: "What does the HTTP status, headers and body prove at the application layer?" },
+    { id: "user-proof", label: "4. User proof", detail: "Does the real user action produce the expected application response rather than merely a successful TCP connection?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -749,6 +780,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "http-exchange-v1") {
+    return {
+      ...HTTP_EXCHANGE_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -782,7 +820,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "cidr-boundary-v1" &&
     model.variant !== "routing-boundary-v1" &&
     model.variant !== "transport-contract-v1" &&
-    model.variant !== "dns-resolution-v1"
+    model.variant !== "dns-resolution-v1" &&
+    model.variant !== "http-exchange-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
