@@ -133,7 +133,7 @@ describe("continuous voice architecture", () => {
   it("does not infer audio timing from lesson text", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
 
-    expect(podcastCoach).not.toMatch(/Math\\.max\\(1,.*text/i);
+    expect(podcastCoach).not.toMatch(/Math\.max\(1,.*text/i);
     expect(podcastCoach).not.toMatch(/text\\.split\\(/);
     expect(podcastCoach).not.toMatch(/wordsPerMinute/i);
     expect(podcastCoach).not.toMatch(/averageSpeakingRate/i);
