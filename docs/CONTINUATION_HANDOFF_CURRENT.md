@@ -1931,7 +1931,11 @@ Merged PR #106:
 - Current podcast baseline on `main`: **58,762 spoken words across 53 episodes**.
 - At 135 spoken words/minute, this is approximately **7h 15m** of narration before natural instructional pauses, lab execution, screen interaction or replay.
 - Course-level podcast baseline: Beginner **13,090 words / ~1h 37m**; Intermediate **32,892 words / ~4h 04m**; Advanced **12,780 words / ~1h 35m** at 135 wpm.
-- Next content boundary: **D2.7 — Break Docker**.
+- Merged PR #78:
+- D2.7 -> `docker-failure-loop-v1`: Baseline -> Change -> Symptom -> Evidence -> Recovery.
+- Merge commit: `0d0c490b5a7f21f49f6d6ba25c763672cc5cd8ab`.
+- D2.7 completes the Docker sequence with controlled failure, prediction, evidence and recovery.
+- Next content boundary: **D3.1 — Kubernetes reconciliation**.
 
 
 Merged PR #107:
