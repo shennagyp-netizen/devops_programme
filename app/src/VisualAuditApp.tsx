@@ -6,14 +6,14 @@ import {
   platformProfiles,
   type CourseLevel,
   type PlatformId
-} from "../data/programme";
-import { lessonsByCourse } from "../data/courseLessons";
-import { LessonPanel } from "../components/LessonPanel";
-import { Progress } from "../components/Progress";
-import { DiagnosticPanel } from "../components/DiagnosticPanel";
-import type { DiagnosticRecommendation } from "../data/diagnostics";
-import { projectsByCourse } from "../data/projects";
-import { ProjectPanel } from "../components/ProjectPanel";
+} from "./data/programme";
+import { lessonsByCourse } from "./data/courseLessons";
+import { LessonPanel } from "./components/LessonPanel";
+import { Progress } from "./components/Progress";
+import { DiagnosticPanel } from "./components/DiagnosticPanel";
+import type { DiagnosticRecommendation } from "./data/diagnostics";
+import { projectsByCourse } from "./data/projects";
+import { ProjectPanel } from "./components/ProjectPanel";
 
 export default function VisualAuditApp() {
   const [course, setCourse] = useState<CourseLevel>("intermediate");
