@@ -1164,6 +1164,10 @@ Speaker A: Correct. It is the start of the question.
 
 Speaker B: Let's take CrashLoopBackOff.
 
+Speaker A: Make a prediction before we inspect anything.
+
+Speaker B: The container keeps restarting and the backoff grows, but the status alone will not tell me why.
+
 Speaker A: What does it tell you?
 
 Speaker B: The container is being restarted repeatedly and the backoff is increasing.
@@ -1188,6 +1192,10 @@ Speaker A: Exactly.
 
 Speaker B: Next: ImagePullBackOff.
 
+Speaker A: Prediction?
+
+Speaker B: The workload should fail before normal application startup because the image cannot be obtained or prepared.
+
 Speaker A: What does that narrow?
 
 Speaker B: Image retrieval or startup preparation: image name, registry reachability, credentials, tag or network path.
@@ -1200,6 +1208,10 @@ Speaker A: Exactly.
 
 Speaker B: Next: OOMKilled.
 
+Speaker A: Prediction?
+
+Speaker B: The process should be killed under memory pressure, so I expect termination evidence and a resource story rather than a selector or networking failure.
+
 Speaker A: What is the signal?
 
 Speaker B: The process was killed in an out-of-memory condition, often related to resource limits or system memory pressure.
@@ -1211,6 +1223,10 @@ Speaker B: Memory requests, limits, actual usage, recent workload change and whe
 Speaker A: Good.
 
 Speaker B: And a failed readiness probe?
+
+Speaker A: Prediction?
+
+Speaker B: The Pod should remain unsuitable for normal traffic without necessarily restarting, because readiness and liveness control different decisions.
 
 Speaker A: What does it mean?
 
@@ -1227,6 +1243,10 @@ Speaker B: That distinction is the whole health lesson coming back.
 Speaker A: Exactly.
 
 Speaker B: Now bad selector.
+
+Speaker A: Prediction?
+
+Speaker B: The Service should still exist and its name can still resolve, but the backend endpoint set should become empty if no Pods match the selector.
 
 Speaker A: What would you expect?
 
