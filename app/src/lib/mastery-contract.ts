@@ -1,3 +1,5 @@
+import { MASTERY_FAILURES, REMEDIATION_METHODS } from "../data/masteryRemediation";
+
 export const MASTERY_ATTEMPT_RESULTS = ["failed", "pending", "passed"] as const;
 export type MasteryAttemptResult = (typeof MASTERY_ATTEMPT_RESULTS)[number];
 
@@ -29,6 +31,20 @@ export function parseMasteryAttemptInput(value: unknown): MasteryAttemptInput {
     return raw.map((item) => String(item).trim()).filter(Boolean);
   };
 
+  const failureClass = stringValue(source.failureClass, "failureClass", 64);
+  if (!MASTERY_FAILURES.includes(failureClass as (typeof MASTERY_FAILURES)[number])) {
+    throw new Error("failureClass is invalid.");
+  }
+
+  const remediationMethods = listValue(source.remediationMethods, "remediationMethods");
+  if (
+    remediationMethods.some(
+      (method) => !REMEDIATION_METHODS.includes(method as (typeof REMEDIATION_METHODS)[number])
+    )
+  ) {
+    throw new Error("remediationMethods contains an invalid method.");
+  }
+
   const attemptNumber = source.attemptNumber;
   if (!Number.isSafeInteger(attemptNumber) || Number(attemptNumber) < 1 || Number(attemptNumber) > 1000) {
     throw new Error("attemptNumber must be a positive integer.");
@@ -38,8 +54,8 @@ export function parseMasteryAttemptInput(value: unknown): MasteryAttemptInput {
     lessonId: stringValue(source.lessonId, "lessonId", 200),
     assignmentId: stringValue(source.assignmentId, "assignmentId", 200),
     attemptNumber: Number(attemptNumber),
-    failureClass: stringValue(source.failureClass, "failureClass", 64),
+    failureClass,
     failedFields: listValue(source.failedFields, "failedFields"),
-    remediationMethods: listValue(source.remediationMethods, "remediationMethods")
+    remediationMethods
   };
 }
