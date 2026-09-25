@@ -6,9 +6,7 @@
 
 **Current branch:** `main`
 
-**Active content-quality branch:** `feature/gold-standard-script-illustration` (PR #33, current head `5882e74cb000e37f317c7c305caa69ce1bdc513b`)
-
-**Latest main architecture/content merge:** public instructional hero merge PR #32, commit `ab3a9400929be685f4c366068e1b4e576e9d5f41`
+**Latest main architecture/content merge:** PR #33, commit `d3c49338180d948d0d5f7284713a91ead65267b1` (gold-standard script + illustration slice).
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -22,7 +20,7 @@
 
 **TDD rule:** unit tests define the completion input contract; integration tests define the authentication/Server Action boundary; repository contract tests reject the obsolete Vite/API/anonymous-progress architecture.
 
-**CI truth:** GitHub-hosted runners execute the full programme gate. Main production after PR #32 was green at 49 test files / 332 tests, with TypeScript and Next.js build passing. The current PR #33 content-quality branch has an intentionally red first run from a fixture mismatch; the correction is in progress and must reach green before merge.
+**CI truth:** GitHub-hosted runners execute the full programme gate. The PR #33 head passed the complete gate before merge: all programme contracts, full unit/integration tests, TypeScript typecheck and Next.js production build succeeded.
 
 **Historical sections:** earlier sections record previous milestones and superseded designs. Sections 30–31 are retained for audit history only; section 32 and the final authenticated architecture are current.
 
@@ -1821,11 +1819,12 @@ This is intentionally a gold-standard exemplar, not yet a claim that all 53 less
 A real defect was found and fixed in spoken-turn classification: a generic word match on "prediction" could pause the co-teacher during an explanatory sentence. The classifier now requires an actual prediction prompt pattern and has a regression test.
 
 Current TDD status:
-- PR #33: draft, branch feature/gold-standard-script-illustration
-- current head: 5882e74cb000e37f317c7c305caa69ce1bdc513b
-- full programme gate run 36102416096: PASS — all contract checks, full unit/integration tests, TypeScript typecheck and Next.js production build succeeded.
-- the earlier red run 36102249143 correctly caught a fixture mismatch; the fixture and additional red-team validation coverage were corrected before the green run.
-- Vercel preview attempts on the branch have also hit the project's current build-rate-limit signal in addition to the earlier test-driven preview failure; this is infrastructure/platform state, not evidence of a remaining application test failure. Main production remains READY at the PR #32 deployment until PR #33 is merged and redeployed.
+- PR #33: merged
+- merge commit: `d3c49338180d948d0d5f7284713a91ead65267b1`
+- final pre-merge programme gate: run 36102416096 PASS on the corrected content-quality head.
+- the earlier red run 36102249143 caught a fixture mismatch; that regression was corrected and then covered by additional fail-closed tests.
+- branch preview deployments before the final green revision also included a Vercel build-rate-limit signal. That infrastructure condition must not be confused with application test failure.
+- production deployment for the merged commit is still pending verification; the last verified production deployment is PR #32 commit `ab3a9400929be685f4c366068e1b4e576e9d5f41`.
 
 Do not scale the animation catalogue before the script+illustration quality gate is stable. Reusable animations remain capabilities; curriculum remains the instructional authority.
 ============================================================
