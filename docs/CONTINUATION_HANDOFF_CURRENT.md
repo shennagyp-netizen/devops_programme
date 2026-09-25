@@ -1917,5 +1917,14 @@ Merged PR #51:
 - GitHub's draft-review mutation was blocked, but closing PR #51 completed the merge successfully with the validated head; no implementation changes were needed.
 - Next content boundary: **D2.5 — Why Containers Exist**.
 
+
+Active PR #52 scope:
+- D2.5 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `container-execution-v1`.
+- Teaching model: Image -> Container -> Process -> Namespaces -> Host Kernel.
+- The rewritten script separates image packaging, container lifecycle, process behavior, namespace isolation and the shared host kernel, explicitly rejecting the “tiny VM” model.
+- Controlled failure changes only the main process command, predicts the stopped container state, then restores and proves recovery.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================

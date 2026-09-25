@@ -26,7 +26,8 @@ export type LessonIllustrationVariantV1 =
   | "transport-contract-v1"
   | "dns-resolution-v1"
   | "http-exchange-v1"
-  | "tls-trust-v1";
+  | "tls-trust-v1"
+  | "container-execution-v1";
 
 export type LessonContentBlock =
   | {
@@ -79,6 +80,31 @@ export type LessonContentSeed = {
 };
 
 const authoredLessonContent: Record<string, LessonContent> = {
+  "D2.5": {
+    version: 1,
+    blocks: [
+      {
+        id: "d2-5-problem",
+        type: "text",
+        heading: "Why this matters",
+        body:
+          "Containers make application environments more repeatable by isolating processes and packaging their files and configuration, without creating a full virtual machine."
+      },
+      {
+        id: "d2-5-containers",
+        type: "illustration",
+        heading: "The container execution model",
+        alt: "An image creates a container that runs a process inside isolated namespaces while sharing the host kernel",
+        bindingId: "D2.5:d2-5-containers",
+        nodes: ["Image", "Container", "Process", "Namespaces", "Host Kernel"],
+        variant: "container-execution-v1",
+        caption:
+          "Keep Image, Container and Process separate, and remember that the host kernel is shared."
+      }
+    ]
+  },
+
+
   "D2.4": {
     version: 1,
     blocks: [
@@ -657,6 +683,7 @@ export function validateLessonContent(
         block.variant !== "dns-resolution-v1" &&
         block.variant !== "http-exchange-v1" &&
         block.variant !== "tls-trust-v1" &&
+        block.variant !== "container-execution-v1" &&
         block.variant !== "transport-contract-v1"
       ) {
         failures.push(`illustration block ${block.id} has an invalid variant`);

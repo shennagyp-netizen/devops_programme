@@ -176,6 +176,21 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
   });
 
+  it("uses the authored container execution visual for D2.5", () => {
+    const lesson = allLessons.find((item) => item.id === "D2.5");
+    expect(lesson).toBeDefined();
+
+    const illustration = lesson.content.blocks.find(
+      (block) => block.type === "illustration"
+    );
+
+    expect(illustration).toMatchObject({
+      id: "d2-5-containers",
+      bindingId: "D2.5:d2-5-containers",
+      variant: "container-execution-v1"
+    });
+  });
+
   it("uses the authored TLS trust visual for D2.4", () => {
     const lesson = allLessons.find((item) => item.id === "D2.4");
     expect(lesson).toBeDefined();
