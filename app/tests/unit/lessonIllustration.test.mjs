@@ -9,7 +9,8 @@ describe("lesson illustration teaching model", () => {
       heading: "The isolation boundary",
       alt: "A container starts from an image, runs a process, and shares the host kernel",
       bindingId: "B1.4:b1-4-isolation",
-      nodes: ["Application image", "Container boundary", "Process"],
+      nodes: ["Image", "Container", "Process"],
+      variant: "container-boundary-v1",
       caption: "Image, container and process are different layers."
     });
 
@@ -51,3 +52,20 @@ describe("lesson illustration teaching model", () => {
     expect(model.foundation).toBeUndefined();
   });
 });
+
+
+  it("fails closed for an unknown authored illustration variant", () => {
+    expect(
+      getLessonIllustrationModel({
+        id: "bad",
+        type: "illustration",
+        heading: "Bad",
+        alt: "Bad visual",
+        bindingId: "bad:visual",
+        nodes: ["A", "B"],
+        variant: "unknown-v9"
+      })
+    ).toMatchObject({
+      variant: "causal-flow-v1"
+    });
+  });
