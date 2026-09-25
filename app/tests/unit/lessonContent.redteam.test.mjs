@@ -10,6 +10,7 @@ const validIllustration = {
   type: "illustration",
   heading: "Flow",
   alt: "A simple flow",
+  bindingId: "TEST:visual",
   nodes: ["A", "B", "C"]
 };
 
@@ -118,6 +119,36 @@ describe("lesson content validation red-team contract", () => {
         /illustration block visual needs (a heading|alt text|nodes|non-empty string nodes)/
       );
     }
+  });
+
+
+  it("rejects illustrations and interactive illustrations without curriculum binding ids", () => {
+    const illustration = validateLessonContent({
+      version: 1,
+      blocks: [
+        {
+          ...validIllustration,
+          bindingId: ""
+        }
+      ]
+    });
+    expect(illustration.valid).toBe(false);
+    expect(illustration.failures.join(" ")).toContain("bindingId");
+
+    const interactive = validateLessonContent({
+      version: 1,
+      blocks: [
+        {
+          id: "interactive",
+          type: "interactive-illustration",
+          heading: "Diagnose the path",
+          alt: "Interactive request path",
+          bindingId: ""
+        }
+      ]
+    });
+    expect(interactive.valid).toBe(false);
+    expect(interactive.failures.join(" ")).toContain("bindingId");
   });
 
   it("accepts a well-formed illustration without optional caption", () => {

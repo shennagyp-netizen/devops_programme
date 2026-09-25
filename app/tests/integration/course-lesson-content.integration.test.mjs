@@ -60,4 +60,19 @@ describe("course lesson content integration", () => {
       expect(lesson.content.blocks[1].type, lesson.id).toBe("illustration");
     }
   });
+  it("requires every illustration block to carry its curriculum binding identity", () => {
+    for (const lesson of allLessons) {
+      for (const block of lesson.content.blocks) {
+        if (
+          block.type === "illustration" ||
+          block.type === "interactive-illustration"
+        ) {
+          expect(block.bindingId, `${lesson.id}:${block.id}`).toBe(
+            `${lesson.id}:${block.id}`
+          );
+        }
+      }
+    }
+  });
+
 });

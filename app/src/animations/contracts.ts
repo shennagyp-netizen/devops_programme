@@ -174,6 +174,13 @@ export type AnimationVoiceCueBindingV1 = {
   eventIds: string[];
 };
 
+/**
+ * Low-level animation timing fixture retained for compatibility.
+ *
+ * Curriculum ownership belongs to CurriculumIllustrationBindingV1 in
+ * src/data/illustrationBindings.ts. Do not use this type to define lesson
+ * ordering, learner interaction order, or curriculum identity.
+ */
 export type AnimationLessonBindingV1 = {
   version: typeof ANIMATION_CONTRACT_VERSION;
   animationId: string;

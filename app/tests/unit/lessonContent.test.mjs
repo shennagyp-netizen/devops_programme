@@ -22,6 +22,7 @@ describe("lesson content stream contract", () => {
           type: "illustration",
           heading: "The isolation boundary",
           alt: "Image to container to process flow",
+          bindingId: "B1.4:flow",
           nodes: ["Image", "Container", "Process"]
         },
         {

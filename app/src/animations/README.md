@@ -221,3 +221,27 @@ The next scenarios should be implemented only after the curriculum-binding contr
 - queues/workers
 - service failure/recovery
 - observability/tracing.
+
+
+## Current implementation status
+
+The curriculum binding contract is implemented and validated.
+
+Curriculum-owned sources:
+- src/data/lessonContent.ts — ordered content and binding identity
+- src/data/curriculumIllustrationBindings.ts — binding registry
+- src/data/illustrationBindings.ts — validation contract.
+
+Current guarantees:
+- every authored illustration resolves through the curriculum binding registry
+- missing bindings fail closed
+- interactive/animated content cannot silently fall back to a static or generic animation
+- animation code cannot import curriculum/data modules.
+
+Verified on the latest branch gate:
+- 41 test files
+- 297 tests
+- TypeScript typecheck
+- Next.js production build.
+
+The next step is real curriculum use of an animated binding; the library itself does not choose that lesson or sequence.

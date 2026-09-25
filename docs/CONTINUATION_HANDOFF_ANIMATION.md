@@ -43,7 +43,7 @@ The implementation deliberately uses explicit packet hops so a packet cannot vis
 
 ## Critical next architecture decision
 
-The next implementation step is **not** to create dozens of independent animation React components.
+The curriculum-binding layer is now implemented and green. The next implementation step is **not** to create dozens of independent animation React components.
 
 The curriculum must own the exact instructional sequence.
 
@@ -67,9 +67,9 @@ It provides reusable capabilities; the curriculum decides:
 - the order of those steps
 - what completion means.
 
-## Required new binding layer
+## Implemented curriculum binding layer
 
-Introduce a strict curriculum/application contract for lesson illustration bindings.
+The strict curriculum/application contract for lesson illustration bindings is implemented in app/src/data/illustrationBindings.ts, with the curriculum-owned registry in app/src/data/curriculumIllustrationBindings.ts.
 
 The binding should contain, at minimum:
 
@@ -149,6 +149,18 @@ Example:
 
 Do not let the animation component invent this sequence.
 
+## Verified TDD state
+
+Latest branch gate: workflow run 36087678753 completed successfully.
+
+- 41 test files passed
+- 297 tests passed
+- all programme contract checks passed
+- TypeScript typecheck passed
+- Next.js production build passed
+
+The curriculum binding registry is fail-closed: static illustration bindings are deterministic from curriculum content, while interactive/animated bindings must be explicitly authored. No hidden generic animation fallback is allowed.
+
 ## Test doctrine
 
 Continue TDD and invariant testing.
@@ -204,9 +216,9 @@ The curriculum-binding standard is the normative source for this specific archit
 
 ## Next implementation boundary
 
-Implement the **curriculum illustration-binding contract and validators first**, with red-team coverage.
+The curriculum illustration-binding contract is now implemented and green.
 
-Only after that contract is green should new canonical animation scenarios be added at scale.
+The next boundary is to author the first real interactive/animated curriculum binding and connect it to the existing PodcastCoach audio clock without creating a second audio owner. Only after that should the canonical scenario catalogue expand.
 
 This preserves the invariant:
 

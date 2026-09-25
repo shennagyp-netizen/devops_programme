@@ -17,7 +17,16 @@ export type LessonContentBlock =
       type: "illustration";
       heading: string;
       alt: string;
+      bindingId: string;
       nodes: string[];
+      caption?: string;
+    }
+  | {
+      id: string;
+      type: "interactive-illustration";
+      heading: string;
+      alt: string;
+      bindingId: string;
       caption?: string;
     }
   | {
@@ -61,6 +70,7 @@ const authoredLessonContent: Record<string, LessonContent> = {
         type: "illustration",
         heading: "The isolation boundary",
         alt: "Image becomes a container and then an isolated process environment",
+        bindingId: "B1.4:b1-4-isolation",
         nodes: ["Application image", "Container boundary", "Process"],
         caption:
           "Use the picture to connect the packaging decision to the running process."
@@ -139,6 +149,9 @@ export function validateLessonContent(
       if (typeof block.alt !== "string" || !block.alt.trim()) {
         failures.push(`illustration block ${block.id} needs alt text`);
       }
+      if (typeof block.bindingId !== "string" || !block.bindingId.trim()) {
+        failures.push(`illustration block ${block.id} needs bindingId`);
+      }
       if (!Array.isArray(block.nodes) || block.nodes.length === 0) {
         failures.push(`illustration block ${block.id} needs nodes`);
       } else if (
@@ -147,6 +160,19 @@ export function validateLessonContent(
         )
       ) {
         failures.push(`illustration block ${block.id} needs non-empty string nodes`);
+      }
+      continue;
+    }
+
+    if (block.type === "interactive-illustration") {
+      if (typeof block.heading !== "string" || !block.heading.trim()) {
+        failures.push(`interactive illustration block ${block.id} needs a heading`);
+      }
+      if (typeof block.alt !== "string" || !block.alt.trim()) {
+        failures.push(`interactive illustration block ${block.id} needs alt text`);
+      }
+      if (typeof block.bindingId !== "string" || !block.bindingId.trim()) {
+        failures.push(`interactive illustration block ${block.id} needs bindingId`);
       }
       continue;
     }
@@ -267,6 +293,7 @@ export function buildDefaultLessonContent(seed: LessonContentSeed): LessonConten
         type: "illustration",
         heading: seed.title,
         alt: "A simple causal flow for the lesson",
+        bindingId: `${seed.id}:${seed.id.toLowerCase()}-mechanism`,
         nodes: ["Problem", "Mechanism", "Evidence"],
         caption:
           "The visual is a compact cue. The literal technical mechanism remains in the written lesson."
