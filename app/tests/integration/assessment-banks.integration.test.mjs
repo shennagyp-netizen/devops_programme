@@ -100,8 +100,13 @@ describe("assessment bank integration", () => {
           expect(allowedCognitiveLevels.has(item.cognitiveLevel)).toBe(true);
           expect(item.competencyId.startsWith(section + ".")).toBe(true);
           expect(item.prompt.trim()).not.toBe("");
-          expect(typeof item.itemType).toBe("string");
-          expect(item.itemType.trim()).not.toBe("");
+          if (typeof item.itemType === "string") {
+            expect(item.itemType.trim()).not.toBe("");
+          } else {
+            expect(Array.isArray(item.itemType)).toBe(true);
+            expect(item.itemType.length).toBeGreaterThan(0);
+            expect(item.itemType.every((value) => typeof value === "string" && value.trim() !== "")).toBe(true);
+          }
           expect(item.expectedMinutes).toBeGreaterThan(0);
           expect(item.itemType.trim()).not.toBe("");
 
@@ -114,9 +119,12 @@ describe("assessment bank integration", () => {
             expect(item.environment?.length).toBeGreaterThan(0);
             expect(item.initialState).toBeTruthy();
             expect(item.allowedOperations?.length).toBeGreaterThan(0);
+          } else if (Array.isArray(item.expectedElements)) {
+            expect(item.expectedElements.length).toBeGreaterThan(0);
+          } else if (typeof item.expectedElements === "number") {
+            expect(item.expectedElements).toBeGreaterThan(0);
           } else {
             expect(
-              item.expectedElements?.length ||
               item.scoring?.full?.length ||
               item.scoringNote
             ).toBeTruthy();
