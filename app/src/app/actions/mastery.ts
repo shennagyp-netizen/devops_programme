@@ -4,7 +4,8 @@ import { requireCurrentUser } from "../../lib/server/auth";
 import {
   createMasteryAttempt,
   completeMasteryRemediation,
-  finishMasteryAttempt
+  finishMasteryAttempt,
+  listMasteryAttemptsForUser
 } from "../../lib/server/mastery";
 
 export async function recordMasteryAttemptAction(rawInput: unknown) {
@@ -24,4 +25,9 @@ export async function finishMasteryAttemptAction(
 ) {
   const user = await requireCurrentUser();
   return finishMasteryAttempt(user.id, rawAttemptId, result);
+}
+
+export async function listMasteryAttemptsAction(lessonId: string, assignmentId: string) {
+  const user = await requireCurrentUser();
+  return listMasteryAttemptsForUser(user.id, lessonId, assignmentId);
 }
