@@ -2028,5 +2028,13 @@ Merged PR #55:
 - D5.1 makes vertical/horizontal scaling, statelessness, shared state, queue/cache behavior, bottleneck movement and user-path proof one mechanism.
 - Next content boundary: **D5.2 — Databases at Scale**.
 
+
+Active PR #72 scope:
+- D5.1 and D5.2 are being ported onto the current `main` lineage.
+- D5.1 gains `scaling-control-loop-v1`: Workload -> Capacity -> Distribution -> Shared State -> Bottleneck -> Evidence.
+- D5.2 gains `database-scale-v1`: Query -> Access Path -> Correctness -> Copies -> Distribution -> Evidence.
+- D5.2 spoken script is upgraded from the weak current-main version to the mechanism-first version covering indexes/query plans, transaction correctness, replication lag/consistency and partitioning/sharding trade-offs.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
