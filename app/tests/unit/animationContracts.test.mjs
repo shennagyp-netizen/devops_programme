@@ -161,6 +161,21 @@ describe("animation contract v1", () => {
     expect(DEFAULT_ANIMATION_CUSTOMIZATION.motion.travelMs).not.toBe(720);
   });
 
+
+  it("allows an animation to deliberately reduce shape clearance within contract limits", () => {
+    const definition = baseDefinition();
+    definition.visual.customization = {
+      shapeClearancePx: 8
+    };
+
+    definition.primitives[1].x = 288;
+
+    expect(validateAnimationDefinition(definition)).toEqual({
+      valid: true,
+      failures: []
+    });
+  });
+
   it("accepts a course-independent lesson binding to voice cues", () => {
     const binding = {
       version: 1,
