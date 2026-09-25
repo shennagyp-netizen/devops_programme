@@ -23,6 +23,7 @@ const files = {
   authActionsTest: "../app/tests/integration/auth-actions.integration.test.mjs",
   authBoundaryTest: "../app/tests/integration/auth-boundary.integration.test.mjs",
   migrationAuth: "../app/drizzle/migrations/0001_self_hosted_auth.sql",
+  migrationRunner: "../scripts/run-production-migrations.mjs",
   gitignore: "../.gitignore"
 };
 
@@ -52,6 +53,7 @@ const packageJson = JSON.parse(content.package);
 assert.equal(packageJson.scripts.dev, "npm run sync:podcasts && next dev");
 assert.equal(packageJson.scripts.start, "next start");
 assert.equal(packageJson.scripts.typecheck, "tsc -b");
+assert.match(packageJson.scripts.build, /db:migrate:production/);
 assert.equal(packageJson.engines.node, ">=20.9.0");
 assert.ok(packageJson.dependencies.next);
 assert.equal(packageJson.dependencies["@clerk/nextjs"], undefined);
@@ -123,6 +125,9 @@ assert.match(content.authActionsTest, /generic login error/);
 assert.match(content.authBoundaryTest, /no Clerk dependency/);
 assert.match(content.migrationAuth, /auth_users/);
 assert.match(content.migrationAuth, /auth_sessions/);
+assert.match(content.migrationRunner, /VERCEL_ENV !== "production"/);
+assert.match(content.migrationRunner, /DATABASE_URL/);
+assert.match(content.migrationRunner, /_devops_programme_migrations/);
 
 for (const obsolete of [
   "../app/vite.config.ts",
