@@ -295,6 +295,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models Git as a production workflow from working tree to reviewed release identity", () => {
+    const model = getLessonIllustrationModel({
+      id: "d4-1-git-workflow",
+      type: "illustration",
+      heading: "The Git production workflow",
+      alt: "A change moves from working tree to staged state, commit, review and merged release identity with evidence at each boundary",
+      bindingId: "D4.1:d4-1-git-workflow",
+      nodes: ["Working tree", "Staged", "Commit", "Review", "Release"],
+      variant: "git-production-workflow-v1"
+    });
+
+    expect(model.variant).toBe("git-production-workflow-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "working-tree",
+      "staged",
+      "commit",
+      "review",
+      "release"
+    ]);
+    expect(model.foundation.label).toBe("A Git commit is an immutable release input with history");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "working-tree",
+      "staging",
+      "commit-identity",
+      "review"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "uncommitted-change",
+      "wrong-stage",
+      "history-identity",
+      "release-proof"
+    ]);
+  });
+
   it("models Kubernetes failure diagnosis as baseline, fault, symptom, evidence and recovery", () => {
     const model = getLessonIllustrationModel({
       id: "d3-5-kubernetes-failure",
