@@ -203,6 +203,27 @@ Every hands-on lesson should make clear:
 - how to recover
 - what proves recovery.
 
+## 4.1 ORDERED LESSON CONTENT STREAM
+
+The lesson presentation now supports an ordered content stream.
+
+Current implementation:
+- `app/src/data/lessonContent.ts` is the authoritative lesson-content contract.
+- `LessonContentFeed` renders the stream as a vertical reading/visual/video feed with a content index and smooth scrolling.
+- Supported block types are text, illustration and video.
+- Video supports draft/published status, root-relative or HTTPS media sources, posters, captions, transcripts, duration and authored timing cues.
+- Draft video slots do not load missing assets.
+- `CourseLesson.content` carries the resolved content stream.
+- B1.4 currently contains an explicit draft video authoring slot; no real video asset is claimed or loaded.
+- Podcast/co-teacher synchronization remains a separate contract driven by real audio timing manifests.
+- Required instructional meaning must remain available in written lesson content even when no video is published.
+
+Tests:
+- `app/tests/unit/lessonContent.test.mjs` covers block validation, unsafe media rejection, timing validation, deterministic defaults, all current lesson streams and the B1.4 video slot.
+
+Validation state:
+- The GitHub Actions connector has returned no executed check/run for the current branch commit, so CI is **not claimed green** from this change.
+
 ============================================================
 5. PROJECT CONTRACT
 ============================================================
