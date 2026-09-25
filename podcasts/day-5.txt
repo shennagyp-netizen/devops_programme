@@ -2,57 +2,341 @@ DAY 5 — SCALE + DISTRIBUTED SYSTEMS + SRE
 
 EPISODE D5.1 — Scaling
 
-Speaker A: Scaling is not 'buy a bigger server.' It is deciding where capacity is constrained and how to distribute work.
+Speaker A: Scaling is one of the easiest words to say and one of the easiest engineering problems to misunderstand.
 
-Speaker B: Horizontal versus vertical.
+Speaker B: Because people hear scaling and think add servers.
 
-Speaker A: Exactly. Vertical scaling makes one unit larger. Horizontal scaling adds units. Stateless services generally scale more easily because requests can move between instances.
+Speaker A: Exactly. The real question is: where is capacity constrained, and how does more capacity change the whole system?
 
-Speaker A: Real-life analogy: one supermarket cashier working faster versus opening ten checkout lanes.
+Speaker B: The picture is:
 
-Speaker B: Ten lanes create a new problem: the queue and payment system now have to coordinate.
+Speaker A: Workload -> Capacity -> Distribution -> Shared State -> Bottleneck -> Evidence.
 
-Speaker A: Exactly. Scale moves bottlenecks.
+Speaker B: That already sounds better than vertical versus horizontal.
 
-Speaker A: Real-life example: social-media traffic can spike during a major event. Caches and queues can absorb some pressure, but every buffer eventually has a limit.
+Speaker A: We will still learn vertical and horizontal scaling. But those are actions. The system model comes first.
 
-Speaker A: Lab: design a traffic-spike strategy and identify the first three likely bottlenecks.
-Speaker B: Scaling sounds simple until the system gets bigger and the bottleneck moves.
+Speaker B: Start with workload.
 
-Speaker A: Exactly. Vertical scaling means making one machine bigger. Horizontal scaling means adding more instances. Neither is a magic answer.
+Speaker A: Demand arrives over time. Requests per second. Concurrent users. Jobs per minute. Messages per second.
 
-Speaker B: And statelessness makes horizontal scaling easier.
+Speaker B: And demand is not constant.
 
-Speaker A: Usually. If any application instance can handle a request without depending on private memory from one specific server, a load balancer can distribute work more freely.
+Speaker A: Right. A normal hour and a traffic spike can be completely different operating conditions.
 
-Speaker B: Real-life example?
+Speaker B: Prediction.
 
-Speaker A: Supermarket checkout. If one checkout is overloaded, you can make that cashier faster, or open more lanes. But if every cashier needs the same single paper notebook locked in one lane, adding cashiers doesn't solve the problem.
+Speaker A: We double the number of web servers. Traffic also doubles at the same time. Should latency automatically improve?
 
-Speaker B: That's the hidden shared state.
+Speaker B: No. The new servers only help if the constrained part of the request path can use the extra capacity.
 
 Speaker A: Exactly.
 
-Speaker B: Prediction. We double the web servers and latency barely changes.
+Speaker B: Stage two: capacity.
 
-Speaker A: What would you inspect?
+Speaker A: Every component has limits.
 
-Speaker B: Database latency. Cache hit rate. Network. Downstream services. Lock contention.
+Speaker B: CPU.
 
-Speaker A: Good. Notice you didn't say “add more servers again.”
+Speaker A: Yes.
 
-Speaker B: Because the bottleneck may not be compute.
+Speaker B: Memory.
 
-Speaker A: Right. Capacity is a system property.
+Speaker A: Yes.
 
-Speaker B: Mac exercise?
+Speaker B: Database connections.
 
-Speaker A: Take a tiny application and draw its request path. Put a number beside each dependency: expected concurrency, latency, capacity. Then ask which component saturates first as traffic doubles.
+Speaker A: Yes.
 
-Speaker B: That's basically a paper load test.
+Speaker B: Network bandwidth.
 
-Speaker A: Exactly. Before you reach for Kubernetes autoscaling, understand what you're actually scaling.
+Speaker A: Yes.
 
+Speaker B: Lock throughput. Disk I/O. External API rate limits.
+
+Speaker A: Exactly. Capacity belongs to the dependency graph, not just the server.
+
+Speaker B: Vertical scaling means making one capacity unit larger.
+
+Speaker A: Correct.
+
+Speaker B: Horizontal scaling means adding more units.
+
+Speaker A: Correct.
+
+Speaker B: Neither changes the other limits automatically.
+
+Speaker A: Exactly.
+
+Speaker B: Real-life example?
+
+Speaker A: One supermarket cashier can serve customers faster if you improve the checkout station.
+
+Speaker B: Vertical scaling.
+
+Speaker A: Or you open more checkout lanes.
+
+Speaker B: Horizontal scaling.
+
+Speaker A: But if all lanes depend on one payment terminal or one manager approving every transaction, opening more lanes may not solve the bottleneck.
+
+Speaker B: Shared state or shared dependency.
+
+Speaker A: Exactly.
+
+Speaker B: Stage three: distribution.
+
+Speaker A: Once you have more capacity units, work has to reach them.
+
+Speaker B: Load balancer.
+
+Speaker A: One example.
+
+Speaker B: Queue.
+
+Speaker A: Another.
+
+Speaker B: Partitioning.
+
+Speaker A: Another.
+
+Speaker B: So adding servers without a useful distribution path can leave one server busy and the rest idle.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction.
+
+Speaker A: We add four API servers, but almost all requests still hit one instance. What do you inspect?
+
+Speaker B: Load balancing, session affinity, routing rules, health state and whether the instances are actually eligible for traffic.
+
+Speaker A: Good.
+
+Speaker B: So horizontal scaling needs a distribution mechanism.
+
+Speaker A: Usually, yes.
+
+Speaker B: Stage four: shared state.
+
+Speaker A: Stateless services are easier to distribute because any healthy instance can handle the next request without private state from one specific server.
+
+Speaker B: Sessions are the classic example.
+
+Speaker A: Yes. If session state exists only in one instance's memory, a request sent to another instance may behave differently.
+
+Speaker B: Put the state in a shared store, use a suitable session strategy, or redesign the request flow.
+
+Speaker A: Exactly. The point is not that every system must be stateless. The point is to know where state lives and whether it limits distribution.
+
+Speaker B: Another shared state example?
+
+Speaker A: A database.
+
+Speaker B: Every web server sends more queries to the same database.
+
+Speaker A: Right.
+
+Speaker B: So doubling web servers can move pressure into the database instead of reducing end-to-end latency.
+
+Speaker A: Exactly.
+
+Speaker B: That brings us to the fifth box: bottleneck.
+
+Speaker A: The active bottleneck is the dependency that limits useful end-to-end capacity at that moment.
+
+Speaker B: And the bottleneck can move after a scaling action.
+
+Speaker A: That is one of the most important scaling ideas.
+
+Speaker B: Prediction.
+
+Speaker A: We double the web servers and latency barely changes. What are your first hypotheses?
+
+Speaker B: Database latency. Database connection saturation. Cache behavior. Network limits. Downstream APIs. Lock contention. A load-balancer problem.
+
+Speaker A: Good. Notice what you did not say.
+
+Speaker B: Add more web servers again.
+
+Speaker A: Exactly.
+
+Speaker B: Now imagine the database was already at 80 percent capacity and each new web server adds more concurrent database work.
+
+Speaker A: What happens?
+
+Speaker B: The database can become the new bottleneck or get worse, even though web CPU falls.
+
+Speaker A: Exactly.
+
+Speaker B: So lower CPU on the web tier can coexist with worse user latency.
+
+Speaker A: Yes. That is why one metric is never the whole scaling story.
+
+Speaker B: What about queues and caches?
+
+Speaker A: They can absorb bursts or reduce repeated work.
+
+Speaker B: Which sounds like free capacity.
+
+Speaker A: It is not free.
+
+Speaker B: Because they have their own limits.
+
+Speaker A: Exactly. A cache can miss. A queue can fill. A full queue changes latency or causes rejection.
+
+Speaker B: So buffers move the time of failure, not eliminate the limit.
+
+Speaker A: Excellent.
+
+Speaker B: Stage six: evidence.
+
+Speaker A: We measure before and after the scaling action.
+
+Speaker B: Request rate.
+
+Speaker A: Good.
+
+Speaker B: Latency distribution.
+
+Speaker A: Good.
+
+Speaker B: Error rate.
+
+Speaker A: Good.
+
+Speaker B: Saturation of the first constrained dependency.
+
+Speaker A: Good.
+
+Speaker B: And the real user path.
+
+Speaker A: Exactly.
+
+Speaker B: So scaling is not proved by 'we now have eight replicas.'
+
+Speaker A: Correct.
+
+Speaker B: It is proved by system behavior under the workload we care about.
+
+Speaker A: Exactly.
+
+Speaker B: Controlled experiment?
+
+Speaker A: Start with a tiny application and one known request path.
+
+Speaker B: Measure baseline throughput and latency.
+
+Speaker A: Good.
+
+Speaker B: Add a second application instance.
+
+Speaker A: Good.
+
+Speaker B: Increase workload in a controlled way.
+
+Speaker A: Good.
+
+Speaker B: Observe where latency or errors rise first.
+
+Speaker A: Good.
+
+Speaker B: Then make one change to the suspected bottleneck.
+
+Speaker A: Good.
+
+Speaker B: For example, increase database connection capacity in a safe environment, or reduce query cost, or add cache coverage.
+
+Speaker A: Exactly. Pick one change.
+
+Speaker B: Then repeat the same workload.
+
+Speaker A: And compare the evidence.
+
+Speaker B: Did the bottleneck move? Did user latency improve? Did another dependency saturate?
+
+Speaker A: Good.
+
+Speaker B: This is basically a paper load test made executable.
+
+Speaker A: Right. You do not need Kubernetes autoscaling to learn the mechanism.
+
+Speaker B: What about statelessness in the lab?
+
+Speaker A: Make one request path that can move between two application instances.
+
+Speaker B: Then introduce private in-memory session state.
+
+Speaker A: Good.
+
+Speaker B: Send the next request to the other instance.
+
+Speaker A: What should you predict?
+
+Speaker B: The session may disappear or behave inconsistently because the second instance cannot see the first instance's private state.
+
+Speaker A: Exactly.
+
+Speaker B: Then move that state to a shared store.
+
+Speaker A: And verify that the request path becomes portable across instances.
+
+Speaker B: Nice.
+
+Speaker A: One more important rule: scale the bottleneck, not the part you can see most easily.
+
+Speaker B: So a CPU graph is not the scaling plan.
+
+Speaker A: Correct.
+
+Speaker B: And average latency is not enough either.
+
+Speaker A: Correct.
+
+Speaker B: Tail latency can stay terrible even when the average looks better.
+
+Speaker A: Exactly. Choose measurements that match the user experience and workload shape.
+
+Speaker B: Recall.
+
+Speaker A: Vertical scaling?
+
+Speaker B: Make one capacity unit larger.
+
+Speaker A: Horizontal scaling?
+
+Speaker B: Add more units and distribute work among them.
+
+Speaker A: Why does statelessness help?
+
+Speaker B: Requests can move between instances without depending on private in-memory state in one instance.
+
+Speaker A: Why can adding servers fail to improve latency?
+
+Speaker B: Another dependency can be the bottleneck, or distribution and shared state can prevent useful parallel work.
+
+Speaker A: What do queues and caches change?
+
+Speaker B: They can absorb bursts or reduce repeated work, but they introduce their own limits and failure modes.
+
+Speaker A: What proves scaling worked?
+
+Speaker B: Evidence that the relevant user path has better capacity, latency or throughput under the workload we care about, without just moving the bottleneck somewhere else.
+
+Speaker A: Final challenge.
+
+Speaker B: Traffic doubles. We double web servers. Latency barely changes.
+
+Speaker A: Your model?
+
+Speaker B: Workload -> Capacity -> Distribution -> Shared State -> Bottleneck -> Evidence. I identify the first constrained dependency, check whether work is actually distributed, inspect shared state, and measure the real user path before adding more capacity.
+
+Speaker A: Good.
+
+Speaker B: So scaling is not adding servers.
+
+Speaker A: It is changing capacity at the right boundary and proving that the whole system benefits.
+
+Speaker B: Run the lab, find the first bottleneck, move it once, and measure what moved next.
 
 EPISODE D5.2 — Databases at Scale
 
