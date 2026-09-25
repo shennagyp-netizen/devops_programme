@@ -1464,7 +1464,7 @@ Speaker B: Coordinating concurrent access to shared state so operations do not p
 
 Speaker A: What is destroy?
 
-Speaker B: A high-impact lifecycle operation that removes managed resources and therefore needs careful plan review and strict scope.
+Speaker B: A high-impact lifecycle operation that removes managed resources so it needs careful plan review and strict scope.
 
 Speaker A: Final challenge.
 
