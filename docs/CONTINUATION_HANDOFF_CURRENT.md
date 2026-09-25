@@ -1884,5 +1884,14 @@ Merged PR #44:
 - Final PR #44 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 - Next content boundary: **D1.4 — What Is a Network?**.
 
+
+Active PR #45 scope:
+- D1.4 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `network-operating-model-v1`.
+- Teaching model: Interface -> Link -> IP -> Route -> Evidence.
+- The rewritten script separates MAC, IP, ARP and routing roles and deliberately keeps DNS outside the link/IP model.
+- Controlled failure/recovery is isolated to a disposable network context.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
