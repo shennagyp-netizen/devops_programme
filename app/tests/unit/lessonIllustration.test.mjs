@@ -295,6 +295,41 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models cloud architecture as workload, compute, network, state, identity and data services", () => {
+    const model = getLessonIllustrationModel({
+      id: "d4-6-cloud-primitives",
+      type: "illustration",
+      heading: "The provider-neutral cloud architecture",
+      alt: "A workload is built from compute, network, state, identity and data services with dependencies and managed boundaries",
+      bindingId: "D4.6:d4-6-cloud-primitives",
+      nodes: ["Workload", "Compute", "Network", "State", "Identity", "Data Services"],
+      variant: "cloud-primitives-v1"
+    });
+
+    expect(model.variant).toBe("cloud-primitives-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "workload",
+      "compute",
+      "network",
+      "state",
+      "identity",
+      "data-services"
+    ]);
+    expect(model.foundation.label).toBe("Cloud products are implementations of infrastructure primitives");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "managed-boundary",
+      "dependency-graph",
+      "identity",
+      "cost"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "bottleneck",
+      "network-boundary",
+      "state-owner",
+      "access-model"
+    ]);
+  });
+
   it("models Terraform lifecycle as configuration, init, plan, apply and observe", () => {
     const model = getLessonIllustrationModel({
       id: "d4-5-terraform-lifecycle",

@@ -2011,5 +2011,14 @@ Active PR #69 scope:
 - TDD/full-programme gate is required before merge.
 
 
+
+Active PR #70 scope:
+- D4.6 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `cloud-primitives-v1`.
+- Teaching model: Workload -> Compute -> Network -> State -> Identity -> Data Services.
+- The rewritten script is provider-neutral and treats managed services, dependency graphs, identity, durable state and cost as architecture boundaries.
+- Controlled exercises remove one primitive boundary and require a prediction about the resulting user-facing failure.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
