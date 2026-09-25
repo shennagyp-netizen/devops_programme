@@ -939,6 +939,37 @@ const KUBERNETES_RECONCILIATION_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const CLOUD_PRIMITIVES_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "cloud-primitives-v1",
+  title: "The cloud primitive map",
+  stages: [
+    { id: "workload", label: "Workload", detail: "Start with the user-facing capability you need to operate." },
+    { id: "compute", label: "Compute", detail: "Choose the execution capacity that runs the workload and identify its scaling and lifecycle behavior." },
+    { id: "network", label: "Network", detail: "Define which users, services and dependencies can reach each other and through which paths." },
+    { id: "state", label: "State", detail: "Place durable data on a lifecycle that can outlive disposable compute." },
+    { id: "identity", label: "Identity", detail: "Define which human or service identities can access each resource and with what permissions." },
+    { id: "data-services", label: "Data Services", detail: "Choose databases, queues and caches according to the workload's state, work-distribution and latency needs." }
+  ],
+  foundation: {
+    label: "Cloud products implement general engineering primitives",
+    detail: "Provider product names change, but workloads still need compute, network paths, state, identity and appropriate data services."
+  },
+  callouts: [
+    { id: "dependency-graph", label: "Dependency graph", detail: "Scaling one box does not remove a bottleneck elsewhere in the workload's dependency graph." },
+    { id: "ownership", label: "Ownership boundary", detail: "Managed services move some operational work to the provider, but architectural decisions and recovery responsibilities still exist." },
+    { id: "identity", label: "Identity graph", detail: "Access depends on the identity making the request and the policy protecting the target resource." },
+    { id: "cost", label: "Cost boundary", detail: "Compute, storage, requests and data transfer each create different cost behavior that should be understood as part of the architecture." }
+  ],
+  failureChecks: [
+    { id: "compute-capacity", label: "1. Compute capacity", detail: "Is execution capacity sufficient for the workload, or has another dependency become the bottleneck?" },
+    { id: "network-path", label: "2. Network path", detail: "Can the workload reach each dependency through the intended path?" },
+    { id: "state-lifecycle", label: "3. State lifecycle", detail: "Will important state survive replacement or scaling of disposable compute?" },
+    { id: "access-boundary", label: "4. Access boundary", detail: "Can the current identity perform the required action on the target resource?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -1167,6 +1198,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "cloud-primitives-v1") {
+    return {
+      ...CLOUD_PRIMITIVES_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -1207,6 +1245,7 @@ export function validateLessonIllustrationModel(
     model.variant !== "docker-network-storage-v1" &&
     model.variant !== "kubernetes-reconciliation-v1" &&
     model.variant !== "docker-failure-loop-v1" &&
+    model.variant !== "cloud-primitives-v1" &&
     model.variant !== "kubernetes-service-path-v1" &&
     model.variant !== "kubernetes-config-storage-v1" &&
     model.variant !== "kubernetes-health-scaling-v1" &&
