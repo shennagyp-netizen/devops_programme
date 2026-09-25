@@ -1936,5 +1936,14 @@ Merged PR #59:
 - Final PR #59 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
 - Next content boundary: **D3.3 — Kubernetes Configuration and Storage**.
 
+
+Active PR D3.3 scope:
+- D3.3 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `kubernetes-config-storage-v1`.
+- Teaching model: Config -> Secret -> Mount -> Pod -> Persistence.
+- The rewritten script separates non-secret configuration, secret handling, application consumption, Pod lifecycle and persistent storage lifecycle.
+- Controlled failures cover wrong configuration, missing secret consumption and data behavior across Pod replacement.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
