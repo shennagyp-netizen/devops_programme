@@ -1537,3 +1537,16 @@ Next implementation boundary:
 ============================================================
 END ANIMATION / STANDALONE PREVIEW — POST-MERGE CURRENT MAIN OVERRIDE
 ============================================================
+
+
+============================================================
+VERCEL VISUAL AUDIT DEPLOYMENT TRIGGER — 2026-09-25
+============================================================
+
+A documentation-only commit is being merged to `main` to trigger the newly connected Vercel project `devops-programme` without changing application behavior. This deployment exists solely to enable browser visual validation before the next application implementation slice.
+
+No curriculum, runtime, authentication, persistence, or animation behavior is changed by this trigger.
+
+============================================================
+END VERCEL VISUAL AUDIT DEPLOYMENT TRIGGER
+============================================================
