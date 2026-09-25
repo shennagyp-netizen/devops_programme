@@ -80,15 +80,27 @@ The assessment engine uses blueprints, item metadata, scoring rubrics, evidence 
 
 ## Podcast/co-teacher
 
-The podcast is an exercise-driven spoken lesson between two believable engineers.
+The spoken co-teacher is a continuous lesson layer. It is not a separate lesson mode.
+
+The co-teacher remains attached to the active lesson while the learner reads, watches visual content, watches video, operates the terminal, diagnoses a failure, recalls concepts, designs a solution or reviews an assessment.
+
+The normal sequence is:
+- voice explains and prompts
+- the authored audio reaches a learner-action cue
+- voice pauses deliberately
+- the learner performs the required action in the learner interface
+- the same voice session resumes
 
 The React co-teacher:
-- obtains predictions before explanation
-- frames pauses
-- controls exercise/retrieval workflow
+- stays present throughout the lesson
+- obtains predictions before explanation when authored
+- pauses at authored prediction/lab/recall boundaries
+- keeps the transcript synchronized with the real audio clock
 - exposes transcript as recovery support
-- records local learning state
+- resumes without requiring a mode switch
 - links the learner back to the project
+
+The learner may explicitly pause or seek the audio. Browser autoplay restrictions may require the first user gesture. Once started, changing between Learn, Do, Recall, Design and Assessment does not turn off the co-teacher.
 
 The transcript is a recovery aid, not a replacement for listening and operating.
 
