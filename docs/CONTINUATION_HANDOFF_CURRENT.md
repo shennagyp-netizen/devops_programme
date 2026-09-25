@@ -1949,5 +1949,13 @@ Merged PR #83:
 - D3.4 now has explicit semantic binding/tests for startup, readiness, liveness, capacity and rollout.
 - Next content boundary: **D3.5 — Kubernetes Failure and Replacement**.
 
+
+Active D4.1 current-main port:
+- D4.1 is upgraded to the script+illustration gold-standard on the current `main` lineage.
+- New semantic illustration: `git-production-workflow-v1`.
+- Teaching model: Change -> Review -> Commit -> Release -> Recovery.
+- The existing D4.1 script already teaches source identity, release identity, repository-vs-runtime separation and recovery constraints; the new visual binds those mechanisms into one production workflow.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
