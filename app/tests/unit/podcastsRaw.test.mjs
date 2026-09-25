@@ -13,9 +13,9 @@ describe("podcast raw-script parsing contract", () => {
 
   it("extracts exactly the requested episode and stops before the next episode", () => {
     const source =
-      "EPISODE B1.1 — First\\n" +
-      "Speaker A: first episode\\n" +
-      "EPISODE B1.2 — Second\\n" +
+      "EPISODE B1.1 — First\n" +
+      "Speaker A: first episode\n" +
+      "EPISODE B1.2 — Second\n" +
       "Speaker B: second episode";
 
     expect(getEpisodeText(source, "B1.1")).toBe(
@@ -28,14 +28,14 @@ describe("podcast raw-script parsing contract", () => {
 
   it("fails closed when the requested episode marker is absent", () => {
     expect(
-      getEpisodeText("EPISODE B1.1 — First\\nSpeaker A: hello", "B1.9")
+      getEpisodeText("EPISODE B1.1 — First\nSpeaker A: hello", "B1.9")
     ).toBe("");
   });
 
   it("parses speaker turns with stable deterministic ids", () => {
     const turns = parseTurns(
-      "Speaker A: Explain the request.\\n" +
-      "Speaker B: Predict what happens.\\n" +
+      "Speaker A: Explain the request.\n" +
+      "Speaker B: Predict what happens.\n" +
       "Speaker A: Then run the command.",
       "B1.2"
     );
@@ -64,7 +64,7 @@ describe("podcast raw-script parsing contract", () => {
 
   it("classifies recall turns as retrieval moments", () => {
     const turns = parseTurns(
-      "Speaker A: Now use retrieval without notes.\\n" +
+      "Speaker A: Now use retrieval without notes.\n" +
       "Speaker B: Question one: what failed?",
       "B1.3"
     );
@@ -74,7 +74,7 @@ describe("podcast raw-script parsing contract", () => {
 
   it("keeps malformed unlabelled text usable without losing determinism", () => {
     const turns = parseTurns(
-      "A paragraph without a speaker label.\\n" +
+      "A paragraph without a speaker label.\n" +
       "Speaker B: A labelled turn.",
       "B1.4"
     );
@@ -93,7 +93,7 @@ describe("podcast raw-script parsing contract", () => {
 
   it("does not merge adjacent turns when whitespace varies", () => {
     const turns = parseTurns(
-      "Speaker A: first.\\n\\n   Speaker B: second.\\nSpeaker A: third.",
+      "Speaker A: first.\n\n   Speaker B: second.\nSpeaker A: third.",
       "B1.5"
     );
 
