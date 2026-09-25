@@ -6,6 +6,8 @@
 
 **Current branch:** `main`
 
+**Active content-quality branch:** `feature/gold-standard-script-illustration` (PR #33, current head `5882e74cb000e37f317c7c305caa69ce1bdc513b`)
+
 **Latest main architecture/content merge:** public instructional hero merge PR #32, commit `ab3a9400929be685f4c366068e1b4e576e9d5f41`
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
@@ -1820,9 +1822,10 @@ A real defect was found and fixed in spoken-turn classification: a generic word 
 
 Current TDD status:
 - PR #33: draft, branch feature/gold-standard-script-illustration
-- current head: e3dab979e123bb38ee20a63f8765d8a433f1f765
-- first full gate: run 36102249143 failed only because the new illustration test fixture omitted the authored variant; all 49 previous test files passed and 334 tests passed before that single failure.
-- the fixture correction and fail-closed model validation test are now committed; rerun the full gate before making PR #33 mergeable.
+- current head: 5882e74cb000e37f317c7c305caa69ce1bdc513b
+- full programme gate run 36102416096: PASS — all contract checks, full unit/integration tests, TypeScript typecheck and Next.js production build succeeded.
+- the earlier red run 36102249143 correctly caught a fixture mismatch; the fixture and additional red-team validation coverage were corrected before the green run.
+- Vercel preview attempts on the branch have also hit the project's current build-rate-limit signal in addition to the earlier test-driven preview failure; this is infrastructure/platform state, not evidence of a remaining application test failure. Main production remains READY at the PR #32 deployment until PR #33 is merged and redeployed.
 
 Do not scale the animation catalogue before the script+illustration quality gate is stable. Reusable animations remain capabilities; curriculum remains the instructional authority.
 ============================================================
