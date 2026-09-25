@@ -1902,5 +1902,14 @@ Merged PR #47:
 - **Day 1 is now gold-standard from D1.1 through D1.6.**
 - Next content boundary: **D2.1** (first lesson of the next Intermediate curriculum block).
 
+
+Active PR #48 scope:
+- D2.1 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `transport-contract-v1`.
+- Teaching model: Endpoint -> Port -> Transport -> Delivery -> Evidence.
+- TCP and UDP are taught as different transport contracts; timeout, refusal, reset and application errors remain distinct evidence.
+- Controlled failure stops a disposable local service and verifies recovery.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
