@@ -1940,5 +1940,13 @@ Merged PR #80:
 
 - PR #81 was closed as stale; D2.6 was already merged by PR #77, and the current `main` history through D3.2 must remain authoritative.
 
+
+Active PR #82 scope:
+- D3.3 is upgraded to the script+illustration gold-standard.
+- New semantic illustration: `kubernetes-config-storage-v1`.
+- Teaching model: Config -> Secret -> Mount -> Pod -> Persistence.
+- The existing D3.3 script now has a semantic visual matching its lifecycle separation: ConfigMap, Secret, application consumption, Pod replacement and persistent storage.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
