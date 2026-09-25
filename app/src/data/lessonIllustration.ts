@@ -8,7 +8,8 @@ export type LessonIllustrationVariantV1 =
   | "repeatable-service-v1"
   | "delivery-pipeline-v1"
   | "observability-diagnosis-v1"
-  | "backup-recovery-v1";
+  | "backup-recovery-v1"
+  | "queue-state-v1";
 
 export type LessonIllustrationStageV1 = {
   id: string;
@@ -258,6 +259,34 @@ const BACKUP_RECOVERY_VARIANT: LessonIllustrationModelV1 = {
   ]
 };
 
+
+const QUEUE_STATE_VARIANT: LessonIllustrationModelV1 = {
+  version: 1,
+  variant: "queue-state-v1",
+  title: "Where the work is now",
+  stages: [
+    { id: "producer", label: "Producer", detail: "Accept work when the business operation permits asynchronous processing." },
+    { id: "queue", label: "Queue", detail: "Hold work while arrival rate and processing rate differ." },
+    { id: "consumer", label: "Consumer", detail: "Workers pull work and perform the operation." },
+    { id: "outcome", label: "Outcome", detail: "Record success, retry safely, or move permanently failing work aside." }
+  ],
+  foundation: {
+    label: "Backpressure",
+    detail: "When work arrives faster than it can be processed, pressure must appear somewhere; queue depth makes waiting work visible."
+  },
+  callouts: [
+    { id: "retry", label: "Retry", detail: "Failed work may be delivered again; retry is only safe when the operation can tolerate repetition." },
+    { id: "idempotency", label: "Idempotency", detail: "Repeated delivery should not create an incorrect final state." },
+    { id: "dead-letter", label: "Dead-letter", detail: "Permanently failing work can be isolated for inspection instead of blocking the healthy stream." }
+  ],
+  failureChecks: [
+    { id: "arrival-rate", label: "1. Arrival rate", detail: "Is producers' work arrival rate higher than the service rate?" },
+    { id: "queue-depth", label: "2. Queue depth", detail: "Is waiting work growing, shrinking or staying stable?" },
+    { id: "consumer-throughput", label: "3. Consumer throughput", detail: "Are workers actually processing work, or is a dependency the new bottleneck?" },
+    { id: "duplicate-safety", label: "4. Duplicate safety", detail: "Can the operation remain correct when a message is delivered more than once?" }
+  ]
+};
+
 function genericModel(
   block: Extract<LessonContentBlock, { type: "illustration" }>
 ): LessonIllustrationModelV1 {
@@ -332,6 +361,13 @@ export function getLessonIllustrationModel(
     };
   }
 
+  if (block.variant === "queue-state-v1") {
+    return {
+      ...QUEUE_STATE_VARIANT,
+      title: block.heading
+    };
+  }
+
   return genericModel(block);
 }
 
@@ -354,7 +390,8 @@ export function validateLessonIllustrationModel(
     model.variant !== "repeatable-service-v1" &&
     model.variant !== "delivery-pipeline-v1" &&
     model.variant !== "observability-diagnosis-v1" &&
-    model.variant !== "backup-recovery-v1"
+    model.variant !== "backup-recovery-v1" &&
+    model.variant !== "queue-state-v1"
   ) {
     failures.push("illustration model variant is invalid");
   }
