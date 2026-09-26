@@ -27,6 +27,27 @@ export const authoredCurriculumIllustrationBindings: readonly CurriculumIllustra
       { id: "api-evidence", order: 3, interactionId: "inspect-api", prompt: "Mark the API boundary as the evidence point.", successEventIds: ["activate-api"] }
     ],
     completion: { requiredStepIds: ["browser-to-gateway", "gateway-to-api", "api-evidence"] }
+  },
+  {
+    version: 1,
+    id: "D2.2:d2-2-dns",
+    lessonId: "D2.2",
+    contentBlockId: "d2-2-dns",
+    contentIndex: 1,
+    presentation: "animated",
+    visualCapabilityId: "animation-stage-v1",
+    animationId: "dns-resolution",
+    voiceCueBindings: [],
+    interactionMode: "sequential",
+    interactionSteps: [
+      { id: "query", order: 1, interactionId: "query", prompt: "Start with the client asking for a name.", successEventIds: ["query"] },
+      { id: "resolver", order: 2, interactionId: "resolver", prompt: "Show the recursive resolver as the client-facing DNS component.", successEventIds: ["resolver"] },
+      { id: "root", order: 3, interactionId: "root", prompt: "Show the resolver consulting a root server.", successEventIds: ["root"] },
+      { id: "tld", order: 4, interactionId: "tld", prompt: "Show the TLD server identifying the authoritative path.", successEventIds: ["tld"] },
+      { id: "authoritative", order: 5, interactionId: "authoritative", prompt: "Show the authoritative server as the source of the current answer.", successEventIds: ["authoritative"] },
+      { id: "answer", order: 6, interactionId: "answer", prompt: "Show the authoritative answer returning to the resolver/client path.", successEventIds: ["answer"] }
+    ],
+    completion: { requiredStepIds: ["query", "resolver", "root", "tld", "authoritative", "answer"] }
   }
 ];
 
@@ -35,10 +56,7 @@ const lessons = Object.values(lessonsByCourse).flat();
 export const curriculumIllustrationBindings: readonly CurriculumIllustrationBindingV1[] =
   lessons.flatMap((lesson) =>
     lesson.content.blocks.flatMap((block, contentIndex) => {
-      if (
-        block.type !== "illustration" &&
-        block.type !== "interactive-illustration"
-      ) {
+      if (block.type !== "illustration" && block.type !== "interactive-illustration") {
         return [];
       }
 
@@ -58,13 +76,6 @@ export const curriculumIllustrationBindings: readonly CurriculumIllustrationBind
           binding.contentBlockId === block.id
       );
 
-      return [
-        authored ??
-          buildDefaultIllustrationBinding(
-            lesson.id,
-            block,
-            contentIndex
-          )
-      ];
+      return [authored ?? buildDefaultIllustrationBinding(lesson.id, block, contentIndex)];
     })
   );

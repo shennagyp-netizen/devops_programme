@@ -1,126 +1,102 @@
-# Podcast Audio and React Synchronization
+# Podcast TTS and Four Explanation Levels
 
-## Non-negotiable rule
+## Core product contract
 
-React must never estimate spoken position from:
-- character count
-- word count
-- average speaking speed
-- paragraph length
-- number of turns
+One lesson contains one podcast with four complete explanations of the same information.
 
-Those values vary with speaker, voice, pauses, pronunciation and recording style.
+The four explanations do not represent four different lessons, four different knowledge scopes, or four different mental models.
 
-## Synchronization contract
+They represent four ways of explaining the same information to learners with different prior knowledge.
 
-Every generated audio episode has:
+| Explanation | Style |
+| --- | --- |
+| 1 — Very simple | Very explicit everyday language, analogies, little assumed background |
+| 2 — Simple technical | Clear technical language with terminology explained naturally |
+| 3 — Professional | Normal DevOps language and professional compression |
+| 4 — Expert | Compact expert explanation with high assumed prior knowledge |
 
-1. the exact source script revision
-2. a stable episode ID
-3. a stable turn ID for every dialogue turn
-4. a timing range for every dialogue turn
-5. audio duration
-6. timestamp cues for learner-control events
+The invariant is:
 
-Turn IDs follow:
+Information is the same. Explanation is different.
 
-`<episodeId>.T001`, `<episodeId>.T002`, ...
+Every explanation must cover the same information units in the same order. The automated equivalence gate verifies those coverage markers.
 
-Example:
+## TTS contract
 
-`D2.2.T014`
+The scripts are the curriculum source of truth.
 
-The manifest therefore has two timing layers.
+TTS is only the speech renderer.
 
-### Layer 1 — spoken turn timing
+The repository stores authored text scripts. It does not require human recordings, MP3 files, WAV files, or a recording manifest.
 
-Every dialogue turn has:
+For the selected explanation:
 
-`turnId + startMs + endMs`
+1. load the authored script
+2. parse its authored turns
+3. send each turn to the browser TTS engine
+4. keep the complete transcript visible
+5. use runtime TTS events to track the currently spoken turn
+6. pause at authored learner-action boundaries when required
+7. continue with the next complete authored turn
 
-React uses this layer to keep the visible transcript aligned to the voice.
+The private LLM tutor is a separate system. It never rewrites or regenerates these podcast scripts.
 
-### Layer 2 — learning cues
+## Speech speed contract
 
-Important interactions have:
+Speech speed is independent from explanation level.
 
-`turnId + kind + startMs + optional endMs`
+The learner may choose 1×, 1.25×, 1.5×, or 2×.
 
-Supported cue types:
-- `prediction`
-- `lab`
-- `recall`
-- `transition`
+Changing speed must never change the selected explanation, remove information, skip a turn, change turn order, change learner-action boundaries, shorten the authored script, or replace the script with a different explanation.
 
-React uses this layer to pause the voice and hand control to the learner.
+The same selected script must be spoken completely at all three rates.
 
-## Why the layers are separate
+When the learner changes speed while TTS is speaking, the player restarts the current authored turn at the new rate. This can repeat part of the current turn, but it must never skip forward.
 
-A turn is a speech unit.
+Therefore, 1×, 1.5×, and 2× are presentation-speed choices, not content choices.
 
-A cue is an instructional event.
+## Information-equivalence contract
 
-They are not the same thing.
+B1.4 has 12 required information units.
 
-For example, Speaker A can say:
+Each of the four explanation scripts declares all 12 units with hidden @knowledge authoring markers.
 
-"Okay, make a prediction. If the DNS record is stale, what would you expect?"
+The build gate verifies:
+- exactly four explanation scripts
+- the same 12 unit IDs in every script
+- no duplicate unit IDs
+- no unknown unit IDs
+- identical unit order across all four scripts
 
-That sentence is one spoken turn with one turn timing range. The prediction cue can point into that turn at the moment where the learner should stop.
+The checker does not claim that machine-readable markers alone prove semantic equivalence. The markers establish the structural contract; instructional review remains responsible for verifying that each marked section communicates the same information.
 
-## Synchronization behavior
+## Runtime synchronization
 
-When aligned audio is available:
+TTS timing is runtime behavior.
 
-1. audio playback time is authoritative
-2. React displays the turn containing that time
-3. React pauses when it crosses an authored learning cue
-4. learner performs the interaction
-5. React resumes the same audio position
-6. the next turn/cue continues naturally
+The browser may provide onstart, onend, and onboundary where supported.
 
-React does not attempt to predict where the voice should be.
+These events can identify the active authored turn.
 
-## Audio generation workflow
+The application must not invent millisecond timing from word count, character count, average speaking speed, paragraph length, or the selected speed.
 
-1. Freeze the episode script revision.
-2. Generate the voice recording.
-3. Align the recording to the transcript.
-4. Produce `audioUrl`, `durationMs`, all turn timings, and learning cues.
-5. Store the manifest.
-6. Listen through every pause and verify the cue lands at the intended spoken moment.
-7. Only then mark the episode voice-synced.
-
-Changing the spoken script invalidates its audio manifest.
-
-Changing only React UI text does not.
+The speed value changes TTS speech rate only. It does not become a timing model for the curriculum.
 
 ## Fallback
 
-Until aligned audio exists, the application deliberately uses guided transcript mode.
+If TTS is unavailable or fails:
+- the complete selected authored explanation remains visible
+- the learner can read the same information
+- the application does not fabricate audio timing
+- the application does not silently select a different explanation
 
-It must not fake synchronization by estimating timing.
+## B1.4 authoring
 
-Guided transcript mode may provide an explicitly labelled learner-selected
-**reading pace** from 1x to 2x. This controls only the paced presentation of
-the written turns. It is not presented as audio synchronization, does not
-generate TTS, and is immediately superseded by the real audio clock when a
-matching aligned recording is available.
+B1.4 currently has:
+- B1.4.cognitive-1.txt — Very simple
+- B1.4.cognitive-2.txt — Simple technical
+- B1.4.cognitive-3.txt — Professional
+- B1.4.cognitive-4.txt — Expert
+- B1.4.equivalence.json — the 12 information-unit contract
 
-## Current status
-
-The synchronization engine and manifest schema are implemented in React. Production audio manifests are not committed yet, so current episodes intentionally use the safe guided-transcript fallback.
-
-## Stale-audio protection
-
-The app also loads the generated podcast source manifest.
-
-A voice manifest contains a `scriptVersion` hash. React compares that hash with the exact episode text hash generated from the current source scripts.
-
-If they differ:
-- the recording is treated as stale
-- voice synchronization is disabled
-- guided transcript mode remains available
-- the user is never shown a false claim that the voice is synchronized
-
-This is deliberately fail-closed.
+The filenames retain the cognitive-N suffix for continuity, but the product terminology is Explanation Level.

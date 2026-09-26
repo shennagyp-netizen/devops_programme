@@ -1,0 +1,39 @@
+EPISODE B1.4 — Explanation Level 2: Simple technical
+
+@knowledge K01
+The repeatability problem is this: identical application code can behave differently on two machines because the surrounding environment is different. The environment includes runtime, dependencies, files, configuration, networking, and external services. The environment is part of the system, so DevOps tries to make that environment repeatable.
+
+@knowledge K02
+Before changing application code, inspect the runtime version, installed libraries and other dependencies, required files, environment variables, and external dependencies. These facts describe what the application actually depends on.
+
+@knowledge K03
+A recipe analogy helps. Two cooks can follow the same recipe in different kitchens and get different results because their tools and settings are different. The analogy explains the repeatability problem, but it stops there: a container is not a tiny kitchen or a tiny virtual machine.
+
+@knowledge K04
+An image is the packaged starting point for the application. It can contain application files, runtime components, defaults, and startup instructions. A container is a running instance created from that image. The process is the actual application work inside the container. These three terms describe different layers: image, container, process.
+
+@knowledge K05
+Containers use operating-system isolation instead of booting a separate guest kernel. The process still uses the host kernel. Namespaces can isolate views of processes, networking, and filesystems. Cgroups can limit resource use. This gives a process useful boundaries without turning the container into a second operating system.
+
+@knowledge K06
+Process isolation does not remove the host. The host still provides the kernel and shared infrastructure. The container changes what the process can see and what it can use, but host behavior can still affect the result. This is why a container should not be treated as an independent machine.
+
+@knowledge K07
+For a short verification, run:
+docker run --rm nginx:alpine nginx -t
+Docker uses the image as the starting point, creates a container, and runs the nginx configuration-test process. When the process ends, --rm removes the short-lived container. The container lifetime in this example follows the process lifetime.
+
+@knowledge K08
+The normal writable layer of a container is tied to that container. Replacing or removing the container can remove that writable state. Important data so needs a storage mechanism with its own lifecycle, such as a Docker volume. A volume lets database or other important state survive container replacement.
+
+@knowledge K09
+A service can listen on a port inside a container and have that port published to a different port on the host. The internal container port and external host port are separate boundaries. so a running container is not proof of client reachability. We have to distinguish process state, container networking, host publication, and client access.
+
+@knowledge K10
+Use a small diagnosis tree for an unreachable service. First verify that the process exists and listens. Second verify the expected container port. Third verify that the container port is published to the host as expected. Fourth verify the network path from the client to the host port. Change one boundary at a time. Restarting everything gives less useful evidence than a controlled diagnosis.
+
+@knowledge K11
+In a frontend, API, and database system, each service has a process and configuration. The API needs a network path to the database. The database needs persistent data. The frontend can often be replaced without keeping local container state. The container model is useful because these boundaries can be inspected and controlled explicitly.
+
+@knowledge K12
+The lab should prove, not just demonstrate, the model. Run the nginx test, inspect docker ps and the relevant image, process, network, and mount information, then introduce one controlled failure. Predict the failure before observing it. Repair only the broken boundary and verify the result. Good evidence identifies the image, process, network configuration, storage configuration, failure signal, and recovery. Kubernetes can manage these workloads later, but the underlying process, resource, network, storage, evidence, and recovery model remains.

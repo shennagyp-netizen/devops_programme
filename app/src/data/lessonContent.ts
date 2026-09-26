@@ -758,12 +758,10 @@ const authoredLessonContent: Record<string, LessonContent> = {
       },
       {
         id: "d2-2-dns",
-        type: "illustration",
+        type: "interactive-illustration",
         heading: "The DNS answer path",
         alt: "A DNS name is queried through a resolver that may use cached data or ask authoritative servers, with record type and TTL shaping the answer",
         bindingId: "D2.2:d2-2-dns",
-        nodes: ["Name", "Resolver", "Cache", "Authority", "Freshness"],
-        variant: "dns-resolution-v1",
         caption:
           "Trace the answer from the client's resolver to authoritative data, then account for caching and freshness."
       }

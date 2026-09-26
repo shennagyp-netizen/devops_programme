@@ -32,10 +32,10 @@ describe("lesson panel integration contract", () => {
     const code = source();
 
     expect(code).toContain(
-      'type Mode = "learn" | "do" | "recall" | "design" | "assessment"'
+      'export type LessonMode = "learn" | "do" | "recall" | "design" | "assessment"'
     );
     expect(code).toContain(
-      '["learn", "do", "recall", "design", "assessment"] as Mode[]'
+      '["learn", "do", "recall", "design", "assessment"] as LessonMode[]'
     );
     expect(code).not.toContain('"listen"');
   });

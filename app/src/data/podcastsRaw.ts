@@ -1,6 +1,6 @@
 export type Turn = {
   id: string;
-  speaker: "A" | "B";
+  speaker: "A" | "B" | "Narrator";
   text: string;
   kind: "dialogue" | "prediction" | "lab" | "recall";
 };
@@ -53,8 +53,15 @@ function classifyTurn(text: string): Turn["kind"] {
 }
 
 export function parseTurns(text: string, lessonId = "episode"): Turn[] {
-  return text
-    .split(/\n\s*(?=Speaker [AB]:)/)
+  const withoutKnowledgeMetadata = text
+    .replace(/^@knowledge\s+[A-Z0-9._-]+\s*$/gim, "")
+    .trim();
+
+  const sourceTurns = /(^|\n)\s*Speaker [AB]:/i.test(withoutKnowledgeMetadata)
+    ? withoutKnowledgeMetadata.split(/\n\s*(?=Speaker [AB]:)/)
+    : withoutKnowledgeMetadata.split(/\n\s*\n/);
+
+  return sourceTurns
     .map((x) => x.trim())
     .filter(Boolean)
     .map((x, index) => {
@@ -63,7 +70,7 @@ export function parseTurns(text: string, lessonId = "episode"): Turn[] {
       if (!match) {
         return {
           id: `${lessonId}.T${String(index + 1).padStart(3, "0")}`,
-          speaker: "A",
+          speaker: "Narrator" as const,
           text: x,
           kind: classifyTurn(x)
         };

@@ -1,58 +1,28 @@
-import React from 'react';
+"use client";
 
-interface AssistantTriggerProps {
-  isOpen: boolean;
+import { ActionIcon, Affix, Badge, Tooltip } from "@mantine/core";
+
+export function AssistantTrigger({ opened, mobile, onClick }: {
+  opened: boolean;
+  mobile: boolean;
   onClick: () => void;
-  position: 'bottom-right' | 'right' | 'bottom-left';
-  'aria-label': string;
-}
-
-const AssistantTrigger: React.FC<AssistantTriggerProps> = ({
-  isOpen,
-  onClick,
-  position,
-  'aria-label': ariaLabel
-}) => {
-  // Determine CSS classes based on position
-  const getPositionClasses = () => {
-    const baseClasses = 'assistant-trigger fixed z-50 transition-all duration-200';
-    
-    switch (position) {
-      case 'bottom-right':
-        return `${baseClasses} bottom-6 right-6`;
-      case 'bottom-left':
-        return `${baseClasses} bottom-6 left-6`;
-      case 'right':
-      default:
-        return `${baseClasses} top-1/2 right-6 -translate-y-1/2`;
-    }
-  };
-
+}) {
   return (
-    <button
-      className={getPositionClasses()}
-      onClick={onClick}
-      aria-label={ariaLabel}
-      aria-expanded={isOpen}
-      data-testid="assistant-trigger"
-    >
-      <div className="relative">
-        {/* Assistant icon */}
-        <div className="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition-colors">
-          {isOpen ? (
-            <span className="text-white text-xl font-bold">×</span>
-          ) : (
-            <span className="text-white text-xl font-bold">AI</span>
-          )}
-        </div>
-        
-        {/* Pulsing animation when not open */}
-        {!isOpen && (
-          <div className="absolute inset-0 border-2 border-blue-400 rounded-full animate-ping opacity-75" />
-        )}
-      </div>
-    </button>
+    <Affix position={mobile ? { bottom: 16, right: 16 } : { top: "50%", right: 16 }} zIndex={120}>
+      <Tooltip label={opened ? "Close tutor" : "Open DevOps tutor"}>
+        <ActionIcon
+          size={mobile ? 52 : 56}
+          radius="xl"
+          variant="filled"
+          color="blue"
+          aria-label={opened ? "Close DevOps tutor" : "Open DevOps tutor"}
+          aria-expanded={opened}
+          onClick={onClick}
+        >
+          {opened ? "×" : "AI"}
+          {!opened ? <Badge size="xs" circle color="cyan" pos="absolute" top={2} right={2} aria-hidden="true" /> : null}
+        </ActionIcon>
+      </Tooltip>
+    </Affix>
   );
-};
-
-export default AssistantTrigger;
+}

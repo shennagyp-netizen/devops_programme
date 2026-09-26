@@ -1,90 +1,84 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  findActiveCue,
-  findCurrentTurnId,
-  loadPodcastAudioManifest
+  buildPodcastTtsBundle,
+  isValidPodcastTtsBundle,
+  isPodcastSpeechRate,
+  PODCAST_SPEECH_RATES,
+  podcastLevelDescription,
+  podcastLevelId,
+  podcastLevelLabel
 } from "../../src/data/podcastSync.ts";
 
-describe("podcast synchronization contract", () => {
-  beforeEach(() => {
-    vi.restoreAllMocks();
+const versions = {
+  "1": "sha-1",
+  "2": "sha-2",
+  "3": "sha-3",
+  "4": "sha-4"
+};
+
+describe("TTS explanation-level contract", () => {
+  it("defines exactly four complete explanations of the same lesson", () => {
+    const bundle = buildPodcastTtsBundle("B1.4", versions);
+
+    expect(bundle?.speeches).toHaveLength(4);
+    expect(bundle?.speeches.map((speech) => speech.explanationLevel)).toEqual([1, 2, 3, 4]);
+    expect(bundle?.speeches.map((speech) => speech.explanationLevelId)).toEqual([
+      "very-simple",
+      "simple-technical",
+      "professional",
+      "expert"
+    ]);
   });
 
-  it("rejects a malformed audio manifest entry", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        "B1.2": {
-          episodeId: "B1.2",
-          scriptVersion: "v1",
-          audioUrl: "/audio/B1.2.mp3",
-          durationMs: 1000,
-          turns: [
-            {
-              turnId: "B1.2.T001",
-              startMs: 500,
-              endMs: 300
-            }
-          ],
-          cues: []
-        }
-      })
-    });
+  it("keeps every explanation independently versioned", () => {
+    const bundle = buildPodcastTtsBundle("B1.4", versions);
 
-    await expect(loadPodcastAudioManifest()).resolves.toEqual({});
+    expect(bundle?.speeches[0].scriptVersion).toBe("sha-1");
+    expect(bundle?.speeches[3].scriptVersion).toBe("sha-4");
+    expect(bundle?.speeches[0].scriptVersion).not.toBe(bundle?.speeches[3].scriptVersion);
   });
 
-  it("accepts a valid aligned manifest and locates cues/turns", async () => {
-    const manifest = {
-      episodeId: "B1.2",
-      scriptVersion: "sha-test",
-      audioUrl: "/audio/B1.2.mp3",
-      durationMs: 3000,
-      turns: [
-        {
-          turnId: "B1.2.T001",
-          startMs: 0,
-          endMs: 1400
-        },
-        {
-          turnId: "B1.2.T002",
-          startMs: 1400,
-          endMs: 3000
-        }
-      ],
-      cues: [
-        {
-          id: "cue-1",
-          turnId: "B1.2.T001",
-          kind: "prediction",
-          startMs: 400,
-          endMs: 800
-        },
-        {
-          id: "cue-2",
-          turnId: "B1.2.T002",
-          kind: "lab",
-          startMs: 1800
-        }
-      ]
+  it("fails closed when one explanation is missing", () => {
+    const incomplete = { ...versions };
+    delete incomplete["3"];
+    expect(buildPodcastTtsBundle("B1.4", incomplete)).toBeUndefined();
+  });
+
+  it("validates the exact four-level identity contract", () => {
+    const bundle = buildPodcastTtsBundle("B1.4", versions);
+    expect(isValidPodcastTtsBundle(bundle, "B1.4")).toBe(true);
+
+    const duplicate = {
+      ...bundle,
+      speeches: bundle.speeches.map((speech, index) =>
+        index === 1
+          ? { ...speech, explanationLevel: 1, explanationLevelId: "very-simple", label: "Very simple" }
+          : speech
+      )
     };
 
-    globalThis.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ "B1.2": manifest })
-    });
-
-    const result = await loadPodcastAudioManifest();
-
-    expect(result["B1.2"]).toEqual(manifest);
-    expect(findCurrentTurnId(result["B1.2"], 700)).toBe("B1.2.T001");
-    expect(findActiveCue(result["B1.2"], 500)?.id).toBe("cue-1");
-    expect(findActiveCue(result["B1.2"], 2000)?.id).toBe("cue-2");
+    expect(isValidPodcastTtsBundle(duplicate, "B1.4")).toBe(false);
   });
 
-  it("fails closed on network errors", async () => {
-    globalThis.fetch = vi.fn().mockRejectedValue(new Error("network down"));
+  it("defines explanation depth without embedding speed or audio", () => {
+    const bundle = buildPodcastTtsBundle("B1.4", versions);
 
-    await expect(loadPodcastAudioManifest()).resolves.toEqual({});
+    expect(bundle?.speeches.every((speech) => !("rate" in speech))).toBe(true);
+    expect(bundle?.speeches.every((speech) => !("audioUrl" in speech))).toBe(true);
+  });
+
+  it("describes the four explanation levels clearly", () => {
+    expect(podcastLevelId(1)).toBe("very-simple");
+    expect(podcastLevelLabel(2)).toBe("Simple technical");
+    expect(podcastLevelDescription(4)).toContain("complete lesson information");
+  });
+
+  it("defines the four supported presentation speeds", () => {
+    expect(PODCAST_SPEECH_RATES).toEqual([1, 1.25, 1.5, 2]);
+    expect(isPodcastSpeechRate(1)).toBe(true);
+    expect(isPodcastSpeechRate(1.25)).toBe(true);
+    expect(isPodcastSpeechRate(1.5)).toBe(true);
+    expect(isPodcastSpeechRate(2)).toBe(true);
+    expect(isPodcastSpeechRate(1.75)).toBe(false);
   });
 });

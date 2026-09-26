@@ -57,7 +57,10 @@ describe("course lesson content integration", () => {
   it("preserves text-first and illustration-second default ordering", () => {
     for (const lesson of allLessons.filter((item) => item.id !== "B1.4")) {
       expect(lesson.content.blocks[0].type, lesson.id).toBe("text");
-      expect(lesson.content.blocks[1].type, lesson.id).toBe("illustration");
+      expect(
+        ["illustration", "interactive-illustration"],
+        lesson.id
+      ).toContain(lesson.content.blocks[1].type);
     }
   });
   it("uses the authored incident-loop visual for B3.2", () => {
@@ -156,7 +159,8 @@ describe("course lesson content integration", () => {
 
     expect(b12?.content.blocks.map((block) => block.id)).toEqual([
       "b1-2-problem",
-      "b1-2-request-path"
+      "b1-2-request-path",
+      "b1-2-request-replay"
     ]);
     expect(b12?.content.blocks[1]).toMatchObject({
       variant: "request-path-v1",
@@ -170,6 +174,11 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks[1]).toMatchObject({
       variant: "https-stack-v1",
       bindingId: "B1.3:b1-3-request-stack"
+    });
+
+    expect(b12?.content.blocks[2]).toMatchObject({
+      type: "interactive-illustration",
+      bindingId: "B1.2:b1-2-request-replay"
     });
 
     expect(b12?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
@@ -449,13 +458,15 @@ describe("course lesson content integration", () => {
     expect(lesson).toBeDefined();
 
     const illustration = lesson.content.blocks.find(
-      (block) => block.type === "illustration"
+      (block) =>
+        block.type === "illustration" ||
+        block.type === "interactive-illustration"
     );
 
     expect(illustration).toMatchObject({
       id: "d2-2-dns",
       bindingId: "D2.2:d2-2-dns",
-      variant: "dns-resolution-v1"
+      type: "interactive-illustration"
     });
   });
 

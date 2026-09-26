@@ -156,3 +156,30 @@ When adding a feature, add:
 4. documentation updates for the affected contract
 
 Do not return to one-error-at-a-time debugging.
+
+
+## Four explanation-level podcast TTS versions — 2026-09-26
+
+The fixed podcast contract is one authored podcast concept with four complete explanations of the same information:
+1. Very simple
+2. Simple technical
+3. Professional
+4. Expert
+
+Every explanation must cover the same information-unit set in the same order. B1.4 uses 12 authored information units and a build-time equivalence checker.
+
+Speech speed is an independent presentation control: 1×, 1.25×, 1.5×, and 2×.
+
+Required tests:
+- reject bundles missing one explanation level
+- reject duplicate or mismatched explanation identities
+- preserve independent script hashes
+- verify all four scripts declare the same information-unit IDs in the same order
+- verify TTS speaks the selected authored text
+- verify 1×, 1.25×, 1.5×, and 2× change only speech rate
+- verify speed changes never select, skip, reorder, or shorten learning content
+- verify changing speed during speech restarts the current authored turn rather than skipping it
+- verify unsupported rates are rejected by the pure domain contract
+- verify transcript fallback when browser TTS is unavailable
+- verify no MP3, WAV, audio URL, or recording manifest is part of podcast generation
+- verify the private LLM tutor remains outside podcast generation

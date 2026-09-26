@@ -1,45 +1,12 @@
-export interface LLMAssistantContext {
-  lessonId?: string;
-  lessonTitle?: string;
-  lessonObjective?: string;
-  domain?: string;
-}
+import type { TutorContext } from "../../lib/tutor-contract";
 
-export interface LLMQuery {
+export type AssistantMessage = {
   id: string;
-  text: string;
-  timestamp: Date;
-  response?: LLMResponse;
-  isCached: boolean;
-}
+  role: "user" | "assistant";
+  content: string;
+  createdAt: number;
+};
 
-export interface LLMResponse {
-  id: string;
-  text: string;
-  timestamp: Date;
-  audioUrl?: string;
-}
-
-export interface AssistantState {
-  isOpen: boolean;
-  isRecording: boolean;
-  isPlaying: boolean;
-  currentQuery?: LLMQuery;
-  queries: LLMQuery[];
-}
-
-export type ViewportSize = 'mobile' | 'tablet' | 'desktop';
-
-export interface Position {
-  x: number;
-  y: number;
-}
-
-export interface FloatingAssistantConfig {
-  position: 'bottom-right' | 'right' | 'bottom-left';
-  triggerSize: number;
-  panelSize: {
-    width: number;
-    height: number;
-  };
-}
+export type FloatingLLMAssistantProps = {
+  context: TutorContext;
+};

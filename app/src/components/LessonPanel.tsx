@@ -35,7 +35,7 @@ import {
   type MasteryPlan
 } from "../data/mastery";
 
-type Mode = "learn" | "do" | "recall" | "design" | "assessment";
+export type LessonMode = "learn" | "do" | "recall" | "design" | "assessment";
 
 export function LessonPanel({
   lesson,
@@ -47,7 +47,8 @@ export function LessonPanel({
   onEvidenceRecorded,
   progressReady = true,
   progressSaving = false,
-  initialMasteryHistory = []
+  initialMasteryHistory = [],
+  onModeChange
 }: {
   lesson: CourseLesson;
   mastered: boolean;
@@ -59,8 +60,9 @@ export function LessonPanel({
   progressReady?: boolean;
   progressSaving?: boolean;
   initialMasteryHistory?: MasteryAttemptRecord[];
+  onModeChange?: (mode: LessonMode) => void;
 }) {
-  const [mode, setMode] = useState<Mode>("learn");
+  const [mode, setMode] = useState<LessonMode>("learn");
   const [showTheory, setShowTheory] = useState(true);
   const evidenceKey = `devops-programme-hands-on-evidence:${lesson.id}`;
   const [handsOnEvidence, setHandsOnEvidence] = useState<Record<string, string>>({});
@@ -132,6 +134,11 @@ export function LessonPanel({
   useEffect(() => {
     setShowTheory(diagnosticRecommendation !== "skip-theory");
   }, [diagnosticRecommendation]);
+
+  useEffect(() => {
+    setMode("learn");
+    onModeChange?.("learn");
+  }, [lesson.id, onModeChange]);
 
   useEffect(() => {
     let active = true;
@@ -355,11 +362,14 @@ export function LessonPanel({
       ) : null}
 
       <nav className="mode-tabs">
-        {(["learn", "do", "recall", "design", "assessment"] as Mode[]).map((item) => (
+        {(["learn", "do", "recall", "design", "assessment"] as LessonMode[]).map((item) => (
           <button
             key={item}
             className={mode === item ? "active" : ""}
-            onClick={() => setMode(item)}
+            onClick={() => {
+            setMode(item);
+            onModeChange?.(item);
+          }}
           >
             {item}
           </button>

@@ -25,7 +25,7 @@ describe("platform and spoken-content integration", () => {
   it("contains all 53 episode scripts", async () => {
     const expectedIds = courseLessons.map((lesson) => lesson.id);
     const files = [
-      ...(await readdir(path.join(podcastRoot, "beginner"))).filter((name) => name.endsWith(".txt")),
+      ...(await readdir(path.join(podcastRoot, "beginner"))).filter((name) => name.endsWith(".txt") && !/\.cognitive-[1-4]\.txt$/i.test(name)),
       ...(await readdir(path.join(podcastRoot, "advanced"))).filter((name) => name.endsWith(".txt"))
     ];
     const grouped = [

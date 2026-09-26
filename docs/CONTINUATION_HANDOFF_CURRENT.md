@@ -1939,3 +1939,52 @@ Merged PR #100:
 om that status.
 - Next content boundary: **A2.1-A2.3 — dependency failure, retry storms and partial network failure**.
 
+
+
+============================================================
+FIXED PODCAST V2 — HIGH-LEVEL TTS ARCHITECTURE — 2026-09-26
+============================================================
+
+Authoritative architecture document:
+docs/curriculum/PODCAST_TTS_ARCHITECTURE_V2.md
+
+Core invariant:
+One lesson has one podcast subject with four complete explanations of the same information.
+
+Explanation levels:
+- Very simple
+- Simple technical
+- Professional
+- Expert
+
+Speech rates are independent presentation controls:
+- 1x
+- 1.25x
+- 1.5x
+- 2x
+
+The selected rate never changes, removes, skips or reorders learning information.
+
+Current code ownership:
+- app/src/data/podcastSync.ts = pure explanation/rate domain contract
+- app/src/data/podcastsRaw.ts = authored script extraction and turn parsing
+- app/src/components/PodcastCoach.tsx = browser TTS runtime + learner controls
+- app/src/components/LessonVoiceClock.tsx = runtime voice state contract
+- app/src/components/InteractiveLessonIllustration.tsx = consumes voice state but fails closed on animation timing until a runtime boundary adapter exists
+- scripts/check-podcast-explanation-equivalence.mjs = structural information-equivalence gate
+
+Current B1.4 authoring:
+- four complete explanation scripts
+- 12 information units
+- identical information-unit order in all four scripts
+
+Testing order:
+domain unit tests -> red-team mutations -> runtime integration tests -> curriculum/content contracts -> full programme gate -> browser visual validation.
+
+No human podcast recordings are required. The TTS engine is the speech renderer. The private LLM tutor remains separate from podcast generation.
+
+Latest v2 CI must be rechecked after every code change. Do not infer green from a previous commit.
+
+============================================================
+END FIXED PODCAST V2
+============================================================

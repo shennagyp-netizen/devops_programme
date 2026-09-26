@@ -1,84 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import AssistantTrigger from './AssistantTrigger';
-import AssistantPanel from './AssistantPanel';
-import { LLMAssistantContext } from './types';
+"use client";
 
-interface FloatingLLMAssistantProps {
-  initialContext?: LLMAssistantContext;
-  position?: 'bottom-right' | 'right' | 'bottom-left';
-}
+import { Drawer } from "@mantine/core";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { AssistantPanel } from "./AssistantPanel";
+import { AssistantTrigger } from "./AssistantTrigger";
+import type { FloatingLLMAssistantProps } from "./types";
 
-const FloatingLLMAssistant: React.FC<FloatingLLMAssistantProps> = ({
-  initialContext,
-  position = 'right'
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [context, setContext] = useState<LLMAssistantContext | undefined>(initialContext);
-  const [viewport, setViewport] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
-
-  // Detect viewport size
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 768) {
-        setViewport('mobile');
-      } else if (width < 1200) {
-        setViewport('tablet');
-      } else {
-        setViewport('desktop');
-      }
-    };
-
-    handleResize(); // Initial detection
-    window.addEventListener('resize', handleResize);
-    
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  // Update context from lesson changes
-  useEffect(() => {
-    // This would be connected to the lesson context provider
-    // For now, we'll just use the initial context
-    setContext(initialContext);
-  }, [initialContext]);
-
-  const handleTriggerClick = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-
-  // Determine final position based on viewport
-  const finalPosition = viewport === 'mobile' ? 'bottom-right' : position;
+export function FloatingLLMAssistant({ context }: FloatingLLMAssistantProps) {
+  const [opened, { open, close }] = useDisclosure(false);
+  const mobile = useMediaQuery("(max-width: 47.99em)", false);
 
   return (
-    <div 
-      className="floating-llm-assistant"
-      role="region"
-      aria-label="LLM Assistant"
-      data-testid="floating-llm-assistant"
-    >
-      <AssistantTrigger 
-        isOpen={isOpen}
-        onClick={handleTriggerClick}
-        position={finalPosition}
-        aria-label={isOpen ? 'Close assistant' : 'Open assistant'}
-      />
-      
-      {isOpen && (
-        <AssistantPanel
-          context={context}
-          onClose={handleClose}
-          position={finalPosition}
-          viewport={viewport}
-        />
-      )}
-    </div>
+    <>
+      <AssistantTrigger opened={opened} mobile={mobile} onClick={opened ? close : open} />
+      <Drawer
+        opened={opened}
+        onClose={close}
+        position={mobile ? "bottom" : "right"}
+        size={mobile ? "92%" : 440}
+        title="DevOps tutor"
+        overlayProps={{ backgroundOpacity: 0.45, blur: 2 }}
+      >
+        <AssistantPanel context={context} onClose={close} mobile={mobile} />
+      </Drawer>
+    </>
   );
-};
-
-export default FloatingLLMAssistant;
+}
