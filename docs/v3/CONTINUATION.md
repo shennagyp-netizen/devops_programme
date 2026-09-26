@@ -45,18 +45,24 @@ The completion-authority migration is complete for this slice. The remaining tru
 
 ### A. Verification-provider authority
 
-Formalize the provider SPI:
+Implemented in V3.2:
 
-```text
-VerificationProvider
-  -> challenge
-  -> provider execution
-  -> attestation
-  -> server verification
-  -> VerifiedEvidenceRecord
-```
+- strict verification challenge and attestation contracts;
+- server-side provider-key provisioning boundary;
+- short-lived persisted verification attempts;
+- Ed25519 signature verification;
+- nonce/hash integrity checks;
+- atomic replay-safe challenge consumption;
+- provenance retained on authoritative evidence.
 
-The browser may request verification, but it must never be able to mint the resulting `VerifiedEvidenceRecord`.
+### A.1 Signed runtime-provider adapters
+
+Next:
+
+1. migrate the local terminal agent to receive a server challenge;
+2. sign the exact challenge-bound execution result with its Ed25519 provider key;
+3. migrate SSH/managed execution to the same provider SPI;
+4. replace localStorage machine verification as an authority source with the server attestation action.
 
 ### B. Machine verification migration
 
