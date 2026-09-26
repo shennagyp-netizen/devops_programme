@@ -1,6 +1,6 @@
 import React from "react";
 /** @vitest-environment jsdom */
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { MantineProvider } from "@mantine/core";
 import { FloatingLLMAssistant } from "../../src/components/FloatingLLMAssistant/FloatingLLMAssistant.tsx";
@@ -28,6 +28,14 @@ function renderAssistant() {
 describe("FloatingLLMAssistant", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+
+    class ResizeObserverMock {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+
+    window.ResizeObserver = ResizeObserverMock;
 
     Object.defineProperty(window, "matchMedia", {
       writable: true,
@@ -66,6 +74,7 @@ describe("FloatingLLMAssistant", () => {
   });
 
   afterEach(() => {
+    cleanup();
     window.localStorage.clear();
     vi.unstubAllGlobals();
   });
@@ -78,7 +87,7 @@ describe("FloatingLLMAssistant", () => {
     );
 
     expect(
-      screen.getByRole("dialog", { name: "DevOps tutor" })
+      await screen.findByRole("dialog", { name: "DevOps tutor" })
     ).toBeInTheDocument();
     expect(screen.getByText("B1.4")).toBeInTheDocument();
     expect(screen.getByText("Why Containers Exist")).toBeInTheDocument();
@@ -102,8 +111,12 @@ describe("FloatingLLMAssistant", () => {
 
     renderAssistant();
     fireEvent.click(screen.getByRole("button", { name: "Open DevOps tutor" }));
+    const textbox = await screen.findByRole(
+      "textbox",
+      { name: "Question for DevOps tutor" }
+    );
     fireEvent.change(
-      screen.getByRole("textbox", { name: "Question for DevOps tutor" }),
+      textbox,
       { target: { value: "What does the container share with the host?" } }
     );
     fireEvent.click(screen.getByRole("button", { name: "Send" }));
@@ -188,7 +201,10 @@ describe("FloatingLLMAssistant", () => {
     renderAssistant();
     fireEvent.click(screen.getByRole("button", { name: "Open DevOps tutor" }));
     fireEvent.change(
-      screen.getByRole("textbox", { name: "Question for DevOps tutor" }),
+      await screen.findByRole(
+        "textbox",
+        { name: "Question for DevOps tutor" }
+      ),
       { target: { value: "Why is the service unreachable?" } }
     );
     fireEvent.click(screen.getByRole("button", { name: "Send" }));
