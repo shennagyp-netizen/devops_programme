@@ -221,3 +221,24 @@ The generator fails closed when:
 The current implementation is a deterministic form generator and pilot assessment architecture, not a completed certification system. Pilot banks now exist for all seven Beginner sections, all eight Intermediate sections, and all six Advanced sections. Item calibration, standard setting, secure delivery and operational item exposure controls still require further implementation and validation.
 
 Form generation also requires the selected items to cover the blueprint's declared competencies and cognitive levels while remaining inside the difficulty distribution and time allowance.
+
+
+## Current learner-runner implementation — 2026-09-26
+
+The assessment architecture now has a learner-facing operational session runner layered over the existing 21 pilot banks / 840 authored items.
+
+The runner:
+- generates a form from the existing blueprint and item pool;
+- creates an authenticated attempt record;
+- keeps the answer key server-side during delivery;
+- exposes only the public item representation to the browser;
+- starts a server-derived assessment clock;
+- supports navigation and mark-for-review;
+- accepts one final submission;
+- automatically scores objectively keyed selected-response items;
+- stores open-ended/practical responses as review-required instead of fabricating a score;
+- persists the attempt and result state.
+
+The runner does not modify, regenerate, or rewrite authored question content.
+
+This closes the learner-facing operational delivery gap. It does not claim formal certification-grade security, psychometric calibration, standard setting, secure operational item exposure, or formal reviewer workflow.

@@ -10,3 +10,4 @@ dist/
 .runtime-evidence/
 .env*.local
 *.tsbuildinfo
+app/src/data/generatedAssessmentBanks.ts
