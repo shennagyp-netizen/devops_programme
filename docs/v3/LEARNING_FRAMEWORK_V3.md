@@ -1,383 +1,216 @@
-# Learning Framework v3
-
-**Branch:** `v3/learning-framework`  
-**Reference programme:** DevOps Programme  
-**Status:** Architecture and contract foundation in progress
-
-## 1. Purpose
-
-Version 3 reframes the repository from a DevOps application into a reusable **learning framework** with DevOps as its first complete programme.
-
-The framework answers:
-
-- how learning content is represented
-- how competencies and prerequisites are modeled
-- how a learner progresses
-- how evidence is produced and verified
-- how assessments become authoritative
-- how mastery and remediation work
-- how tutoring adapts presentation without becoming an authority
-- how media, podcast, animation and hands-on capabilities plug into learning items
-
-The DevOps programme answers a different question:
-
-> What should this particular learner learn and demonstrate about DevOps?
+# Learning Framework V3
 
-The application answers a third question:
+## Purpose
 
-> How should the learner experience the framework?
+V3 establishes a reusable Learning Framework with DevOps as its first intended consumer.
 
-## 2. Core architectural statement
-
-> **The client is an interaction surface. The framework authority is the source of truth for learning state.**
+The framework is a product boundary, not a namespace inside the DevOps application.
 
-The browser can:
+Canonical implementation:
 
-- render content
-- collect learner input
-- request transitions
-- display evidence
-- call approved verification providers
-- request tutoring
-- store temporary offline UI state
+~~~text
+framework/
+~~~
 
-The browser cannot authoritatively decide:
+## Product shape
 
-- that a learning item is complete
-- that an assessment is passed
-- that machine execution occurred
-- that evidence is valid
-- that mastery has been achieved
-- that a prerequisite has been satisfied
+The framework is both:
 
-## 3. Three-layer product model
+1. a reusable learning core/runtime;
+2. a complete React learning application.
 
-### Framework
+The React application renders generic programme data and framework policy.
 
-Reusable learning mechanics:
+## Architecture
 
-```text
-learning-framework
-├── curriculum model
-├── competency model
-├── learning-item contracts
-├── progression authority
-├── evidence contracts
-├── verification provider SPI
-├── assessment authority
-├── mastery/remediation
-├── tutoring policy
-├── media/animation contracts
-└── learner-state model
-```
+~~~text
+Programme definition
+       ↓
+Framework React application
+       ↓
+Learning Experience Runtime
+       ↓
+Framework Core Authority
+       ↓
+Generic Provider Interfaces
+       ↓
+Programme-specific provider implementations
+~~~
 
-### Programme
+## Core concepts
 
-Domain-specific teaching:
+The framework models:
 
-```text
-programmes/devops
-├── courses
-├── sections
-├── lessons
-├── projects
-├── competencies
-├── assessment banks
-├── diagnostics
-├── runtime tasks
-├── podcasts
-└── illustrations
-```
+- programmes;
+- courses;
+- sections;
+- learning items;
+- learning modes;
+- completion rules;
+- evidence;
+- assessment passes;
+- learner state;
+- progression;
+- learning intents;
+- control policy;
+- provider contracts.
 
-### Experience / adapters
+## Core implementation
 
-Runtime implementations:
+~~~text
+framework/src/core/
+~~~
 
-```text
-application
-├── web learner UI
-├── audio / speech
-├── local terminal adapter
-├── SSH adapter
-├── managed sandbox adapter
-├── AI provider
-├── database
-└── deployment
-```
+This layer must remain free of:
 
-Dependency direction is intentional:
+- domain content;
+- persistence;
+- authentication;
+- Next.js;
+- Vercel;
+- AI vendors;
+- terminal/SSH;
+- DevOps-specific APIs.
 
-```text
-Experience / adapters
-        ↓
-Programme definitions
-        ↓
-Learning framework contracts
-```
+## Runtime
 
-The framework must not import DevOps lesson data.
+~~~text
+framework/src/runtime/
+~~~
 
-## 4. Learning item abstraction
+The runtime owns:
 
-Everything the learner can meaningfully complete is modeled as a learning item.
+- session state;
+- item selection;
+- mode selection;
+- intent handling;
+- control derivation;
+- progression view;
+- remediation state.
 
-Supported kinds:
+The runtime does not implement domain providers.
 
-- lesson
-- assignment
-- question
-- project
-- assessment
+## React application
 
-A learning item contains stable identity, programme ownership, competency relationships, prerequisites and a completion policy.
+~~~text
+framework/src/react/
+~~~
 
-The completion policy is declarative. It says what evidence or assessment result is required without embedding implementation details.
+The React application provides reusable:
 
-## 5. Evidence abstraction
+- programme navigation;
+- current-item presentation;
+- learning modes;
+- controls;
+- progress;
+- remediation;
+- responsive presentation.
 
-Evidence is separate from completion.
+The application is intentionally neutral.
 
-An evidence record answers:
+## Programme boundary
 
-> What happened, where did it happen, which learner does it belong to, and which verifier established it?
+A consuming programme supplies:
 
-A verified evidence record therefore has:
+- curriculum;
+- content;
+- domain semantics;
+- domain assessment content;
+- provider configuration.
 
-```text
-Evidence
-├── identity
-├── learner identity
-├── learning item
-├── evidence kind
-├── verifier identity
-├── verification reference
-└── verification timestamp
-```
+The framework should not know whether the programme is DevOps, medicine, mathematics, language learning, cybersecurity, or anything else.
 
-A client assertion is not verified evidence.
+## Provider boundary
 
-The v3 authority must resolve evidence from a server-controlled evidence store or a server-verifiable attestation provider.
+Provider implementations are outside framework core.
 
-## 6. Verification provider abstraction
-
-Verification is a provider capability, not a DevOps-specific implementation.
+Examples:
 
-Target SPI:
+~~~text
+EvidenceProvider
+AssessmentProvider
+ContentProvider
+TutorProvider
+~~~
 
-```text
-VerificationProvider
-├── capability declaration
-├── execution / observation
-├── evidence production
-└── server-side verification
-```
-
-Initial provider families:
+The framework defines contracts; the consuming application supplies implementations.
 
-- human/self-report
-- structured evidence
-- local machine
-- SSH machine
-- managed sandbox
-- deterministic simulation
-- future specialized providers
+## Current MVP
 
-A provider may be trusted for observation without being trusted for completion. The framework makes that distinction explicit.
+The MVP uses:
 
-## 7. Learning authority
+- a neutral demonstration programme;
+- in-memory learner state;
+- generic completion/evidence semantics;
+- assessment-pass semantics;
+- a complete React application;
+- standalone tests;
+- dependency-boundary tests;
+- independent CI.
 
-The authority evaluates a transition request against authoritative definitions and server-known evidence.
+This is intentional. Persistence/authentication/server integration are not required to prove the framework abstraction.
 
-Conceptually:
+## DevOps relationship
 
-```text
-Transition Request
-      ↓
-Resolve authoritative learning item
-      ↓
-Resolve learner identity from session
-      ↓
-Resolve referenced evidence
-      ↓
-Verify learner ownership
-      ↓
-Verify item ownership
-      ↓
-Check completion policy
-      ↓
-Commit learner-state transition
-```
+DevOps remains the first intended consumer.
 
-The first v3 code seam is implemented in:
+Existing DevOps implementation under:
 
-```text
-app/src/framework/contracts.ts
-app/src/framework/authority.ts
-app/tests/unit/framework-authority.test.mjs
-```
+~~~text
+app/src/framework/
+~~~
 
-It is deliberately pure and dependency-light so policy can be tested independently of PostgreSQL, Next.js and browser state.
+is transitional compatibility code.
 
-## 8. Assessment authority
+It is not the canonical framework.
 
-Assessment has four different objects:
+Do not continue building two generic frameworks in parallel.
 
-```text
-Assessment Definition
-        ↓
-Assessment Instance
-        ↓
-Learner Attempt
-        ↓
-Scoring / Evidence
-        ↓
-Mastery or completion transition
-```
+## Integration plan
 
-The browser can render a question. It cannot own the answer key or final result.
+After the framework MVP is stable:
 
-Future assessment work must keep scoring and eligibility server-authoritative.
+1. define a DevOps programme adapter;
+2. map DevOps courses/sections/items into framework contracts;
+3. wrap existing evidence/assessment/tutor/runtime systems behind provider contracts;
+4. replace one Learning Gateway vertical slice;
+5. keep the old path until the adapter slice is green;
+6. expand incrementally.
 
-## 9. Mastery abstraction
+## Non-goals
 
-Mastery is a competency state, not merely a UI button.
+Do not add to framework MVP:
 
-The framework should support:
+- database;
+- auth;
+- microservices;
+- event bus;
+- package publishing;
+- billing;
+- domain-specific infrastructure;
+- domain-specific UI;
+- vendor SDKs.
 
-```text
-competency
-   ↓
-evidence
-   ↓
-diagnosis
-   ↓
-representation selection
-   ↓
-remediation
-   ↓
-retry
-   ↓
-new evidence
-```
+## Quality rule
 
-Representation choices remain reusable framework capabilities:
+Every framework change must pass:
 
-- plain language
-- mechanism
-- analogy
-- visual
-- worked example
-- controlled failure
-- guided practice
+~~~text
+TDD
++
+boundary test
++
+typecheck
++
+production build
++
+documentation
+~~~
 
-A DevOps programme supplies the domain-specific explanations.
+## Architectural litmus test
 
-## 10. Tutor boundary
+Before adding any framework feature:
 
-The AI tutor is a coach.
+> Would this feature still make sense for a completely different learning domain?
 
-It may:
-
-- explain
-- ask questions
-- compare representations
-- suggest observations
-- interpret learner-provided evidence
-- adapt difficulty and language
-
-It may not:
-
-- grant mastery
-- create authoritative assessment results
-- fabricate verified evidence
-- modify learner progress directly
-- bypass completion policies
-
-The tutor receives framework context rather than owning framework state.
-
-## 11. Media and presentation
-
-Podcast, voice synchronization and animation are presentation capabilities attached to learning definitions.
-
-A lesson can select:
-
-```text
-content representation
-audio representation
-visual representation
-interactive representation
-hands-on representation
-assessment representation
-```
-
-The learning framework owns the contracts.
-
-The programme chooses the concrete assets.
-
-## 12. Trust zones
-
-### Zone A — Untrusted client
-
-Includes:
-
-- browser state
-- localStorage
-- query parameters
-- submitted evidence text
-- client-selected IDs
-- client-reported completion
-- client-generated timestamps
-- imported JSON
-
-### Zone B — Server policy
-
-Includes:
-
-- authenticated learner identity
-- programme definitions
-- learning-item definitions
-- completion policies
-- assessment rules
-- authoritative learner state
-
-### Zone C — Verified external execution
-
-Includes:
-
-- authenticated local-agent attestations
-- verified SSH execution
-- managed sandbox results
-- other provider-specific proofs
-
-Crossing from Zone A to Zone B requires server validation.
-
-Crossing from Zone C to Zone B requires provider verification.
-
-## 13. V3 migration rule
-
-Do not perform a large rewrite merely to rename folders.
-
-Migrate by replacing trust boundaries first:
-
-1. define contracts
-2. add policy tests
-3. introduce authoritative server decisions
-4. move evidence creation behind provider boundaries
-5. migrate assessment state
-6. migrate mastery state
-7. migrate tutor state
-8. only then simplify the UI/application structure
-
-The current DevOps UI remains usable during migration.
-
-## 14. Non-goals for the initial v3 branch
-
-- splitting into multiple repositories
-- publishing framework packages
-- replacing the existing content model immediately
-- rebuilding every React component
-- implementing every verification provider
-- introducing a distributed event bus
-- adding unnecessary microservices
-
-V3 is an abstraction and trust-model evolution, not a technology rewrite.
+If not, it belongs in the programme or adapter.
