@@ -45,7 +45,7 @@ export function evaluateLearningTransition(
   const selected: EvidenceRef[] = [];
   const selectedIds = new Set<string>();
 
-  for (const ref of request.evidenceRefs) {
+  for (const ref of request.evidenceRefs ?? []) {
     if (selectedIds.has(ref)) continue;
 
     const evidence = context.verifiedEvidence.get(ref);
