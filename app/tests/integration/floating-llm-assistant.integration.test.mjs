@@ -37,6 +37,21 @@ describe("FloatingLLMAssistant", () => {
 
     window.ResizeObserver = ResizeObserverMock;
 
+    Object.defineProperty(window, "visualViewport", {
+      configurable: true,
+      value: {
+        width: 1280,
+        height: 720,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn()
+      }
+    });
+
+    window.requestAnimationFrame = (callback) =>
+      window.setTimeout(() => callback(performance.now()), 0);
+    window.cancelAnimationFrame = (handle) =>
+      window.clearTimeout(handle);
+
     Object.defineProperty(window, "matchMedia", {
       writable: true,
       value: (query) => ({
