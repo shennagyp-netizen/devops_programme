@@ -18,6 +18,7 @@ vi.mock("../../src/lib/server/db.ts", () => ({
 vi.mock("drizzle-orm", () => ({
   and: vi.fn((...parts) => ({ type: "and", parts })),
   asc: vi.fn(() => "asc"),
+  desc: vi.fn(() => "desc"),
   eq: vi.fn((left, right) => ({ type: "eq", left, right })),
   inArray: vi.fn((left, values) => ({ type: "inArray", left, values })),
   isNull: vi.fn((value) => ({ type: "isNull", value }))
@@ -41,6 +42,7 @@ vi.mock("../../src/lib/server/schema.ts", () => ({
     targetRef: "attempt.targetRef",
     evidenceKind: "attempt.evidenceKind",
     providerId: "attempt.providerId",
+    providerKeyId: "attempt.providerKeyId",
     nonce: "attempt.nonce",
     nonceHash: "attempt.nonceHash",
     issuedAt: "attempt.issuedAt",
@@ -294,6 +296,7 @@ describe("verification provider authority", () => {
       targetRef: challenge.targetRef,
       evidenceKind: challenge.evidenceKind,
       providerId: challenge.providerId,
+      providerKeyId: challenge.providerKeyId,
       nonce: challenge.nonce,
       nonceHash: nonceHash(challenge.nonce),
       issuedAt: new Date(challenge.issuedAt),
