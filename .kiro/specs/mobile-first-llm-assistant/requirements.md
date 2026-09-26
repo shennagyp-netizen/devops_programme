@@ -1,5 +1,7 @@
 # Requirements Document
 
+> **Historical specification.** This Kiro requirements document describes an earlier feature slice. The authoritative current V3 product requirements and completeness status are in `docs/REQUIREMENTS_V3.md`. In particular, the current MVP retains the local terminal pairing-token bridge, uses simple first-party authentication, uses authored-script browser TTS rather than requiring stored audio files, and treats the current assessment runner and production visual/deployment verification as remaining gaps.
+
 ## Introduction
 
 This document defines the requirements for the Mobile-First LLM Assistant feature. This feature extends the DevOps Programme learning platform with three key capabilities:
