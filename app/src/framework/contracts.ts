@@ -5,20 +5,10 @@ export type LearningItemKind =
   | "project"
   | "assessment";
 
-export type VerificationLevel =
-  | "self-report"
-  | "structured"
-  | "machine-verified";
-
-export type EvidenceRequirement = {
-  kind: string;
-  minimumVerificationLevel: VerificationLevel;
-};
-
 export type CompletionPolicy =
   | {
       mode: "evidence";
-      requiredEvidence: EvidenceRequirement[];
+      requiredEvidence: string[];
     }
   | {
       mode: "assessment";
@@ -37,16 +27,15 @@ export type VerifiedEvidenceRecord = {
   learnerId: string;
   itemId: string;
   kind: string;
-  verificationLevel: VerificationLevel;
   verifierId: string;
   verificationRef: string;
+  attestationDigest: string;
   verifiedAt: string;
 };
 
 export type EvidenceRef = {
   id: string;
   kind: string;
-  verificationLevel: VerificationLevel;
 };
 
 export type AuthorityContext = {
@@ -56,16 +45,13 @@ export type AuthorityContext = {
 };
 
 export type LearningTransitionRequest = {
-  learnerId: string;
   itemId: string;
   evidenceRefs?: string[];
   assessmentAttemptId?: string;
-  clientAssertions?: Record<string, unknown>;
 };
 
 export type LearningTransitionFailure =
   | "UNKNOWN_LEARNING_ITEM"
-  | "LEARNER_MISMATCH"
   | "UNSUPPORTED_COMPLETION_MODE"
   | "EVIDENCE_NOT_VERIFIED"
   | "EVIDENCE_LEARNER_MISMATCH"
@@ -78,7 +64,6 @@ export type LearningTransitionResult =
       learnerId: string;
       itemId: string;
       satisfiedEvidence: string[];
-      verificationLevel: VerificationLevel;
     }
   | {
       accepted: false;
