@@ -130,6 +130,12 @@ export const tutorSessions = pgTable(
       table.userId,
       table.lessonId,
       table.lastActiveAt
+    ),
+    modeCheck: check(
+      "tutor_sessions_mode_ck",
+      sql.raw(
+        "mode IN ('teaching', 'failure-investigation', 'assignment-coach', 'incident-review', 'design-defense', 'oral-assessment')"
+      )
     )
   })
 );
