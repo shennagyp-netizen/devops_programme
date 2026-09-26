@@ -41,6 +41,7 @@ export default function App({
   );
   const [progressError, setProgressError] = useState("");
   const [progressBusyId, setProgressBusyId] = useState<string | null>(null);
+  const [lessonMode, setLessonMode] = useState<"learn" | "do" | "recall" | "design" | "assessment">("learn");
   const [mobileNavOpened, { toggle: toggleMobileNav, close: closeMobileNav }] =
     useDisclosure(false);
 
@@ -64,7 +65,8 @@ export default function App({
     lessonObjective: lesson.objective,
     domain: lesson.domain,
     projectId: lesson.projectId,
-    course: selectedCourse.id
+    course: selectedCourse.id,
+    learningMode: lessonMode
   };
 
   const recordDiagnosticRecommendation = useCallback(
@@ -86,6 +88,7 @@ export default function App({
 
   function selectLesson(nextId: string) {
     setS(nextId);
+    setLessonMode("learn");
     closeMobileNav();
   }
 
@@ -321,6 +324,7 @@ export default function App({
               diagnosticRecommendation={diagnosticRecommendations[lesson.sectionId]}
               onSelectLesson={selectLesson}
               onEvidenceRecorded={() => setEvidenceVersion((value) => value + 1)}
+              onModeChange={setLessonMode}
               progressReady={true}
               progressSaving={progressBusyId === lesson.id}
               initialMasteryHistory={initialMasteryHistory}
