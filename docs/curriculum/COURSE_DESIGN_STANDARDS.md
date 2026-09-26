@@ -324,16 +324,25 @@ Each project needs:
 - objective
 - architecture
 - environment
+- estimated workload
+- explicit phases
+- phase exit evidence
 - milestones
 - competency gates
 - failure scenarios
 - evidence requirements
+- deliverables
+- review gates
 - completion criteria
 - change history
 - incident history.
 
+A premium project is long-running work, not a single end-of-course lab. Every project now has at least four explicit phases and a realistic workload target.
+
 Project pattern:
-baseline -> change -> failure -> diagnosis -> recovery -> harder failure -> redesign
+baseline -> change -> failure -> diagnosis -> recovery -> harder failure -> redesign -> review -> redesign again
+
+The current nine-project spine targets about 300 total project hours across Beginner, Intermediate and Advanced. Hours are workload targets for the authored project contract; they are not a claim that every learner will require the same time.
 
 Beginner: B1, B2, B3.
 Intermediate: I1, I2, I3.
