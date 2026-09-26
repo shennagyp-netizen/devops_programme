@@ -59,6 +59,20 @@ export function InteractiveLessonIllustration({ bindingId }: { bindingId: string
   }, [binding, playing]);
 
   if (!binding || !definition) {
+    if (bindingId === "D2.2:d2-2-dns") {
+      return (
+        <Paper withBorder p="md" radius="md">
+          <Text fw={700}>DNS resolution path</Text>
+          <Text size="sm" c="dimmed" mt="xs">
+            Client → Recursive Resolver → Root Server → TLD Server → Authoritative Server → Answer Returns.
+          </Text>
+          <Text size="xs" c="dimmed" mt="xs">
+            The interactive animation is unavailable, so the complete learning path remains available as text.
+          </Text>
+        </Paper>
+      );
+    }
+
     return (
       <Text c="dimmed">
         This interactive illustration is unavailable because its curriculum
