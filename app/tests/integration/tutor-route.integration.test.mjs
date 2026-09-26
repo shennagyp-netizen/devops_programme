@@ -11,11 +11,11 @@ vi.mock("../../src/lib/server/auth.ts", () => ({
   getCurrentUser: currentUserMock
 }));
 
-const reserveTutorUserMessageMock = vi.fn();
+const reserveTutorRequestMock = vi.fn();
 
 vi.mock("../../src/lib/server/tutor.ts", () => ({
   appendTutorMessage: appendTutorMessageMock,
-  reserveTutorUserMessage: reserveTutorUserMessageMock,
+  reserveTutorRequest: reserveTutorRequestMock,
   buildTutorContext: buildTutorContextMock,
   createTutorSessionForUser: createTutorSessionMock,
   listTutorMessagesForUser: listTutorMessagesMock,
@@ -67,7 +67,7 @@ describe("tutor route", () => {
     vi.restoreAllMocks();
     currentUserMock.mockReset();
     appendTutorMessageMock.mockReset();
-    reserveTutorUserMessageMock.mockReset();
+    reserveTutorRequestMock.mockReset();
     buildTutorContextMock.mockReset();
     createTutorSessionMock.mockReset();
     listTutorMessagesMock.mockReset();
@@ -229,7 +229,7 @@ describe("tutor route", () => {
     expect(body.response.canUnlockRetry).toBe(false);
     expect(body.response.canCertify).toBe(false);
     expect(body.response.nextQuestion).toContain("What does");
-    expect(appendTutorMessageMock).toHaveBeenCalledTimes(2);
+    expect(appendTutorMessageMock).toHaveBeenCalledTimes(1);
   });
 
   it("executes only published read-only tools and then asks the model for the final answer", async () => {
