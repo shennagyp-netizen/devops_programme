@@ -14,6 +14,7 @@ const challenge = {
   id: "challenge-1",
   learnerId: "user_1",
   itemId: "B1.1",
+  targetRef: "runtime-exercise-B1.1",
   evidenceKind: "exercise",
   providerId: "local-terminal",
   issuedAt: "2026-09-26T12:00:00.000Z",
