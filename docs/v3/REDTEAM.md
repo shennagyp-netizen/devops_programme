@@ -21,7 +21,7 @@ Security objective:
 | V3-RT-02 | Completion could reach legacy persistence without authoritative evidence resolution. | High | **Mitigated** |
 | V3-RT-03 | Browser-produced machine-verification envelopes are not server-attested. | High | **Mitigated for the signed provider path** |
 | V3-RT-04 | Mastery attempt outcome/task identity could be client-supplied. | Medium | **Mitigated** |
-| V3-RT-05 | Assessment authority remains client-exposed. | Medium | **Open** |
+| V3-RT-05 | Assessment issuance/scoring could be client-authoritative. | Medium | **Mitigated for pilot assessment delivery** |
 | V3-RT-06 | Tutor rate limiting remains process-local. | Medium | **Open** |
 | V3-RT-07 | Client-supplied assistant history remains possible. | Medium | **Open** |
 
@@ -104,13 +104,24 @@ The remaining V3 trust gaps are assessment authority and tutor/rate-limit author
 
 ## V3-RT-05 — assessment authority
 
-Operational assessment answer keys must not be authoritative client data.
+This finding is **mitigated for the current pilot assessment delivery path**.
 
-Next implementation:
-1. issue an assessment instance server-side;
-2. send only learner-safe question data;
-3. score against server-owned answer/rubric state;
-4. persist attempt and outcome transactionally.
+The server now:
+
+- validates course, section, and family against the authoritative blueprint;
+- generates the assessment seed and form server-side;
+- persists an immutable item snapshot containing answer keys/rubrics;
+- returns only safe question fields to the browser;
+- binds submissions to the authenticated learner and exact issued instance;
+- rejects question IDs not present in the issued instance;
+- derives selected-response scores from server-owned answer keys;
+- marks non-automatic response sets `pending-review` rather than inventing a universal pass threshold;
+- atomically consumes each active instance and rejects replay;
+- enforces expiry in the database compare-and-set predicate.
+
+Red-team coverage includes answer-key leakage, browser-supplied outcome/score/seed, cross-learner access, foreign question IDs, replay, and expiry-race behavior.
+
+The remaining assessment quality work is calibration/standard setting and authenticated manual review, not browser trust.
 
 ## V3-RT-06 — tutor rate limiting
 
@@ -135,7 +146,7 @@ The current completion-authority red-team gate is green for browser-payload mani
 - a malicious browser cannot mark a learning item complete without server-verified evidence;
 - legacy completion metadata is not trusted as authoritative state.
 
-The broader V3 exit gate remains open until assessment and tutor authority are migrated:
+The broader V3 exit gate remains open until tutor authority and distributed controls are migrated:
 
 - forge machine verification into authoritative evidence;
 - manufacture mastery outcomes;
@@ -152,3 +163,15 @@ Both supported machine providers now use the signed challenge protocol:
 - SSH runner.
 
 The UI rejects unsigned machine-evidence imports, and the server will not mint completion from a raw runtime envelope. Direct unsigned CLI artifacts may still exist for diagnostic/manual workflows, but they are not trusted evidence.
+
+## V3-RT-09 — deployment migration ordering
+
+**Status: Mitigated.**
+
+Production migration filenames are now unambiguous:
+
+- 0004 — progress foreign-key hardening;
+- 0005 — verification-provider authority;
+- 0006 — assessment authority.
+
+The framework-security CI contract tracks these paths, and the production migration runner sorts and records filenames transactionally.
