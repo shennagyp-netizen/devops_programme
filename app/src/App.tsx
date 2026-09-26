@@ -14,6 +14,8 @@ import { ProjectPanel } from "./components/ProjectPanel";
 import type { DiagnosticRecommendation } from "./data/diagnostics";
 import type { CompletionRecord } from "./lib/progress-contract";
 import type { MasteryAttemptRecord } from "./lib/mastery-contract";
+import type { VerifiedEvidenceRecord } from "./framework/contracts";
+import { findProgrammeLearningItem } from "./lib/server/programmeAuthority";
 import { lessonsByCourse } from "./data/courseLessons";
 import { courses, platformProfiles, type CourseLevel, type PlatformId } from "./data/programme";
 import { projectsByCourse } from "./data/projects";
@@ -22,11 +24,13 @@ import type { TutorContext } from "./lib/tutor-contract";
 export default function App({
   currentUser,
   initialCompletionHistory,
-  initialMasteryHistory
+  initialMasteryHistory,
+  initialVerifiedEvidence
 }: {
   currentUser: { email: string };
   initialCompletionHistory: CompletionRecord[];
   initialMasteryHistory: MasteryAttemptRecord[];
+  initialVerifiedEvidence: VerifiedEvidenceRecord[];
 }) {
   const [course, setCourse] = useState<CourseLevel>("intermediate");
   const [platform, setPlatform] = useState<PlatformId>("macos");
@@ -58,6 +62,45 @@ export default function App({
   const completedInCourse = selectedLessons.filter((item) =>
     m.includes(item.id)
   ).length;
+
+  const verifiedEvidenceByItem = useMemo(() => {
+    const grouped = new Map<string, VerifiedEvidenceRecord[]>();
+
+    for (const evidence of initialVerifiedEvidence) {
+      const current = grouped.get(evidence.itemId) ?? [];
+      current.push(evidence);
+      grouped.set(evidence.itemId, current);
+    }
+
+    return grouped;
+  }, [initialVerifiedEvidence]);
+
+  const authoritativeEvidenceRefsForItem = useCallback(
+    (itemId: string) => {
+      const item = findProgrammeLearningItem(itemId);
+      if (!item || item.completion.mode !== "evidence") return [];
+
+      const evidence = verifiedEvidenceByItem.get(itemId) ?? [];
+
+      return item.completion.requiredEvidence.flatMap((requiredKind) =>
+        evidence
+          .filter((entry) => entry.kind === requiredKind)
+          .map((entry) => entry.id)
+      );
+    },
+    [verifiedEvidenceByItem]
+  );
+
+  const authoritativeEvidenceReady = useMemo(() => {
+    const item = findProgrammeLearningItem(lesson.id);
+    if (!item || item.completion.mode !== "evidence") return false;
+
+    const evidence = verifiedEvidenceByItem.get(lesson.id) ?? [];
+    return item.completion.requiredEvidence.every((requiredKind) =>
+      evidence.some((entry) => entry.kind === requiredKind)
+    );
+  }, [lesson.id, verifiedEvidenceByItem]);
+
 
   const tutorContext: TutorContext = {
     lessonId: lesson.id,
@@ -107,8 +150,16 @@ export default function App({
       const selected = selectedLessons.find((item) => item.id === id);
       if (!selected) throw new Error("Selected lesson no longer exists.");
 
+      const evidenceRefs = authoritativeEvidenceRefsForItem(id);
+      if (!evidenceRefs.length) {
+        throw new Error(
+          "Server verification is required before this learning item can be completed."
+        );
+      }
+
       await completeLearningItemAction({
-        itemId: id
+        itemId: id,
+        evidenceRefs
       });
       setM((current) => (current.includes(id) ? current : [...current, id]));
     } catch (error) {
@@ -325,8 +376,9 @@ export default function App({
               onSelectLesson={selectLesson}
               onEvidenceRecorded={() => setEvidenceVersion((value) => value + 1)}
               onModeChange={setLessonMode}
-              progressReady={true}
+              progressReady={authoritativeEvidenceReady || m.includes(lesson.id)}
               progressSaving={progressBusyId === lesson.id}
+              authoritativeEvidenceReady={authoritativeEvidenceReady}
               initialMasteryHistory={initialMasteryHistory}
               onMaster={() => void completeLesson(lesson.id)}
             />
