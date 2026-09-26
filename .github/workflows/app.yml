@@ -92,9 +92,9 @@ jobs:
         working-directory: repo/app
         run: npm run check:runtime
 
-      - name: MVP architecture contract
+      - name: Authenticated progress architecture contract
         working-directory: repo/app
-        run: npm run check:mvp
+        run: npm run check:progress
 
       - name: Full unit and integration tests
         working-directory: repo/app
