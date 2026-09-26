@@ -22,6 +22,9 @@ const validAttestation = {
   providerId: "local-terminal",
   verificationRef: "run-1",
   attestationDigest: "sha256:" + "a".repeat(64),
+  nonce: "nonce-1",
+  signatureAlgorithm: "ed25519",
+  signature: "A".repeat(86),
   issuedAt: "2026-09-26T12:01:00.000Z",
   expiresAt: "2026-09-26T12:04:00.000Z"
 };
@@ -84,6 +87,33 @@ describe("framework verification attestation contract", () => {
         reason: "INVALID_ATTESTATION_DIGEST"
       });
     }
+  });
+
+
+  it("rejects nonce substitution even when every other field matches", () => {
+    const result = validateVerificationAttestation(
+      challenge,
+      { ...validAttestation, nonce: "attacker-nonce" },
+      new Date("2026-09-26T12:02:00.000Z")
+    );
+
+    expect(result).toMatchObject({
+      accepted: false,
+      reason: "NONCE_MISMATCH"
+    });
+  });
+
+  it("rejects an invalid provider signature envelope before cryptographic verification", () => {
+    const result = validateVerificationAttestation(
+      challenge,
+      { ...validAttestation, signature: "too-short" },
+      new Date("2026-09-26T12:02:00.000Z")
+    );
+
+    expect(result).toMatchObject({
+      accepted: false,
+      reason: "INVALID_SIGNATURE_FORMAT"
+    });
   });
 
   it("rejects challenge-id substitution even when the rest of the payload matches", () => {
