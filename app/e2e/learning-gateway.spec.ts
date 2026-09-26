@@ -10,10 +10,10 @@ test.describe("real-user learning gateway journey", () => {
 
     await expect(page.getByText("DevOps Engineering", { exact: true })).toBeVisible();
 
-    await page.getByText("Windows", { exact: true }).click();
+    await page.getByRole("radio", { name: "Windows", exact: true }).check();
     await expect(page.getByText("Environment: Windows · PowerShell", { exact: true })).toBeVisible();
 
-    await page.getByText("DevOps Through Problems", { exact: true }).click();
+    await page.getByRole("radio", { name: "DevOps Through Problems", exact: true }).check();
     await expect(page.getByRole("heading", { name: "DevOps Through Problems" })).toBeVisible();
     await expect(page.getByText("Environment: Windows · PowerShell", { exact: true })).toBeVisible();
 
