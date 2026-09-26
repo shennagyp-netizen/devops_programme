@@ -29,6 +29,7 @@ export type VerifiedEvidenceRecord = {
   kind: string;
   verifierId: string;
   verificationRef: string;
+  attestationDigest: string;
   verifiedAt: string;
 };
 
