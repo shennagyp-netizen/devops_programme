@@ -47,6 +47,7 @@ export function LessonPanel({
   onEvidenceRecorded,
   progressReady = true,
   progressSaving = false,
+  authoritativeEvidenceReady = false,
   initialMasteryHistory = [],
   onModeChange
 }: {
@@ -59,6 +60,7 @@ export function LessonPanel({
   onEvidenceRecorded?: () => void;
   progressReady?: boolean;
   progressSaving?: boolean;
+  authoritativeEvidenceReady?: boolean;
   initialMasteryHistory?: MasteryAttemptRecord[];
   onModeChange?: (mode: LessonMode) => void;
 }) {
@@ -326,7 +328,7 @@ export function LessonPanel({
           disabled={
             !progressReady ||
             progressSaving ||
-            (!exerciseRecorded && !mastered)
+            (!authoritativeEvidenceReady && !mastered)
           }
         >
           {!progressReady
@@ -335,9 +337,11 @@ export function LessonPanel({
               ? "Saving..."
               : mastered
                 ? "Mastered"
-                : exerciseRecorded
+                : authoritativeEvidenceReady
                   ? "Mark complete"
-                  : "Complete the required exercise first"}
+                  : exerciseRecorded
+                    ? "Waiting for server verification"
+                    : "Complete the required exercise first"}
         </button>
       </div>
 
@@ -764,7 +768,7 @@ export function LessonPanel({
 
             {exerciseRecorded ? (
               <p className="range">
-                This task is structurally validated. It is not yet machine-verified against the learner's environment.
+                This task is structurally validated locally. Completion remains locked until the server receives trusted verification evidence.
               </p>
             ) : null}
 
