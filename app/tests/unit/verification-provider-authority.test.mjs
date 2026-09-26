@@ -398,8 +398,8 @@ describe("verification provider authority", () => {
     const attempt = {
       id: challenge.id,
       userId: "user_1",
-      itemId: "B1.2",
-      targetRef: "runtime-probe-B1.2",
+      itemId: "B1.1",
+      targetRef: "runtime-exercise-B1.1",
       evidenceKind: "exercise",
       providerId: "local-terminal",
       nonce: challenge.nonce,
