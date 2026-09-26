@@ -85,7 +85,7 @@ describe("lesson panel integration contract", () => {
 
     expect(code).toContain('runtimeTask.scope === "exercise"');
     expect(code).toContain(
-      "Complete the required hands-on exercise below to unlock the lesson."
+      "Complete the required hands-on exercise to unlock the lesson."
     );
     expect(code).toContain(
       "This task is structurally validated locally. Completion remains locked"
