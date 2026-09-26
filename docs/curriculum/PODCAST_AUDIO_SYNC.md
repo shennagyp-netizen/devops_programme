@@ -45,7 +45,7 @@ The private LLM tutor is a separate system. It never rewrites or regenerates the
 
 Speech speed is independent from explanation level.
 
-The learner may choose 1×, 1.5×, or 2×.
+The learner may choose 1×, 1.25×, 1.5×, or 2×.
 
 Changing speed must never change the selected explanation, remove information, skip a turn, change turn order, change learner-action boundaries, shorten the authored script, or replace the script with a different explanation.
 
