@@ -19,7 +19,7 @@ Security objective:
 |---|---|---:|---|
 | V3-RT-01 | Completion accepted browser-selected item metadata. | Medium | **Mitigated** |
 | V3-RT-02 | Completion could reach legacy persistence without authoritative evidence resolution. | High | **Mitigated** |
-| V3-RT-03 | Browser-produced machine-verification envelopes are not server-attested. | High | **Open** |
+| V3-RT-03 | Browser-produced machine-verification envelopes are not server-attested. | High | **Partially mitigated** |
 | V3-RT-04 | Mastery attempt content/outcome remains client-supplied. | Medium | **Open** |
 | V3-RT-05 | Assessment authority remains client-exposed. | Medium | **Open** |
 | V3-RT-06 | Tutor rate limiting remains process-local. | Medium | **Open** |
@@ -65,9 +65,22 @@ Covered by:
 
 ## V3-RT-03 — machine evidence provenance
 
-runtimeVerification.ts validates structure, task identity and timestamps, but hashes and envelope fields remain claims unless a trusted verifier or cryptographically authenticated attestation proves provenance.
+This finding is **partially mitigated**.
 
-Do not treat machine-verified as authoritative until trusted provider/attestation validation exists.
+The framework now defines a verification-attestation contract and validates:
+
+- challenge identity;
+- learner binding;
+- learning-item binding;
+- evidence kind;
+- provider identity;
+- challenge validity window;
+- attestation freshness;
+- canonical SHA-256 digest format.
+
+This remains **open at the provider trust layer** because the current structural validator does not perform cryptographic signature/provider authentication or persistent replay protection.
+
+Browser-produced runtime envelopes still cannot mint authoritative evidence.
 
 ## V3-RT-04 — mastery forgery
 
