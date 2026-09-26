@@ -65,21 +65,25 @@ Never trust an arbitrary JSON envelope simply because its fields match a schema.
 
 A real verifier must establish provenance and freshness.
 
-The future attestation flow is:
+The verification-provider boundary is now explicitly modeled in the framework:
 
 ```text
 server challenge
       ↓
-verifier / agent
+provider execution
       ↓
-signed or otherwise authenticated proof
+attestation
       ↓
-server verification
+challenge / learner / item / kind / provider / time validation
       ↓
-verified evidence record
+cryptographic/provider verification
+      ↓
+replay check
+      ↓
+VerifiedEvidenceRecord
 ```
 
-Replay protection should be based on challenge identity and expiry.
+The framework structural validator is intentionally not a cryptographic verifier. Provider authentication, proof verification, and replay persistence belong to the server/provider adapter boundary.
 
 ### Assessment
 
@@ -96,6 +100,17 @@ A useful v3 review question is:
 > Could a learner edit the browser payload and create a state transition they could not legitimately obtain?
 
 If yes, the boundary is incomplete.
+
+## Evidence authority
+
+The current completion path requires:
+
+- a server-owned verified-evidence row;
+- an evidence kind satisfying the authoritative completion policy;
+- a transactional proof link from completion to evidence;
+- authoritative metadata derived from the programme registry.
+
+Client localStorage evidence is never sufficient to create these records.
 
 ## Abuse controls
 
