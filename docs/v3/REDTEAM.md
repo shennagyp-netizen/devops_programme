@@ -20,7 +20,7 @@ Security objective:
 | V3-RT-01 | Completion accepted browser-selected item metadata. | Medium | **Mitigated** |
 | V3-RT-02 | Completion could reach legacy persistence without authoritative evidence resolution. | High | **Mitigated** |
 | V3-RT-03 | Browser-produced machine-verification envelopes are not server-attested. | High | **Mitigated for the signed provider path** |
-| V3-RT-04 | Mastery attempt content/outcome remains client-supplied. | Medium | **Open** |
+| V3-RT-04 | Mastery attempt outcome/task identity could be client-supplied. | Medium | **Mitigated** |
 | V3-RT-05 | Assessment authority remains client-exposed. | Medium | **Open** |
 | V3-RT-06 | Tutor rate limiting remains process-local. | Medium | **Open** |
 | V3-RT-07 | Client-supplied assistant history remains possible. | Medium | **Open** |
@@ -87,11 +87,20 @@ Browser-produced runtime envelopes still cannot mint authoritative evidence.
 
 ## V3-RT-04 — mastery forgery
 
-The mastery action still accepts learner-controlled lessonId, taskId, outcome, stage and summary.
+This finding is **mitigated**.
 
-Attempt numbering is server generated, but semantic outcome is not.
+The mastery action now accepts only the learner's selected learning item, coaching stage, optional note, and evidence references. The server:
 
-Next red-team test: prove that a client cannot manufacture mastered without a server-owned evaluation result.
+- authenticates the learner;
+- resolves the lesson and hands-on task from the programme registry;
+- loads evidence only for that learner;
+- derives mastered vs failure from the authoritative evidence policy;
+- generates attempt numbers server-side with a unique constraint and collision retry;
+- rejects unsupported mastery coaching stages.
+
+Red-team coverage includes forged outcomes, forged task/lesson identity, cross-learner evidence, conflicting attempt numbers, and unauthenticated requests.
+
+The remaining V3 trust gaps are assessment authority and tutor/rate-limit authority.
 
 ## V3-RT-05 — assessment authority
 
@@ -126,7 +135,7 @@ The current completion-authority red-team gate is green for browser-payload mani
 - a malicious browser cannot mark a learning item complete without server-verified evidence;
 - legacy completion metadata is not trusted as authoritative state.
 
-The broader V3 exit gate remains open until mastery, assessment, and tutor authority are migrated:
+The broader V3 exit gate remains open until assessment and tutor authority are migrated:
 
 - forge machine verification into authoritative evidence;
 - manufacture mastery outcomes;
