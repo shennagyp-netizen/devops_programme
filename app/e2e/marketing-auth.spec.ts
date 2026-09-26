@@ -44,7 +44,7 @@ test.describe("real-user public and authentication journey", () => {
     await page.getByLabel("Password").fill(e2ePassword());
     await page.getByRole("button", { name: "Sign in" }).click();
 
-    await expect(page.getByRole("alert")).toContainText("Invalid email or password.");
+    await expect(page.getByText("Invalid email or password.", { exact: true })).toBeVisible();
     await expect(page).toHaveURL(/\/sign-in$/);
   });
 });
