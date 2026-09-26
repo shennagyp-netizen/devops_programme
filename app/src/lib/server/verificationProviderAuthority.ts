@@ -92,7 +92,7 @@ function challengeFromRow(
   };
 }
 
-function ensureItemAcceptsEvidence(itemId: string) {
+function ensureRuntimeVerificationTarget(itemId: string, targetRef: string) {
   const item = findProgrammeLearningItem(itemId);
   if (!item) {
     throw new Error("Unknown learning item.");
@@ -102,7 +102,19 @@ function ensureItemAcceptsEvidence(itemId: string) {
     throw new Error("This learning item does not use evidence completion.");
   }
 
-  return item;
+  const runtimeTask = runtimeTaskForLesson(item.id);
+  if (
+    !runtimeTask ||
+    runtimeTask.taskId !== targetRef ||
+    runtimeTask.verificationLevel !== "machine-verified"
+  ) {
+    throw new Error("Verification target is not an authorized machine task for this learning item.");
+  }
+
+  return {
+    item,
+    evidenceKind: runtimeTask.scope === "exercise" ? "exercise" : "probe"
+  };
 }
 
 /**
@@ -176,19 +188,7 @@ export async function issueVerificationChallengeForUser(
   const itemId = requireString(command.itemId, "itemId", 200);
   const providerId = requireString(command.providerId, "providerId", 128);
   const targetRef = requireString(command.targetRef, "targetRef", 512);
-  const item = ensureItemAcceptsEvidence(itemId);
-  const runtimeTask = runtimeTaskForLesson(item.id);
-
-  if (
-    !runtimeTask ||
-    runtimeTask.taskId !== targetRef ||
-    runtimeTask.verificationLevel !== "machine-verified"
-  ) {
-    throw new Error("Verification target is not an authorized machine task for this learning item.");
-  }
-
-  const evidenceKind =
-    runtimeTask.scope === "exercise" ? "exercise" : "probe";
+  const { item, evidenceKind } = ensureRuntimeVerificationTarget(itemId, targetRef);
 
   if (!Number.isInteger(ttlMs) || ttlMs < 1 || ttlMs > MAX_CHALLENGE_TTL_MS) {
     throw new Error("Verification challenge TTL is outside the allowed range.");
@@ -333,7 +333,14 @@ export async function acceptVerificationAttestationForUser(
       throw new Error("Verification challenge replay detected.");
     }
 
-    ensureItemAcceptsEvidence(command.itemId);
+    const target = ensureRuntimeVerificationTarget(
+      command.itemId,
+      command.targetRef
+    );
+
+    if (command.evidenceKind !== target.evidenceKind) {
+      throw new Error("Verification evidence kind does not match the server-owned runtime target.");
+    }
 
     return recordTrustedVerifiedEvidenceWithinTransaction(tx, {
       learnerId: safeLearnerId,
