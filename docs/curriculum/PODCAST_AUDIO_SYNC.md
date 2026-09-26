@@ -1,109 +1,95 @@
-# Podcast Audio and React Synchronization
+# Podcast TTS and Cognitive-Level Synchronization
 
 ## Product model
 
-The podcast is fixed authored curriculum content. The private LLM tutor is a separate learner-specific conversation and never rewrites, regenerates, or controls the podcast.
+The podcast is fixed authored curriculum content.
 
-For the cognitive-podcast model, one lesson has four complete fixed podcast files. Each file is one authored speech for the same lesson at a different cognitive level:
+One lesson has one podcast concept with four authored cognitive versions. Each version is a complete speech about the same lesson:
 
-| Level | Authored purpose |
+| Level | Cognitive purpose |
 | --- | --- |
-| 1 — Foundation | Simple mental model and purpose |
-| 2 — Mechanism | Internal mechanism and precise boundaries |
-| 3 — Diagnosis | Failure analysis and evidence |
-| 4 — Design & transfer | System design and transfer to new cases |
+| 1 — Foundation | Build the basic mental model |
+| 2 — Mechanism | Explain how the system works |
+| 3 — Diagnosis | Reason from failures and evidence |
+| 4 — Design & transfer | Apply the model to new system designs |
 
-These are not four playback speeds of one recording.
+These are four distinct podcasts in the learner experience.
 
-Changing level changes the explanation itself: information density, abstraction, causal depth, failure reasoning and transfer demands. The browser must not implement these levels by changing HTMLAudioElement.playbackRate.
+They are not four audio recordings, four audio chunks, four versions made by changing TTS speed, or four LLM-generated conversations.
 
-A separate ordinary playback-rate control is not part of this cognitive-level contract.
+The podcast scripts are authored curriculum. TTS is the speech renderer.
 
-## Fixed speech contract
+## TTS contract
 
-Every published cognitive speech has:
+The source of truth is the cognitive script.
 
-1. a stable episode ID
-2. a cognitive level from 1 through 4
-3. a stable level identity (`foundation`, `mechanism`, `diagnosis`, `design`)
-4. a fixed audio URL
-5. the exact script revision used to author the speech
-6. the real audio duration
-7. transcript turn timings
-8. optional authored learner-action cues
+For every published cognitive version:
 
-The episode bundle is valid only when all four cognitive levels are present exactly once.
+1. the script is fixed and versioned
+2. the cognitive level is explicit
+3. the script is sent to the TTS engine
+4. the TTS engine speaks the script
+5. the transcript remains visible beside the speech
+6. learner controls can pause and resume the TTS session
 
-## Synchronization contract
+No MP3, WAV, recording manifest, or pre-recorded speech asset is required.
 
-The browser uses the actual selected recording as the authoritative clock.
+The repository therefore stores authored text, not recorded audio.
 
-1. audio playback time is authoritative
-2. React locates the current authored transcript section from that clock
-3. React pauses only at authored learning cues
-4. learner interaction may occur
-5. React resumes the same fixed speech
+## Cognitive level is not playback speed
 
-React must never estimate spoken position from:
+There is no cognitive-level control that changes speech synthesis rate.
 
-- character count
-- word count
-- average speaking speed
-- paragraph length
-- cognitive level
-- the number of transcript sections
+Level 1 is cognitively simpler because the authored explanation is simpler.
 
-The cognitive level changes the authored speech. It does not create timing.
+Level 2 increases mechanism and causal detail.
 
-## Script/audio identity
+Level 3 asks the learner to reason through failure and evidence.
 
-Each cognitive speech has its own `scriptVersion`.
+Level 4 requires design, trade-off reasoning and transfer.
 
-Changing one cognitive speech invalidates only that level's audio.
+A learner changing from Level 1 to Level 4 therefore receives a different authored speech, not the same speech spoken faster.
 
-A level-2 script change must not silently invalidate level 1, 3 or 4.
+## Runtime synchronization
 
-This is why the build manifest records cognitive-level script hashes independently.
+TTS timing is runtime behavior, not a pre-recorded timeline.
+
+The browser speech engine provides runtime events such as onstart, onend, and onboundary when supported by the browser.
+
+The application may use those runtime events to highlight the currently spoken authored turn and to publish the current TTS voice state.
+
+The application must not invent exact speech timing from word count, character count, average speaking rate, paragraph length, a guessed duration, or the cognitive level.
+
+When a browser does not provide a useful boundary event, the safe synchronization unit is the current authored speech turn. The application must not pretend to have millisecond-accurate recorded-audio timing.
+
+## Learner-action boundaries
+
+Prediction, lab, recall and transition boundaries are authored against the script.
+
+The TTS player can stop after the relevant authored turn, hand control to the learner, and resume from the next turn.
+
+The private tutor is separate from this mechanism.
+
+The tutor may discuss the learner's reasoning but it cannot rewrite the fixed podcast script or become its timing authority.
 
 ## Fallback
 
-If a selected recording is missing, invalid, stale, or cannot be played, the application keeps the selected authored speech available as transcript content.
+When browser TTS is unavailable, blocked, or fails:
 
-The UI must not claim that the transcript is synchronized to audio when the audio is unavailable.
+- the authored cognitive script remains visible
+- the learner can still read the complete speech
+- the application does not fabricate audio timing
+- no silent recording asset is assumed to exist
 
-A media load/playback failure is therefore a normal fail-closed path, not a reason to synthesize timing.
+## B1.4 cognitive authoring
 
-## Current B1.4 authoring target
+B1.4 now has four authored script files:
 
-B1.4 now has four authored speech sources:
+- B1.4.cognitive-1.txt
+- B1.4.cognitive-2.txt
+- B1.4.cognitive-3.txt
+- B1.4.cognitive-4.txt
 
-- `B1.4.cognitive-1.txt`
-- `B1.4.cognitive-2.txt`
-- `B1.4.cognitive-3.txt`
-- `B1.4.cognitive-4.txt`
+These are four complete explanations of the same lesson at increasing cognitive depth.
 
-The corresponding four MP3 recordings were generated as local MVP assets at the same nominal speech rate. Their pedagogical difference comes from the authored speech content, not TTS rate manipulation.
-
-The binary recordings are currently distributed as a local MVP asset package rather than committed to the production Git tree. The production audio manifest therefore remains fail-closed until those exact binaries are published.
-
-## Private tutor boundary
-
-The LLM tutor is separate.
-
-It may:
-
-- discuss the learner's current confusion
-- ask follow-up questions
-- rephrase a concept conversationally
-- inspect learner reasoning
-- help diagnose an answer
-
-It may not:
-
-- rewrite a podcast speech
-- regenerate a podcast
-- select a different authored cognitive speech based on hidden model preference
-- modify podcast timing
-- become the source of podcast synchronization
-
-The fixed podcast is curriculum. The private tutor is adaptive conversation.
+The production system should generate their speech through TTS at runtime or through a future TTS caching layer. Such caching is an optimization, not a curriculum dependency.
