@@ -17,6 +17,7 @@ import {
 import type { AssistantMessage } from "./types";
 import type { TutorContext } from "../../lib/tutor-contract";
 import { splitTutorSpeech } from "./speech";
+import { shouldRetryTutorStatus, tutorRetryDelayMs } from "./retry";
 
 type RecognitionEvent = {
   results: ArrayLike<ArrayLike<{ transcript: string }>>;
@@ -171,31 +172,63 @@ export function AssistantPanel({
   }, []);
 
   async function requestTutor(conversation: AssistantMessage[]) {
-    const response = await fetch("/api/tutor", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        lessonId: context.lessonId,
-        learningMode: context.learningMode,
-        messages: conversation
-          .slice(-12)
-          .map(({ role, content: message }) => ({
-            role,
-            content: message
-          }))
-      })
+    const requestBody = JSON.stringify({
+      lessonId: context.lessonId,
+      learningMode: context.learningMode,
+      messages: conversation
+        .slice(-12)
+        .map(({ role, content: message }) => ({
+          role,
+          content: message
+        }))
     });
 
-    const payload = (await response.json()) as {
-      text?: string;
-      error?: string;
-    };
+    let lastError: Error | undefined;
 
-    if (!response.ok || !payload.text) {
-      throw new Error(payload.error || "Tutor request failed.");
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        const response = await fetch("/api/tutor", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: requestBody
+        });
+
+        const payload = (await response.json()) as {
+          text?: string;
+          error?: string;
+        };
+
+        if (response.ok && payload.text) {
+          return payload.text;
+        }
+
+        const error = new Error(
+          payload.error || "Tutor request failed."
+        );
+        lastError = error;
+
+        if (!shouldRetryTutorStatus(response.status) || attempt === 2) {
+          throw error;
+        }
+      } catch (error) {
+        const normalized =
+          error instanceof Error
+            ? error
+            : new Error("Tutor request failed.");
+
+        lastError = normalized;
+
+        if (attempt === 2 || normalized.name === "AbortError") {
+          throw normalized;
+        }
+      }
+
+      await new Promise((resolve) =>
+        window.setTimeout(resolve, tutorRetryDelayMs(attempt))
+      );
     }
 
-    return payload.text;
+    throw lastError ?? new Error("Tutor request failed.");
   }
 
   async function submitQuestion(options?: {
