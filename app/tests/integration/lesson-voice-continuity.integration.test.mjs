@@ -11,7 +11,7 @@ describe("continuous fixed TTS explanation architecture", () => {
 
     expect(lessonPanel).toContain("<PodcastCoach lesson={lesson} />");
     expect(lessonPanel).toContain(
-      'type Mode = "learn" | "do" | "recall" | "design" | "assessment"'
+      'export type LessonMode = "learn" | "do" | "recall" | "design" | "assessment"'
     );
     expect(lessonPanel).not.toContain('type Mode = "listen"');
   });
