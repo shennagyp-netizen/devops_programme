@@ -6,10 +6,10 @@ export function e2ePassword() {
   return password;
 }
 
-export function e2eEmail(testName: string, workerIndex = 0) {
+export function e2eEmail(testName: string, workerIndex = 0, retry = 0) {
   const run = process.env.GITHUB_RUN_ID ?? "local";
   const safe = testName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  return `e2e+${safe}-${run}-${workerIndex}@example.com`;
+  return `e2e+${safe}-${run}-${workerIndex}-${retry}@example.com`;
 }
 
 export async function signUp(
