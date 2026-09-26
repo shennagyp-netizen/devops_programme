@@ -36,6 +36,14 @@ test.describe("real-user learning gateway journey", () => {
     const email = e2eEmail(testInfo.title, testInfo.workerIndex, testInfo.retry);
     await signUp(page, email, "gateway-terminal");
 
+    await page.getByText("DevOps Through Problems", { exact: true }).click();
+    await expect(
+      page.getByRole("heading", { name: "The App Is Slow — Where Do We Look?", exact: true })
+    ).toBeVisible();
+
+    await page.getByText("Linux", { exact: true }).click();
+    await expect(page.getByText("Environment: Linux · bash", { exact: true })).toBeVisible();
+
     await page.getByRole("button", { name: "do", exact: true }).click();
     await expect(page.getByText("VERIFIED LAPTOP TERMINAL", { exact: true })).toBeVisible();
     await expect(page.getByText("npm run terminal-agent", { exact: true })).toBeVisible();
