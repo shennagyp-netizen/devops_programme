@@ -1,8 +1,10 @@
 import type { AnimationDefinitionV1 } from "./contracts";
+import { dnsResolutionAnimation } from "./scenarios/dnsResolution";
 import { httpRequestAnimation } from "./scenarios/httpRequest";
 
 export const animationLibrary: readonly AnimationDefinitionV1[] = [
-  httpRequestAnimation
+  httpRequestAnimation,
+  dnsResolutionAnimation
 ];
 
 export function getAnimation(animationId: string): AnimationDefinitionV1 | undefined {
