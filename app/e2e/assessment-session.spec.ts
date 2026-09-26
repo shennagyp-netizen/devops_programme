@@ -44,7 +44,11 @@ test.describe("real-user assessment session", () => {
     await expect(page.getByText(/ITEM 1 OF/)).toBeVisible();
 
     if (answer.kind === "radio") {
-      await expect(page.locator('input[type="radio"]:checked')).toHaveCount(1);
+      await expect(
+        page
+          .getByRole("radiogroup", { name: "Assessment response", exact: true })
+          .locator('input[type="radio"]:checked')
+      ).toHaveCount(1);
     } else {
       await expect(page.getByLabel(/Response \/ evidence/i)).toHaveValue(
         "Evidence recorded during the user journey."
