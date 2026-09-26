@@ -1,86 +1,74 @@
 # Project Integrity Audit
 
-**Audit date:** 2026-09-26  
-**Scope:** V3 MVP repository documents, application contracts, learner-state boundary, tutor boundary and executable validation.
+**Audit date:** 2026-09-26
+**Scope:** V3 MVP learner identity, progress, tutor and hands-on boundaries.
 
 ## Current architecture
 
-V3 is a single React/Next.js learner application.
+V3 is a single React/Next.js learning application with simple first-party authentication.
 
-The public learning gateway does not require an account.
+The application uses:
 
-Learner completion, hands-on evidence and mastery-remediation attempts are browser-local state. They are intentionally non-authoritative.
+- email/password;
+- scrypt password hashing;
+- an opaque HTTP-only session cookie;
+- PostgreSQL/Drizzle for users, sessions and progress.
 
-The application does not use learner sessions, learner IDs or terminal-agent pairing tokens.
+It does not use Clerk, OAuth, JWT or a separate API-token identity system.
 
-The AI tutor is a same-application server relay over public curriculum data. It uses strict request parsing, user-only message roles, bounded request size and best-effort anonymous rate limiting.
+## Important security boundary
 
-## Security boundary
+The browser cannot choose the learner identity used for saved progress.
 
-The MVP makes a deliberate distinction between:
+The server obtains the learner from the authenticated session.
 
-**Learning state**
-- browser-controlled
-- useful for continuity during local use
-- resettable by clearing site storage
-- not suitable as a certificate, transcript or entitlement record.
+Completion writes validate their input and bind the record to that server-derived user.
 
-**Execution evidence**
-- manual learner execution
-- structured browser validation
-- no machine-verification claim.
+## Complexity deliberately removed
 
-**Authored curriculum**
-- repository-controlled
-- server-resolved by lesson ID for tutor context
-- not mutated by the tutor.
+- external identity provider;
+- OAuth/social login;
+- JWT access/refresh infrastructure;
+- custom progress REST API;
+- terminal pairing-token authentication;
+- a second auth system for the tutor.
 
-## Vulnerabilities removed
+## Remaining MVP limitations
 
-1. **Self-hosted account/session authority removed.** The previous password/session/database learner identity path is no longer reachable from the application and its source layer has been removed.
-2. **Forged server mastery removed.** There is no Server Action accepting learner-supplied `mastered` results.
-3. **Forged machine-verification completion removed.** The learner app stores only `structured` completion evidence.
-4. **Local terminal pairing-token authority removed.** The browser no longer stores or submits a terminal-agent token.
-5. **Remote machine evidence import removed.** JSON evidence cannot be promoted to learner completion through the UI.
-6. **Client-forged tutor assistant roles rejected.** The tutor contract accepts only user messages.
-7. **Tutor request size is bounded and anonymous rate limiting is applied.** The limiter is intentionally best-effort because the MVP has no authenticated identity.
-8. **Tutor context is server-derived from authored lesson data.** Client-provided lesson title, objective or domain are not trusted.
-9. **Completion is explicitly local/non-authoritative.** This removes the false security promise of a server-backed progress transcript from the MVP.
+- account recovery is not yet a product feature;
+- email verification is not required for the MVP;
+- there is no role/admin system;
+- session management is intentionally small;
+- browser-entered hands-on evidence is not machine attestation.
 
-## Accepted MVP limitations
+These are explicit MVP boundaries.
 
-- Browser local storage can be modified by the learner.
-- Progress does not synchronize between devices.
-- The public tutor can be abused by distributed clients; deployment/provider spending limits remain necessary.
-- The tutor is not a private personal-data service.
-- Assessment item pools remain pilot content and are not a certification delivery system.
-- Machine verification is deferred.
+## Red-team rules
 
-These are product boundaries, not hidden security assumptions.
+The tests must reject:
+
+- client-supplied learner IDs;
+- plaintext password storage;
+- insecure session cookies;
+- cross-user progress access;
+- unauthenticated access to /learn;
+- forged progress records;
+- arbitrary shell execution through the learner UI.
+
+The tutor must also:
+
+- derive lesson context server-side;
+- reject malformed/oversized requests;
+- keep provider credentials server-side.
 
 ## Validation expectation
 
-The authoritative gate for this branch must confirm:
+The repository gate must pass:
 
-- curriculum/content contracts
-- assessment/diagnostic/project contracts
-- local MVP architecture contract
-- tutor red-team contracts
-- unit/integration tests
-- TypeScript
+- content and curriculum contracts;
+- authenticated progress architecture contract;
+- unit/integration tests;
+- TypeScript;
 - Next.js production build.
 
-A green test suite must not be interpreted as secure certification infrastructure.
-
-## Future architecture trigger
-
-Introduce authenticated durable state only when at least one of these becomes a real requirement:
-
-- paid entitlement
-- cross-device history
-- certification
-- secure learner transcript
-- instructor/admin access
-- trusted machine attestation.
-
-That future change requires a new threat model rather than restoring the removed V3 account code.
+Authentication is part of the MVP security boundary. Removing it is not a security improvement; it would remove the learner identity required for persistent progress.

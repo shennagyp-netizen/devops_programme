@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { CourseLesson } from "../data/courseLessons";
 import type { PlatformId } from "../data/programme";
 import type { DiagnosticRecommendation } from "../data/diagnostics";
+import type { MasteryAttemptRecord } from "../lib/mastery-contract";
 import { diagnosticBySection } from "../data/diagnostics";
 import { addEvidence, recordHandsOnEvidence } from "../data/evidence";
 import {
@@ -38,6 +39,7 @@ export function LessonPanel({
   onEvidenceRecorded,
   progressReady = true,
   progressSaving = false,
+  initialMasteryHistory = [],
   onModeChange
 }: {
   lesson: CourseLesson;
@@ -49,8 +51,10 @@ export function LessonPanel({
   onEvidenceRecorded?: () => void;
   progressReady?: boolean;
   progressSaving?: boolean;
+  initialMasteryHistory?: MasteryAttemptRecord[];
   onModeChange?: (mode: LessonMode) => void;
 }) {
+  void initialMasteryHistory;
   const [mode, setMode] = useState<LessonMode>("learn");
   const [showTheory, setShowTheory] = useState(true);
   const evidenceKey = `devops-programme-hands-on-evidence:${lesson.id}`;

@@ -4,17 +4,16 @@ A multi-course, multi-modal DevOps learning application built with React and Nex
 
 ## MVP boundary
 
-V3 is intentionally simple:
+V3 is intentionally simple: one app, one small first-party auth layer, and no external identity platform.
 
-- no account or sign-in flow;
-- no learner sessions or learner IDs;
-- no pairing tokens;
-- no database-backed learner progress;
-- progress, structured evidence and remediation state stay in the browser;
-- machine verification is disabled in the learner UI;
-- the AI tutor uses public authored curriculum context and anonymous best-effort throttling.
+- email/password account;
+- scrypt password hashing;
+- HTTP-only session cookie;
+- PostgreSQL-backed saved progress;
+- no Clerk, OAuth, JWT or learner API-token system;
+- no terminal pairing tokens.
 
-Clearing browser/site storage resets local learning state. This MVP state is not a secure transcript, certificate or entitlement record.
+The learner gateway requires the simple account session. The public programme website remains public.
 
 The authoritative security/product boundary is docs/MVP_ARCHITECTURE_V3.md.
 
