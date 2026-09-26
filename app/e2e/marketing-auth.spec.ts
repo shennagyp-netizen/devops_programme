@@ -25,6 +25,11 @@ test.describe("real-user public and authentication journey", () => {
     await expect(page.getByText("intermediate", { exact: true })).toBeVisible();
     await signOut(page);
 
+    await page.goto("/learn");
+    await expect(page).toHaveURL(/\/sign-in$/);
+    await expect(page.getByRole("heading", { name: "Welcome back" })).toBeVisible();
+
+    await page.goto("/");
     await expect(page.getByRole("heading", { name: "Learn DevOps by operating systems, breaking them, and recovering them." })).toBeVisible();
     await signIn(page, email, "auth-resignin");
 
