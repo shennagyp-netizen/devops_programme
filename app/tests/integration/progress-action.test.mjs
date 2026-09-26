@@ -57,17 +57,24 @@ describe("completeLearningItemAction", () => {
     expect(completeForUserMock).not.toHaveBeenCalled();
   });
 
-  it("rejects an unknown item before persistence", async () => {
+  it("propagates authority rejection without bypassing the authority service", async () => {
     currentUserMock.mockResolvedValue({
       id: "user_456",
       email: "bob@example.com"
     });
+    completeForUserMock.mockRejectedValue(new Error("Unknown learning item."));
 
     await expect(
-      completeLearningItemAction({ itemId: "attacker-controlled-id" })
+      completeLearningItemAction({
+        itemId: "attacker-controlled-id",
+        evidenceRefs: ["evidence-1"]
+      })
     ).rejects.toThrow(/unknown learning item/i);
 
-    expect(completeForUserMock).not.toHaveBeenCalled();
+    expect(completeForUserMock).toHaveBeenCalledWith("user_456", {
+      itemId: "attacker-controlled-id",
+      evidenceRefs: ["evidence-1"]
+    });
   });
 
   it("rejects browser trust assertions rather than persisting them", async () => {
