@@ -49,7 +49,7 @@ export const tutorToolDefinitions = [
     type: "function",
     name: "get_runtime_contract",
     description:
-      "Read the published runtime verification contract for the current lesson. It describes allowlisted operations; it never executes them.",
+      "Read-only access to the published runtime verification contract for the current lesson. It describes allowlisted operations; it never executes them.",
     parameters: {
       type: "object",
       properties: {
