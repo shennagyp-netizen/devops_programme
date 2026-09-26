@@ -26,12 +26,12 @@ describe("verification request contracts", () => {
       parseVerificationChallengeCommand({
         itemId: "B1.2",
         providerId: "local-terminal",
-        evidenceKind: "exercise"
+        targetRef: "runtime-exercise-B1.2"
       })
     ).toEqual({
       itemId: "B1.2",
       providerId: "local-terminal",
-      evidenceKind: "exercise"
+      targetRef: "runtime-exercise-B1.2"
     });
   });
 
