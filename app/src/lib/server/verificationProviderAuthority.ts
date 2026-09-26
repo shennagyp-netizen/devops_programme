@@ -4,7 +4,7 @@ import {
   randomBytes,
   verify as verifySignature
 } from "node:crypto";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 import { getDb } from "./db";
 import {
   verificationAttempts,
@@ -86,6 +86,7 @@ function challengeFromRow(
     targetRef: row.targetRef,
     evidenceKind: row.evidenceKind,
     providerId: row.providerId,
+    providerKeyId: row.providerKeyId,
     issuedAt: row.issuedAt.toISOString(),
     expiresAt: row.expiresAt.toISOString(),
     nonce: row.nonce
@@ -205,7 +206,7 @@ export async function issueVerificationChallengeForUser(
         isNull(verificationProviderKeys.revokedAt)
       )
     )
-    .orderBy(verificationProviderKeys.createdAt)
+    .orderBy(desc(verificationProviderKeys.createdAt))
     .limit(1);
 
   if (!key) {
@@ -224,6 +225,7 @@ export async function issueVerificationChallengeForUser(
       targetRef,
       evidenceKind,
       providerId,
+      providerKeyId: key.keyId,
       nonce,
       nonceHash: `sha256:${sha256(nonce)}`,
       issuedAt,
@@ -273,6 +275,7 @@ export async function acceptVerificationAttestationForUser(
         and(
           eq(verificationProviderKeys.userId, safeLearnerId),
           eq(verificationProviderKeys.providerId, attempt.providerId),
+          eq(verificationProviderKeys.keyId, attempt.providerKeyId),
           eq(verificationProviderKeys.keyId, command.keyId),
           isNull(verificationProviderKeys.revokedAt)
         )
