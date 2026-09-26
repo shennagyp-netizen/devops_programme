@@ -70,6 +70,12 @@ export async function recordTrustedVerifiedEvidence(
     256
   );
 
+  if (!/^sha256:[0-9a-f]{64}$/i.test(attestationDigest)) {
+    throw new Error(
+      "attestationDigest must use the sha256:<64 hex characters> format."
+    );
+  }
+
   const db = getDb();
 
   const [row] = await db
