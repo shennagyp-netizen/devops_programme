@@ -16,16 +16,18 @@ V3 is intentionally additive. Main has not been replaced.
 
 ## Completed in this branch
 
-- Established v3 learning-framework framing.
-- Added a reusable framework contract layer.
-- Added the first pure learning-authority policy seam.
-- Added TDD coverage for:
-  - client-declared completion rejection
-  - learner/evidence ownership mismatch
-  - learning-item/evidence mismatch
-  - successful authoritative evidence transition
-- Documented framework/programme/adapter boundaries.
-- Documented the trust model and future attestation direction.
+- Established the reusable v3 learning-framework framing.
+- Added the framework authority contracts and pure policy.
+- Added a strict completion command boundary with browser trust fields rejected.
+- Added a shared immutable programme registry with explicit evidence completion policies.
+- Added server-owned verified evidence persistence with attestation-digest validation.
+- Added transactional completion authority with proof links and legacy-row normalization.
+- Removed the legacy direct completion writer from the progress service.
+- Filtered progress reads to authoritative completions only.
+- Gated the UI completion control on server-verified evidence.
+- Added TDD and red-team coverage for the new trust boundary.
+- Full GitHub Actions gate is green for the current branch state.
+
 
 ## Important architectural decision
 
@@ -35,41 +37,78 @@ First create the authoritative policy boundary, then migrate current persistence
 
 ## Latest TDD and red-team work
 
-- Added a strict completion command parser that rejects browser identity/trust fields and bounds evidence references.
-- Added an authoritative DevOps programme-item registry so the server derives item metadata instead of trusting the browser.
-- Updated the live completion action and UI to use the minimal command.
-- Added `docs/v3/REDTEAM.md`; the legacy evidence-free completion path remains explicitly open.
+The completion-authority migration is complete for this slice. The remaining trust gap is now explicitly the **verification-provider attestation boundary**, not the completion persistence path.
 
 ### Immediate next work
 
-### A. Server authority
+### A. Verification-provider authority
 
-Introduce a server-side transition service that:
-
-1. authenticates the learner
-2. resolves the authoritative learning item
-3. resolves evidence references from the database
-4. evaluates the v3 policy
-5. performs the state transition transactionally
-
-### B. Evidence authority
-
-Introduce:
+Formalize the provider SPI:
 
 ```text
-EvidenceRecord
-VerificationAttempt
 VerificationProvider
-Attestation
+  -> challenge
+  -> provider execution
+  -> attestation
+  -> server verification
+  -> VerifiedEvidenceRecord
 ```
 
-Keep browser evidence and verified evidence as separate concepts.
+The browser may request verification, but it must never be able to mint the resulting `VerifiedEvidenceRecord`.
 
-### C. Completion migration
+### B. Machine verification migration
 
-Replace the current direct completion action with a v3 transition request.
+Move local-agent and SSH execution behind the provider boundary.
 
-The request should contain references, not client claims of truth. The current live action is only a metadata-boundary step; it must not be considered the final evidence gate.
+The server must verify:
+
+- task identity and contract version
+- learner binding
+- challenge/reference identity
+- attestation digest
+- issued-at / expiry / replay protection
+- provider identity
+- execution-mode constraints
+
+### C. Mastery migration
+
+Move mastery outcome semantics behind the same authority.
+
+### D. Assessment migration
+
+Issue server-owned assessment instances and score them against server-owned keys/rubrics.
+
+### E. Tutor migration
+
+Reconstruct trusted assistant history server-side and add shared distributed rate limiting.
+
+### F. Quality hardening
+
+Add a security regression gate that proves:
+
+- authoritative completion requires an evidence proof link;
+- browser/localStorage evidence cannot become server-authoritative;
+- old forged metadata is normalized or ignored;
+- new migrations preserve referential integrity.
+
+## V3 quality gate
+
+A feature is not complete until:
+
+```text
+TDD
++
+security red-team
++
+server-authority test
++
+integration test
++
+documentation
++
+CI green
+```
+
 
 ### D. Mastery migration
 
@@ -129,9 +168,20 @@ Do not:
 - replace working DevOps content
 - treat localStorage as authoritative learner state
 
-## Exit criterion for v3 foundation
+## Exit criterion for the current V3.1 slice
 
-The framework foundation is ready for broader migration when:
+This slice is complete when:
+
+- browser completion payloads cannot mint completion;
+- completion requires server-verified evidence;
+- legacy completion metadata is not trusted as authoritative;
+- evidence proof links are transactional;
+- programme metadata is server/registry authoritative;
+- TDD, red-team, typecheck, and production build are green.
+
+## Exit criterion for the broader V3 foundation
+
+The broader framework is ready for broader migration when:
 
 - completion cannot be forged through a browser payload
 - evidence provenance is server-verifiable
