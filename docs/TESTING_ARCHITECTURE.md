@@ -173,23 +173,28 @@ The MVP contract covers:
 
 
 
-## Four cognitive podcast TTS versions — 2026-09-26
 
-The fixed podcast contract is one authored podcast concept with four complete cognitive speeches:
-1. Foundation
-2. Mechanism
-3. Diagnosis
-4. Design & transfer
+## Four explanation-level podcast TTS versions — 2026-09-26
 
-These are text-authored TTS versions. The repository must not depend on human recordings or committed audio assets.
+The fixed podcast contract is one authored podcast concept with four complete explanations of the same information:
+1. Very simple
+2. Simple technical
+3. Professional
+4. Expert
+
+Every explanation must cover the same information-unit set in the same order. B1.4 uses 12 authored information units and a build-time equivalence checker.
+
+Speech speed is an independent presentation control: 1×, 1.5×, and 2×.
 
 Required tests:
-- reject bundles missing one of the four cognitive levels
-- reject duplicate or mismatched level identities
-- preserve independent script version hashes per level
-- verify the TTS player uses SpeechSynthesisUtterance
-- verify cognitive level changes the selected script rather than speech playback rate
-- verify transcript highlighting follows runtime TTS events
-- verify browser TTS failure leaves the authored transcript usable
-- verify no audio URL, recording manifest or MP3 dependency exists in the podcast runtime
+- reject bundles missing one explanation level
+- reject duplicate or mismatched explanation identities
+- preserve independent script hashes
+- verify all four scripts declare the same information-unit IDs in the same order
+- verify TTS speaks the selected authored text
+- verify 1×, 1.5×, and 2× change only speech rate
+- verify speed changes never select, skip, reorder, or shorten learning content
+- verify changing speed during speech restarts the current authored turn rather than skipping it
+- verify transcript fallback when browser TTS is unavailable
+- verify no MP3, WAV, audio URL, or recording manifest is part of podcast generation
 - verify the private LLM tutor remains outside podcast generation
