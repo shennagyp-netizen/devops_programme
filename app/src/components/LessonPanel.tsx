@@ -80,10 +80,10 @@ export function LessonPanel({
 
       const parsed = JSON.parse(stored) as {
         evidence?: Record<string, string>;
-        verified?: boolean;
+        validated?: boolean;
       };
       setHandsOnEvidence(parsed.evidence ?? {});
-      setExerciseRecorded(parsed.verified === true);
+      setExerciseRecorded(parsed.validated === true);
     } catch {
       setHandsOnEvidence({});
       setExerciseRecorded(false);
@@ -400,7 +400,7 @@ export function LessonPanel({
                     JSON.stringify({
                       taskId: handsOnTask.id,
                       evidence: handsOnEvidence,
-                      verified: true,
+                      validated: true,
                       verificationLevel: handsOnTask.verificationLevel,
                       savedAt: new Date().toISOString()
                     })
