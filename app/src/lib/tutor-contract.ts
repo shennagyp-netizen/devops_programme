@@ -1,5 +1,12 @@
 export type TutorRole = "user" | "assistant";
 
+export type TutorLearningMode =
+  | "learn"
+  | "do"
+  | "recall"
+  | "design"
+  | "assessment";
+
 export type TutorMessage = {
   role: TutorRole;
   content: string;
@@ -12,16 +19,26 @@ export type TutorContext = {
   domain: string;
   projectId: string;
   course: string;
+  learningMode: TutorLearningMode;
 };
 
 export type TutorRequest = {
   lessonId: string;
+  learningMode: TutorLearningMode;
   messages: TutorMessage[];
 };
 
 const MAX_MESSAGES = 12;
 const MAX_MESSAGE_CHARS = 2000;
 const MAX_LESSON_ID_CHARS = 64;
+
+const learningModes = new Set<TutorLearningMode>([
+  "learn",
+  "do",
+  "recall",
+  "design",
+  "assessment"
+]);
 
 function cleanString(value: unknown) {
   if (typeof value !== "string") return "";
@@ -36,11 +53,13 @@ export function parseTutorRequest(value: unknown): TutorRequest | null {
 
   const raw = value as Record<string, unknown>;
   const lessonId = cleanString(raw.lessonId);
+  const learningMode = raw.learningMode;
   const rawMessages = raw.messages;
 
   if (
     !lessonId ||
     lessonId.length > MAX_LESSON_ID_CHARS ||
+    !learningModes.has(learningMode as TutorLearningMode) ||
     !Array.isArray(rawMessages) ||
     rawMessages.length === 0 ||
     rawMessages.length > MAX_MESSAGES
@@ -71,7 +90,9 @@ export function parseTutorRequest(value: unknown): TutorRequest | null {
   }
 
   const lastMessage = messages.at(-1);
-  return lastMessage?.role === "user" ? { lessonId, messages } : null;
+  return lastMessage?.role === "user"
+    ? { lessonId, learningMode: learningMode as TutorLearningMode, messages }
+    : null;
 }
 
 export const tutorLimits = {
