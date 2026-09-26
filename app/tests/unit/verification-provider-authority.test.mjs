@@ -356,7 +356,7 @@ describe("verification provider authority", () => {
       evidenceKind: "exercise",
       providerId: "local-terminal",
       nonce: "nonce-1",
-      nonceHash: nonceHash(challenge.nonce),
+      nonceHash: nonceHash("nonce-1"),
       issuedAt: new Date("2026-09-26T12:00:00.000Z"),
       expiresAt: new Date("2026-09-26T12:05:00.000Z"),
       consumedAt: new Date("2026-09-26T12:01:00.000Z")
