@@ -1,26 +1,26 @@
 import type { AssessmentItem } from "../../data/assessment";
 
-import beginner_B_F1 from "../../../../exams/items/beginner/B-F1.json" with { type: "json" };
-import beginner_B_F2 from "../../../../exams/items/beginner/B-F2.json" with { type: "json" };
-import beginner_B_A1 from "../../../../exams/items/beginner/B-A1.json" with { type: "json" };
-import beginner_B_A2 from "../../../../exams/items/beginner/B-A2.json" with { type: "json" };
-import beginner_B_A3 from "../../../../exams/items/beginner/B-A3.json" with { type: "json" };
-import beginner_B_A4 from "../../../../exams/items/beginner/B-A4.json" with { type: "json" };
-import beginner_B_A5 from "../../../../exams/items/beginner/B-A5.json" with { type: "json" };
-import intermediate_I_F1 from "../../../../exams/items/intermediate/I-F1.json" with { type: "json" };
-import intermediate_I_F2 from "../../../../exams/items/intermediate/I-F2.json" with { type: "json" };
-import intermediate_I_A1 from "../../../../exams/items/intermediate/I-A1.json" with { type: "json" };
-import intermediate_I_A2 from "../../../../exams/items/intermediate/I-A2.json" with { type: "json" };
-import intermediate_I_A3 from "../../../../exams/items/intermediate/I-A3.json" with { type: "json" };
-import intermediate_I_A4 from "../../../../exams/items/intermediate/I-A4.json" with { type: "json" };
-import intermediate_I_A5 from "../../../../exams/items/intermediate/I-A5.json" with { type: "json" };
-import intermediate_I_A6 from "../../../../exams/items/intermediate/I-A6.json" with { type: "json" };
-import advanced_A_F1 from "../../../../exams/items/advanced/A-F1.json" with { type: "json" };
-import advanced_A_F2 from "../../../../exams/items/advanced/A-F2.json" with { type: "json" };
-import advanced_A_F3 from "../../../../exams/items/advanced/A-F3.json" with { type: "json" };
-import advanced_A_A1 from "../../../../exams/items/advanced/A-A1.json" with { type: "json" };
-import advanced_A_A2 from "../../../../exams/items/advanced/A-A2.json" with { type: "json" };
-import advanced_A_A3 from "../../../../exams/items/advanced/A-A3.json" with { type: "json" };
+import beginner_B_F1 from "../../data/assessmentBanks/beginner/B-F1.json" with { type: "json" };
+import beginner_B_F2 from "../../data/assessmentBanks/beginner/B-F2.json" with { type: "json" };
+import beginner_B_A1 from "../../data/assessmentBanks/beginner/B-A1.json" with { type: "json" };
+import beginner_B_A2 from "../../data/assessmentBanks/beginner/B-A2.json" with { type: "json" };
+import beginner_B_A3 from "../../data/assessmentBanks/beginner/B-A3.json" with { type: "json" };
+import beginner_B_A4 from "../../data/assessmentBanks/beginner/B-A4.json" with { type: "json" };
+import beginner_B_A5 from "../../data/assessmentBanks/beginner/B-A5.json" with { type: "json" };
+import intermediate_I_F1 from "../../data/assessmentBanks/intermediate/I-F1.json" with { type: "json" };
+import intermediate_I_F2 from "../../data/assessmentBanks/intermediate/I-F2.json" with { type: "json" };
+import intermediate_I_A1 from "../../data/assessmentBanks/intermediate/I-A1.json" with { type: "json" };
+import intermediate_I_A2 from "../../data/assessmentBanks/intermediate/I-A2.json" with { type: "json" };
+import intermediate_I_A3 from "../../data/assessmentBanks/intermediate/I-A3.json" with { type: "json" };
+import intermediate_I_A4 from "../../data/assessmentBanks/intermediate/I-A4.json" with { type: "json" };
+import intermediate_I_A5 from "../../data/assessmentBanks/intermediate/I-A5.json" with { type: "json" };
+import intermediate_I_A6 from "../../data/assessmentBanks/intermediate/I-A6.json" with { type: "json" };
+import advanced_A_F1 from "../../data/assessmentBanks/advanced/A-F1.json" with { type: "json" };
+import advanced_A_F2 from "../../data/assessmentBanks/advanced/A-F2.json" with { type: "json" };
+import advanced_A_F3 from "../../data/assessmentBanks/advanced/A-F3.json" with { type: "json" };
+import advanced_A_A1 from "../../data/assessmentBanks/advanced/A-A1.json" with { type: "json" };
+import advanced_A_A2 from "../../data/assessmentBanks/advanced/A-A2.json" with { type: "json" };
+import advanced_A_A3 from "../../data/assessmentBanks/advanced/A-A3.json" with { type: "json" };
 
 type AssessmentBankFile = {
   sectionId: string;
