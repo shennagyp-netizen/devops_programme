@@ -11,6 +11,7 @@ import {
   verificationProviderKeys
 } from "./schema";
 import { findProgrammeLearningItem } from "./programmeAuthority";
+import { runtimeTaskForLesson } from "../../data/runtimeVerification";
 import {
   recordTrustedVerifiedEvidenceWithinTransaction
 } from "./evidenceAuthority";
@@ -82,6 +83,7 @@ function challengeFromRow(
     id: row.id,
     learnerId: row.userId,
     itemId: row.itemId,
+    targetRef: row.targetRef,
     evidenceKind: row.evidenceKind,
     providerId: row.providerId,
     issuedAt: row.issuedAt.toISOString(),
@@ -173,8 +175,20 @@ export async function issueVerificationChallengeForUser(
   const safeLearnerId = requireLearnerId(learnerId);
   const itemId = requireString(command.itemId, "itemId", 200);
   const providerId = requireString(command.providerId, "providerId", 128);
-  const evidenceKind = requireString(command.evidenceKind, "evidenceKind", 128);
+  const targetRef = requireString(command.targetRef, "targetRef", 512);
   const item = ensureItemAcceptsEvidence(itemId);
+  const runtimeTask = runtimeTaskForLesson(item.id);
+
+  if (
+    !runtimeTask ||
+    runtimeTask.taskId !== targetRef ||
+    runtimeTask.verificationLevel !== "machine-verified"
+  ) {
+    throw new Error("Verification target is not an authorized machine task for this learning item.");
+  }
+
+  const evidenceKind =
+    runtimeTask.scope === "exercise" ? "exercise" : "probe";
 
   if (!Number.isInteger(ttlMs) || ttlMs < 1 || ttlMs > MAX_CHALLENGE_TTL_MS) {
     throw new Error("Verification challenge TTL is outside the allowed range.");
@@ -207,6 +221,7 @@ export async function issueVerificationChallengeForUser(
     .values({
       userId: safeLearnerId,
       itemId: item.id,
+      targetRef,
       evidenceKind,
       providerId,
       nonce,
