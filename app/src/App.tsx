@@ -68,7 +68,7 @@ export default function App({
   const verifiedEvidenceByItem = useMemo(() => {
     const grouped = new Map<string, VerifiedEvidenceRecord[]>();
 
-    for (const evidence of initialVerifiedEvidence) {
+    for (const evidence of verifiedEvidence) {
       const current = grouped.get(evidence.itemId) ?? [];
       current.push(evidence);
       grouped.set(evidence.itemId, current);
