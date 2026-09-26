@@ -2,7 +2,13 @@ import type { MachineVerificationEnvelope } from "./runtimeVerification";
 import type { VerificationAttestation, VerificationChallenge } from "../framework/verification";
 
 export type LocalTerminalAgentStatus =
-  | { available: true; version: string; platform: string }
+  | {
+      available: true;
+      version: string;
+      platform: string;
+      providerId: string;
+      providerKeyId: string;
+    }
   | { available: false; reason: string };
 
 const AGENT_URL = "http://127.0.0.1:4317";
@@ -41,7 +47,9 @@ export async function localTerminalAgentStatus(): Promise<LocalTerminalAgentStat
     return {
       available: true,
       version: String(body.version ?? "unknown"),
-      platform: String(body.platform ?? "unknown")
+      platform: String(body.platform ?? "unknown"),
+      providerId: String(body.providerId ?? "local-terminal"),
+      providerKeyId: String(body.providerKeyId ?? "unknown")
     };
   } catch {
     return {
