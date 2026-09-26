@@ -108,11 +108,7 @@ export default function App({
       if (!selected) throw new Error("Selected lesson no longer exists.");
 
       await completeLearningItemAction({
-        itemType: "lesson",
-        itemId: id,
-        course: selected.course,
-        projectId: selected.projectId,
-        verificationLevel: "exercise-validated"
+        itemId: id
       });
       setM((current) => (current.includes(id) ? current : [...current, id]));
     } catch (error) {
