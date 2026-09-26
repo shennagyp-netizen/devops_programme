@@ -8,6 +8,7 @@ const attestation = {
   challengeId: "challenge-1",
   learnerId: "user-1",
   itemId: "B1.2",
+  targetRef: "runtime-exercise-B1.2",
   evidenceKind: "exercise",
   providerId: "local-terminal",
   keyId: "key-1",
@@ -40,6 +41,7 @@ describe("verification request contracts", () => {
       parseVerificationChallengeCommand({
         itemId: "B1.2",
         providerId: "local-terminal",
+        targetRef: "runtime-exercise-B1.2",
         evidenceKind: "exercise",
         learnerId: "attacker"
       })
