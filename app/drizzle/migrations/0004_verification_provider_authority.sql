@@ -17,10 +17,14 @@ CREATE UNIQUE INDEX IF NOT EXISTS "verification_provider_keys_user_provider_key_
 CREATE INDEX IF NOT EXISTS "verification_provider_keys_user_provider_idx"
   ON "verification_provider_keys" ("user_id", "provider_id", "created_at");
 
+ALTER TABLE "verification_attempts"
+  ADD COLUMN IF NOT EXISTS "target_ref" text;
+
 CREATE TABLE IF NOT EXISTS "verification_attempts" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   "user_id" text NOT NULL REFERENCES "auth_users"("id") ON DELETE CASCADE,
   "item_id" text NOT NULL,
+  "target_ref" text NOT NULL,
   "evidence_kind" text NOT NULL,
   "provider_id" text NOT NULL,
   "nonce" text NOT NULL,
