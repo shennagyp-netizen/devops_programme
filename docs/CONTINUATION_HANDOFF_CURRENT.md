@@ -1952,8 +1952,10 @@ Current implementation in this slice:
 - Recovery methods include the representations already authored by the mastery engine: plain language, analogy, visual mechanism, causal mechanism, worked example, controlled failure and guided retry, depending on remediation stage.
 - Recovery podcast turns are stable and lesson/stage/attempt-specific. The application uses guided transcript mode until a real aligned recording and timing manifest exists; it never invents audio timing.
 - All nine continuous projects now have four explicit phases, estimated workload and phase exit evidence.
-- Project phases target roughly 300 total hours across the nine-project spine.
-- ProjectPanel now exposes phase workload and exit evidence.
+- Project phases target 308 total hours across the nine-project spine.
+- Every project now has at least eight explicit milestones, four professional deliverables and four review gates in addition to its phased workload and exit evidence.
+- The CI project contract isolates the milestone block when counting milestones, so unrelated failure/evidence arrays cannot satisfy the milestone requirement accidentally.
+- ProjectPanel now exposes phase workload, exit evidence, professional deliverables and review gates through a dedicated responsive project grid.
 - The public programme site states the US$2,000 complete-programme tuition target and explains the product depth supporting that target.
 - `scripts/check-project-contract.mjs` now rejects projects that lack the deeper phase contract or whose phase hours do not equal the declared project workload.
 - Red-team/unit coverage includes the recovery podcast teaching-path contract.
