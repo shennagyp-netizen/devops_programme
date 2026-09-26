@@ -43,7 +43,8 @@ describe("lesson panel integration contract", () => {
   it("keeps completion gated by the required exercise", () => {
     const code = source();
 
-    expect(code).toContain("!exerciseRecorded && !mastered");
+    expect(code).toContain("!authoritativeEvidenceReady && !mastered");
+    expect(code).toContain("Waiting for server verification");
     expect(code).toContain("Complete the required exercise first");
     expect(code).toContain("Validate and record evidence");
     expect(code).toContain("setExerciseRecorded(true)");
@@ -87,7 +88,7 @@ describe("lesson panel integration contract", () => {
       "Complete the required hands-on exercise below to unlock the lesson."
     );
     expect(code).toContain(
-      "This task is structurally validated. It is not yet machine-verified"
+      "This task is structurally validated locally. Completion remains locked"
     );
   });
   it("requires a conceptual proof check before accepting hands-on evidence", () => {
