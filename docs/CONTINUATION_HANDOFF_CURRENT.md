@@ -2034,4 +2034,6 @@ The next AI implementation gate remains:
 3. add streaming text;
 4. add realtime voice using the same tutor contract;
 5. connect only additional read-only authoritative evidence sources before considering any controlled action tools.
+### Persistence migration correction
+Tutor persistence is now versioned in `app/drizzle/migrations/0002_tutor.sql`. The historical `0001_self_hosted_auth.sql` migration is restored to its original authentication-only scope. Runtime schema bootstrap remains a safety net, not the canonical migration path.
 
