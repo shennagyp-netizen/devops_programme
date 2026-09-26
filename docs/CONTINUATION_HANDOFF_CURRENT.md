@@ -2017,3 +2017,21 @@ Connect narrowly scoped read-only programme tools so the tutor can inspect autho
 END LIVE TUTOR CONVERSATION POC
 ============================================================
 
+### Tutor integration continuation
+The live tutor now has a bounded read-only tool layer:
+- get hands-on contract
+- get project phase
+- get runtime verification contract
+- get authoritative learner progress
+
+The learner can restore a saved tutor transcript after refresh. When mastery remediation exists, TutorCoach offers a direct handoff from recovery teaching into failure investigation.
+
+No tutor tool can execute commands, modify project state, unlock retry, certify mastery, or write completion state.
+
+The next AI implementation gate remains:
+1. make the current tutor CI/browser validation green;
+2. verify the deployed UI when Vercel permits a fresh build;
+3. add streaming text;
+4. add realtime voice using the same tutor contract;
+5. connect only additional read-only authoritative evidence sources before considering any controlled action tools.
+
