@@ -1942,33 +1942,27 @@ om that status.
 
 
 ============================================================
-FIXED PODCAST TTS COGNITIVE MODEL — 2026-09-26
+FIXED PODCAST V2 — FOUR EXPLANATION LEVELS + INDEPENDENT TTS SPEED — 2026-09-26
 ============================================================
 
-The podcast/co-teacher is fixed authored curriculum content. One lesson has four complete authored podcast versions:
-- Level 1 — Foundation
-- Level 2 — Mechanism
-- Level 3 — Diagnosis
-- Level 4 — Design & Transfer
+One lesson has one podcast with four complete authored explanations of the same information:
+- Explanation 1 — Very simple
+- Explanation 2 — Simple technical
+- Explanation 3 — Professional
+- Explanation 4 — Expert
 
-These are four different authored explanations of the same lesson. Cognitive level is not implemented by changing TTS playback speed.
+The information is the same across all four. Only explanation style, explicitness, terminology, examples, sentence structure, and assumed prior knowledge change.
 
-Runtime speech uses browser TTS. No human recordings, MP3 assets, WAV assets, or audio manifest are required.
+B1.4 has 12 information units. Every explanation declares the same unit IDs in the same order. The build gate runs scripts/check-podcast-explanation-equivalence.mjs.
 
-The learner can select one cognitive version, read its complete transcript, and have the selected script spoken with SpeechSynthesisUtterance. Runtime TTS events update the active authored turn and voice state.
+Speech speed is independent and supports 1×, 1.5×, and 2×. Speed never changes explanation level or learning content. Changing speed while speaking restarts the current authored turn at the new rate instead of skipping ahead.
 
-When TTS is unavailable, the selected authored transcript remains usable. The application never fabricates millisecond audio timing.
+TTS is the only speech renderer. No human recording, MP3, WAV, audio URL, or recording manifest is required.
 
-The private LLM tutor is a separate adaptive conversation. It may discuss learner reasoning but never rewrites, regenerates, or controls the fixed podcast scripts.
+Browser TTS runtime events drive current-turn voice state. When TTS is unavailable, the complete selected transcript remains visible.
 
-B1.4 currently has four authored cognitive script files:
-- podcasts/beginner/B1.4.cognitive-1.txt
-- podcasts/beginner/B1.4.cognitive-2.txt
-- podcasts/beginner/B1.4.cognitive-3.txt
-- podcasts/beginner/B1.4.cognitive-4.txt
-
-The production tree contains text scripts only; the obsolete recording/audio-manifest path was removed.
+The private LLM tutor remains separate and never rewrites or regenerates the fixed podcast scripts.
 
 ============================================================
-END FIXED PODCAST TTS COGNITIVE MODEL
+END PODCAST V2
 ============================================================
