@@ -331,3 +331,27 @@ The implementation baseline is strong and the engineering gate is green, but two
 2. **Production visual/deployment verification:** source/build gates are green, but a final deployed smoke/visual verification record is still required.
 
 The local terminal pairing workflow is **not** a gap. It is an intentional part of the MVP and must remain.
+
+
+## Current assessment runner status — 2026-09-26
+
+The learner-facing assessment flow is now operational for the MVP without changing authored question content.
+
+Implemented:
+- server-created assessment attempt;
+- deterministic blueprint-controlled form selection from the existing pilot bank;
+- server-owned answer key during delivery;
+- fixed assessment clock derived from the blueprint;
+- previous/next navigation;
+- item palette;
+- mark-for-review state;
+- single submission transition;
+- persisted assessment attempt record bound to the authenticated learner;
+- automatic scoring only for objectively keyed selected-response items;
+- explicit review-required state for constructed-response and hands-on evidence;
+- late-submission state;
+- no question-bank authoring changes.
+
+This is operational learner assessment delivery, not certification-grade testing. Formal psychometric calibration, standard setting, secure operational item-pool separation, controlled exposure, and formal reviewer workflows remain future maturity work.
+
+Production deployment and final visual/smoke verification remain separate release evidence gates.
