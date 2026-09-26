@@ -134,6 +134,7 @@ async function main() {
   if (challenge) {
     if (
       challenge.itemId !== task.lessonId ||
+      challenge.targetRef !== task.taskId ||
       challenge.providerId !== providerId ||
       typeof challenge.nonce !== "string" ||
       typeof challenge.id !== "string"
