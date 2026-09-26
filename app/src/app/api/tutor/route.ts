@@ -230,6 +230,87 @@ async function executeFunctionCall(
   }
 }
 
+export async function GET(request: Request) {
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  }
+
+  const url = new URL(request.url);
+  const sessionId = url.searchParams.get("sessionId")?.trim() ?? "";
+  const lessonId = url.searchParams.get("lessonId")?.trim() ?? "";
+
+  if (!sessionId || !lessonId) {
+    return NextResponse.json(
+      { error: "Tutor history requires a session and lesson." },
+      { status: 400 }
+    );
+  }
+
+  let context;
+  try {
+    context = await buildTutorContext(user.id, lessonId);
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Tutor context is unavailable." },
+      { status: 400 }
+    );
+  }
+
+  const session = await verifyTutorSessionForUser(
+    user.id,
+    sessionId,
+    context.lesson.id,
+    context.project.id
+  );
+
+  if (!session) {
+    return NextResponse.json(
+      { error: "Tutor session does not belong to this learner or lesson." },
+      { status: 404 }
+    );
+  }
+
+  const stored = await listTutorMessagesForUser(user.id, sessionId);
+  const messages = stored.map((message) => {
+    if (message.role === "user") {
+      return { role: "learner" as const, text: message.content };
+    }
+
+    try {
+      const parsed = JSON.parse(message.content) as {
+        message?: string;
+        mode?: TutorMode;
+        pedagogicalIntent?: TutorMode;
+        nextQuestion?: string;
+        requestedEvidence?: string[];
+        suggestedAction?: string;
+      };
+
+      if (typeof parsed.message === "string") {
+        return {
+          role: "tutor" as const,
+          text: parsed.message,
+          response: parseTutorResponse(
+            JSON.stringify(parsed),
+            "teaching"
+          )
+        };
+      }
+    } catch {
+      // Older/raw tutor messages remain visible as plain text.
+    }
+
+    return { role: "tutor" as const, text: message.content };
+  });
+
+  return NextResponse.json({
+    sessionId,
+    lessonId,
+    messages
+  });
+}
+
 export async function POST(request: Request) {
   const user = await getCurrentUser();
 
