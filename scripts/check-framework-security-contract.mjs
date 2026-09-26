@@ -35,7 +35,7 @@ assert.match(masteryAction, /recordAuthoritativeMasteryAttemptForUser/);
 assert.match(masteryRequest, /MASTERY_STAGES/);
 assert.doesNotMatch(masteryRequest, /outcome/);
 assert.match(masteryAuthority, /evaluateLearningTransition/);
-assert.match(masteryAuthority, /outcome = decision.accepted ? "mastered" : "failure"/);
+assert.match(masteryAuthority, /const outcome = decision\.accepted \? "mastered" : "failure"/);
 assert.match(masteryAuthority, /attemptNumber/);
 assert.match(masteryAuthority, /onConflictDoNothing/);
 
