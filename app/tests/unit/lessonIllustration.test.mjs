@@ -329,6 +329,40 @@ describe("lesson illustration teaching model", () => {
     ]);
   });
 
+  it("models Break Docker as a controlled baseline-to-recovery experiment", () => {
+    const model = getLessonIllustrationModel({
+      id: "d2-7-break-docker",
+      type: "illustration",
+      heading: "The controlled Docker failure loop",
+      alt: "A known-good Docker stack is changed in one place, a predicted symptom is observed, evidence identifies the boundary, and the system is restored",
+      bindingId: "D2.7:d2-7-break-docker",
+      nodes: ["Baseline", "Change", "Symptom", "Evidence", "Recovery"],
+      variant: "docker-failure-loop-v1"
+    });
+
+    expect(model.variant).toBe("docker-failure-loop-v1");
+    expect(model.stages.map((stage) => stage.id)).toEqual([
+      "baseline",
+      "change",
+      "symptom",
+      "evidence",
+      "recovery"
+    ]);
+    expect(model.foundation.label).toBe("Change one boundary, predict one symptom, collect evidence, then recover");
+    expect(model.callouts.map((callout) => callout.id)).toEqual([
+      "single-change",
+      "prediction",
+      "evidence",
+      "recovery-proof"
+    ]);
+    expect(model.failureChecks.map((check) => check.id)).toEqual([
+      "process",
+      "network",
+      "configuration",
+      "storage"
+    ]);
+  });
+
   it("models Docker networking and storage as service, network, name, port and volume boundaries", () => {
     const model = getLessonIllustrationModel({
       id: "d2-6-docker-network-storage",
