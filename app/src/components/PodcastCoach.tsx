@@ -2,16 +2,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Lesson } from "../data/curriculum";
 import {
   findActiveCue,
-  findCurrentSegment,
   findCurrentTurnId,
   loadPodcastAudioManifest,
-  type PodcastCueKind,
-  type PodcastAudioManifest
+  type PodcastAudioManifest,
+  type PodcastCognitiveLevel,
+  type PodcastCueKind
 } from "../data/podcastSync";
 import {
-  getEpisodeText,
-  parseTurns,
-  podcastUrl,
+  cognitivePodcastUrl,
   type Turn
 } from "../data/podcastsRaw";
 import { useLessonVoiceClock } from "./LessonVoiceClock";
@@ -23,6 +21,13 @@ type VoicePhase =
   | "learner-action"
   | "done";
 
+type ScriptManifest = {
+  schemaVersion: number;
+  source: string;
+  episodes: Record<string, string>;
+  cognitiveLevels?: Record<string, Record<string, string>>;
+};
+
 const cueToPhase: Partial<Record<PodcastCueKind, VoicePhase>> = {
   prediction: "coach",
   lab: "learner-action",
@@ -30,8 +35,38 @@ const cueToPhase: Partial<Record<PodcastCueKind, VoicePhase>> = {
 };
 
 const GUIDED_TURN_INTERVAL_MS = 6500;
-const PLAYBACK_SPEEDS = [1, 1.25, 1.5, 1.75, 2] as const;
-type PlaybackSpeed = typeof PLAYBACK_SPEEDS[number];
+
+const COGNITIVE_LEVELS: ReadonlyArray<{
+  level: PodcastCognitiveLevel;
+  id: PodcastAudioManifest["cognitiveLevelId"];
+  label: string;
+  description: string;
+}> = [
+  {
+    level: 1,
+    id: "foundation",
+    label: "Foundation",
+    description: "Simple mental model and purpose."
+  },
+  {
+    level: 2,
+    id: "mechanism",
+    label: "Mechanism",
+    description: "How the system actually works."
+  },
+  {
+    level: 3,
+    id: "diagnosis",
+    label: "Diagnosis",
+    description: "Failure analysis and evidence."
+  },
+  {
+    level: 4,
+    id: "design",
+    label: "Design & transfer",
+    description: "System design and transfer to new cases."
+  }
+];
 
 export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   const voiceClock = useLessonVoiceClock();
@@ -45,31 +80,39 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [audioStarted, setAudioStarted] = useState(false);
   const [guidedPlaying, setGuidedPlaying] = useState(false);
-  const [playbackSpeed, setPlaybackSpeed] = useState<PlaybackSpeed>(1);
+  const [cognitiveLevel, setCognitiveLevel] = useState<PodcastCognitiveLevel>(1);
   const [scriptVersions, setScriptVersions] = useState<Record<string, string>>({});
-  const [audioManifests, setAudioManifests] = useState<Record<string, PodcastAudioManifest>>({});
-  const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
+  const [audioManifests, setAudioManifests] =
+    useState<Record<string, ReturnType<typeof loadPodcastAudioManifest> extends Promise<infer T> ? T : never>>({});
+  const [mediaFailed, setMediaFailed] = useState(false);
 
-  const audioRefs = useRef<Record<string, HTMLAudioElement | null>>({});
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const transcriptRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const lastCueIdRef = useRef<string | null>(null);
   const lastAudioTimeMsRef = useRef(0);
 
-  const rawAudioManifest = audioManifests[lesson.id];
-  const scriptVersion = scriptVersions[lesson.id];
+  const rawBundle = audioManifests[lesson.id];
+  const rawSpeech = rawBundle?.speeches.find(
+    (speech) => speech.cognitiveLevel === cognitiveLevel
+  );
+  const expectedScriptVersion = scriptVersions[String(cognitiveLevel)];
   const audioManifest =
-    rawAudioManifest && scriptVersion === rawAudioManifest.scriptVersion
-      ? rawAudioManifest
+    rawSpeech &&
+    expectedScriptVersion &&
+    expectedScriptVersion === rawSpeech.scriptVersion
+      ? rawSpeech
       : undefined;
 
   const audioSyncState =
-    rawAudioManifest && !scriptVersion
-      ? "checking"
-      : audioManifest
-        ? "voice-synced"
-        : rawAudioManifest
-          ? "stale-audio"
-          : "guided";
+    mediaFailed
+      ? "media-error"
+      : rawSpeech && !expectedScriptVersion
+        ? "checking"
+        : audioManifest
+          ? "voice-synced"
+          : rawSpeech
+            ? "stale-audio"
+            : "guided";
 
   useEffect(() => {
     let cancelled = false;
@@ -82,38 +125,39 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     setAudioPlaying(false);
     setAudioStarted(false);
     setGuidedPlaying(false);
-    setCurrentSegmentIndex(0);
+    setCognitiveLevel(1);
+    setScriptVersions({});
+    setAudioManifests({});
+    setMediaFailed(false);
     lastCueIdRef.current = null;
     lastAudioTimeMsRef.current = 0;
-
-    Object.values(audioRefs.current).forEach((audio) => audio?.pause());
-    audioRefs.current = {};
+    audioRef.current?.pause();
+    audioRef.current = null;
 
     Promise.all([
-      fetch(podcastUrl(lesson.podcast)).then((response) =>
+      fetch(cognitivePodcastUrl(lesson.podcast, 1)).then((response) =>
         response.ok ? response.text() : ""
       ),
       fetch("/podcasts/manifest.json")
         .then((response) =>
           response.ok
-            ? (response.json() as Promise<{
-                schemaVersion: number;
-                source: string;
-                episodes: Record<string, string>;
-              }>)
-            : { schemaVersion: 0, source: "", episodes: {} }
+            ? (response.json() as Promise<ScriptManifest>)
+            : { schemaVersion: 0, source: "", episodes: {}, cognitiveLevels: {} }
         )
-        .catch(() => ({ schemaVersion: 0, source: "", episodes: {} }))
+        .catch(() => ({
+          schemaVersion: 0,
+          source: "",
+          episodes: {},
+          cognitiveLevels: {}
+        })),
+      loadPodcastAudioManifest()
     ])
-      .then(([text, manifest]) => {
-        if (!cancelled) {
-          setEpisodeSource(text);
-          setScriptVersions(manifest.episodes ?? {});
-        }
-        return loadPodcastAudioManifest();
-      })
-      .then((manifests) => {
-        if (!cancelled) setAudioManifests(manifests);
+      .then(([text, manifest, audio]) => {
+        if (cancelled) return;
+
+        setEpisodeSource(text);
+        setScriptVersions(manifest.cognitiveLevels?.[lesson.id] ?? {});
+        setAudioManifests(audio);
       })
       .catch(() => {
         if (!cancelled) {
@@ -125,17 +169,61 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
 
     return () => {
       cancelled = true;
-      Object.values(audioRefs.current).forEach((audio) => audio?.pause());
+      audioRef.current?.pause();
     };
   }, [lesson.id, lesson.podcast]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    if (cognitiveLevel === 1) return undefined;
+
+    setPhase("ready");
+    setTurnIndex(0);
+    setPrediction("");
+    setAudioTimeMs(0);
+    setAudioPlaying(false);
+    setAudioStarted(false);
+    setGuidedPlaying(false);
+    setMediaFailed(false);
+    lastCueIdRef.current = null;
+    lastAudioTimeMsRef.current = 0;
+
+    audioRef.current?.pause();
+    audioRef.current = null;
+
+    fetch(cognitivePodcastUrl(lesson.podcast, cognitiveLevel))
+      .then((response) => (response.ok ? response.text() : ""))
+      .then((text) => {
+        if (!cancelled) setEpisodeSource(text);
+      })
+      .catch(() => {
+        if (!cancelled) setEpisodeSource("");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [cognitiveLevel, lesson.podcast]);
+
   const episode = useMemo(
-    () => getEpisodeText(episodeSource, lesson.id),
-    [episodeSource, lesson.id]
+    () => episodeSource.trim(),
+    [episodeSource]
   );
 
   const turns = useMemo(
-    () => parseTurns(episode, lesson.id),
+    () => {
+      if (!episode) return [];
+      const body = episode.replace(/^EPISODE [^\n]+\n?/i, "").trim();
+      return body
+        ? body.split(/\n\s*\n/).map((text, index) => ({
+            id: `${lesson.id}.T${String(index + 1).padStart(3, "0")}`,
+            speaker: "Narrator" as const,
+            text: text.trim(),
+            kind: "dialogue" as const
+          }))
+        : [];
+    },
     [episode, lesson.id]
   );
 
@@ -153,10 +241,10 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
         }
         return index + 1;
       });
-    }, GUIDED_TURN_INTERVAL_MS / playbackSpeed);
+    }, GUIDED_TURN_INTERVAL_MS);
 
     return () => window.clearInterval(interval);
-  }, [audioManifest, guidedPlaying, playbackSpeed, turns.length]);
+  }, [audioManifest, guidedPlaying, turns.length]);
 
   useEffect(() => {
     if (current) {
@@ -167,30 +255,17 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     }
   }, [current?.id]);
 
-  function activeAudio() {
-    if (!audioManifest) return null;
-    return audioRefs.current[audioManifest.segments[currentSegmentIndex]?.id ?? ""] ?? null;
-  }
-
-  function pauseAllAudio() {
-    Object.values(audioRefs.current).forEach((audio) => {
-      if (audio) {
-        audio.pause();
-        audio.playbackRate = playbackSpeed;
-      }
-    });
+  function pauseAudio() {
+    audioRef.current?.pause();
     setAudioPlaying(false);
   }
 
-  function syncFromAudio(segmentIndex: number) {
-    if (!audioManifest) return;
-    const segment = audioManifest.segments[segmentIndex];
-    const audio = audioRefs.current[segment.id];
-    if (!audio || segmentIndex !== currentSegmentIndex) return;
+  function syncFromAudio() {
+    if (!audioManifest || !audioRef.current) return;
 
     const timeMs = Math.min(
-      segment.endMs,
-      Math.round(segment.startMs + audio.currentTime * 1000)
+      audioManifest.durationMs,
+      Math.round(audioRef.current.currentTime * 1000)
     );
     const movedBackward = timeMs + 250 < lastAudioTimeMsRef.current;
 
@@ -205,16 +280,6 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
       if (targetIndex >= 0) setTurnIndex(targetIndex);
     }
 
-    const currentSegment = findCurrentSegment(audioManifest, timeMs);
-    if (currentSegment) {
-      const targetSegmentIndex = audioManifest.segments.findIndex(
-        (candidate) => candidate.id === currentSegment.id
-      );
-      if (targetSegmentIndex >= 0 && targetSegmentIndex !== currentSegmentIndex) {
-        setCurrentSegmentIndex(targetSegmentIndex);
-      }
-    }
-
     const activeCue = findActiveCue(audioManifest, timeMs);
     if (!activeCue || activeCue.id === lastCueIdRef.current) return;
 
@@ -222,73 +287,40 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     const nextPhase = cueToPhase[activeCue.kind];
     if (!nextPhase) return;
 
-    pauseAllAudio();
+    pauseAudio();
     setPhase(nextPhase);
   }
 
-  function handleSegmentEnded(segmentIndex: number) {
-    if (!audioManifest || segmentIndex !== currentSegmentIndex) return;
-
-    const nextIndex = segmentIndex + 1;
-    setAudioPlaying(false);
-
-    if (nextIndex >= audioManifest.segments.length) {
-      setAudioTimeMs(audioManifest.durationMs);
-      publishVoiceClock?.({
-        timeMs: audioManifest.durationMs,
-        manifest: audioManifest
-      });
-      setPhase("done");
-      return;
-    }
-
-    const nextSegment = audioManifest.segments[nextIndex];
-    const nextAudio = audioRefs.current[nextSegment.id];
-
-    setCurrentSegmentIndex(nextIndex);
-    setTurnIndex(
-      Math.max(
-        0,
-        turns.findIndex((turn) => turn.id === nextSegment.turnId)
-      )
-    );
-
-    if (nextAudio) {
-      nextAudio.currentTime = 0;
-      nextAudio.playbackRate = playbackSpeed;
-      setAudioStarted(true);
-      setPhase("speaking");
-      void nextAudio.play().catch(() => setAudioPlaying(false));
-    }
-  }
-
   function startVoice() {
-    if (!audioManifest) {
+    if (!audioManifest || mediaFailed) {
       setAudioStarted(true);
       setPhase("speaking");
       setGuidedPlaying(true);
       return;
     }
 
-    const audio = activeAudio();
+    const audio = audioRef.current;
     if (!audio) return;
 
-    pauseAllAudio();
-    audio.playbackRate = playbackSpeed;
     setAudioStarted(true);
     setPhase("speaking");
-    void audio.play().catch(() => setAudioPlaying(false));
+    void audio.play().catch(() => {
+      setMediaFailed(true);
+      setAudioPlaying(false);
+      setGuidedPlaying(true);
+      setPhase("speaking");
+    });
   }
 
   function toggleVoice() {
-    if (!audioManifest) {
+    if (!audioManifest || mediaFailed) {
       setAudioStarted(true);
       setPhase("speaking");
       setGuidedPlaying((playing) => !playing);
       return;
     }
 
-    const audio = activeAudio();
+    const audio = audioRef.current;
     if (!audio) return;
 
     if (audioPlaying) {
@@ -300,56 +332,33 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   }
 
   function seek(deltaSeconds: number) {
-    if (!audioManifest) return;
+    if (!audioManifest || !audioRef.current || mediaFailed) return;
 
-    const wasPlaying = audioPlaying;
     const nextTime = Math.max(
       0,
       Math.min(audioManifest.durationMs, audioTimeMs + deltaSeconds * 1000)
     );
 
-    if (nextTime >= audioManifest.durationMs) {
-      reset();
-      return;
-    }
-
-    const target = findCurrentSegment(audioManifest, nextTime);
-    if (!target) return;
-
-    pauseAllAudio();
-
-    const targetIndex = audioManifest.segments.findIndex(
-      (segment) => segment.id === target.id
-    );
-    const targetAudio = audioRefs.current[target.id];
-    if (!targetAudio || targetIndex < 0) return;
-
-    setCurrentSegmentIndex(targetIndex);
-    targetAudio.currentTime = Math.max(0, (nextTime - target.startMs) / 1000);
-    targetAudio.playbackRate = playbackSpeed;
+    audioRef.current.currentTime = nextTime / 1000;
     setAudioTimeMs(Math.round(nextTime));
     lastAudioTimeMsRef.current = Math.round(nextTime);
     lastCueIdRef.current = null;
 
-    const targetTurnIndex = turns.findIndex((turn) => turn.id === target.turnId);
-    if (targetTurnIndex >= 0) setTurnIndex(targetTurnIndex);
-
-    if (wasPlaying) {
-      setPhase("speaking");
-      setAudioStarted(true);
-      void targetAudio.play().catch(() => setAudioPlaying(false));
+    const targetTurnIndex = findCurrentTurnId(audioManifest, nextTime);
+    if (targetTurnIndex) {
+      const index = turns.findIndex((turn) => turn.id === targetTurnIndex);
+      if (index >= 0) setTurnIndex(index);
     }
   }
 
   function resumeVoice() {
     setPhase("speaking");
 
-    if (audioManifest) {
-      const audio = activeAudio();
-      if (audio) {
-        audio.playbackRate = playbackSpeed;
-        void audio.play().catch(() => setAudioPlaying(false));
-      }
+    if (audioManifest && !mediaFailed) {
+      void audioRef.current?.play().catch(() => {
+        setMediaFailed(true);
+        setGuidedPlaying(true);
+      });
       return;
     }
 
@@ -357,10 +366,8 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   }
 
   function reset() {
-    pauseAllAudio();
-    Object.values(audioRefs.current).forEach((audio) => {
-      if (audio) audio.currentTime = 0;
-    });
+    pauseAudio();
+    if (audioRef.current) audioRef.current.currentTime = 0;
 
     setPhase("ready");
     setTurnIndex(0);
@@ -368,18 +375,32 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     setAudioStarted(false);
     setAudioTimeMs(0);
     setGuidedPlaying(false);
-    setCurrentSegmentIndex(0);
+    setMediaFailed(false);
     lastCueIdRef.current = null;
     lastAudioTimeMsRef.current = 0;
   }
 
-  function onPlaybackSpeedChange(value: string) {
-    const speed = Number(value) as PlaybackSpeed;
-    setPlaybackSpeed(speed);
-    Object.values(audioRefs.current).forEach((audio) => {
-      if (audio) audio.playbackRate = speed;
-    });
+  function selectCognitiveLevel(level: PodcastCognitiveLevel) {
+    if (level === cognitiveLevel) return;
+
+    pauseAudio();
+    if (audioRef.current) audioRef.current.currentTime = 0;
+
+    setCognitiveLevel(level);
+    setPhase("ready");
+    setTurnIndex(0);
+    setPrediction("");
+    setAudioTimeMs(0);
+    setAudioStarted(false);
+    setGuidedPlaying(false);
+    setMediaFailed(false);
+    lastCueIdRef.current = null;
+    lastAudioTimeMsRef.current = 0;
   }
+
+  const selectedLevel = COGNITIVE_LEVELS.find(
+    (item) => item.level === cognitiveLevel
+  ) ?? COGNITIVE_LEVELS[0];
 
   return (
     <aside
@@ -389,7 +410,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
       <div className="coach-banner">
         <div>
           <span className="eyebrow">CO-TEACHER · FIXED</span>
-          <h3>The authored conversation stays the same.</h3>
+          <h3>Four authored speeches. Four cognitive levels.</h3>
         </div>
         <div className="coach-phase">
           {phase === "ready"
@@ -400,67 +421,85 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
                 ? "your prediction"
                 : phase === "learner-action"
                   ? "your turn"
-                  : "episode complete"}
+                  : "speech complete"}
         </div>
       </div>
 
-      {audioManifest
-        ? audioManifest.segments.map((segment) => (
-            <audio
-              key={segment.id}
-              ref={(element) => {
-                audioRefs.current[segment.id] = element;
-              }}
-              src={segment.audioUrl}
-              preload="auto"
-              className="podcast-audio-source"
-              onTimeUpdate={() =>
-                syncFromAudio(
-                  audioManifest.segments.findIndex((item) => item.id === segment.id)
-                )
-              }
-              onPlay={() => {
-                if (segment.id === audioManifest.segments[currentSegmentIndex]?.id) {
-                  setAudioPlaying(true);
-                  setAudioStarted(true);
-                  setPhase("speaking");
-                }
-              }}
-              onPause={() => {
-                if (segment.id === audioManifest.segments[currentSegmentIndex]?.id) {
-                  setAudioPlaying(false);
-                }
-              }}
-              onEnded={() =>
-                handleSegmentEnded(
-                  audioManifest.segments.findIndex((item) => item.id === segment.id)
-                )
-              }
-              onLoadedMetadata={(event) => {
-                event.currentTarget.playbackRate = playbackSpeed;
-              }}
-            />
-          ))
-        : null}
+      <div className="cognitive-level-picker" aria-label="Podcast cognitive level">
+        {COGNITIVE_LEVELS.map((item) => {
+          const available = rawBundle?.speeches.some(
+            (speech) => speech.cognitiveLevel === item.level
+          );
+
+          return (
+            <button
+              key={item.level}
+              type="button"
+              className={item.level === cognitiveLevel ? "active" : ""}
+              aria-pressed={item.level === cognitiveLevel}
+              onClick={() => selectCognitiveLevel(item.level)}
+            >
+              <strong>Level {item.level}</strong>
+              <span>{item.label}</span>
+              <small>{item.description}</small>
+              {!available ? <em>script fallback</em> : null}
+            </button>
+          );
+        })}
+      </div>
+
+      {audioManifest ? (
+        <audio
+          ref={audioRef}
+          src={audioManifest.audioUrl}
+          preload="metadata"
+          className="podcast-audio-source"
+          onTimeUpdate={syncFromAudio}
+          onPlay={() => {
+            setAudioPlaying(true);
+            setAudioStarted(true);
+            setPhase("speaking");
+          }}
+          onPause={() => setAudioPlaying(false)}
+          onEnded={() => {
+            setAudioPlaying(false);
+            setAudioTimeMs(audioManifest.durationMs);
+            publishVoiceClock?.({
+              timeMs: audioManifest.durationMs,
+              manifest: audioManifest
+            });
+            setPhase("done");
+          }}
+          onError={() => {
+            setMediaFailed(true);
+            setAudioPlaying(false);
+          }}
+        />
+      ) : null}
 
       <div className="continuous-voice-row">
         <div>
           <strong>
-            {current ? "Engineer " + current.speaker : "Fixed co-teacher"}
+            Level {selectedLevel.level} · {selectedLevel.label}
           </strong>
           <span className="range">
+            {selectedLevel.description}
+          </span>
+          <span className="range">
             {audioSyncState === "voice-synced"
-              ? "Four fixed speech files drive the real voice clock and transcript."
+              ? "A fixed recording drives the real audio clock."
               : audioSyncState === "stale-audio"
-                ? "The recording does not match the current script. The transcript remains available."
-                : audioSyncState === "checking"
-                  ? "Checking that the fixed recording matches the current script."
-                  : "No fixed recording is published for this lesson. The authored transcript remains available."}
+                ? "The recording does not match the selected speech."
+                : audioSyncState === "media-error"
+                  ? "The recording could not be played. The authored speech remains available."
+                  : audioSyncState === "checking"
+                    ? "Checking the selected fixed recording against its authored speech."
+                    : "No fixed recording is published for this level. The authored speech remains available."}
           </span>
         </div>
 
         <div className="audio-controls">
-          {audioManifest ? (
+          {audioManifest && !mediaFailed ? (
             <>
               <button onClick={() => seek(-10)} aria-label="Rewind 10 seconds">−10s</button>
               <button className="primary" onClick={toggleVoice}>
@@ -470,22 +509,9 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
             </>
           ) : (
             <button className="primary" onClick={toggleVoice}>
-              {guidedPlaying ? "Pause transcript" : audioStarted ? "Resume transcript" : "Start transcript"}
+              {guidedPlaying ? "Pause speech" : audioStarted ? "Resume speech" : "Start speech"}
             </button>
           )}
-
-          <label className="guided-speed-control">
-            <span>Speed</span>
-            <select
-              aria-label="Podcast playback speed"
-              value={playbackSpeed}
-              onChange={(event) => onPlaybackSpeedChange(event.target.value)}
-            >
-              {PLAYBACK_SPEEDS.map((speed) => (
-                <option key={speed} value={speed}>{speed}x</option>
-              ))}
-            </select>
-          </label>
 
           {audioManifest ? (
             <span className="audio-time">
@@ -497,11 +523,11 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
 
       <div className="continuous-transcript" role="log" aria-label="Podcast transcript">
         <div className="transcript-header">
-          <span className="eyebrow">PODCAST TRANSCRIPT</span>
+          <span className="eyebrow">AUTHORED SPEECH</span>
           <span className="range">
-            {audioManifest
-              ? "Live position follows the fixed recording."
-              : "Transcript mode remains available without audio."}
+            {audioManifest && !mediaFailed
+              ? "Live position follows the selected fixed speech."
+              : "The transcript is the authoritative fallback when audio is unavailable."}
           </span>
         </div>
 
@@ -515,7 +541,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
               className={"transcript-turn" + (index === turnIndex ? " active" : "")}
               aria-current={index === turnIndex ? "true" : undefined}
             >
-              <span className="transcript-speaker">Engineer {turn.speaker}</span>
+              <span className="transcript-speaker">Narrator · Level {cognitiveLevel}</span>
               <p>{turn.text}</p>
             </div>
           ))}
@@ -524,17 +550,20 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
 
       {phase === "ready" ? (
         <div className="content-card continuous-prompt">
-          <h4>One fixed co-teacher for the whole lesson</h4>
+          <h4>{selectedLevel.label}</h4>
           <p>
-            The spoken lesson is authored once. Playback can be faster or slower,
-            but the educational content does not change.
+            This is a separate fixed speech for this cognitive level. Changing
+            level changes the explanation itself — its reasoning depth, evidence
+            and abstraction — rather than merely changing TTS playback rate.
           </p>
           <p>
-            The private tutor is a separate learner-specific conversation. It
-            does not rewrite or regenerate this podcast.
+            The private tutor is separate. It may discuss the lesson with the
+            learner, but it does not rewrite or regenerate these speeches.
           </p>
           {audioSyncState === "voice-synced" ? (
-            <button className="primary" onClick={startVoice}>Start the fixed voice lesson</button>
+            <button className="primary" onClick={startVoice}>
+              Start Level {selectedLevel.level} speech
+            </button>
           ) : null}
         </div>
       ) : null}
@@ -542,7 +571,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
       {phase === "coach" ? (
         <div className="continuous-prompt">
           <span className="eyebrow">YOUR PREDICTION</span>
-          <h4>Say it before the co-teacher continues.</h4>
+          <h4>Say it before the speech continues.</h4>
           <p>{lesson.recall[1] ?? lesson.recall[0]}</p>
           <textarea
             value={prediction}
@@ -550,7 +579,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
             placeholder="Explain your prediction in your own words."
           />
           <button className="primary" disabled={!prediction.trim()} onClick={resumeVoice}>
-            Continue with the co-teacher
+            Continue
           </button>
         </div>
       ) : null}
@@ -558,20 +587,20 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
       {phase === "learner-action" ? (
         <div className="continuous-prompt">
           <span className="eyebrow">YOUR TURN</span>
-          <h4>Work with the learner controls, then return to the voice.</h4>
+          <h4>Work with the learner controls, then return to the speech.</h4>
           <p>
-            The fixed voice pauses here deliberately. Use Learn, Do, Recall,
-            Design or Assessment without losing the co-teacher session.
+            The fixed speech pauses here deliberately. Use Learn, Do, Recall,
+            Design or Assessment, then return to this same cognitive-level speech.
           </p>
-          <button className="primary" onClick={resumeVoice}>Continue voice</button>
+          <button className="primary" onClick={resumeVoice}>Continue speech</button>
         </div>
       ) : null}
 
       {phase === "done" ? (
         <div className="continuous-prompt">
-          <span className="eyebrow">VOICE SESSION COMPLETE</span>
-          <h4>The fixed recording reached the end of its authored timeline.</h4>
-          <button className="secondary" onClick={reset}>Replay voice</button>
+          <span className="eyebrow">SPEECH COMPLETE</span>
+          <h4>The selected cognitive-level speech reached the end.</h4>
+          <button className="secondary" onClick={reset}>Replay speech</button>
         </div>
       ) : null}
     </aside>
