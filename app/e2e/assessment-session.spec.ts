@@ -52,10 +52,14 @@ test.describe("real-user assessment session", () => {
           .locator('input[type="radio"]:checked')
       ).toHaveCount(1);
     } else {
-      await expect(page.getByLabel(/Response \/ evidence/i)).toHaveValue(
+      await expect(page.locator("textarea").first()).toHaveValue(
         "Evidence recorded during the user journey."
       );
     }
+
+    const itemCount = startPayload.items.length;
+    await page.getByRole("button", { name: `Go to item ${itemCount}`, exact: true }).click();
+    await expect(page.getByText(new RegExp(`ITEM ${itemCount} OF`))).toBeVisible();
 
     page.once("dialog", async (dialog) => {
       expect(dialog.type()).toBe("confirm");
