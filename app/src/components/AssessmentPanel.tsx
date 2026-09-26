@@ -26,8 +26,6 @@ type SafeQuestion = {
 
 type ActiveAssessment = {
   id: string;
-  courseId: CourseLevel;
-  sectionId: string;
   family: AssessmentFamily;
   formId: string;
   expiresAt: string;
