@@ -17,7 +17,6 @@ import {
   getLocalTerminalToken,
   localTerminalAgentStatus,
   runLocalTerminalAttestedTask,
-  runLocalTerminalTask,
   setLocalTerminalToken
 } from "../data/localTerminalAgent";
 import { MotionIllustration } from "./MotionIllustration";
