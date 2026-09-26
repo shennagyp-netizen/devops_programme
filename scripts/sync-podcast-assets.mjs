@@ -95,5 +95,5 @@ await writeFile(
 );
 
 console.log(
-  `Synchronized ${files.length} podcast text files and ${Object.keys(episodes).length} episode hashes across four cognitive levels.`
+  `Synchronized ${files.length} podcast text files and ${Object.keys(episodes).length} episode hashes across four explanation levels.`
 );
