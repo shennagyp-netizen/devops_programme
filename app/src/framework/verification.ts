@@ -15,6 +15,7 @@ export type VerificationAttestation = {
   itemId: string;
   evidenceKind: string;
   providerId: string;
+  keyId: string;
   verificationRef: string;
   attestationDigest: string;
   nonce: string;
@@ -63,6 +64,7 @@ export function verificationSigningPayload(
     challenge.itemId,
     challenge.evidenceKind,
     challenge.providerId,
+    attestation.keyId,
     challenge.nonce,
     attestation.verificationRef,
     attestation.attestationDigest,
@@ -99,6 +101,10 @@ export function validateVerificationAttestation(
   }
 
   if (attestation.providerId !== challenge.providerId) {
+    return reject("PROVIDER_MISMATCH");
+  }
+
+  if (!attestation.keyId.trim()) {
     return reject("PROVIDER_MISMATCH");
   }
 
