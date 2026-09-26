@@ -5,12 +5,11 @@ test.describe("real-user learning gateway journey", () => {
   test("learner can switch course, platform, lesson mode and reach assessment without losing the gateway", async ({
     page
   }, testInfo) => {
-    const email = e2eEmail(testInfo.title, testInfo.workerIndex);
+    const email = e2eEmail(testInfo.title, testInfo.workerIndex, testInfo.retry);
     await signUp(page, email, "gateway-entry");
 
     await expect(page.getByText("DevOps Engineering", { exact: true })).toBeVisible();
 
-    await page.getByRole("radio", { name: /Linux/ }).count().catch(() => 0);
     await page.getByText("Windows", { exact: true }).click();
     await expect(page.getByText("Environment: Windows · PowerShell", { exact: true })).toBeVisible();
 
@@ -34,7 +33,7 @@ test.describe("real-user learning gateway journey", () => {
   test("learner sees the local-terminal path in Do mode and can switch back to Learn", async ({
     page
   }, testInfo) => {
-    const email = e2eEmail(testInfo.title, testInfo.workerIndex);
+    const email = e2eEmail(testInfo.title, testInfo.workerIndex, testInfo.retry);
     await signUp(page, email, "gateway-terminal");
 
     await page.getByRole("button", { name: "do", exact: true }).click();
