@@ -8,7 +8,7 @@ import {
   digestExecutionEnvelope,
   loadOrCreateEd25519ProviderKey,
   signVerificationAttestation
-} from "../../scripts/verification-provider-core.mjs";
+} from "../../../scripts/verification-provider-core.mjs";
 
 const challenge = {
   id: "challenge-1",
