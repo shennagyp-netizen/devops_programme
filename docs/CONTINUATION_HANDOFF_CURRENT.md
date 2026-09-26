@@ -1955,8 +1955,8 @@ MVP implementation:
 - Prediction/lab/recall cues remain authoritative learner-action boundaries.
 - Invalid, stale or unpublished audio fails closed to the authored transcript.
 - scripts/sync-podcast-assets.mjs now synchronizes fixed audio assets from podcasts/ into app/public/podcasts/.
-- Unit red-team coverage validates segment URLs, identity, ordering, timing and cues.
-- Continuous voice integration coverage verifies the fixed player and playback-speed control.
+- Unit red-team coverage validates four-level identity, URLs, timing, cue integrity and fail-closed behavior.
+- Continuous voice integration coverage verifies cognitive-level selection and real-clock playback.
 
 Current publication boundary:
 - The production audio manifest is intentionally empty until the four exact B1.4 level recordings are published.
