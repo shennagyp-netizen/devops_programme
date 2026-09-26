@@ -20,6 +20,7 @@ const validAttestation = {
   itemId: "B1.2",
   evidenceKind: "exercise",
   providerId: "local-terminal",
+  keyId: "key-1",
   verificationRef: "run-1",
   attestationDigest: "sha256:" + "a".repeat(64),
   nonce: "nonce-1",
