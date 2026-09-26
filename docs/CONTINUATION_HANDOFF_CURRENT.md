@@ -1267,7 +1267,7 @@ Those sections are retained as historical audit evidence only.
 The current learner-progress architecture is defined below.
 
 ============================================================
-32. CURRENT AUTHENTICATED SPA ARCHITECTURE — 2026-09-24
+32. HISTORICAL AUTHENTICATED SPA ARCHITECTURE — 2026-09-24
 ============================================================
 
 The application architecture is now intentionally single-path.
@@ -1372,7 +1372,7 @@ Next engineering work should continue from this architecture rather than reintro
 
 
 ============================================================
-33. AUTHENTICATED NEXT.JS ARCHITECTURE MERGED — 2026-09-24
+33. HISTORICAL AUTHENTICATED NEXT.JS ARCHITECTURE — 2026-09-24
 ============================================================
 
 The previous anonymous browser-UUID + Vite + progress-REST design has been removed.
