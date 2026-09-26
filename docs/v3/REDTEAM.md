@@ -1,177 +1,100 @@
+
 # V3 Red-Team Ledger
 
-This document records security findings against the v3 learning-framework boundary. It distinguishes mitigated, partially mitigated, and open findings.
+## Current target
 
-## Scope
+The canonical V3 framework target is:
 
-Threat model:
-- attacker controls browser JavaScript and request payloads
-- attacker controls local storage and lesson navigation
-- attacker can forge machine-verification claims
+~~~text
+framework/
+~~~
 
-Security objective:
+The framework red-team focus is now independence and semantic integrity.
 
-> Browser-controlled claims must never become authoritative learner state without server-controlled validation and provenance.
+The existing DevOps application retains its own separate security ledger.
 
-## Findings
+## Framework findings
 
 | ID | Finding | Severity | Status |
 |---|---|---:|---|
-| V3-RT-01 | Completion accepted browser-selected item metadata. | Medium | **Mitigated** |
-| V3-RT-02 | Completion could reach legacy persistence without authoritative evidence resolution. | High | **Mitigated** |
-| V3-RT-03 | Browser-produced machine-verification envelopes are not server-attested. | High | **Mitigated for the signed provider path** |
-| V3-RT-04 | Mastery attempt outcome/task identity could be client-supplied. | Medium | **Mitigated** |
-| V3-RT-05 | Assessment issuance/scoring could be client-authoritative. | Medium | **Mitigated for pilot assessment delivery** |
-| V3-RT-06 | Tutor rate limiting remains process-local. | Medium | **Open** |
-| V3-RT-07 | Client-supplied assistant history remains possible. | Medium | **Open** |
+| FW-RT-01 | DevOps/domain dependency leaks into framework source. | High | Mitigated |
+| FW-RT-02 | Database/Next.js/application dependency leaks into framework source. | High | Mitigated |
+| FW-RT-03 | React component becomes authority rather than policy projection. | High | Mitigated for current MVP |
+| FW-RT-04 | Demo-programme assumptions become framework concepts. | Medium | Open |
+| FW-RT-05 | Runtime bypasses generic completion policy. | Medium | Mitigated for current MVP |
+| FW-RT-06 | Provider implementation leaks into framework core. | High | Mitigated for current MVP |
+| FW-RT-07 | Framework API becomes prematurely large. | Medium | Open by design |
 
-## V3-RT-01 — completion metadata injection
+## FW-RT-01 — domain leakage
 
-The completion action now:
-- accepts only itemId plus optional evidence references;
-- derives item type/course/project from programmeAuthority;
-- rejects unknown learning items;
-- rejects unsupported browser trust assertions;
-- does not persist a browser-selected verification level.
+A dedicated framework source-boundary test rejects known domain/infrastructure tokens such as:
 
-Covered by:
-- app/tests/unit/authoritative-completion-boundary.test.mjs
-- app/tests/integration/progress-action.test.mjs
+- DevOps;
+- Docker;
+- Kubernetes;
+- database implementation;
+- Next.js;
+- application-server paths.
 
-## V3-RT-02 — legacy completion authority
+## FW-RT-02 — infrastructure leakage
 
-This finding is **mitigated**.
+The framework package has its own build/test configuration and no database/server imports.
 
-The live completion action now accepts only the strict authority command and calls the transactional learning authority service. The service:
+Persistence and authentication remain consumer concerns.
 
-- authenticates the learner server-side;
-- resolves the learning item from the immutable programme registry;
-- resolves verified evidence from the server-owned evidence table;
-- evaluates the pure authority policy;
-- writes completion and evidence links transactionally;
-- normalizes legacy completion metadata before treating the row as authoritative.
+## FW-RT-03 — UI authority leakage
 
-The ordinary progress read projection now returns only rows marked `authoritative-evidence`.
+The React application consumes runtime state and dispatches semantic intents.
 
-Covered by:
+Completion is derived by the framework authority, not by component-local completion flags.
 
-- `app/src/lib/server/learningAuthority.ts`
-- `app/src/lib/server/evidenceAuthority.ts`
-- `app/tests/unit/learning-authority.test.mjs`
-- `app/tests/unit/evidence-authority.test.mjs`
-- `app/tests/integration/progress-action.test.mjs`
-- `scripts/check-learner-progress-contract.mjs`
+## FW-RT-04 — demo leakage
 
+The neutral demo is intentionally small.
 
-## V3-RT-03 — machine evidence provenance
+This remains open until a second materially different neutral programme proves that no demo-specific assumption has leaked into framework semantics.
 
-This finding is **partially mitigated**.
+Closure:
 
-The framework now defines a signed provider-attestation contract and validates:
+- add second programme fixture;
+- run the same runtime/React tests against both;
+- keep framework source unchanged.
 
-- challenge identity;
-- learner binding;
-- learning-item binding;
-- evidence kind;
-- provider identity;
-- challenge validity window;
-- attestation freshness;
-- canonical SHA-256 digest format;
-- one-time challenge nonce;
-- Ed25519 signatures against a server-provisioned provider key;
-- atomic challenge consumption to prevent replay.
+## FW-RT-05 — runtime policy bypass
 
-The authoritative acceptance path is now cryptographically bound to a server-issued challenge and exact provider key. The local agent and SSH runner both produce signed attestations for that path. Legacy unsigned artifacts remain non-authoritative and are explicitly rejected by the Learning Gateway.
+Current runtime transitions use framework authority before changing completion state.
 
-Browser-produced runtime envelopes still cannot mint authoritative evidence.
+Coverage verifies:
 
-## V3-RT-04 — mastery forgery
+- missing evidence keeps completion locked;
+- valid evidence unlocks it;
+- completion changes derived progress.
 
-This finding is **mitigated**.
+## FW-RT-06 — provider leakage
 
-The mastery action now accepts only the learner's selected learning item, coaching stage, optional note, and evidence references. The server:
+Provider implementations remain outside core.
 
-- authenticates the learner;
-- resolves the lesson and hands-on task from the programme registry;
-- loads evidence only for that learner;
-- derives mastered vs failure from the authoritative evidence policy;
-- generates attempt numbers server-side with a unique constraint and collision retry;
-- rejects unsupported mastery coaching stages.
+Framework core does not implement:
 
-Red-team coverage includes forged outcomes, forged task/lesson identity, cross-learner evidence, conflicting attempt numbers, and unauthenticated requests.
+- terminal;
+- SSH;
+- AI;
+- database;
+- domain assessment scoring.
 
-The remaining V3 trust gaps are assessment authority and tutor/rate-limit authority.
+## FW-RT-07 — abstraction bloat
 
-## V3-RT-05 — assessment authority
+Do not add interfaces merely for theoretical extensibility.
 
-This finding is **mitigated for the current pilot assessment delivery path**.
+An abstraction is justified only when it removes domain knowledge from framework core or supports a real reusable capability.
 
-The server now:
+## Framework exit rule
 
-- validates course, section, and family against the authoritative blueprint;
-- generates the assessment seed and form server-side;
-- persists an immutable item snapshot containing answer keys/rubrics;
-- returns only safe question fields to the browser;
-- binds submissions to the authenticated learner and exact issued instance;
-- rejects question IDs not present in the issued instance;
-- derives selected-response scores from server-owned answer keys;
-- marks non-automatic response sets `pending-review` rather than inventing a universal pass threshold;
-- atomically consumes each active instance and rejects replay;
-- enforces expiry in the database compare-and-set predicate.
+Before the first DevOps integration:
 
-Red-team coverage includes answer-key leakage, browser-supplied outcome/score/seed, cross-learner access, foreign question IDs, replay, and expiry-race behavior.
-
-The remaining assessment quality work is calibration/standard setting and authenticated manual review, not browser trust.
-
-## V3-RT-06 — tutor rate limiting
-
-The current tutor limiter is process-local. Multi-instance/serverless deployment can therefore split counters across instances.
-
-Next implementation:
-- shared durable rate-limit state;
-- per-user and per-IP controls;
-- bounded request/body/history sizes;
-- cost-aware model limits.
-
-## V3-RT-07 — forged assistant history
-
-Client-supplied assistant messages must not become trusted conversation state.
-
-Next implementation should reconstruct assistant history from server persistence or explicitly classify prior assistant text as untrusted context.
-
-## Exit rule
-
-The current completion-authority red-team gate is green for browser-payload manipulation:
-
-- a malicious browser cannot mark a learning item complete without server-verified evidence;
-- legacy completion metadata is not trusted as authoritative state.
-
-The broader V3 exit gate remains open until tutor authority and distributed controls are migrated:
-
-- forge machine verification into authoritative evidence;
-- manufacture mastery outcomes;
-- manufacture assessment passes;
-- bypass expensive-endpoint rate limits through instance splitting;
-- create trusted assistant history from arbitrary client text.
-## V3-RT-08 — unsigned runtime adapters
-
-**Status: Mitigated for authoritative completion.**
-
-Both supported machine providers now use the signed challenge protocol:
-
-- local terminal agent;
-- SSH runner.
-
-The UI rejects unsigned machine-evidence imports, and the server will not mint completion from a raw runtime envelope. Direct unsigned CLI artifacts may still exist for diagnostic/manual workflows, but they are not trusted evidence.
-
-## V3-RT-09 — deployment migration ordering
-
-**Status: Mitigated.**
-
-Production migration filenames are now unambiguous:
-
-- 0004 — progress foreign-key hardening;
-- 0005 — verification-provider authority;
-- 0006 — assessment authority.
-
-The framework-security CI contract tracks these paths, and the production migration runner sorts and records filenames transactionally.
+- boundary test green;
+- TDD green;
+- typecheck green;
+- production build green;
+- second neutral programme covered;
+- no domain-specific provider code in framework.
