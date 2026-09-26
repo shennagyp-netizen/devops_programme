@@ -54,8 +54,8 @@ for (const projectId of projectIds) {
     console.error(`Project ${projectId} must define at least four explicit phases and an estimated workload.`);
   }
 
-  const hourMatches = [...projectBlock.matchAll(/hours: (\\d+)/g)].map((match) => Number(match[1]));
-  const estimatedMatch = projectBlock.match(/estimatedHours: (\\d+)/);
+  const hourMatches = [...projectBlock.matchAll(/hours: (\d+)/g)].map((match) => Number(match[1]));
+  const estimatedMatch = projectBlock.match(/estimatedHours: (\d+)/);
   const phaseHours = hourMatches.reduce((sum, hours) => sum + hours, 0);
   const estimatedHours = estimatedMatch ? Number(estimatedMatch[1]) : 0;
   if (!estimatedHours || phaseHours !== estimatedHours) {
