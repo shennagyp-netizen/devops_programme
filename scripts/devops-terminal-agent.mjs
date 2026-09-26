@@ -303,6 +303,7 @@ async function main() {
           const challenge = body.challenge;
           if (
             challenge.providerId !== PROVIDER_ID ||
+            challenge.providerKeyId !== KEY_ID ||
             challenge.itemId !== task.lessonId ||
             challenge.targetRef !== task.taskId ||
             challenge.learnerId === undefined ||
