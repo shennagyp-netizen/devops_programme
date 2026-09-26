@@ -37,6 +37,29 @@ async function collectTextFiles(directory, relative = "") {
   return files.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
 }
 
+async function collectMediaFiles(directory, relative = "") {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    if (entry.name.startsWith(".") || entry.name === "README.md") continue;
+
+    const relativePath = path.join(relative, entry.name);
+    const absolutePath = path.join(directory, entry.name);
+
+    if (entry.isDirectory()) {
+      files.push(...(await collectMediaFiles(absolutePath, relativePath)));
+      continue;
+    }
+
+    if (entry.isFile() && /\.(mp3|ogg|wav|m4a)$/i.test(entry.name)) {
+      files.push({ absolutePath, relativePath });
+    }
+  }
+
+  return files.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
+}
+
 function episodeHashes(source) {
   const hashes = {};
   const matcher = /(?:^|\n)EPISODE ([A-Z0-9]+\.[0-9]+) —[^\n]*\n/g;
@@ -59,6 +82,7 @@ function episodeHashes(source) {
 await mkdir(targetDir, { recursive: true });
 
 const files = await collectTextFiles(sourceDir);
+const mediaFiles = await collectMediaFiles(sourceDir);
 const episodes = {};
 
 for (const file of files) {
@@ -69,6 +93,12 @@ for (const file of files) {
   await writeFile(targetPath, source, "utf8");
 
   Object.assign(episodes, episodeHashes(source));
+}
+
+for (const file of mediaFiles) {
+  const targetPath = path.join(targetDir, file.relativePath);
+  await mkdir(path.dirname(targetPath), { recursive: true });
+  await writeFile(targetPath, await readFile(file.absolutePath));
 }
 
 const manifest = {
@@ -92,5 +122,5 @@ try {
 }
 
 console.log(
-  `Synchronized ${files.length} podcast files and ${Object.keys(episodes).length} episode hashes.`
+  `Synchronized ${files.length} podcast text files, ${mediaFiles.length} audio files and ${Object.keys(episodes).length} episode hashes.`
 );
