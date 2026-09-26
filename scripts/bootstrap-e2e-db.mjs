@@ -2,7 +2,10 @@
 
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { Client } from "pg";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const { Client } = require("../app/node_modules/pg");
 
 const root = path.resolve(new URL("..", import.meta.url).pathname);
 const migrationDir = path.join(root, "app", "drizzle", "migrations");
