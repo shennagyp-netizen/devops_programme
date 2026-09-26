@@ -138,7 +138,38 @@ export const learnerVerifiedEvidence = pgTable(
     ),
     digestCheck: check(
       "learner_verified_evidence_attestation_digest_ck",
-      sql`char_length(attestation_digest) > 0`
+      sql`attestation_digest ~ '^sha256:[0-9a-fA-F]{64}
+    )
+  })
+);
+
+export const learnerCompletionEvidence = pgTable(
+  "learner_completion_evidence",
+  {
+    completionId: uuid("completion_id")
+      .notNull()
+      .references(() => learnerProgressHistory.id, { onDelete: "cascade" }),
+    evidenceId: uuid("evidence_id")
+      .notNull()
+      .references(() => learnerVerifiedEvidence.id, { onDelete: "restrict" })
+  },
+  (table) => ({
+    completionEvidenceUnique: uniqueIndex(
+      "learner_completion_evidence_uq"
+    ).on(table.completionId, table.evidenceId),
+    evidenceIndex: index("learner_completion_evidence_evidence_idx").on(
+      table.evidenceId
+    )
+  })
+);
+
+export type AuthUser = typeof authUsers.$inferSelect;
+export type AuthSession = typeof authSessions.$inferSelect;
+export type LearnerProgressHistory =
+  typeof learnerProgressHistory.$inferSelect;
+export type NewLearnerProgressHistory =
+  typeof learnerProgressHistory.$inferInsert;
+`
     )
   })
 );
