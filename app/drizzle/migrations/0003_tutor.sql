@@ -17,7 +17,9 @@ CREATE TABLE IF NOT EXISTS "tutor_messages" (
   "role" text NOT NULL,
   "content" text NOT NULL,
   "turn_index" integer NOT NULL,
-  "created_at" timestamptz DEFAULT now() NOT NULL
+  "created_at" timestamptz DEFAULT now() NOT NULL,
+  CONSTRAINT "tutor_messages_role_ck" CHECK ("role" IN ('user', 'assistant')),
+  CONSTRAINT "tutor_messages_turn_index_ck" CHECK ("turn_index" >= 0)
 );
 
 CREATE INDEX IF NOT EXISTS "tutor_messages_session_idx"
