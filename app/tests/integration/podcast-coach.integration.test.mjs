@@ -60,7 +60,7 @@ describe("PodcastCoach real component", () => {
         onstart = null;
         onend = null;
         onerror = null;
-        constructor(text: string) { this.text = text; }
+        constructor(text) { this.text = text; }
       }
     });
 
