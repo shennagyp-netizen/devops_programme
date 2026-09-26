@@ -1939,3 +1939,35 @@ Merged PR #100:
 om that status.
 - Next content boundary: **A2.1-A2.3 — dependency failure, retry storms and partial network failure**.
 
+
+============================================================
+2026-09-26 PREMIUM PRODUCT DEPTH OVERRIDE
+============================================================
+
+The programme must support a complete-programme tuition target of US$2,000 per learner. This is a product target, not a claim of already validated market demand.
+
+Current implementation in this slice:
+- Mastery failures now carry a bounded failure summary into the recovery teaching plan.
+- PodcastCoach receives the active mastery plan and exposes multiple recovery teaching methods after a failed assignment.
+- Recovery methods include the representations already authored by the mastery engine: plain language, analogy, visual mechanism, causal mechanism, worked example, controlled failure and guided retry, depending on remediation stage.
+- Recovery podcast turns are stable and lesson/stage/attempt-specific. The application uses guided transcript mode until a real aligned recording and timing manifest exists; it never invents audio timing.
+- All nine continuous projects now have four explicit phases, estimated workload and phase exit evidence.
+- Project phases target roughly 300 total hours across the nine-project spine.
+- ProjectPanel now exposes phase workload and exit evidence.
+- The public programme site states the US$2,000 complete-programme tuition target and explains the product depth supporting that target.
+- `scripts/check-project-contract.mjs` now rejects projects that lack the deeper phase contract or whose phase hours do not equal the declared project workload.
+- Red-team/unit coverage includes the recovery podcast teaching-path contract.
+
+Important remaining premium gates:
+- production aligned recovery audio for the authored recovery scripts
+- human review of remediation explanations for every concept
+- broader machine-verified failure/recovery coverage
+- deeper assessment remediation and alternate forms
+- production mastery analytics
+- final browser/visual validation
+
+Do not remove the multi-method recovery loop in favor of replaying the original podcast after failure. The failure itself is the trigger for a different teaching method.
+
+============================================================
+END PREMIUM PRODUCT DEPTH OVERRIDE
+============================================================
