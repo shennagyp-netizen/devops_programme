@@ -44,9 +44,10 @@ export const authoredCurriculumIllustrationBindings: readonly CurriculumIllustra
       { id: "resolver", order: 2, interactionId: "resolver", prompt: "Show the recursive resolver as the client-facing DNS component.", successEventIds: ["resolver"] },
       { id: "root", order: 3, interactionId: "root", prompt: "Show the resolver consulting a root server.", successEventIds: ["root"] },
       { id: "tld", order: 4, interactionId: "tld", prompt: "Show the TLD server identifying the authoritative path.", successEventIds: ["tld"] },
-      { id: "authoritative", order: 5, interactionId: "authoritative", prompt: "Show the authoritative server as the source of the current answer.", successEventIds: ["authoritative"] }
+      { id: "authoritative", order: 5, interactionId: "authoritative", prompt: "Show the authoritative server as the source of the current answer.", successEventIds: ["authoritative"] },
+      { id: "answer", order: 6, interactionId: "answer", prompt: "Show the authoritative answer returning to the resolver/client path.", successEventIds: ["answer"] }
     ],
-    completion: { requiredStepIds: ["query", "resolver", "root", "tld", "authoritative"] }
+    completion: { requiredStepIds: ["query", "resolver", "root", "tld", "authoritative", "answer"] }
   }
 ];
 
