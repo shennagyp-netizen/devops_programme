@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS "verification_attempts" (
   "item_id" text NOT NULL,
   "evidence_kind" text NOT NULL,
   "provider_id" text NOT NULL,
+  "nonce" text NOT NULL,
   "nonce_hash" text NOT NULL,
   "issued_at" timestamptz NOT NULL,
   "expires_at" timestamptz NOT NULL,
