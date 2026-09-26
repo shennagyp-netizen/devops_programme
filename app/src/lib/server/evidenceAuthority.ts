@@ -1,6 +1,7 @@
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { getDb } from "./db";
 import { learnerVerifiedEvidence } from "./schema";
+import { findProgrammeLearningItem } from "./programmeAuthority";
 import type { VerifiedEvidenceRecord } from "../../framework/contracts";
 
 export type TrustedVerifiedEvidenceInput = {
@@ -57,6 +58,10 @@ export async function recordTrustedVerifiedEvidence(
 ): Promise<VerifiedEvidenceRecord> {
   const learnerId = requireLearnerId(input.learnerId);
   const itemId = requireNonEmpty(input.itemId, "itemId", 200);
+
+  if (!findProgrammeLearningItem(itemId)) {
+    throw new Error("Unknown learning item.");
+  }
   const kind = requireNonEmpty(input.kind, "kind", 128);
   const verifierId = requireNonEmpty(input.verifierId, "verifierId", 128);
   const verificationRef = requireNonEmpty(
