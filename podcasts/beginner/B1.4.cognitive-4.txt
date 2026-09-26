@@ -1,0 +1,11 @@
+EPISODE B1.4 — Cognitive Level 4: Design and Transfer
+
+At the highest cognitive level, the container is no longer a command-line topic. It becomes a design boundary for a larger system.
+
+Imagine a frontend, an API, and a database. Each service has a process, a configuration, a network identity, and a data lifecycle. The frontend may be disposable. The database cannot treat its writable container layer as durable application data. The API needs an explicit network path to the database. A public client needs a different path to the frontend.
+
+Now ask what should happen when one boundary fails. If the API process stops, the database should not be modified just because the API is unhealthy. If a host port changes, the internal service contract should remain conceptually separate from the external access path. If the database container is replaced, its persistent data should remain available through the storage mechanism that owns that data lifecycle.
+
+The design principle is to make every important boundary explicit and testable. Package the environment in the image. Treat the process as the unit of work. Give persistent data its own lifecycle. Separate internal service communication from external port publication. Then build diagnosis and verification around those boundaries.
+
+This model transfers beyond Docker. Kubernetes can schedule containers, but it does not remove the underlying need to reason about processes, resources, networking, storage, evidence, and recovery. The technology changes. The systems model remains.
