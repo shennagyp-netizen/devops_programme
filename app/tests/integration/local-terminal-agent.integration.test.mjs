@@ -7,7 +7,7 @@ import { spawn } from "node:child_process";
 import {
   canonicalVerificationSigningPayload,
   digestExecutionEnvelope
-} from "../../scripts/verification-provider-core.mjs";
+} from "../../../scripts/verification-provider-core.mjs";
 
 async function startAgent(port, token, extraEnv = {}) {
   const keyDir = await mkdtemp(path.join(os.tmpdir(), "devops-terminal-agent-"));
