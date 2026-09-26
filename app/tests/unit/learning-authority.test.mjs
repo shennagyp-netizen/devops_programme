@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { getDbMock, transactionMock, selectMock, insertMock } = vi.hoisted(() => ({
+const { getDbMock, transactionMock, selectMock, insertMock, updateMock } = vi.hoisted(() => ({
   getDbMock: vi.fn(),
   transactionMock: vi.fn(),
   selectMock: vi.fn(),
-  insertMock: vi.fn()
+  insertMock: vi.fn(),
+  updateMock: vi.fn()
 }));
 
 vi.mock("../../src/lib/server/db.ts", () => ({
@@ -27,7 +28,10 @@ vi.mock("../../src/lib/server/schema.ts", () => ({
     id: "progress.id",
     userId: "progress.userId",
     itemType: "progress.itemType",
-    itemId: "progress.itemId"
+    itemId: "progress.itemId",
+    course: "progress.course",
+    projectId: "progress.projectId",
+    verificationLevel: "progress.verificationLevel"
   },
   learnerCompletionEvidence: {
     completionId: "completionEvidence.completionId",
@@ -51,36 +55,68 @@ function configureDb({
     completedAt: new Date("2026-09-26T10:00:00.000Z")
   }
 } = {}) {
-  const whereMock = vi.fn().mockResolvedValue(evidenceRows);
-  const fromMock = vi.fn().mockReturnValue({ where: whereMock });
-  const selectChain = { from: fromMock };
+  const evidenceWhereMock = vi.fn().mockResolvedValue(evidenceRows);
+  const evidenceFromMock = vi.fn().mockReturnValue({
+    where: evidenceWhereMock
+  });
 
-  const valuesMock = vi.fn().mockReturnThis();
-  const onConflictDoNothingMock = vi.fn().mockResolvedValue([]);
-  const returningMock = vi.fn().mockResolvedValue([progressRow]);
-  const insertChain = {
-    values: valuesMock,
-    onConflictDoNothing: onConflictDoNothingMock,
-    returning: returningMock
-  };
+  const completionWhereMock = vi.fn().mockReturnThis();
+  const completionLimitMock = vi.fn().mockResolvedValue([progressRow]);
+  const completionFromMock = vi.fn().mockReturnValue({
+    where: completionWhereMock
+  });
 
-  selectMock.mockReturnValue(selectChain);
-  insertMock.mockReturnValue(insertChain);
+  selectMock
+    .mockReset()
+    .mockImplementationOnce(() => ({
+      from: evidenceFromMock
+    }))
+    .mockImplementationOnce(() => ({
+      from: completionFromMock
+    }));
+
+  const completionValuesMock = vi.fn().mockReturnThis();
+  const completionConflictMock = vi.fn().mockResolvedValue([]);
+  const completionReturningMock = vi.fn().mockResolvedValue([progressRow]);
+
+  const linkValuesMock = vi.fn().mockReturnThis();
+  const linkConflictMock = vi.fn().mockResolvedValue([]);
+
+  insertMock
+    .mockReset()
+    .mockImplementationOnce(() => ({
+      values: completionValuesMock,
+      onConflictDoNothing: completionConflictMock,
+      returning: completionReturningMock
+    }))
+    .mockImplementationOnce(() => ({
+      values: linkValuesMock,
+      onConflictDoNothing: linkConflictMock
+    }));
+
+  completionFromMock().limit = completionLimitMock;
+
+  updateMock.mockReset().mockReturnValue({
+    set: vi.fn().mockReturnThis(),
+    where: vi.fn().mockResolvedValue([])
+  });
 
   transactionMock.mockImplementation(async (callback) =>
     callback({
       select: selectMock,
-      insert: insertMock
+      insert: insertMock,
+      update: updateMock
     })
   );
 
   getDbMock.mockReturnValue({ transaction: transactionMock });
 
   return {
-    whereMock,
-    valuesMock,
-    onConflictDoNothingMock,
-    returningMock
+    completionValuesMock,
+    completionConflictMock,
+    completionReturningMock,
+    linkValuesMock,
+    linkConflictMock
   };
 }
 
@@ -161,7 +197,12 @@ describe("authoritative completion service", () => {
   });
 
   it("records only server-derived completion metadata and proof links", async () => {
-    const { valuesMock, onConflictDoNothingMock, returningMock } = configureDb({
+    const {
+      completionValuesMock,
+      completionConflictMock,
+      completionReturningMock,
+      linkConflictMock
+    } = configureDb({
       evidenceRows: [
         {
           id: "evidence-1",
@@ -183,7 +224,7 @@ describe("authoritative completion service", () => {
 
     expect(result.itemId).toBe("B1.2");
     expect(result.itemType).toBe("lesson");
-    expect(valuesMock).toHaveBeenCalledWith(
+    expect(completionValuesMock).toHaveBeenCalledWith(
       expect.objectContaining({
         userId: "user_1",
         itemType: "lesson",
@@ -193,8 +234,9 @@ describe("authoritative completion service", () => {
         verificationLevel: "authoritative-evidence"
       })
     );
-    expect(onConflictDoNothingMock).toHaveBeenCalledTimes(2);
-    expect(returningMock).toHaveBeenCalledTimes(1);
+    expect(completionConflictMock).toHaveBeenCalledTimes(1);
+    expect(linkConflictMock).toHaveBeenCalledTimes(1);
+    expect(completionReturningMock).toHaveBeenCalledTimes(1);
   });
 
   it("rejects missing authentication before database access", async () => {
