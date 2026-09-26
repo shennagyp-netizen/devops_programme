@@ -137,8 +137,12 @@ describe("server verified-evidence authority", () => {
       verifiedAt: new Date("2026-09-26T10:02:00.000Z")
     };
 
-    const whereMock = vi.fn().mockResolvedValue([row]);
-    const fromMock = vi.fn().mockReturnValue({ where: whereMock });
+    const whereMock = vi.fn().mockReturnThis();
+    const orderByMock = vi.fn().mockResolvedValue([row]);
+    const fromMock = vi.fn().mockReturnValue({
+      where: whereMock,
+      orderBy: orderByMock
+    });
     selectMock.mockReturnValue({ from: fromMock });
     getDbMock.mockReturnValue({ select: selectMock });
 
