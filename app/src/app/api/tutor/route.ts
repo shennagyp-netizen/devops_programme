@@ -281,7 +281,7 @@ export async function GET(request: Request) {
       const parsed = JSON.parse(message.content) as {
         message?: string;
         mode?: TutorMode;
-        pedagogicalIntent?: TutorMode;
+        pedagogicalIntent?: string;
         nextQuestion?: string;
         requestedEvidence?: string[];
         suggestedAction?: string;
