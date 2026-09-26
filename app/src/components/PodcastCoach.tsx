@@ -4,6 +4,7 @@ import {
   findActiveCue,
   findCurrentTurnId,
   loadPodcastAudioManifest,
+  type PodcastAudioBundle,
   type PodcastAudioManifest,
   type PodcastCognitiveLevel,
   type PodcastCueKind
@@ -83,7 +84,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   const [cognitiveLevel, setCognitiveLevel] = useState<PodcastCognitiveLevel>(1);
   const [scriptVersions, setScriptVersions] = useState<Record<string, string>>({});
   const [audioManifests, setAudioManifests] =
-    useState<Record<string, ReturnType<typeof loadPodcastAudioManifest> extends Promise<infer T> ? T : never>>({});
+    useState<Record<string, PodcastAudioBundle>>({});
   const [mediaFailed, setMediaFailed] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -135,9 +136,6 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     audioRef.current = null;
 
     Promise.all([
-      fetch(cognitivePodcastUrl(lesson.podcast, 1)).then((response) =>
-        response.ok ? response.text() : ""
-      ),
       fetch("/podcasts/manifest.json")
         .then((response) =>
           response.ok
@@ -152,10 +150,9 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
         })),
       loadPodcastAudioManifest()
     ])
-      .then(([text, manifest, audio]) => {
+      .then(([manifest, audio]) => {
         if (cancelled) return;
 
-        setEpisodeSource(text);
         setScriptVersions(manifest.cognitiveLevels?.[lesson.id] ?? {});
         setAudioManifests(audio);
       })
@@ -175,8 +172,6 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
 
   useEffect(() => {
     let cancelled = false;
-
-    if (cognitiveLevel === 1) return undefined;
 
     setPhase("ready");
     setTurnIndex(0);
@@ -204,7 +199,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     return () => {
       cancelled = true;
     };
-  }, [cognitiveLevel, lesson.podcast]);
+  }, [cognitiveLevel, lesson.id, lesson.podcast]);
 
   const episode = useMemo(
     () => episodeSource.trim(),
