@@ -1,0 +1,13 @@
+EPISODE B1.4 — Cognitive Level 1: Foundation
+
+Containers solve a repeatability problem. An application can work perfectly on one laptop and fail on another because the environment around it is different.
+
+Think about three things: the image, the container, and the process. The image is the packaged starting point. The container is a running instance of that image. The process is the application work happening inside the container.
+
+The important idea is that the container gives the process a controlled environment. It does not create a completely separate computer. A container still uses the host operating system kernel.
+
+That is why containers are useful for DevOps. We can describe the software environment instead of hoping every machine has the same setup.
+
+There are two more boundaries to remember. Important data should have a lifecycle of its own, usually through persistent storage. And a service listening inside a container is not automatically reachable from the outside. The container port and the published host port are different boundaries.
+
+So the basic mental model is simple: package the environment, run the process inside it, keep important data persistent, and make network access explicit.
