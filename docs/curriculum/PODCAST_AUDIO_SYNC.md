@@ -1,126 +1,33 @@
 # Podcast Audio and React Synchronization
 
-## Non-negotiable rule
+## MVP contract
 
-React must never estimate spoken position from:
-- character count
-- word count
-- average speaking speed
-- paragraph length
-- number of turns
+The podcast is fixed authored curriculum content. The private LLM tutor is a separate learner-specific conversation and never rewrites, regenerates, or controls the podcast.
 
-Those values vary with speaker, voice, pauses, pronunciation and recording style.
+An aligned episode may contain multiple fixed speech files. The MVP uses four fixed speech files for the demonstration episode. Each speech file owns one authored speech segment; the segments form one shared timeline.
+
+The browser uses the actual audio clock as the synchronization authority. The visible transcript follows that clock, and authored learning cues pause the same voice session.
+
+Playback speed is a learner control from 1x through 2x. Changing speed changes playback rate only; it does not alter the authored transcript or curriculum.
+
+When a matched fixed recording is unavailable or stale, the written transcript remains usable. The application must not claim audio synchronization when no valid aligned recording exists.
 
 ## Synchronization contract
 
-Every generated audio episode has:
+Every fixed aligned episode provides:
+1. a script version hash
+2. one or more fixed speech segments
+3. a start/end range for every segment
+4. a timing range for every transcript turn
+5. timestamp cues for prediction, lab and recall boundaries
+6. the total episode duration
 
-1. the exact source script revision
-2. a stable episode ID
-3. a stable turn ID for every dialogue turn
-4. a timing range for every dialogue turn
-5. audio duration
-6. timestamp cues for learner-control events
-
-Turn IDs follow:
-
-`<episodeId>.T001`, `<episodeId>.T002`, ...
-
-Example:
-
-`D2.2.T014`
-
-The manifest therefore has two timing layers.
-
-### Layer 1 — spoken turn timing
-
-Every dialogue turn has:
-
-`turnId + startMs + endMs`
-
-React uses this layer to keep the visible transcript aligned to the voice.
-
-### Layer 2 — learning cues
-
-Important interactions have:
-
-`turnId + kind + startMs + optional endMs`
-
-Supported cue types:
-- `prediction`
-- `lab`
-- `recall`
-- `transition`
-
-React uses this layer to pause the voice and hand control to the learner.
-
-## Why the layers are separate
-
-A turn is a speech unit.
-
-A cue is an instructional event.
-
-They are not the same thing.
-
-For example, Speaker A can say:
-
-"Okay, make a prediction. If the DNS record is stale, what would you expect?"
-
-That sentence is one spoken turn with one turn timing range. The prediction cue can point into that turn at the moment where the learner should stop.
-
-## Synchronization behavior
-
-When aligned audio is available:
-
-1. audio playback time is authoritative
-2. React displays the turn containing that time
-3. React pauses when it crosses an authored learning cue
-4. learner performs the interaction
-5. React resumes the same audio position
-6. the next turn/cue continues naturally
-
-React does not attempt to predict where the voice should be.
-
-## Audio generation workflow
-
-1. Freeze the episode script revision.
-2. Generate the voice recording.
-3. Align the recording to the transcript.
-4. Produce `audioUrl`, `durationMs`, all turn timings, and learning cues.
-5. Store the manifest.
-6. Listen through every pause and verify the cue lands at the intended spoken moment.
-7. Only then mark the episode voice-synced.
-
-Changing the spoken script invalidates its audio manifest.
-
-Changing only React UI text does not.
+React uses the actual playback clock to locate the current segment, transcript turn and authored cue. Timing must never be estimated from word count, paragraph length or average speaking speed.
 
 ## Fallback
 
-Until aligned audio exists, the application deliberately uses guided transcript mode.
+If an audio manifest is missing, invalid or stale, the application keeps the authored transcript available. Guided transcript mode is explicitly presented as transcript playback, not as synchronized audio.
 
-It must not fake synchronization by estimating timing.
+## Current MVP
 
-Guided transcript mode may provide an explicitly labelled learner-selected
-**reading pace** from 1x to 2x. This controls only the paced presentation of
-the written turns. It is not presented as audio synchronization, does not
-generate TTS, and is immediately superseded by the real audio clock when a
-matching aligned recording is available.
-
-## Current status
-
-The synchronization engine and manifest schema are implemented in React. Production audio manifests are not committed yet, so current episodes intentionally use the safe guided-transcript fallback.
-
-## Stale-audio protection
-
-The app also loads the generated podcast source manifest.
-
-A voice manifest contains a `scriptVersion` hash. React compares that hash with the exact episode text hash generated from the current source scripts.
-
-If they differ:
-- the recording is treated as stale
-- voice synchronization is disabled
-- guided transcript mode remains available
-- the user is never shown a false claim that the voice is synchronized
-
-This is deliberately fail-closed.
+B1.4 has the first fixed-audio demonstration with four speech files. Other lessons continue to use the safe transcript fallback until their fixed recordings are aligned and published.
