@@ -135,6 +135,56 @@ export const learnerCompletionEvidence = pgTable(
   })
 );
 
+export const verificationProviderKeys = pgTable(
+  "verification_provider_keys",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id").notNull().references(() => authUsers.id, { onDelete: "cascade" }),
+    providerId: text("provider_id").notNull(),
+    keyId: text("key_id").notNull(),
+    algorithm: text("algorithm").notNull(),
+    publicKey: text("public_key").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true })
+  },
+  (table) => ({
+    providerKeyUnique: uniqueIndex("verification_provider_keys_user_provider_key_uq").on(
+      table.userId, table.providerId, table.keyId
+    ),
+    activeKeyIndex: index("verification_provider_keys_user_provider_idx").on(
+      table.userId, table.providerId, table.createdAt
+    ),
+    algorithmCheck: check(
+      "verification_provider_keys_algorithm_ck",
+      sql`"algorithm" = 'ed25519'`
+    )
+  })
+);
+
+export const verificationAttempts = pgTable(
+  "verification_attempts",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id").notNull().references(() => authUsers.id, { onDelete: "cascade" }),
+    itemId: text("item_id").notNull(),
+    evidenceKind: text("evidence_kind").notNull(),
+    providerId: text("provider_id").notNull(),
+    nonceHash: text("nonce_hash").notNull(),
+    issuedAt: timestamp("issued_at", { withTimezone: true }).notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    consumedAt: timestamp("consumed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
+  },
+  (table) => ({
+    userItemIndex: index("verification_attempts_user_item_idx").on(
+      table.userId, table.itemId, table.createdAt
+    ),
+    providerIndex: index("verification_attempts_user_provider_idx").on(
+      table.userId, table.providerId, table.createdAt
+    )
+  })
+);
+
 export type AuthUser = typeof authUsers.$inferSelect;
 export type AuthSession = typeof authSessions.$inferSelect;
 export type LearnerProgressHistory = typeof learnerProgressHistory.$inferSelect;
