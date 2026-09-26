@@ -1,3 +1,4 @@
+import React from "react";
 /** @vitest-environment jsdom */
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
@@ -16,9 +17,11 @@ const context = {
 
 function renderAssistant() {
   return render(
-    <MantineProvider>
-      <FloatingLLMAssistant context={context} />
-    </MantineProvider>
+    React.createElement(
+      MantineProvider,
+      null,
+      React.createElement(FloatingLLMAssistant, { context })
+    )
   );
 }
 
