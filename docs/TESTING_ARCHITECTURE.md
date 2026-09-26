@@ -78,9 +78,13 @@ Current integration suites cover:
 - Windows platform coverage
 - spoken lesson coverage and cue parsing
 - runtime task catalog consistency
-- local runtime-runner dry-run behavior
+- local runtime-runner behavior
 - execution of repository contract validators as real child processes
 - the corrected Docker mapping D2.5/D2.6/D2.7 -> I-A1
+- real PostgreSQL authentication/session behavior
+- real PostgreSQL learner-progress idempotency
+- real PostgreSQL assessment-attempt ownership and submission lifecycle
+- browser-to-local-terminal pairing and machine-verification flow through the actual localhost agent
 
 ## Negative-test doctrine
 
@@ -134,11 +138,80 @@ Visual/browser validation remains separate from contract correctness. Passing bi
 
 ## Runtime verification
 
-The runtime catalog remains future infrastructure.
+Runtime verification is now a real MVP path for published tasks, while manual execution remains the universal fallback.
 
-The learner UI does not invoke machine verification in V3. Manual terminal execution plus structured evidence is the current learner path.
+- the browser polls the localhost terminal agent on 127.0.0.1:4317;
+- the learner supplies the agent's separate pairing token;
+- the browser submits only the exact catalog task ID and platform;
+- the local agent executes catalog-defined non-destructive commands with shell execution disabled;
+- the returned machine-verification envelope is validated against the same runtime task contract before evidence is recorded;
+- CI starts the real terminal agent and exercises this path through Playwright;
+- manual terminal execution remains available for every hands-on task;
+- SSH/remote execution remains optional and separate from the browser-to-localhost MVP path.
 
-Contract validation must still fail closed for malformed runtime task definitions and envelopes because those contracts will support future execution adapters.
+Runtime contract validation continues to fail closed for malformed task definitions, identity mismatches, unsupported platforms, invalid step results, invalid timing and missing hashes.
+
+
+## Current V3 MVP verified gate — 2026-09-26
+
+Branch under review: `v3-real-user-e2e`
+
+Authoritative latest commit: `6acc0b9ff3d64ab5be436495de1b406326f07be7`
+
+Verified GitHub Actions gates for the current branch sequence:
+
+- disposable PostgreSQL 16 service starts successfully;
+- migrations/bootstrap complete successfully;
+- full unit + integration suite: PASS (472 tests);
+- TypeScript typecheck: PASS;
+- Next.js production build: PASS;
+- browser E2E: PASS (9/9 tests);
+- browser E2E runs the real localhost terminal agent with the fixed CI pairing token;
+- all browser authentication, assessment, gateway, terminal-pairing, tampering and concurrent-attempt scenarios pass.
+
+The browser E2E command itself reported:
+
+- 9 tests passed;
+- total browser execution ~16 seconds after build and dependency setup.
+
+This gate is stronger than a source-only contract check because the same CI workflow starts PostgreSQL, builds the application, starts the terminal agent, and drives the learner application through Chromium.
+
+## Integration test architecture
+
+The real-database integration suite is:
+
+`app/tests/integration/database-real.integration.test.mjs`
+
+It is enabled whenever `DATABASE_URL` is provided and runs against the disposable CI PostgreSQL database. It verifies:
+
+- password hashing and hashed session persistence;
+- session restoration through the HTTP-only session cookie;
+- logout/login lifecycle;
+- one completion-history row for repeated completion of the same learner item;
+- assessment attempt ownership by authenticated user;
+- one active assessment form per user/form;
+- cross-user submission rejection;
+- server-owned answer-key behavior;
+- final submission state and stored answer JSON.
+
+The suite intentionally mocks only Next.js cookie plumbing. Database access, schema constraints and server-domain functions remain real.
+
+## Real-user browser coverage
+
+The Playwright suite in `app/e2e/` now exercises:
+
+- public programme page and anonymous /learn protection;
+- account creation, sign-out and re-login;
+- course and platform switching;
+- Learn / Do / Recall / Design / Assessment mode navigation;
+- assessment start, answer, mark-for-review, navigation and final submission;
+- browser-originated assessment item injection rejection;
+- second-tab concurrent assessment protection;
+- localhost terminal-agent availability and pairing;
+- actual machine-verification execution through the local agent;
+- rendered learner terminal evidence returned by the agent.
+
+Browser tests must use visible user-facing controls rather than implementation-detail clicks on hidden Mantine inputs. The product itself is tested for real interaction; `force` clicks are not used to hide UI blockers.
 
 ## CI interpretation
 
