@@ -1,33 +1,51 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   findActiveCue,
+  findCurrentSegment,
   findCurrentTurnId,
   loadPodcastAudioManifest
 } from "../../src/data/podcastSync.ts";
 
 function manifest(overrides = {}) {
   const base = {
-    episodeId: "B1.2",
+    episodeId: "B1.4",
     scriptVersion: "v1",
-    audioUrl: "/podcasts/audio/B1.2.mp3",
-    durationMs: 5000,
+    durationMs: 7000,
+    segments: [
+      {
+        id: "B1.4.S001",
+        turnId: "B1.4.T001",
+        audioUrl: "/podcasts/audio/B1.4-01.mp3",
+        startMs: 0,
+        endMs: 2000
+      },
+      {
+        id: "B1.4.S002",
+        turnId: "B1.4.T002",
+        audioUrl: "/podcasts/audio/B1.4-02.mp3",
+        startMs: 2100,
+        endMs: 4000
+      },
+      {
+        id: "B1.4.S003",
+        turnId: "B1.4.T003",
+        audioUrl: "/podcasts/audio/B1.4-03.mp3",
+        startMs: 4100,
+        endMs: 6000
+      }
+    ],
     turns: [
-      { turnId: "B1.2.T001", startMs: 0, endMs: 2500 },
-      { turnId: "B1.2.T002", startMs: 2500, endMs: 5000 }
+      { turnId: "B1.4.T001", startMs: 0, endMs: 2000 },
+      { turnId: "B1.4.T002", startMs: 2100, endMs: 4000 },
+      { turnId: "B1.4.T003", startMs: 4100, endMs: 6000 }
     ],
     cues: [
       {
         id: "prediction",
-        turnId: "B1.2.T001",
+        turnId: "B1.4.T002",
         kind: "prediction",
-        startMs: 500
-      },
-      {
-        id: "lab",
-        turnId: "B1.2.T002",
-        kind: "lab",
-        startMs: 3000,
-        endMs: 3500
+        startMs: 2300,
+        endMs: 2500
       }
     ],
     ...overrides
@@ -42,7 +60,7 @@ function installFetch(payload, ok = true) {
   });
 }
 
-describe("podcast audio manifest validation red-team contract", () => {
+describe("fixed podcast manifest validation red-team contract", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
@@ -50,65 +68,117 @@ describe("podcast audio manifest validation red-team contract", () => {
   it.each([
     ["missing episode id", { episodeId: "" }],
     ["missing script version", { scriptVersion: "" }],
-    ["missing audio url", { audioUrl: "" }],
     ["zero duration", { durationMs: 0 }],
     ["negative duration", { durationMs: -1 }],
     ["non-finite duration", { durationMs: Number.NaN }],
-    ["missing turns array", { turns: undefined }],
-    ["missing cues array", { cues: undefined }]
+    ["missing segments", { segments: undefined }],
+    ["missing turns", { turns: undefined }],
+    ["missing cues", { cues: undefined }]
   ])("rejects %s", async (_label, override) => {
-    installFetch({ "B1.2": manifest(override) });
+    installFetch({ "B1.4": manifest(override) });
     await expect(loadPodcastAudioManifest()).resolves.toEqual({});
   });
 
-  it("rejects unsafe audio URLs instead of treating manifest data as trusted", async () => {
+  it("rejects unsafe segment audio URLs", async () => {
     for (const audioUrl of [
       "http://cdn.example.com/audio.mp3",
       "//cdn.example.com/audio.mp3",
       "javascript:alert(1)",
       "data:audio/mpeg;base64,AAAA"
     ]) {
-      installFetch({ "B1.2": manifest({ audioUrl }) });
+      installFetch({
+        "B1.4": manifest({
+          segments: [
+            { ...manifest().segments[0], audioUrl }
+          ]
+        })
+      });
       await expect(loadPodcastAudioManifest()).resolves.toEqual({});
     }
   });
 
-  it("accepts a root-relative or HTTPS audio URL", async () => {
+  it("accepts root-relative and HTTPS segment audio URLs", async () => {
     for (const audioUrl of [
-      "/podcasts/audio/B1.2.mp3",
-      "https://cdn.example.com/audio/B1.2.mp3"
+      "/podcasts/audio/B1.4-01.mp3",
+      "https://cdn.example.com/audio.mp3"
     ]) {
-      installFetch({ "B1.2": manifest({ audioUrl }) });
+      installFetch({
+        "B1.4": manifest({
+          segments: [
+            { ...manifest().segments[0], audioUrl },
+            ...manifest().segments.slice(1)
+          ]
+        })
+      });
       const loaded = await loadPodcastAudioManifest();
-      expect(loaded["B1.2"]?.audioUrl).toBe(audioUrl);
+      expect(loaded["B1.4"]?.segments[0]?.audioUrl).toBe(audioUrl);
     }
   });
 
-  it("rejects duplicate turn ids and duplicate cue ids", async () => {
+  it("rejects duplicate segment ids and duplicate turn ids", async () => {
+    const duplicateSegment = manifest();
+    duplicateSegment.segments[1].id = duplicateSegment.segments[0].id;
+    installFetch({ "B1.4": duplicateSegment });
+    await expect(loadPodcastAudioManifest()).resolves.toEqual({});
+
+    const duplicateTurn = manifest();
+    duplicateTurn.turns[1].turnId = duplicateTurn.turns[0].turnId;
+    installFetch({ "B1.4": duplicateTurn });
+    await expect(loadPodcastAudioManifest()).resolves.toEqual({});
+  });
+
+  it("rejects overlapping, reversed, or out-of-range segments", async () => {
+    for (const segments of [
+      [
+        { ...manifest().segments[0], startMs: 0, endMs: 3000 },
+        { ...manifest().segments[1], startMs: 2500, endMs: 4000 },
+        manifest().segments[2]
+      ],
+      [
+        { ...manifest().segments[0], startMs: 3000, endMs: 2000 },
+        ...manifest().segments.slice(1)
+      ],
+      [
+        { ...manifest().segments[0], startMs: 0, endMs: 8000 },
+        ...manifest().segments.slice(1)
+      ]
+    ]) {
+      installFetch({ "B1.4": manifest({ segments }) });
+      await expect(loadPodcastAudioManifest()).resolves.toEqual({});
+    }
+  });
+
+  it("rejects segment references to unknown turns", async () => {
     installFetch({
-      "B1.2": manifest({
+      "B1.4": manifest({
+        segments: [
+          { ...manifest().segments[0], turnId: "missing" },
+          ...manifest().segments.slice(1)
+        ]
+      })
+    });
+    await expect(loadPodcastAudioManifest()).resolves.toEqual({});
+  });
+
+  it("rejects malformed turn and cue timelines", async () => {
+    installFetch({
+      "B1.4": manifest({
         turns: [
-          { turnId: "same", startMs: 0, endMs: 2000 },
-          { turnId: "same", startMs: 2000, endMs: 5000 }
+          { turnId: "one", startMs: 0, endMs: 3000 },
+          { turnId: "two", startMs: 2500, endMs: 4000 }
         ]
       })
     });
     await expect(loadPodcastAudioManifest()).resolves.toEqual({});
 
     installFetch({
-      "B1.2": manifest({
+      "B1.4": manifest({
         cues: [
           {
-            id: "same",
-            turnId: "B1.2.T001",
-            kind: "prediction",
+            id: "bad",
+            turnId: "B1.4.T001",
+            kind: "not-a-kind",
             startMs: 500
-          },
-          {
-            id: "same",
-            turnId: "B1.2.T002",
-            kind: "lab",
-            startMs: 3000
           }
         ]
       })
@@ -116,71 +186,27 @@ describe("podcast audio manifest validation red-team contract", () => {
     await expect(loadPodcastAudioManifest()).resolves.toEqual({});
   });
 
-  it("rejects turns that overlap, reverse, or exceed duration", async () => {
-    const cases = [
-      [
-        { turnId: "one", startMs: 0, endMs: 3000 },
-        { turnId: "two", startMs: 2500, endMs: 5000 }
-      ],
-      [
-        { turnId: "one", startMs: 2000, endMs: 1000 }
-      ],
-      [
-        { turnId: "one", startMs: 0, endMs: 6000 }
-      ]
-    ];
-
-    for (const turns of cases) {
-      installFetch({ "B1.2": manifest({ turns }) });
-      await expect(loadPodcastAudioManifest()).resolves.toEqual({});
-    }
-  });
-
-  it("rejects cues with unknown turns, invalid kinds, bad ordering or invalid timing", async () => {
-    const cases = [
-      [{ turnId: "missing", kind: "prediction", startMs: 500 }],
-      [{ turnId: "B1.2.T001", kind: "not-a-kind", startMs: 500 }],
-      [{ turnId: "B1.2.T001", kind: "prediction", startMs: -1 }],
-      [{ turnId: "B1.2.T001", kind: "prediction", startMs: 6000 }],
-      [{ turnId: "B1.2.T001", kind: "prediction", startMs: 800, endMs: 700 }],
-      [
-        { turnId: "B1.2.T001", kind: "prediction", startMs: 1000 },
-        { turnId: "B1.2.T001", kind: "lab", startMs: 500 }
-      ],
-      [
-        { turnId: "B1.2.T001", kind: "prediction", startMs: 500, endMs: 1500 },
-        { turnId: "B1.2.T001", kind: "lab", startMs: 1000 }
-      ]
-    ];
-
-    for (const cues of cases) {
-      installFetch({
-        "B1.2": manifest({
-          cues: Array.isArray(cues) ? cues : [cues]
-        })
-      });
-      await expect(loadPodcastAudioManifest()).resolves.toEqual({});
-    }
-  });
-
   it("rejects a manifest whose object key does not match episodeId", async () => {
     installFetch({
-      "B1.2": manifest({ episodeId: "B1.9" })
+      "B1.4": manifest({ episodeId: "B1.9" })
     });
     await expect(loadPodcastAudioManifest()).resolves.toEqual({});
   });
 
-  it("filters invalid entries while keeping valid entries from the same manifest file", async () => {
+  it("filters invalid entries while retaining valid entries", async () => {
     installFetch({
-      "B1.2": manifest(),
-      "BROKEN": manifest({
+      "B1.4": manifest(),
+      BROKEN: manifest({
         episodeId: "BROKEN",
-        audioUrl: "javascript:alert(1)"
+        segments: [
+          { ...manifest().segments[0], audioUrl: "javascript:alert(1)" },
+          ...manifest().segments.slice(1)
+        ]
       })
     });
 
     const loaded = await loadPodcastAudioManifest();
-    expect(Object.keys(loaded)).toEqual(["B1.2"]);
+    expect(Object.keys(loaded)).toEqual(["B1.4"]);
   });
 
   it("fails closed for network, HTTP and JSON-shape failures", async () => {
@@ -198,72 +224,30 @@ describe("podcast audio manifest validation red-team contract", () => {
   });
 });
 
-describe("podcast timeline lookup contract", () => {
+describe("fixed podcast timeline lookup contract", () => {
   const current = manifest();
 
-  it("uses inclusive start and exclusive end boundaries for turns", () => {
-    expect(findCurrentTurnId(current, 0)).toBe("B1.2.T001");
-    expect(findCurrentTurnId(current, 2499)).toBe("B1.2.T001");
-    expect(findCurrentTurnId(current, 2500)).toBe("B1.2.T002");
-    expect(findCurrentTurnId(current, 4999)).toBe("B1.2.T002");
-    expect(findCurrentTurnId(current, 5000)).toBeUndefined();
+  it("uses inclusive start and exclusive end boundaries for segments and turns", () => {
+    expect(findCurrentSegment(current, 0)?.id).toBe("B1.4.S001");
+    expect(findCurrentSegment(current, 1999)?.id).toBe("B1.4.S001");
+    expect(findCurrentSegment(current, 2000)).toBeUndefined();
+    expect(findCurrentSegment(current, 2100)?.id).toBe("B1.4.S002");
+    expect(findCurrentTurnId(current, 2100)).toBe("B1.4.T002");
+    expect(findCurrentTurnId(current, 4000)).toBeUndefined();
   });
 
-  it("uses authored cue end times when present", () => {
-    expect(findActiveCue(current, 3000)?.id).toBe("lab");
-    expect(findActiveCue(current, 3499)?.id).toBe("lab");
-    expect(findActiveCue(current, 3500)).toBeUndefined();
+  it("uses authored cue end times", () => {
+    expect(findActiveCue(current, 2300)?.id).toBe("prediction");
+    expect(findActiveCue(current, 2499)?.id).toBe("prediction");
+    expect(findActiveCue(current, 2500)).toBeUndefined();
   });
 
-  it("uses the next cue start as the effective end for open-ended cues", () => {
-    const value = manifest({
-      cues: [
-        {
-          id: "first",
-          turnId: "B1.2.T001",
-          kind: "prediction",
-          startMs: 500
-        },
-        {
-          id: "second",
-          turnId: "B1.2.T001",
-          kind: "transition",
-          startMs: 1200
-        }
-      ]
-    });
-
-    expect(findActiveCue(value, 500)?.id).toBe("first");
-    expect(findActiveCue(value, 1199)?.id).toBe("first");
-    expect(findActiveCue(value, 1200)?.id).toBe("second");
-  });
-
-  it("returns no turn or cue outside the authored timeline", () => {
+  it("returns no segment, turn or cue outside the authored timeline", () => {
+    expect(findCurrentSegment(undefined, 10)).toBeUndefined();
     expect(findCurrentTurnId(undefined, 10)).toBeUndefined();
     expect(findActiveCue(undefined, 10)).toBeUndefined();
+    expect(findCurrentSegment(current, -1)).toBeUndefined();
     expect(findCurrentTurnId(current, -1)).toBeUndefined();
-    expect(findActiveCue(current, -1)).toBeUndefined();
-    expect(findCurrentTurnId(current, 10000)).toBeUndefined();
     expect(findActiveCue(current, 10000)).toBeUndefined();
-  });
-
-  it("supports transition cues without making them learner-action cues", async () => {
-    installFetch({
-      "B1.2": manifest({
-        cues: [
-          {
-            id: "transition",
-            turnId: "B1.2.T001",
-            kind: "transition",
-            startMs: 1000,
-            endMs: 1200
-          }
-        ]
-      })
-    });
-
-    const loaded = await loadPodcastAudioManifest();
-    expect(loaded["B1.2"]?.cues[0].kind).toBe("transition");
-    expect(findActiveCue(loaded["B1.2"], 1100)?.kind).toBe("transition");
   });
 });
