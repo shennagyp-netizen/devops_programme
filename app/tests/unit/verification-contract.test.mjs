@@ -10,6 +10,7 @@ const challenge = {
   targetRef: "runtime-exercise-B1.2",
   evidenceKind: "exercise",
   providerId: "local-terminal",
+  providerKeyId: "key-1",
   issuedAt: "2026-09-26T12:00:00.000Z",
   expiresAt: "2026-09-26T12:05:00.000Z",
   nonce: "nonce-1"
