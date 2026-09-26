@@ -1,0 +1,476 @@
+EPISODE A1.4 — Failure Domains
+
+Speaker A: One server failed.
+
+Speaker B: Replace it.
+
+Speaker A: Easy.
+
+Speaker B: Too easy?
+
+Speaker A: Much too easy.
+
+Speaker B: What if the whole zone failed?
+
+Speaker A: Different problem.
+
+Speaker B: What if the region failed?
+
+Speaker A: Much bigger.
+
+Speaker B: So we need failure domains.
+
+Speaker A: Exactly. That gives us a useful boundary.
+
+Speaker A: Let’s keep that as a testable claim.
+
+Speaker B: Process.
+
+Speaker A: Small.
+
+Speaker B: Host.
+
+Speaker A: Bigger.
+
+Speaker B: Zone.
+
+Speaker A: Bigger.
+
+Speaker B: Region.
+
+Speaker A: Bigger again.
+
+Speaker B: Provider?
+
+Speaker A: Potentially bigger still.
+
+Speaker B: So the goal is to stop one failure from taking out everything.
+
+Speaker A: Yes. Now connect that to the request path.
+
+Speaker A: That gives us a useful boundary.
+
+Speaker B: Human example?
+
+Speaker A: Imagine a hotel.
+
+Speaker B: Okay.
+
+Speaker A: One room loses power.
+
+Speaker B: Small failure.
+
+Speaker A: One floor loses power.
+
+Speaker B: Bigger.
+
+Speaker A: The whole building loses power.
+
+Speaker B: Bigger again.
+
+Speaker A: The whole city has a power problem.
+
+Speaker B: Very different.
+
+Speaker A: The mistake is designing as if those failures are the same.
+
+Speaker B: In software, one process dying is not the same as one host dying.
+
+Speaker A: Exactly. I would measure that before changing anything.
+
+Speaker A: Now connect that to the request path.
+
+Speaker B: If we run three services on one host, we have three processes but one failure domain.
+
+Speaker A: Good. That is where the failure becomes useful.
+
+Speaker A: I would measure that before changing anything.
+
+Speaker B: If the host dies, all three disappear.
+
+Speaker A: Right. Now we can compare it with the real system.
+
+Speaker A: That is where the failure becomes useful.
+
+Speaker B: So process count is not the same as failure isolation.
+
+Speaker A: Correct. Keep the user-visible effect in the model.
+
+Speaker A: Now we can compare it with the real system.
+
+Speaker B: What about two hosts in the same zone?
+
+Speaker A: Better, but not independent of a zone failure.
+
+Speaker B: So they can fail together.
+
+Speaker A: Exactly. That is the part I would verify first.
+
+Speaker A: Keep the user-visible effect in the model.
+
+Speaker B: This is why topology matters.
+
+Speaker A: Yes. Now the assumption is explicit.
+
+Speaker A: That is the part I would verify first.
+
+Speaker B: Let's make a common mistake.
+
+Speaker A: Two copies.
+
+Speaker B: Good. That gives us a cleaner diagnosis.
+
+Speaker B: I would still want evidence before calling it done.
+
+Speaker A: Both in the same rack.
+
+Speaker B: Looks redundant.
+
+Speaker A: Is it?
+
+Speaker B: Not against a rack problem.
+
+Speaker A: Good. We can test that without changing the whole system.
+
+Speaker A: Now the assumption is explicit.
+
+Speaker B: So redundancy only protects against failures that the copies do not share.
+
+Speaker A: Exactly. That is a better reason to make the change.
+
+Speaker A: That gives us a cleaner diagnosis.
+
+Speaker B: That's a very useful rule.
+
+Speaker A: It is.
+
+Speaker B: Shared failure is the key.
+
+Speaker A: Right. Now we have a concrete test.
+
+Speaker A: We can test that without changing the whole system.
+
+Speaker B: If both replicas use the same storage system, a storage failure can hit both.
+
+Speaker A: Yes. Keep that distinction visible in the incident.
+
+Speaker B: If both regions depend on the same external provider, provider failure can hit both.
+
+Speaker A: Yes. That is the behavior I would expect to observe.
+
+Speaker B: So physical separation is not enough.
+
+Speaker A: Correct. Now the trade-off is much easier to see.
+
+Speaker B: Dependency separation matters too.
+
+Speaker A: Exactly. The next step should follow the evidence.
+
+Speaker B: Let's talk about blast radius.
+
+Speaker A: Blast radius is how much of the system is affected by one failure or change.
+
+Speaker B: So a process crash has a smaller blast radius than a regional outage.
+
+Speaker A: Often.
+
+Speaker B: A bad deployment to one service can still have a large blast radius if every request depends on it.
+
+Speaker A: Good. That is where the operational cost appears.
+
+Speaker B: So blast radius is about impact, not only location.
+
+Speaker A: Exactly. Now we can state the failure boundary clearly.
+
+Speaker B: Another human example.
+
+Speaker A: One power socket fails.
+
+Speaker B: Small impact.
+
+Speaker A: The building's main breaker fails.
+
+Speaker B: Big impact.
+
+Speaker A: The city grid fails.
+
+Speaker B: Very big.
+
+Speaker A: And if every emergency system uses the same electrical line?
+
+Speaker B: Then the supposed backups share the failure.
+
+Speaker A: Exactly. That gives us something we can measure.
+
+Speaker B: Nice.
+
+Speaker A: Now let's build A1.
+
+Speaker B: Three regions.
+
+Speaker A: Maybe. Keep the recovery condition explicit.
+
+Speaker B: Multiple zones inside each region.
+
+Speaker A: Good. Let’s keep that tied to the actual system behavior.
+
+Speaker B: Services spread across hosts.
+
+Speaker A: Good. Now say what evidence would confirm it.
+
+Speaker B: Data copies separated by the failures we want to survive.
+
+Speaker A: Good. That distinction matters when the failure starts spreading.
+
+Speaker B: Traffic can move when one area is unhealthy.
+
+Speaker A: Yes. I would not change the design until that is measured.
+
+Speaker B: But that only works if the other areas have spare capacity.
+
+Speaker A: Exactly. Now the user-visible effect is explicit.
+
+Speaker B: Back to capacity.
+
+Speaker A: Always.
+
+Speaker B: Everything is connected.
+
+Speaker A: That's the point of this course.
+
+Speaker B: Prediction.
+
+Speaker A: Go.
+
+Speaker B: We have six service instances across two zones. Three in each. One zone fails. Should the service stay healthy?
+
+Speaker A: What do you need to know?
+
+Speaker B: Remaining capacity.
+
+Speaker A: Good. That gives us a safe next experiment.
+
+Speaker B: If three instances cannot handle the traffic, availability may still fall.
+
+Speaker A: Exactly. Let’s keep that tied to the actual system behavior.
+
+Speaker B: So zone redundancy without headroom is weak.
+
+Speaker A: Good. Now say what evidence would confirm it.
+
+Speaker B: Another prediction. We have two regions, but both use one shared identity provider. The identity provider fails. Do the regions still have independent operation?
+
+Speaker A: Not fully, if every important request depends on that provider.
+
+Speaker B: So a hidden shared dependency creates a larger failure domain.
+
+Speaker A: Exactly.
+
+Speaker B: That's nasty.
+
+Speaker A: It is common.
+
+Speaker B: What should we map?
+
+Speaker A: Service dependencies.
+
+Speaker B: Data dependencies.
+
+Speaker A: Network paths.
+
+Speaker B: Identity.
+
+Speaker A: Storage.
+
+Speaker B: External APIs.
+
+Speaker A: Deployment control.
+
+Speaker B: Monitoring.
+
+Speaker A: Exactly.
+
+Speaker B: Monitoring?
+
+Speaker A: If both regions send alerts to one broken system, you may lose your view during the incident.
+
+Speaker B: So observability has failure domains too.
+
+Speaker A: Yes.
+
+Speaker B: That's an easy one to miss.
+
+Speaker A: Very.
+
+Speaker B: What about control planes?
+
+Speaker A: If the application is distributed but the only way to recover it depends on one control system, that control system becomes an operational dependency.
+
+Speaker B: So we should ask not only "can users still work?" but "can operators still act?"
+
+Speaker A: Excellent.
+
+Speaker B: Another big idea.
+
+Speaker A: Keep it.
+
+Speaker B: Let's make a regional failure.
+
+Speaker A: Region one disappears.
+
+Speaker B: Traffic moves to region two.
+
+Speaker A: Good.
+
+Speaker B: But region two is already at 80%.
+
+Speaker A: Bad.
+
+Speaker B: Moving all traffic there pushes it over the limit.
+
+Speaker A: Exactly.
+
+Speaker B: So the failover plan may turn one regional failure into a global failure.
+
+Speaker A: This is why disaster recovery and capacity planning are connected.
+
+Speaker B: The backup region needs room.
+
+Speaker A: Yes.
+
+Speaker B: And data has to be good enough.
+
+Speaker A: Exactly.
+
+Speaker B: And clients have to know where to go.
+
+Speaker A: Right.
+
+Speaker B: And the operators need to know how to trigger or verify the move.
+
+Speaker A: Yes.
+
+Speaker B: So failover is not just DNS.
+
+Speaker A: Correct.
+
+Speaker B: DNS can be part of it.
+
+Speaker A: Yes.
+
+Speaker B: But the whole system has to be ready.
+
+Speaker A: Exactly.
+
+Speaker B: Mac exercise?
+
+Speaker A: Draw A1 with three layers of failure.
+
+Speaker B: Process.
+
+Speaker A: First.
+
+Speaker B: Host.
+
+Speaker A: Second.
+
+Speaker B: Zone or region.
+
+Speaker A: Third.
+
+Speaker B: Then choose what the system should survive.
+
+Speaker A: Good.
+
+Speaker B: For each one, write:
+what fails,
+what keeps working,
+how traffic moves,
+what data is available,
+and how the operator knows recovery succeeded.
+
+Speaker A: Exactly.
+
+Speaker B: What about a provider failure?
+
+Speaker A: Add it as a separate thought experiment.
+
+Speaker B: Even if we do not build it now.
+
+Speaker A: Right. The learner should understand that "multi-region" does not automatically mean "multi-provider."
+
+Speaker B: Another shared dependency.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: Question one. What is a failure domain?
+
+Speaker B: A set of components that can be affected by the same failure.
+
+Speaker A: Good.
+
+Speaker B: Question two.
+
+Speaker A: What is blast radius?
+
+Speaker B: How much of the system is affected by one failure or change.
+
+Speaker A: Good.
+
+Speaker B: Question three.
+
+Speaker A: Why can two replicas still fail together?
+
+Speaker B: They may share a rack, zone, storage system, network, provider, identity service, or another dependency.
+
+Speaker A: Good.
+
+Speaker B: Question four.
+
+Speaker A: Why does failover need spare capacity?
+
+Speaker B: The surviving area has to handle the extra load.
+
+Speaker A: Good.
+
+Speaker B: Question five.
+
+Speaker A: Why map operator dependencies?
+
+Speaker B: Because the system may still serve users while operators lose the tools needed to recover it.
+
+Speaker A: Good.
+
+Speaker B: Final challenge.
+
+Speaker A: Take A1.
+
+Speaker B: Pick one failure.
+
+Speaker A: Good.
+
+Speaker B: Process, host, zone, region, provider, or shared dependency.
+
+Speaker A: Good.
+
+Speaker B: Then prove whether the system still works.
+
+Speaker A: Exactly.
+
+Speaker B: Not just draw two boxes.
+
+Speaker A: Yes.
+
+Speaker B: Redundancy is only real if the failure we care about cannot remove all the copies.
+
+Speaker A: That's the lesson.
+
+Speaker B: And if the surviving copies have no capacity?
+
+Speaker A: Then the design was never really ready for that failure.
+
+Speaker B: Good.
+
+Speaker A: Now you're ready for global traffic.

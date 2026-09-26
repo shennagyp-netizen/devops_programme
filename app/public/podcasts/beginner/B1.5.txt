@@ -1,0 +1,487 @@
+EPISODE B1.5 — Make the App Repeatable
+
+Speaker A: B1 can run now.
+
+Speaker B: Which sounds like the moment we should celebrate.
+
+Speaker A: Only after another engineer can run it.
+
+Speaker B: Fair.
+
+Speaker A: Imagine you clone the project on a clean machine. What do you need to know?
+
+Speaker B: What to install. What configuration to provide. How to start the services. How to know when they are ready. And how to prove one real user action works.
+
+Speaker A: Good. Now make a prediction.
+
+Speaker A: If the application only works because one engineer remembers a secret command that is not written down, is the system repeatable?
+
+Speaker B: No. The knowledge is still a hidden dependency.
+
+Speaker A: Exactly.
+
+Speaker B: So repeatability is not "it worked once."
+
+Speaker A: It is "the same process can be followed again and get the same meaningful result."
+
+Speaker B: That should be the visual.
+
+Speaker A: It is. Five stages.
+
+Speaker B: Image.
+
+Speaker A: Configuration.
+
+Speaker B: Runtime.
+
+Speaker A: Health.
+
+Speaker B: User path.
+
+Speaker A: And there is a separate foundation under them.
+
+Speaker B: Persistent data.
+
+Speaker A: Right. Important data needs a lifecycle that does not disappear just because one container is replaced.
+
+Speaker B: Let's take the five stages one at a time.
+
+Speaker A: Stage one: image.
+
+Speaker B: The application and its runtime pieces are packaged into a repeatable starting artifact.
+
+Speaker A: Good. The image is what we want to move between environments.
+
+Speaker B: So the image should not contain one machine's database password.
+
+Speaker A: Correct.
+
+Speaker B: Or one engineer's local path.
+
+Speaker A: Correct.
+
+Speaker B: Or values that must change between development and production.
+
+Speaker A: Exactly.
+
+Speaker B: Then stage two: configuration.
+
+Speaker A: Environment-specific values are supplied at runtime.
+
+Speaker B: Database URL. Port. Feature settings.
+
+Speaker A: Right.
+
+Speaker B: And secrets are a separate concern.
+
+Speaker A: Yes. A database password is configuration data in one sense, but operationally it is a secret and should be handled differently from ordinary settings.
+
+Speaker B: So "put everything in .env and commit it" is not a deployment strategy.
+
+Speaker A: Definitely not.
+
+Speaker B: Good.
+
+Speaker A: Now test the model.
+
+Speaker A: The same image runs in development and test. The database address changes. Does that mean we need a new image every time?
+
+Speaker B: No. The environment can provide the different value.
+
+Speaker A: Exactly.
+
+Speaker B: That makes the artifact more reusable.
+
+Speaker A: And easier to compare across environments.
+
+Speaker B: Because we can say, "Same application artifact. Different environment input."
+
+Speaker A: Good.
+
+Speaker B: Stage three: runtime.
+
+Speaker A: The process starts.
+
+Speaker B: But now comes an important trap.
+
+Speaker A: Go on.
+
+Speaker B: A process can start before the system is actually usable.
+
+Speaker A: Exactly.
+
+Speaker B: The API container can be running while the database is still starting.
+
+Speaker A: Or the configuration can be missing. Or the process can be alive but unable to serve the endpoint you expect.
+
+Speaker B: So "container is running" is weak evidence.
+
+Speaker A: It proves the runtime started a process. It does not prove the service is ready.
+
+Speaker B: Stage four: health.
+
+Speaker A: This is where we ask a more useful question.
+
+Speaker B: Is the service ready to receive the kind of traffic we are about to send?
+
+Speaker A: Yes.
+
+Speaker B: A liveness check can answer a process-oriented question.
+
+Speaker A: Such as?
+
+Speaker B: "Is the process alive?"
+
+Speaker A: Good.
+
+Speaker B: A readiness check can answer a traffic-oriented question.
+
+Speaker A: Such as?
+
+Speaker B: "Should this service receive requests now?"
+
+Speaker A: Exactly.
+
+Speaker B: And the check should have a purpose.
+
+Speaker A: Explain.
+
+Speaker B: If a load balancer uses it to decide whether to send requests, it should reflect readiness. It should not just return 200 because the HTTP server exists.
+
+Speaker A: Good.
+
+Speaker B: And it should not fail because some optional reporting service is unavailable unless that service is actually required for readiness.
+
+Speaker A: Exactly.
+
+Speaker B: So before writing a health check, ask what decision the check controls.
+
+Speaker A: That's a strong rule.
+
+Speaker B: Now stage five: user path.
+
+Speaker A: This is the proof that many systems forget.
+
+Speaker B: A health endpoint can be green while the application is still broken.
+
+Speaker A: Right.
+
+Speaker B: The API can answer /health and still fail when a real order is created.
+
+Speaker A: Exactly.
+
+Speaker B: So one real user action is stronger evidence of the whole path.
+
+Speaker A: Not necessarily perfect evidence, but much stronger.
+
+Speaker B: Good distinction.
+
+Speaker A: For B1, imagine a new engineer joins the team.
+
+Speaker B: They clone the repo.
+
+Speaker A: Follow the documented startup path.
+
+Speaker B: Provide the required configuration.
+
+Speaker A: Start the services.
+
+Speaker B: Wait for readiness.
+
+Speaker A: Create a test order.
+
+Speaker B: Verify that the order appears in the database.
+
+Speaker A: Now we have a complete operational story.
+
+Speaker B: And if any step depends on an undocumented private trick, the story breaks.
+
+Speaker A: Exactly.
+
+Speaker B: Let's break it intentionally.
+
+Speaker A: Good.
+
+Speaker B: Failure one: remove one required configuration value.
+
+Speaker A: What should you expect?
+
+Speaker B: The process may fail at startup or start but fail when it first needs that value.
+
+Speaker A: Good. The exact signal depends on the application.
+
+Speaker B: So I should not memorize one universal error.
+
+Speaker A: Right. I want you to identify the missing contract.
+
+Speaker B: Failure two: the API starts before the database is ready.
+
+Speaker A: What does a running container prove?
+
+Speaker B: Only that the process is running.
+
+Speaker A: And what do we need next?
+
+Speaker B: Evidence that the service is ready and its required dependency is usable.
+
+Speaker A: Good.
+
+Speaker B: Failure three: the health endpoint returns 200 but creating an order fails.
+
+Speaker A: What does that tell you?
+
+Speaker B: The health signal is not proving the real user path. I need evidence from the actual application action.
+
+Speaker A: Exactly.
+
+Speaker B: Failure four: I remove the API container and start a fresh one.
+
+Speaker A: What should happen to the important order data?
+
+Speaker B: It should remain because persistent data has its own lifecycle.
+
+Speaker A: Good.
+
+Speaker B: So if the data disappears, I investigate the storage boundary, not the image.
+
+Speaker A: Exactly.
+
+Speaker B: That is a useful separation.
+
+Speaker A: It is. Same application, different lifecycle.
+
+Speaker B: Let's make the human example.
+
+Speaker A: A restaurant opens every morning.
+
+Speaker B: Same kitchen.
+
+Speaker A: Different daily ingredients.
+
+Speaker B: That's configuration.
+
+Speaker A: The kitchen starts its equipment.
+
+Speaker B: Runtime.
+
+Speaker A: The manager checks that the kitchen is actually ready.
+
+Speaker B: Health.
+
+Speaker A: Then the first customer places a real order.
+
+Speaker B: User path.
+
+Speaker A: And the food stock is stored independently of whether one cook is replaced.
+
+Speaker B: Persistent data.
+
+Speaker A: Good. Keep the analogy short.
+
+Speaker B: No tiny container chefs.
+
+Speaker A: Thank you.
+
+Speaker B: Pause me.
+
+Speaker A: Go ahead.
+
+Speaker B: Make a prediction. We restart the API container. It becomes "running" immediately. Should the load balancer send customer traffic immediately?
+
+Speaker A: What do you think?
+
+Speaker B: No. I want the readiness condition to pass first.
+
+Speaker A: Why?
+
+Speaker B: Because the process can be alive while required dependencies, configuration or startup work are not ready.
+
+Speaker A: Exactly.
+
+Speaker B: That distinction will matter later in Kubernetes.
+
+Speaker A: Yes. We are learning the mechanism before the platform hides it behind another object.
+
+Speaker B: Nice.
+
+Speaker A: Now let's talk about automation.
+
+Speaker B: Should we put all startup logic into one giant script?
+
+Speaker A: Not automatically.
+
+Speaker B: Why?
+
+Speaker A: Because automation can hide behavior. A five-line script that nobody understands is not necessarily more repeatable than five clear commands.
+
+Speaker B: So the goal is not maximum automation.
+
+Speaker A: The goal is a path that is explicit enough to repeat and inspect.
+
+Speaker B: Good.
+
+Speaker A: That means the startup contract should answer:
+
+Speaker A: What tools are required?
+
+Speaker B: What configuration is required?
+
+Speaker A: What secrets are required?
+
+Speaker B: How do the services start?
+
+Speaker A: What tells us they are ready?
+
+Speaker B: What real action proves the system works?
+
+Speaker A: And what data must survive replacement?
+
+Speaker B: That's a useful contract.
+
+Speaker A: It is.
+
+Speaker B: Let's bring this back to engineering.
+
+Speaker A: A repeatable environment reduces hidden assumptions.
+
+Speaker B: Which reduces the number of things that can differ between engineers.
+
+Speaker A: Right.
+
+Speaker B: And when something does differ, we can compare the declared inputs.
+
+Speaker A: Exactly.
+
+Speaker B: So repeatability helps both development and diagnosis.
+
+Speaker A: Yes. A known startup path is also a known troubleshooting path.
+
+Speaker B: That connection matters.
+
+Speaker A: It does.
+
+Speaker B: Mac lab?
+
+Speaker A: Now prove it.
+
+Speaker A: Start from a clean B1 environment.
+
+Speaker B: First, write the startup contract before I run anything.
+
+Speaker A: Good.
+
+Speaker B: Required tools. Configuration. Secrets. Start command. Readiness check. User-path check. Persistent data.
+
+Speaker A: Exactly.
+
+Speaker B: Then start the system.
+
+Speaker A: And record what you observe.
+
+Speaker B: Then verify readiness.
+
+Speaker A: Then create one known test order.
+
+Speaker B: Then stop and replace the API container.
+
+Speaker A: Good.
+
+Speaker B: Verify the order is still present.
+
+Speaker A: Good.
+
+Speaker B: Then introduce one controlled failure.
+
+Speaker A: Choose one.
+
+Speaker B: Remove a required non-secret configuration value, or deliberately make the readiness dependency unavailable in a local environment.
+
+Speaker A: Good. Predict the signal before you break it.
+
+Speaker B: Then observe it.
+
+Speaker A: Then repair the smallest broken contract.
+
+Speaker B: Then run the user path again.
+
+Speaker A: Exactly.
+
+Speaker B: What should I record?
+
+Speaker A: Four things for each failure.
+
+Speaker B: Observation.
+
+Speaker A: Yes.
+
+Speaker B: Hypothesis.
+
+Speaker A: Yes.
+
+Speaker B: Safe change.
+
+Speaker A: Yes.
+
+Speaker B: Recovery proof.
+
+Speaker A: Good.
+
+Speaker B: So "docker ps says Up" is not enough.
+
+Speaker A: Correct.
+
+Speaker B: "Health check is green" is better.
+
+Speaker A: Better, but still not enough for the full user path.
+
+Speaker B: "Test order created and persisted" gives us the strongest evidence in this lesson.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: Why should the same image accept different environment values?
+
+Speaker B: So the same application artifact can move between environments without baking each environment into the artifact.
+
+Speaker A: Why are secrets handled separately from normal configuration?
+
+Speaker B: Because credentials and other secrets need tighter protection and should not be committed as ordinary source configuration.
+
+Speaker A: Running versus ready?
+
+Speaker B: Running means the process is alive. Ready means the service has satisfied the conditions required for the intended traffic.
+
+Speaker A: Why does important data need its own lifecycle?
+
+Speaker B: So replacing a container does not accidentally remove the application's persistent state.
+
+Speaker A: What is the final proof?
+
+Speaker B: A real user-path action that succeeds against the expected data, not only a process or health endpoint.
+
+Speaker A: Good.
+
+Speaker B: Final challenge.
+
+Speaker A: Give B1 to another engineer who has never run it.
+
+Speaker B: They should be able to explain the image, configuration, runtime, health signal, user-path test and persistent data boundary.
+
+Speaker A: And?
+
+Speaker B: They should not need a private command from the original engineer.
+
+Speaker A: Exactly.
+
+Speaker B: If they fail, we improve the contract instead of blaming the new engineer.
+
+Speaker A: That's the mindset.
+
+Speaker B: B1 is no longer "the app works on my machine."
+
+Speaker A: It is a small system with an explicit operating contract.
+
+Speaker B: And that is what we need before delivery.
+
+Speaker A: Run the lab. Break one boundary. Repair it. Prove the user path.

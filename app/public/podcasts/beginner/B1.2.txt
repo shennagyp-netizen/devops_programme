@@ -1,0 +1,361 @@
+EPISODE B1.2 — How Does a Request Find a Service?
+
+Speaker A: A user opens the B1 application and the browser needs the API.
+
+Speaker B: So the first question is not "which command do I type?"
+
+Speaker A: Right. The first question is: what has to be true before the API can answer?
+
+Speaker B: We need a usable address.
+
+Speaker A: Good.
+
+Speaker B: Then a route to that address.
+
+Speaker A: Good.
+
+Speaker B: Then a reachable service endpoint.
+
+Speaker A: Good.
+
+Speaker B: Then the application has to answer the protocol we are using.
+
+Speaker A: Exactly. A request is a chain, not one magic network action.
+
+Speaker B: Let's make a prediction before we run anything.
+
+Speaker A: Here it is: the name resolves correctly, but the client still cannot connect. What have we already proved?
+
+Speaker B: DNS worked.
+
+Speaker A: And what has not been proved yet?
+
+Speaker B: The route, the destination port, the service, or the network path.
+
+Speaker A: Exactly. That is the model for today.
+
+Speaker B: Start with the name.
+
+Speaker A: Suppose the client wants:
+
+Speaker A: https://api.example.com/orders
+
+Speaker B: The name api.example.com has to become address information the client can use.
+
+Speaker A: Right. DNS is a naming system. It is not the whole network.
+
+Speaker B: And one name can return more than one address.
+
+Speaker A: Yes.
+
+Speaker B: So if two clients get different answers, that does not automatically mean one of them is broken.
+
+Speaker A: Correct. They may be using different resolvers, different caches, or different DNS views.
+
+Speaker B: First command?
+
+Speaker A: On a system with dig:
+
+Speaker A: dig example.com
+
+Speaker B: What do we actually look at?
+
+Speaker A: The answer, record type, returned address, and useful timing or TTL information.
+
+Speaker B: Not every line.
+
+Speaker A: Exactly. We are testing one claim: "the name resolves to something usable."
+
+Speaker B: So if DNS fails, stop there.
+
+Speaker A: Yes. Do not debug HTTP when the client cannot resolve the service name.
+
+Speaker B: What if DNS works?
+
+Speaker A: Then move one step.
+
+Speaker B: The route.
+
+Speaker A: Right. The operating system needs to know where to send traffic for that destination.
+
+Speaker B: A local address can use a local path. A remote address normally needs a route through a gateway or another next hop.
+
+Speaker A: Good.
+
+Speaker B: And the command changes by platform.
+
+Speaker A: Exactly. The mental model does not.
+
+Speaker B: On Linux I might inspect ip route.
+
+Speaker A: Yes.
+
+Speaker B: On macOS the route tools differ.
+
+Speaker A: Right. We care about the decision the operating system is making: "Where will traffic for this destination go?"
+
+Speaker B: Suppose DNS is correct, and the route is present.
+
+Speaker A: Then ask the next question.
+
+Speaker B: Can I reach the expected service endpoint?
+
+Speaker A: Yes.
+
+Speaker B: That means host and port.
+
+Speaker A: And the protocol may add more steps later.
+
+Speaker B: For a typical HTTPS service, TCP and port 443 are a common starting point.
+
+Speaker A: In many ordinary HTTPS setups, yes. Keep the wording "typical" in your head because protocols and deployments can differ.
+
+Speaker B: So a port is not a service by itself.
+
+Speaker A: Correct. A port is part of the endpoint. Something still has to be listening and able to handle the traffic.
+
+Speaker B: Let's create a failure.
+
+Speaker A: The name resolves. The client tries to connect. It times out.
+
+Speaker B: My first instinct is to say "the server is down."
+
+Speaker A: And that is exactly the habit I want you to stop.
+
+Speaker B: Because a timeout has several possible causes.
+
+Speaker A: Yes. Maybe the route is wrong. Maybe traffic is filtered. Maybe the service is not reachable from this network. Maybe the host is overloaded. Maybe something in the path is silently dropping traffic.
+
+Speaker B: So what is the useful statement?
+
+Speaker A: "The client did not get the expected connection response within the wait window."
+
+Speaker B: That is much safer.
+
+Speaker A: It separates observation from explanation.
+
+Speaker B: Now change the failure.
+
+Speaker A: Same destination. Same port. The client gets connection refused.
+
+Speaker B: That is different.
+
+Speaker A: Why?
+
+Speaker B: Something responded with a refusal.
+
+Speaker A: Right. That suggests we reached an endpoint that actively rejected the connection. It is still not a complete root cause.
+
+Speaker B: The service may not be listening. Another local rule may be refusing it. Or the refusal could happen at a different point than I first assume.
+
+Speaker A: Good. "Refused" narrows the space. It does not close the investigation.
+
+Speaker B: What command lets me watch a real request move through several stages?
+
+Speaker A: Try:
+
+Speaker A: curl -v https://example.com
+
+Speaker B: DNS, connection, TLS, then HTTP.
+
+Speaker A: Exactly. But read it as a sequence of claims.
+
+Speaker B: First: did the name resolve?
+
+Speaker A: Yes.
+
+Speaker B: Second: did we connect?
+
+Speaker A: Yes or no.
+
+Speaker B: Third: did TLS start and complete?
+
+Speaker A: If this is HTTPS, yes.
+
+Speaker B: Fourth: did HTTP return a response?
+
+Speaker A: Exactly.
+
+Speaker B: One command, but several different questions.
+
+Speaker A: That is why verbose output is useful when you read it selectively.
+
+Speaker B: Let's make the visual model.
+
+Speaker A: The first box is Name.
+
+Speaker B: DNS gives us address information.
+
+Speaker A: The second is Route.
+
+Speaker B: The host chooses the network path.
+
+Speaker A: Third is Connection.
+
+Speaker B: The expected endpoint has to be reachable.
+
+Speaker A: Fourth is Application.
+
+Speaker B: The service must understand the protocol and return something meaningful.
+
+Speaker A: And when something fails, we start at the first unproven box.
+
+Speaker B: Not the box we like the most.
+
+Speaker A: Exactly.
+
+Speaker B: Let's put that into the B1 project.
+
+Speaker A: Frontend calls API.
+
+Speaker B: The API calls the database.
+
+Speaker A: Good.
+
+Speaker B: A user sees one screen.
+
+Speaker A: Yes.
+
+Speaker B: But the system underneath has multiple request paths.
+
+Speaker A: Exactly. A "page is broken" report can hide DNS, routing, connection, authentication, application or database problems.
+
+Speaker B: So location matters too.
+
+Speaker A: Very much.
+
+Speaker B: Give me the classic container case.
+
+Speaker A: The API works from the developer laptop but the frontend container cannot reach it.
+
+Speaker B: I must test from the container.
+
+Speaker A: Yes.
+
+Speaker B: Because the container's resolver, routes and network policy may differ.
+
+Speaker A: Right.
+
+Speaker B: If the container cannot resolve the name, stay with DNS.
+
+Speaker A: Correct.
+
+Speaker B: If it resolves but times out, move to route, filtering or endpoint reachability.
+
+Speaker A: Correct.
+
+Speaker B: If it connects but the application returns 401, the request got much farther.
+
+Speaker A: Exactly.
+
+Speaker B: So "where did the request stop?" is the main question.
+
+Speaker A: That is the habit.
+
+Speaker B: Let's do one more prediction.
+
+Speaker A: The browser resolves api.example.com. A TCP connection can be established. The request still fails before an HTTP response.
+
+Speaker B: I would inspect the secure transport stage next for HTTPS.
+
+Speaker A: Good.
+
+Speaker B: And I would use evidence from that stage rather than restart the application.
+
+Speaker A: Exactly.
+
+Speaker B: Now the lab.
+
+Speaker A: First:
+
+Speaker A: dig example.com
+
+Speaker A: Record the returned address.
+
+Speaker B: Second:
+
+Speaker A: curl -v https://example.com
+
+Speaker B: Watch the request stages.
+
+Speaker A: Third: test a port that is not listening on a local service you control.
+
+Speaker B: Compare refusal with the normal result.
+
+Speaker A: Fourth: choose one observation and write what it proves and what it does not prove.
+
+Speaker B: That last part is important.
+
+Speaker A: It is the whole point.
+
+Speaker B: What should count as success?
+
+Speaker A: Draw the path without notes: Name -> Route -> Connection -> Application.
+
+Speaker B: And for each step I should be able to name one observation that would support it.
+
+Speaker A: Exactly.
+
+Speaker B: Then the challenge is to remove one step.
+
+Speaker A: Yes.
+
+Speaker B: For example, make the name fail or choose a port that is not listening.
+
+Speaker A: Keep the failure local and reversible.
+
+Speaker B: Then predict the visible evidence before running it.
+
+Speaker A: Good.
+
+Speaker B: Then compare prediction with reality.
+
+Speaker A: Good.
+
+Speaker B: And repair only the broken layer.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: What does DNS give the client?
+
+Speaker B: Address information for a name.
+
+Speaker A: What does a route tell the host?
+
+Speaker B: How to reach a destination.
+
+Speaker A: What does a port identify?
+
+Speaker B: A transport endpoint used by a service on a host or network address.
+
+Speaker A: Why is timeout different from refusal?
+
+Speaker B: Timeout means the expected response did not arrive in time. Refusal means an endpoint actively rejected the connection.
+
+Speaker A: Why test from the place that fails?
+
+Speaker B: Because that place may have a different resolver, route, firewall policy or network environment.
+
+Speaker A: Final challenge.
+
+Speaker B: Frontend works on the laptop. Frontend fails in the container.
+
+Speaker A: Your first question?
+
+Speaker B: Can the container resolve the API name?
+
+Speaker A: And after that?
+
+Speaker B: Can it reach the endpoint? Then, if it reaches it, what does the application response say?
+
+Speaker A: Good.
+
+Speaker B: So the goal is not to memorize network commands.
+
+Speaker A: The goal is to know which claim you are testing and what the evidence means.
+
+Speaker B: That gives us a path instead of a guess.
+
+Speaker A: Run the lab. Bring back the evidence.

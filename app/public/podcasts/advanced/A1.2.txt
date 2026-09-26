@@ -1,0 +1,509 @@
+EPISODE A1.2 — Queues and Backpressure
+
+Speaker A: A1 has a problem.
+
+Speaker B: Again?
+
+Speaker A: The producer is sending work at 20,000 messages per second.
+
+Speaker B: And the consumer?
+
+Speaker A: 12,000.
+
+Speaker B: So the queue grows.
+
+Speaker A: Exactly. That gives us a useful boundary.
+
+Speaker A: Let’s keep that as a testable claim.
+
+Speaker B: Which sounds simple.
+
+Speaker A: It is simple.
+
+Speaker B: Until someone says, "Just make the queue bigger."
+
+Speaker A: Right. Now connect that to the request path.
+
+Speaker A: That gives us a useful boundary.
+
+Speaker B: That only gives us more storage for the problem.
+
+Speaker A: Exactly. I would measure that before changing anything.
+
+Speaker A: Now connect that to the request path.
+
+Speaker B: So the real issue is service rate.
+
+Speaker A: Good. That is where the failure becomes useful.
+
+Speaker A: I would measure that before changing anything.
+
+Speaker B: Explain backpressure.
+
+Speaker A: When the downstream system cannot safely take more work, the upstream system needs a way to slow down, reject, delay, or limit new work.
+
+Speaker B: So backpressure protects the system from overload moving upstream.
+
+Speaker A: Exactly. Now we can compare it with the real system.
+
+Speaker A: That is where the failure becomes useful.
+
+Speaker B: Human example.
+
+Speaker A: A clinic waiting room.
+
+Speaker B: Easy.
+
+Speaker A: If the lab can process 100 samples per hour and reception sends 300, the waiting room grows.
+
+Speaker B: Making the waiting room larger does not make the lab faster.
+
+Speaker A: Right. Keep the user-visible effect in the model.
+
+Speaker A: Now we can compare it with the real system.
+
+Speaker B: So at some point reception has to control how fast new work enters.
+
+Speaker A: Exactly. That is the part I would verify first.
+
+Speaker A: Keep the user-visible effect in the model.
+
+Speaker B: Maybe schedule patients, limit walk-ins, or redirect work.
+
+Speaker A: Those are forms of controlling load.
+
+Speaker B: Nice.
+
+Speaker A: Now the system version.
+
+Speaker B: Producer, queue, consumer.
+
+Speaker A: Yes. Now the assumption is explicit.
+
+Speaker A: That is the part I would verify first.
+
+Speaker B: Producer sends faster than consumer processes.
+
+Speaker A: Queue depth grows.
+
+Speaker B: Age of the oldest message also grows.
+
+Speaker A: Good. That gives us a cleaner diagnosis.
+
+Speaker A: Now the assumption is explicit.
+
+Speaker B: That means users may wait longer even if the API itself looks healthy.
+
+Speaker A: Very important.
+
+Speaker B: So queue depth and queue age are both useful signals.
+
+Speaker A: Yes. We can test that without changing the whole system.
+
+Speaker A: That gives us a cleaner diagnosis.
+
+Speaker B: What if we just add consumers?
+
+Speaker A: Good idea sometimes.
+
+Speaker B: But it depends on what the consumers need.
+
+Speaker A: Exactly. That is a better reason to make the change.
+
+Speaker A: We can test that without changing the whole system.
+
+Speaker B: If the worker is CPU-bound, more workers may help.
+
+Speaker A: Yes. Now we have a concrete test.
+
+Speaker A: That is a better reason to make the change.
+
+Speaker B: If the worker waits on a database, the database may become the limit.
+
+Speaker A: Yes. Keep that distinction visible in the incident.
+
+Speaker B: If all workers call the same external API, its rate limit may become the limit.
+
+Speaker A: Exactly. That is the behavior I would expect to observe.
+
+Speaker B: So scaling the consumer is safe only if the downstream dependencies can handle it.
+
+Speaker A: Good. Now the trade-off is much easier to see.
+
+Speaker B: This is the same capacity lesson again.
+
+Speaker A: It keeps coming back.
+
+Speaker B: Good.
+
+Speaker A: Backpressure can be explicit or indirect.
+
+Speaker B: Give me an example.
+
+Speaker A: A queue can stop accepting new messages.
+
+Speaker B: Explicit.
+
+Speaker A: An API can return 429 when a client sends too much.
+
+Speaker B: Rate limit.
+
+Speaker A: A worker pool can limit the number of concurrent jobs.
+
+Speaker B: Concurrency cap.
+
+Speaker A: A system can slow producers when a queue reaches a threshold.
+
+Speaker B: Adaptive load control.
+
+Speaker A: Exactly.
+
+Speaker B: What happens if we do not have backpressure?
+
+Speaker A: Work keeps entering.
+
+Speaker B: Queue grows.
+
+Speaker A: Memory or storage fills.
+
+Speaker B: Latency grows.
+
+Speaker A: Retries may increase.
+
+Speaker B: More work enters.
+
+Speaker A: And now you can get a failure loop.
+
+Speaker B: Retry storm.
+
+Speaker A: One example.
+
+Speaker B: So backpressure can stop a small overload from becoming a full system failure.
+
+Speaker A: Exactly.
+
+Speaker B: Let's make one.
+
+Speaker A: Downstream database slows from 100 ms to 1 second.
+
+Speaker B: Workers take longer.
+
+Speaker A: Queue grows.
+
+Speaker B: The producer does not slow down.
+
+Speaker A: Right.
+
+Speaker B: Workers start timing out.
+
+Speaker A: Right.
+
+Speaker B: They retry.
+
+Speaker A: Right.
+
+Speaker B: More requests hit the database.
+
+Speaker A: Exactly.
+
+Speaker B: Database gets even slower.
+
+Speaker A: Now you have a loop.
+
+Speaker B: That's nasty.
+
+Speaker A: And very real.
+
+Speaker B: So one protection is to limit retries.
+
+Speaker A: Yes.
+
+Speaker B: Another is backoff.
+
+Speaker A: Yes.
+
+Speaker B: Another is reducing concurrency.
+
+Speaker A: Yes.
+
+Speaker B: Another is rejecting or delaying work.
+
+Speaker A: Right.
+
+Speaker B: The goal is to keep the system inside a safe operating range.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction.
+
+Speaker A: Go.
+
+Speaker B: Queue depth is growing, but the producer has a hard business requirement to keep accepting requests. What can we do?
+
+Speaker A: Think beyond "make the queue bigger."
+
+Speaker B: Maybe we can accept the request but delay some work. Or move non-critical work to a lower priority queue. Or shed optional work.
+
+Speaker A: Good.
+
+Speaker B: We need to protect the core path.
+
+Speaker A: Exactly.
+
+Speaker B: Another prediction. Queue depth is low, but queue age is high.
+
+Speaker A: Interesting.
+
+Speaker B: That could mean very few messages are stuck for a long time.
+
+Speaker A: Yes.
+
+Speaker B: So queue depth alone can hide a problem.
+
+Speaker A: Good.
+
+Speaker B: We need signals that match user impact.
+
+Speaker A: Exactly.
+
+Speaker B: What about priority?
+
+Speaker A: Useful when not all work has equal value.
+
+Speaker B: Critical orders versus report generation.
+
+Speaker A: Yes.
+
+Speaker B: So under pressure, we may process important work first.
+
+Speaker A: Right.
+
+Speaker B: But priority can also starve low-priority work.
+
+Speaker A: Exactly.
+
+Speaker B: Which means priority is another trade-off.
+
+Speaker A: Yes.
+
+Speaker B: Everything seems to turn into a trade-off.
+
+Speaker A: Welcome to systems engineering.
+
+Speaker B: Great.
+
+Speaker A: Let's connect this to global systems.
+
+Speaker B: A region gets overloaded.
+
+Speaker A: Right.
+
+Speaker B: We might send some traffic to another region.
+
+Speaker A: If it has capacity.
+
+Speaker B: Or reject some lower-value work.
+
+Speaker A: Yes.
+
+Speaker B: Or slow producers.
+
+Speaker A: Yes.
+
+Speaker B: Or cache more.
+
+Speaker A: Yes.
+
+Speaker B: Or queue more.
+
+Speaker A: Yes, but remember that a queue is not infinite.
+
+Speaker B: Right.
+
+Speaker A: A queue is a buffer. It gives you time.
+
+Speaker B: It does not remove the total work.
+
+Speaker A: Exactly.
+
+Speaker B: That's a really important sentence.
+
+Speaker A: Keep it.
+
+Speaker B: "A queue gives you time. It does not remove the work."
+
+Speaker A: Good.
+
+Speaker B: Real-life version?
+
+Speaker A: An airport security line.
+
+Speaker B: The line absorbs the burst.
+
+Speaker A: Right.
+
+Speaker B: But if passengers arrive faster than security can process them for hours, the line just gets longer.
+
+Speaker A: Exactly.
+
+Speaker B: And if the airport lets the line fill every hallway, it creates another problem.
+
+Speaker A: That's backpressure and capacity again.
+
+Speaker B: Nice.
+
+Speaker A: Now make the system fail.
+
+Speaker B: Consumer rate drops by half.
+
+Speaker A: Good.
+
+Speaker B: Queue depth starts rising.
+
+Speaker A: Good.
+
+Speaker B: At 80% queue capacity, producers slow down.
+
+Speaker A: Good.
+
+Speaker B: At 95%, we reject optional work.
+
+Speaker A: Good.
+
+Speaker B: Core work still gets through.
+
+Speaker A: Exactly.
+
+Speaker B: That is graceful overload.
+
+Speaker A: Yes.
+
+Speaker B: Instead of waiting for the whole system to fail.
+
+Speaker A: Right.
+
+Speaker B: Mac exercise?
+
+Speaker A: Build a local producer and consumer.
+
+Speaker A: Producer sends jobs at a fixed rate.
+
+Speaker B: Worker processes them at a slower rate.
+
+Speaker A: Watch queue depth grow.
+
+Speaker B: Then add a second worker.
+
+Speaker A: Watch what changes.
+
+Speaker B: Then slow the downstream dependency.
+
+Speaker A: Good.
+
+Speaker B: Then add a concurrency limit.
+
+Speaker A: Good.
+
+Speaker B: Then make the producer slow when the queue is large.
+
+Speaker A: Good.
+
+Speaker B: That's the backpressure experiment.
+
+Speaker A: Exactly.
+
+Speaker B: What should I measure?
+
+Speaker A: Arrival rate. Service rate. Queue depth. Queue age. Processing latency. Error rate. Rejected work.
+
+Speaker B: And maybe resource use.
+
+Speaker A: Yes.
+
+Speaker B: Success?
+
+Speaker A: You can explain why the queue grows, what signal tells you it is dangerous, and what action reduces pressure without simply hiding the queue.
+
+Speaker B: Good.
+
+Speaker A: Recall.
+
+Speaker B: Let's go.
+
+Speaker A: Question one. What is backpressure?
+
+Speaker B: A way to slow, delay, limit, or reject upstream work when downstream capacity is under pressure.
+
+Speaker A: Good.
+
+Speaker B: Question two.
+
+Speaker A: Why can a larger queue be a bad fix?
+
+Speaker B: It gives more buffer space but does not increase the service rate.
+
+Speaker A: Good.
+
+Speaker B: Question three.
+
+Speaker A: Why can adding workers make things worse?
+
+Speaker B: Workers can increase load on a shared dependency such as a database or external API.
+
+Speaker A: Good.
+
+Speaker B: Question four.
+
+Speaker A: Why watch queue age?
+
+Speaker B: A small queue can still contain work that has been waiting too long.
+
+Speaker A: Good.
+
+Speaker B: Question five.
+
+Speaker A: What is graceful overload?
+
+Speaker B: The system controls or sheds some work so the most important work can keep operating instead of allowing everything to fail.
+
+Speaker A: Good.
+
+Speaker B: Final challenge.
+
+Speaker A: Design overload behavior for A1.
+
+Speaker B: Define the signals.
+
+Speaker A: Yes.
+
+Speaker B: Define when producers slow down.
+
+Speaker A: Yes.
+
+Speaker B: Define what work can be rejected.
+
+Speaker A: Yes.
+
+Speaker B: Define what work must survive.
+
+Speaker A: Yes.
+
+Speaker B: And define how we know the system recovered.
+
+Speaker A: Exactly.
+
+Speaker B: So a good queue design is not just "put Kafka in it."
+
+Speaker A: Please never write that sentence in an architecture review.
+
+Speaker B: I won't.
+
+Speaker A: Good.
+
+Speaker B: Next?
+
+Speaker A: Failure domains.
+
+Speaker B: Sounds calm.
+
+Speaker A: It won't be.

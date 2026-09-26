@@ -1788,4 +1788,3 @@ Speaker A: It is a decision about where the packet goes next.
 Speaker B: And the evidence is the path.
 
 Speaker A: Exactly. Run the lab, change one route safely, and prove recovery.
-

@@ -1,0 +1,345 @@
+EPISODE B1.4 — Why Containers Exist
+
+Speaker A: The app works on my laptop.
+
+Speaker B: But the next laptop is different.
+
+Speaker A: Different runtime. Different libraries. Different files. Maybe different network settings.
+
+Speaker B: So the real problem is not "the app is broken."
+
+Speaker A: Right. The app depends on an environment, and we have not made that environment repeatable yet.
+
+Speaker B: Let's keep the diagnosis there for a minute. Before we say "Docker", what would you inspect?
+
+Speaker A: The runtime version, the libraries, the files the app expects, the environment variables, and anything outside the app that it depends on.
+
+Speaker B: Good. Now make a prediction. If two machines have different runtime versions, but the application code is identical, what kind of failure could you see?
+
+Speaker A: The code can be the same and the result can still be different.
+
+Speaker B: Exactly. The environment is part of the system.
+
+Speaker A: That is the problem containers are trying to make easier to control.
+
+Speaker B: Give me the human version first.
+
+Speaker A: Two cooks use the same recipe.
+
+Speaker B: One kitchen has the right oven and tools. The other does not.
+
+Speaker A: Same recipe. Different result.
+
+Speaker B: And the important part is that the analogy stops there.
+
+Speaker A: Yes. A container is not a tiny kitchen and it is not a tiny virtual machine. The literal mechanism is an isolated process environment built with operating-system features.
+
+Speaker B: Let's build the model in three steps.
+
+Speaker A: Step one: the image.
+
+Speaker B: What is it?
+
+Speaker A: A packaged set of files, runtime pieces, application code, defaults and instructions for starting the application.
+
+Speaker B: So the image is what we can move between environments.
+
+Speaker A: Exactly. It gives us a repeatable starting point.
+
+Speaker B: Step two: the container.
+
+Speaker A: A running instance created from the image.
+
+Speaker B: Step three: the process.
+
+Speaker A: The actual application process doing the work.
+
+Speaker B: Say the distinction again.
+
+Speaker A: Image. Container. Process.
+
+Speaker B: Not three names for the same thing.
+
+Speaker A: Right. They are different layers.
+
+Speaker B: That is what the first part of the picture is showing.
+
+Speaker A: Image on the left. Container in the middle. Process on the right.
+
+Speaker B: Now put the host underneath it.
+
+Speaker A: The host kernel is still there.
+
+Speaker B: Important correction: the container does not boot another Linux kernel.
+
+Speaker A: It shares the host kernel and uses isolation features such as namespaces and cgroups.
+
+Speaker B: So if I treat the container like a full virtual machine, what might I miss?
+
+Speaker A: I might miss host-kernel behavior, network behavior, storage behavior, resource limits, or the fact that the process is still using shared host infrastructure.
+
+Speaker B: Exactly. Isolation hides some details. It does not remove them.
+
+Speaker A: Now let’s make that concrete.
+
+Speaker B: What does process isolation give us?
+
+Speaker A: A process can get its own view of things such as processes, filesystems and networking. Resource controls can also limit what it can use.
+
+Speaker B: So two services can share one host without pretending they own the whole host.
+
+Speaker A: Right.
+
+Speaker B: But the host still matters.
+
+Speaker A: Very much.
+
+Speaker B: Now the first command.
+
+Speaker A: Run:
+
+Speaker A: docker run --rm nginx:alpine nginx -t
+
+Speaker B: Before you run it, what are you expecting?
+
+Speaker A: The runtime should start a container from the image, run the nginx configuration test inside that container, and then remove the short-lived container because of --rm.
+
+Speaker B: Notice the difference between starting the container and running useful application work inside it.
+
+Speaker A: The container is the environment. The process is the work.
+
+Speaker B: Exactly.
+
+Speaker A: And a short-lived command like this ends when the process ends.
+
+Speaker B: What about a service?
+
+Speaker A: A long-running service is still a process running in a container. The lifetime is longer, but the relationship is the same.
+
+Speaker B: Good. Now let's talk about data.
+
+Speaker A: This is where people make an easy mistake.
+
+Speaker B: The container filesystem feels like a normal disk.
+
+Speaker A: But its normal writable layer is tied to that container's lifecycle.
+
+Speaker B: Make a prediction. If an application writes an important file inside a container and the container is removed, should we assume the file will still be there?
+
+Speaker A: No.
+
+Speaker B: So what do we use?
+
+Speaker A: Persistent storage such as a volume, depending on the application.
+
+Speaker B: Which gives us a second visual rule.
+
+Speaker A: Important data lives outside the disposable container layer.
+
+Speaker B: Exactly.
+
+Speaker A: The image gives us a repeatable starting point. The container gives us a running environment. A volume gives important data a lifecycle of its own.
+
+Speaker B: Good. Now networking.
+
+Speaker A: The process can listen on a port inside the container.
+
+Speaker B: And a user outside the container may use a different host port.
+
+Speaker A: Right.
+
+Speaker B: So if nginx listens on port 80 in the container, the host could publish that as another port.
+
+Speaker A: Yes.
+
+Speaker B: Which means "the app runs on port 80" is incomplete.
+
+Speaker A: You have to say where.
+
+Speaker B: Inside the container or on the host.
+
+Speaker A: Exactly.
+
+Speaker B: That is the second part of the picture: the port boundary is not the same thing as the process boundary.
+
+Speaker A: And a running container is not proof that the service is reachable.
+
+Speaker B: Let's break that on purpose.
+
+Speaker A: The container is running.
+
+Speaker B: But the laptop cannot reach the service.
+
+Speaker A: Good. Do not restart it yet.
+
+Speaker B: What is the first question?
+
+Speaker A: Is the process actually listening?
+
+Speaker B: Second?
+
+Speaker A: Is it listening on the port we expect inside the container?
+
+Speaker B: Third?
+
+Speaker A: Is that container port published to the host in the way we expect?
+
+Speaker B: Fourth?
+
+Speaker A: Can the client reach that host port across the network path?
+
+Speaker B: So the failure tree is:
+
+Speaker B: process.
+
+Speaker A: container port.
+
+Speaker B: host port.
+
+Speaker A: network path.
+
+Speaker B: Exactly.
+
+Speaker A: A restart is not a diagnosis.
+
+Speaker B: I know you wanted that on a T-shirt.
+
+Speaker A: I did not.
+
+Speaker B: You absolutely did.
+
+Speaker A: Fine. But the habit matters more than the slogan.
+
+Speaker B: Let's connect this to B1.
+
+Speaker A: We have a frontend container.
+
+Speaker B: An API container.
+
+Speaker A: A database container.
+
+Speaker B: The API needs a network path to the database.
+
+Speaker A: The database needs persistent data.
+
+Speaker B: The frontend may be disposable.
+
+Speaker A: And each service has a process with its own configuration.
+
+Speaker B: So the point of containers is not "learn Docker commands."
+
+Speaker A: The point is to make the environment and its boundaries easier to reason about.
+
+Speaker B: And later Kubernetes can manage these workloads.
+
+Speaker A: Right, but Kubernetes does not change the basic fact that something still has to run a process.
+
+Speaker B: Good. Now the lab should prove the model.
+
+Speaker A: First, run:
+
+Speaker A: docker run --rm nginx:alpine nginx -t
+
+Speaker B: Second, start a container that stays alive long enough to inspect.
+
+Speaker A: Then run:
+
+Speaker A: docker ps
+
+Speaker B: Pick the container and inspect it.
+
+Speaker A: Look at the image, process configuration, network settings and mounts.
+
+Speaker B: Do not collect fields just because they are there.
+
+Speaker A: Ask what each field proves.
+
+Speaker B: Then make one controlled change.
+
+Speaker A: For example, publish a host port that is already in use, or change the command so the expected process cannot start.
+
+Speaker B: Predict the failure first.
+
+Speaker A: Then observe it.
+
+Speaker B: Then repair the smallest broken layer.
+
+Speaker A: And verify the service again.
+
+Speaker B: What would count as evidence?
+
+Speaker A: The image identity. The process that ran. The network configuration. The storage configuration. The failure signal. The recovery result.
+
+Speaker B: So "the command exited with zero" is not the whole lesson.
+
+Speaker A: Correct. We want a system explanation, not just a green command.
+
+Speaker B: Let's do one more prediction before recall.
+
+Speaker B: A container is healthy according to its runtime state, but the client still gets a connection error. What should you check before changing the application?
+
+Speaker A: First, whether the process is listening.
+
+Speaker B: Then?
+
+Speaker A: The container-side port.
+
+Speaker B: Then?
+
+Speaker A: The published host port.
+
+Speaker B: Then?
+
+Speaker A: The network path from the client.
+
+Speaker B: Good. That sequence keeps the diagnosis small.
+
+Speaker A: And it keeps us from changing five things at once.
+
+Speaker B: Recall.
+
+Speaker A: Question one. Image versus container?
+
+Speaker B: The image is the packaged starting point. The container is a running instance of that image.
+
+Speaker A: Question two. Why is a container not a full virtual machine?
+
+Speaker B: Because it uses process and resource isolation while sharing the host kernel instead of booting a separate guest kernel.
+
+Speaker A: Question three. Why can data disappear when the container is removed?
+
+Speaker B: Because ordinary container filesystem state follows the container lifecycle unless data is stored through an appropriate persistent mechanism.
+
+Speaker A: Question four. Why can a running container still be unreachable?
+
+Speaker B: The process may not be listening, the container port may be wrong, the host port may not be published, or the network path may be broken.
+
+Speaker A: Question five. What does a container give us in the "works on my machine" problem?
+
+Speaker B: A more repeatable process environment with explicit boundaries around files, networking and resources.
+
+Speaker A: Good.
+
+Speaker B: Final challenge?
+
+Speaker A: Build a small B1 API container.
+
+Speaker B: Then run the same image in a clean environment.
+
+Speaker A: Break one boundary on purpose.
+
+Speaker B: Diagnose it without restarting everything.
+
+Speaker A: Recover it.
+
+Speaker B: And prove the recovered behavior.
+
+Speaker A: Exactly.
+
+Speaker B: One last rule?
+
+Speaker A: Make every claim no stronger than the evidence.
+
+Speaker B: That one is worth keeping.
+
+Speaker A: Run the lab. Break the container. Find the cause. Then move on.

@@ -1,0 +1,407 @@
+EPISODE B2.3 — Backups Are Not the Same as Recovery
+
+Speaker A: The database was deleted.
+
+Speaker B: Bad day.
+
+Speaker A: The team says, "Don't worry. We have backups."
+
+Speaker B: Good?
+
+Speaker A: Maybe.
+
+Speaker B: That answer sounds dangerous.
+
+Speaker A: It is. A backup is not the same as a restored system.
+
+Speaker B: And a restored system is not automatically a recovered system.
+
+Speaker A: Exactly.
+
+Speaker B: Then the visual should be:
+
+Speaker B: Backup -> Restore -> Compatibility -> Verify -> Recover.
+
+Speaker A: Yes. And underneath it we keep two business constraints.
+
+Speaker B: RPO and RTO.
+
+Speaker A: Good. Make a prediction.
+
+Speaker A: We have a perfect backup from yesterday. The production database is damaged today. Can we say the recovery point is zero?
+
+Speaker B: No. The backup is old enough that today's changes may be lost.
+
+Speaker A: Exactly.
+
+Speaker B: So RPO is about acceptable data loss.
+
+Speaker A: Right.
+
+Speaker B: And RTO is how long recovery may take.
+
+Speaker A: Exactly.
+
+Speaker B: Stage one: backup.
+
+Speaker A: A backup is a stored copy of data that we expect to use later.
+
+Speaker B: That sounds simple.
+
+Speaker A: The important word is "use."
+
+Speaker B: Because a file existing on disk does not prove it is recoverable.
+
+Speaker A: Correct.
+
+Speaker B: What can make a backup useless?
+
+Speaker A: It can be too old. Damaged. Inaccessible. Encrypted without an available recovery key. Or incompatible with the system we need to restore.
+
+Speaker B: So the backup has a lifecycle too.
+
+Speaker A: Yes.
+
+Speaker B: Where is it stored?
+
+Speaker A: How often is it created?
+
+Speaker B: How long is it kept?
+
+Speaker A: Can the team access it during an incident?
+
+Speaker B: Those are operational questions, not just storage questions.
+
+Speaker A: Exactly.
+
+Speaker B: Stage two: restore.
+
+Speaker A: Restore means taking the backup and recreating usable data somewhere.
+
+Speaker B: Somewhere.
+
+Speaker A: That word matters.
+
+Speaker B: We should not immediately overwrite the only remaining copy.
+
+Speaker A: Right.
+
+Speaker B: So in a recovery exercise, restore into a safe target first.
+
+Speaker A: Good.
+
+Speaker B: Then inspect what came back.
+
+Speaker A: Exactly.
+
+Speaker B: This is the moment where a fake backup system gets exposed.
+
+Speaker A: Yes. The backup command can succeed every night while the restore process fails every night in theory.
+
+Speaker B: Which means the team has been collecting files, not recovery capability.
+
+Speaker A: That's a good distinction.
+
+Speaker B: Stage three: compatibility.
+
+Speaker A: The restored data still has to work with the application.
+
+Speaker B: Application version.
+
+Speaker A: Yes.
+
+Speaker B: Database schema.
+
+Speaker A: Yes.
+
+Speaker B: Configuration.
+
+Speaker A: Yes.
+
+Speaker B: Secrets and encryption keys.
+
+Speaker A: Yes.
+
+Speaker B: So I can successfully restore data and still have a broken application.
+
+Speaker A: Exactly.
+
+Speaker B: Suppose the new application release changed the schema.
+
+Speaker A: Then an older application version may not understand the restored state.
+
+Speaker B: Which means recovery planning has to know which application version is compatible.
+
+Speaker A: Correct.
+
+Speaker B: That is much more than "restore database."
+
+Speaker A: Recovery is a system problem.
+
+Speaker B: Stage four: verify.
+
+Speaker A: First verify the restored data itself.
+
+Speaker B: Expected records.
+
+Speaker A: Important relationships.
+
+Speaker B: The data we care about.
+
+Speaker A: Good.
+
+Speaker B: Then verify that the application can actually use it.
+
+Speaker A: Exactly.
+
+Speaker B: And not just with a health endpoint.
+
+Speaker A: Right. The same lesson we used earlier: the real user path is stronger evidence.
+
+Speaker B: If a customer creates an order and the restored system stores and returns it correctly, that is much stronger recovery evidence.
+
+Speaker A: Yes.
+
+Speaker B: Stage five: recover.
+
+Speaker A: Now the service is returned to the required state.
+
+Speaker B: Which means the user can do the important work again.
+
+Speaker A: Exactly.
+
+Speaker B: So recovery is the whole chain.
+
+Speaker A: Backup.
+
+Speaker B: Restore.
+
+Speaker A: Compatibility.
+
+Speaker B: Verify.
+
+Speaker A: Recover.
+
+Speaker B: And the RPO/RTO targets tell us whether that recovery is acceptable to the business.
+
+Speaker A: Exactly.
+
+Speaker B: Let's build a small incident.
+
+Speaker A: Orders disappeared at 4 p.m.
+
+Speaker B: We discover a table was deleted.
+
+Speaker A: Good.
+
+Speaker B: First decision?
+
+Speaker A: Protect the remaining state. Stop unsafe changes.
+
+Speaker B: Then choose the newest safe backup.
+
+Speaker A: Yes.
+
+Speaker B: Restore it somewhere separate first.
+
+Speaker A: Good.
+
+Speaker B: Verify the data.
+
+Speaker A: Good.
+
+Speaker B: Confirm application compatibility.
+
+Speaker A: Good.
+
+Speaker B: Then prove the real order path.
+
+Speaker A: Exactly.
+
+Speaker B: Only then decide how to return the production service to that recovered state.
+
+Speaker A: Good.
+
+Speaker B: This is safer than immediately overwriting production with whatever backup file we find.
+
+Speaker A: Much safer.
+
+Speaker B: Now the RPO problem.
+
+Speaker A: Backups run every hour.
+
+Speaker B: The database fails at 4 p.m.
+
+Speaker A: The newest usable backup is 3 p.m.
+
+Speaker B: We could lose up to about one hour of recent changes, subject to exactly when the last valid backup completed.
+
+Speaker A: Good. That is why the formal RPO statement needs to match the real recovery mechanism, not a slogan.
+
+Speaker B: So if the business says maximum five-minute loss, hourly backups are not enough.
+
+Speaker A: Correct.
+
+Speaker B: We may need more frequent backups, logs, replication or another recovery mechanism.
+
+Speaker A: Depending on the system.
+
+Speaker B: And RTO?
+
+Speaker A: If the service must return within thirty minutes, a restore process that normally takes two hours does not meet the requirement.
+
+Speaker B: So RTO changes the design too.
+
+Speaker A: Exactly.
+
+Speaker B: Recovery objectives are business constraints translated into technical behavior.
+
+Speaker A: That's the idea.
+
+Speaker B: Let's make a bad backup strategy.
+
+Speaker A: Go ahead.
+
+Speaker B: We save another copy on the same disk.
+
+Speaker A: Weak protection against disk failure.
+
+Speaker B: We never test restores.
+
+Speaker A: Recovery is unproven.
+
+Speaker B: We encrypt the backup but lose the key.
+
+Speaker A: Backup exists, recovery path does not.
+
+Speaker B: We restore the database but keep the new application version.
+
+Speaker A: Compatibility may fail.
+
+Speaker B: We restore everything but never run the real user path.
+
+Speaker A: Then you have restored data, not proven recovery.
+
+Speaker B: That sequence is going on the picture.
+
+Speaker A: It should.
+
+Speaker B: Pause me.
+
+Speaker A: Go ahead.
+
+Speaker B: Make a prediction. The backup restores successfully into a new database. Does that prove the application is recovered?
+
+Speaker A: What do you think?
+
+Speaker B: No. I still need compatible application and schema versions, required configuration and secrets, data verification, and a real user-path test.
+
+Speaker A: Exactly.
+
+Speaker B: Another prediction.
+
+Speaker A: Go.
+
+Speaker B: The business requires an RTO of thirty minutes. Our tested restore takes ninety minutes.
+
+Speaker A: What does that tell you?
+
+Speaker B: The current recovery design does not meet the business requirement.
+
+Speaker A: Correct.
+
+Speaker B: Not a failure of the restore command.
+
+Speaker A: Exactly. A successful technical procedure can still fail the operational requirement.
+
+Speaker B: Good distinction.
+
+Speaker A: Now the lab.
+
+Speaker A: Create a small test dataset in a safe directory.
+
+Speaker B: Back it up.
+
+Speaker A: Good.
+
+Speaker B: Check that the backup contains the expected files.
+
+Speaker A: Good.
+
+Speaker B: Delete the working copy.
+
+Speaker A: Good.
+
+Speaker B: Restore into a new directory.
+
+Speaker A: Good.
+
+Speaker B: Compare the restored data with the known-good dataset.
+
+Speaker A: Good.
+
+Speaker B: Then write the recovery contract.
+
+Speaker A: What goes in it?
+
+Speaker B: Backup source. Backup age. Restore target. Compatible application version. Required secrets. Verification steps. Recovery time target.
+
+Speaker A: Good.
+
+Speaker B: Then perform the recovery check.
+
+Speaker A: Exactly.
+
+Speaker B: What counts as failure?
+
+Speaker A: If you cannot restore. If the restored data is incomplete. If the application cannot use it. If the recovery takes longer than the stated objective. Or if the real user action still fails.
+
+Speaker B: So the lab measures recovery, not file creation.
+
+Speaker A: Correct.
+
+Speaker B: Recall.
+
+Speaker A: What is a backup?
+
+Speaker B: A stored copy of data intended for later use.
+
+Speaker A: Restore versus recovery?
+
+Speaker B: Restore recreates usable data. Recovery returns the service to the required working state.
+
+Speaker A: RPO?
+
+Speaker B: The amount of recent data loss the business can accept.
+
+Speaker A: RTO?
+
+Speaker B: The time the business can accept the service being unavailable during recovery.
+
+Speaker A: Why test restores?
+
+Speaker B: Because the existence of a backup does not prove that the restore path works.
+
+Speaker A: Final challenge.
+
+Speaker B: The database is damaged. We have a backup.
+
+Speaker A: Your recovery path?
+
+Speaker B: Protect the remaining state. Choose a usable backup. Restore to a safe target. Verify the data. Confirm application and schema compatibility. Verify the real user path. Then return the service to the required state.
+
+Speaker A: And what two numbers shape the design?
+
+Speaker B: RPO and RTO.
+
+Speaker A: Good.
+
+Speaker B: So "we have backups" is only the beginning.
+
+Speaker A: Exactly.
+
+Speaker B: The real question is: "Can we recover the service, within the loss and time limits the business accepts, and prove it?"
+
+Speaker A: That's the question.
+
+Speaker B: Run the restore test before the incident makes the answer expensive.

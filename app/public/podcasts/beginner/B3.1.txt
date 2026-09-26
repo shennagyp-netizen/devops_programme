@@ -1,0 +1,433 @@
+EPISODE B3.1 — Why Use a Queue?
+
+Speaker A: B3 has a new problem.
+
+Speaker B: More work than one API process can finish immediately.
+
+Speaker A: Exactly.
+
+Speaker B: So we add a queue.
+
+Speaker A: Maybe. First explain what the queue changes.
+
+Speaker B: It separates accepting work from processing work.
+
+Speaker A: Good.
+
+Speaker B: The client can submit the work. The API puts a message into the queue. A worker processes it later.
+
+Speaker A: Exactly. And the visual is not just four boxes.
+
+Speaker B: Producer -> Queue -> Consumer -> Outcome.
+
+Speaker A: Right. We are going to track where the work is and what evidence proves that state.
+
+Speaker B: Make a prediction.
+
+Speaker A: A producer sends work faster than the workers can process it. What should happen?
+
+Speaker B: Queue depth should grow.
+
+Speaker A: Good.
+
+Speaker B: So the queue makes waiting work visible.
+
+Speaker A: Exactly.
+
+Speaker B: Start with the producer.
+
+Speaker A: The producer creates or accepts work.
+
+Speaker B: In B3 that might be the API receiving a report-generation request.
+
+Speaker A: Right.
+
+Speaker B: The important question is whether the business operation can be asynchronous.
+
+Speaker A: Explain.
+
+Speaker B: A report can often be accepted now and generated later. A payment may need a different design because the user may need immediate confirmation and the operation has stronger side effects.
+
+Speaker A: Exactly. A queue is a design choice, not a universal solution.
+
+Speaker B: Stage two: the queue.
+
+Speaker A: The queue holds messages while the producer and consumer run at different rates.
+
+Speaker B: So it absorbs bursts.
+
+Speaker A: Yes.
+
+Speaker B: But it also creates a new state: work can be waiting.
+
+Speaker A: Very important.
+
+Speaker B: If queue depth is zero, that can mean healthy flow.
+
+Speaker A: Often.
+
+Speaker B: If queue depth keeps rising, producers are probably outpacing consumers.
+
+Speaker A: Good.
+
+Speaker B: But I still need to inspect the system around the queue.
+
+Speaker A: Exactly.
+
+Speaker B: Stage three: the consumer.
+
+Speaker A: Workers take messages and perform the operation.
+
+Speaker B: More workers should usually increase processing capacity.
+
+Speaker A: Usually, until another dependency becomes the bottleneck.
+
+Speaker B: Database.
+
+Speaker A: Maybe.
+
+Speaker B: External API.
+
+Speaker A: Maybe.
+
+Speaker B: CPU.
+
+Speaker A: Maybe.
+
+Speaker B: So adding workers can move the bottleneck.
+
+Speaker A: Exactly.
+
+Speaker B: It is the same lesson again.
+
+Speaker B: Find the bottleneck from evidence.
+
+Speaker A: Yes.
+
+Speaker B: Stage four: outcome.
+
+Speaker A: The work can finish successfully.
+
+Speaker B: Or fail and be retried.
+
+Speaker A: Right.
+
+Speaker B: Or fail repeatedly and need to be isolated.
+
+Speaker A: Exactly.
+
+Speaker B: That gives us three important cases.
+
+Speaker A: Success.
+
+Speaker B: Retry.
+
+Speaker A: Permanent failure.
+
+Speaker B: Dead-letter queue.
+
+Speaker A: One common pattern for permanent failures, yes.
+
+Speaker B: The main stream can keep moving while one broken message is investigated.
+
+Speaker A: Exactly.
+
+Speaker B: Now the dangerous part: retry.
+
+Speaker A: A worker may process the business operation successfully but fail before the queue system knows the message is complete.
+
+Speaker B: Then the message may be delivered again.
+
+Speaker A: Yes.
+
+Speaker B: Which means the operation may run twice.
+
+Speaker A: Exactly.
+
+Speaker B: So retry is not just "try again."
+
+Speaker A: It is "try again only when the operation remains safe."
+
+Speaker B: That is idempotency.
+
+Speaker A: Right.
+
+Speaker B: Give me a simple example.
+
+Speaker A: A status check can usually be repeated safely.
+
+Speaker B: Payment is more dangerous.
+
+Speaker A: Yes. Repeating a payment without a duplicate-protection mechanism can charge the customer twice.
+
+Speaker B: So an idempotency key can help identify the same logical operation.
+
+Speaker A: In many systems, yes. The exact design depends on the operation and storage model.
+
+Speaker B: Good. No magic recipe.
+
+Speaker A: Exactly.
+
+Speaker B: Now let's break B3.
+
+Speaker A: Producers send ten thousand messages.
+
+Speaker B: Consumers can only process five thousand in the same period.
+
+Speaker A: What should you see?
+
+Speaker B: Queue depth grows.
+
+Speaker A: Good.
+
+Speaker B: Now double the workers.
+
+Speaker A: What do you expect?
+
+Speaker B: The queue should drain faster unless another dependency becomes the bottleneck.
+
+Speaker A: Exactly.
+
+Speaker B: Suppose the database becomes slow after we add workers.
+
+Speaker A: Then what happened?
+
+Speaker B: We moved the bottleneck.
+
+Speaker A: Good.
+
+Speaker B: More workers did not create infinite capacity.
+
+Speaker A: Nothing does.
+
+Speaker B: Right.
+
+Speaker A: Now a worker charges a customer, then crashes before acknowledging the message.
+
+Speaker B: Message comes back.
+
+Speaker A: What is the risk?
+
+Speaker B: The customer may be charged again.
+
+Speaker A: What design question follows?
+
+Speaker B: Can the payment operation safely tolerate duplicate delivery?
+
+Speaker A: Exactly.
+
+Speaker B: That question is more important than the retry setting itself.
+
+Speaker A: Good.
+
+Speaker B: Another failure: one message is malformed and fails every time.
+
+Speaker A: What happens if the queue retries it forever?
+
+Speaker B: We waste workers on the same broken work.
+
+Speaker A: And what happens to healthy messages?
+
+Speaker B: They should keep moving if the queue and consumer design isolate the bad message.
+
+Speaker A: Exactly.
+
+Speaker B: Dead-letter handling becomes useful there.
+
+Speaker A: Yes.
+
+Speaker B: Pause.
+
+Speaker A: Go ahead.
+
+Speaker B: Make a prediction. Queue depth is ten thousand. We double workers. Database latency also doubles. What do I watch next?
+
+Speaker A: What do you think?
+
+Speaker B: Queue depth, worker throughput, database latency, database capacity signals, and error rate.
+
+Speaker A: Good.
+
+Speaker B: I want to know whether the queue is still the bottleneck or whether the database became the bottleneck.
+
+Speaker A: Exactly.
+
+Speaker B: Another prediction.
+
+Speaker A: Go.
+
+Speaker B: A message is processed successfully but the acknowledgement fails. What should I expect?
+
+Speaker A: The message may be delivered again.
+
+Speaker B: So I should expect duplicate delivery unless the system has a stronger exactly-once mechanism.
+
+Speaker A: Good.
+
+Speaker B: And even then I should design the business operation carefully.
+
+Speaker A: Exactly.
+
+Speaker B: Let's connect the state model.
+
+Speaker A: A message is produced.
+
+Speaker B: Queued.
+
+Speaker A: Delivered.
+
+Speaker B: Processing.
+
+Speaker A: Acknowledged.
+
+Speaker B: Or failed.
+
+Speaker A: Exactly.
+
+Speaker B: That is a state machine.
+
+Speaker A: Yes.
+
+Speaker B: The state is useful because each transition creates different evidence.
+
+Speaker A: That's the point.
+
+Speaker B: If messages stay queued, inspect arrival and consumer rate.
+
+Speaker A: Good.
+
+Speaker B: If messages fail during processing, inspect the worker and dependency.
+
+Speaker A: Good.
+
+Speaker B: If messages are duplicated, inspect acknowledgement boundaries and operation idempotency.
+
+Speaker A: Good.
+
+Speaker B: If one message always fails, inspect dead-letter handling.
+
+Speaker A: Exactly.
+
+Speaker B: Mac lab?
+
+Speaker A: Start one producer and one worker.
+
+Speaker B: Send one message.
+
+Speaker A: Observe it move.
+
+Speaker B: Producer.
+
+Speaker A: Queue.
+
+Speaker B: Consumer.
+
+Speaker A: Outcome.
+
+Speaker B: Then stop the worker.
+
+Speaker A: Good.
+
+Speaker B: Send three more messages.
+
+Speaker A: Predict the queue state.
+
+Speaker B: Queue depth should rise because no consumer is processing.
+
+Speaker A: Good.
+
+Speaker B: Start the worker again.
+
+Speaker A: Observe the queue drain.
+
+Speaker B: Then create a controlled worker failure after the operation but before acknowledgement.
+
+Speaker A: Safe local test.
+
+Speaker B: Observe whether the message is delivered again.
+
+Speaker A: Good.
+
+Speaker B: Then decide what makes the operation safe to repeat.
+
+Speaker A: Exactly.
+
+Speaker B: What should I record?
+
+Speaker A: Message state.
+
+Speaker B: Queue depth.
+
+Speaker A: Consumer throughput.
+
+Speaker B: Failure signal.
+
+Speaker A: Duplicate-delivery behavior.
+
+Speaker B: Recovery result.
+
+Speaker A: Good.
+
+Speaker B: So "the message was sent" is not enough.
+
+Speaker A: Correct.
+
+Speaker B: "The worker ran" is not enough.
+
+Speaker A: Correct.
+
+Speaker B: We want the full path.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: Why use a queue?
+
+Speaker B: To decouple accepting work from processing it and absorb bursts when asynchronous work is appropriate.
+
+Speaker A: What happens when producers are faster than consumers?
+
+Speaker B: Queue depth grows.
+
+Speaker A: Why can a message be processed twice?
+
+Speaker B: A worker can finish the operation but fail before the message is acknowledged, so the message may be delivered again.
+
+Speaker A: What is idempotency?
+
+Speaker B: A design that keeps the final result correct when the same logical operation is repeated.
+
+Speaker A: Why can adding workers make the system worse?
+
+Speaker B: A dependency such as the database may become the new bottleneck.
+
+Speaker A: Final challenge.
+
+Speaker B: Draw the queue system as a state machine.
+
+Speaker A: Go.
+
+Speaker B: Produced -> Queued -> Delivered -> Processing -> Acknowledged or Failed.
+
+Speaker A: And then?
+
+Speaker B: Failed work can retry. Permanently failing work can move to a dead-letter path.
+
+Speaker A: Good.
+
+Speaker B: And every state should have evidence.
+
+Speaker A: Exactly.
+
+Speaker B: That is much better than memorizing "add a queue."
+
+Speaker A: Now break the worker and observe the state.
+
+Speaker B: Then recover it.
+
+Speaker A: And prove the work completed safely.
+
+Speaker B: Evidence first.
+
+Speaker A: Every time.

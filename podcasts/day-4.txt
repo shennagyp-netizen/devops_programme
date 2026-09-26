@@ -1835,4 +1835,3 @@ Speaker B: So cloud skill is not memorizing a provider menu.
 Speaker A: It is recognizing the primitives, dependencies and ownership boundaries underneath the menu.
 
 Speaker B: Finish Day 4 with the architecture diagram, then remove one primitive and explain what breaks.
-

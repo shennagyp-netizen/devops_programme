@@ -1,0 +1,469 @@
+EPISODE B2.1 — From Code Change to Safe Delivery
+
+Speaker A: B1 can now run as a small repeatable system.
+
+Speaker B: So the next problem is getting a change to users without losing control.
+
+Speaker A: Exactly.
+
+Speaker B: The dangerous version is "I changed it, then I deployed it."
+
+Speaker A: Yes. The safer version has a traceable path.
+
+Speaker B: Change.
+
+Speaker A: Review.
+
+Speaker B: Test.
+
+Speaker A: Artifact.
+
+Speaker B: Deploy.
+
+Speaker A: Verify.
+
+Speaker B: That is the picture for today.
+
+Speaker A: And make a prediction before we continue.
+
+Speaker A: A deployment command returns success. Does that prove the new release is healthy for users?
+
+Speaker B: No. It proves that the deployment action completed.
+
+Speaker A: Good.
+
+Speaker B: We still need runtime evidence.
+
+Speaker A: Exactly.
+
+Speaker B: So the picture is not about a list of tools.
+
+Speaker A: It is about control points.
+
+Speaker B: Start with change.
+
+Speaker A: A release should have a known source change.
+
+Speaker B: Commit.
+
+Speaker A: Right.
+
+Speaker B: Why does that matter during an incident?
+
+Speaker A: Because "the code" is too vague. We need to identify exactly what changed.
+
+Speaker B: Suppose orders started failing at 3 p.m.
+
+Speaker A: The first operational question might be: what release changed around 3 p.m.?
+
+Speaker B: And then: which source commit produced it?
+
+Speaker A: Exactly.
+
+Speaker B: So history becomes part of operations.
+
+Speaker A: Yes.
+
+Speaker B: Stage two: review.
+
+Speaker A: Another engineer should be able to inspect the intended change before the release becomes real.
+
+Speaker B: This is not only about finding bad code.
+
+Speaker A: Correct. Review also makes the change explainable.
+
+Speaker B: "Why is this line different?" has an answer.
+
+Speaker A: Right.
+
+Speaker B: And if the answer is "because production was broken and I changed it directly," we already lost an important part of the release trail.
+
+Speaker A: Exactly.
+
+Speaker B: Stage three: test.
+
+Speaker A: The proposed change needs evidence.
+
+Speaker B: Unit tests. Integration tests. Maybe a focused runtime check.
+
+Speaker A: Depending on the system.
+
+Speaker B: But tests are evidence about the proposed artifact, not proof that production is healthy.
+
+Speaker A: Good distinction.
+
+Speaker B: Stage four: artifact.
+
+Speaker A: This is the step teams often make fuzzy.
+
+Speaker B: What is the artifact?
+
+Speaker A: The concrete build output that you intend to promote.
+
+Speaker B: Container image. Package. Compiled application.
+
+Speaker A: Exactly.
+
+Speaker B: Why do we care which artifact?
+
+Speaker A: Because we want the thing we tested to be the thing we deploy.
+
+Speaker B: So rebuilding during deployment can weaken that identity.
+
+Speaker A: Yes, depending on the delivery model.
+
+Speaker B: Same source can produce different output if build inputs change.
+
+Speaker A: Different dependency versions, base images, tool versions or build settings.
+
+Speaker B: So the phrase is not "never rebuild."
+
+Speaker A: Correct. The principle is: make the tested artifact and the deployed artifact unambiguous.
+
+Speaker B: That is more precise.
+
+Speaker A: Precision matters.
+
+Speaker B: Give the artifact a release identity.
+
+Speaker A: Exactly.
+
+Speaker B: Something fixed.
+
+Speaker A: A version, digest, release number or another immutable identifier appropriate to the system.
+
+Speaker B: Now the operator can ask, "What is running?"
+
+Speaker A: And get an exact answer.
+
+Speaker B: Stage five: deploy.
+
+Speaker A: Put the identified artifact into the target environment.
+
+Speaker B: Test environment first when the delivery process uses one.
+
+Speaker A: Yes.
+
+Speaker B: Then production with an explicit rollout plan.
+
+Speaker A: Good.
+
+Speaker B: But the deployment command can still say "success" while users fail.
+
+Speaker A: Exactly.
+
+Speaker B: Which brings us to stage six.
+
+Speaker A: Verify.
+
+Speaker B: Health signal.
+
+Speaker A: Yes.
+
+Speaker B: Real request.
+
+Speaker A: Yes.
+
+Speaker B: Error signal.
+
+Speaker A: Yes.
+
+Speaker B: Logs or traces when the evidence needs more detail.
+
+Speaker A: Good.
+
+Speaker B: So the release is not complete when deployment finishes.
+
+Speaker A: Correct. The running system is part of the release evidence.
+
+Speaker B: Let's break the path.
+
+Speaker A: Good.
+
+Speaker B: Tests pass.
+
+Speaker A: Fine.
+
+Speaker B: Artifact builds.
+
+Speaker A: Fine.
+
+Speaker B: Deployment succeeds.
+
+Speaker A: Fine.
+
+Speaker B: Ten percent of requests now return errors.
+
+Speaker A: What do you do?
+
+Speaker B: First, compare the timing with the release.
+
+Speaker A: Good.
+
+Speaker B: Then determine which routes, users or requests are affected.
+
+Speaker A: Good.
+
+Speaker B: Then inspect runtime evidence.
+
+Speaker A: Good.
+
+Speaker B: Then decide whether rollback or another mitigation is safest.
+
+Speaker A: Exactly.
+
+Speaker B: Not "rollback because the release looks suspicious."
+
+Speaker A: Right.
+
+Speaker B: We still need evidence.
+
+Speaker A: Yes. A release can be blamed for a problem that actually started somewhere else.
+
+Speaker B: So rollback itself is an engineering decision.
+
+Speaker A: Correct.
+
+Speaker B: Now let's make the rollback problem harder.
+
+Speaker A: Go on.
+
+Speaker B: The new application release also changes the database schema.
+
+Speaker A: Then what?
+
+Speaker B: Rolling back the application alone may leave the database in a state the old application cannot understand.
+
+Speaker A: Good.
+
+Speaker B: So rollback is not simply "deploy the old binary."
+
+Speaker A: Exactly.
+
+Speaker B: The release surface includes application code, configuration, schema and data.
+
+Speaker A: Yes.
+
+Speaker B: Which means recovery planning has to match the change.
+
+Speaker A: Very important.
+
+Speaker B: Human example?
+
+Speaker A: Think about an approved document.
+
+Speaker B: There are five copies.
+
+Speaker A: One is the approved version.
+
+Speaker B: If someone says "use the latest copy," that is weak.
+
+Speaker A: Right.
+
+Speaker B: A fixed release identity is like putting a permanent version on the approved copy.
+
+Speaker A: Exactly.
+
+Speaker B: So everyone can point to the same thing.
+
+Speaker A: That is the useful part of the analogy.
+
+Speaker B: And the real system still uses commits, artifacts and deployment records.
+
+Speaker A: Correct.
+
+Speaker B: Let's connect this to B1.
+
+Speaker A: B1 gives us the application.
+
+Speaker B: We change one response message.
+
+Speaker A: Good.
+
+Speaker B: We review the diff.
+
+Speaker A: Good.
+
+Speaker B: We run the tests.
+
+Speaker A: Good.
+
+Speaker B: We build the image.
+
+Speaker A: Good.
+
+Speaker B: We give it a release identity.
+
+Speaker A: Good.
+
+Speaker B: We deploy it.
+
+Speaker A: Good.
+
+Speaker B: We verify a real user action.
+
+Speaker A: Exactly.
+
+Speaker B: That is a tiny continuous delivery system.
+
+Speaker A: Yes. Small enough to understand. Real enough to teach the control model.
+
+Speaker B: Pause.
+
+Speaker A: Your turn.
+
+Speaker B: Make a prediction. A new API version deploys successfully and reports "running." The error rate is now higher. What should I trust first?
+
+Speaker A: What do you think?
+
+Speaker B: The runtime behavior. The deployment status is evidence that the deployment action completed; the error rate is evidence about the service after the change.
+
+Speaker A: Good.
+
+Speaker B: So deployment status and service health are different facts.
+
+Speaker A: Exactly.
+
+Speaker B: That distinction is easy to miss.
+
+Speaker A: It causes real incidents.
+
+Speaker B: Another prediction.
+
+Speaker A: Go.
+
+Speaker B: The release artifact has one immutable identity. The deployment system says it deployed release X. The running service reports release Y.
+
+Speaker A: What does that tell you?
+
+Speaker B: We have a release-identity problem. Before changing anything else, I would find out why the running system does not match the deployment record.
+
+Speaker A: Exactly.
+
+Speaker B: So the identifier is also diagnostic evidence.
+
+Speaker A: Yes.
+
+Speaker B: Nice.
+
+Speaker A: Now the lab.
+
+Speaker A: Create a small safe change in B1.
+
+Speaker B: First record the known-good version.
+
+Speaker A: Good.
+
+Speaker B: Create a branch and commit the change.
+
+Speaker A: Good.
+
+Speaker B: Review the diff.
+
+Speaker A: Good.
+
+Speaker B: Run the relevant tests.
+
+Speaker A: Good.
+
+Speaker B: Build the release artifact.
+
+Speaker A: Good.
+
+Speaker B: Record its release identity.
+
+Speaker A: Good.
+
+Speaker B: Deploy to the environment you control for the exercise.
+
+Speaker A: Good.
+
+Speaker B: Verify one real user action, one health signal and one runtime error signal.
+
+Speaker A: Exactly.
+
+Speaker B: Then create one controlled failure after deployment.
+
+Speaker A: Choose something reversible.
+
+Speaker B: For example, deploy a deliberately broken response behind a test-only route or controlled environment setting.
+
+Speaker A: Good.
+
+Speaker B: Observe the runtime evidence.
+
+Speaker A: Good.
+
+Speaker B: Decide whether rollback is appropriate.
+
+Speaker A: Good.
+
+Speaker B: Restore the known-good release.
+
+Speaker A: Good.
+
+Speaker B: Then verify the user path again.
+
+Speaker A: Exactly.
+
+Speaker B: What counts as strong evidence?
+
+Speaker A: The source identity. The test result. The artifact identity. The deployed identity. The runtime health. The user-path result.
+
+Speaker B: So "deployment succeeded" is just one line in the story.
+
+Speaker A: Correct.
+
+Speaker B: The whole story is what makes the release explainable.
+
+Speaker A: Yes.
+
+Speaker B: And recoverable.
+
+Speaker A: Yes.
+
+Speaker B: Recall.
+
+Speaker A: Why give a release a fixed identity?
+
+Speaker B: So we can identify exactly what was built, tested and deployed.
+
+Speaker A: Why care about the artifact?
+
+Speaker B: So the thing we tested can be matched to the thing we deploy.
+
+Speaker A: What does a successful deployment command prove?
+
+Speaker B: That the deployment action completed. It does not prove that users are healthy.
+
+Speaker A: Why can rollback be difficult after a schema change?
+
+Speaker B: Because the old application may not be compatible with the new schema or data state.
+
+Speaker A: What should remain after a production change?
+
+Speaker B: A traceable record of the source change, tests, artifact, release identity, deployment and runtime evidence.
+
+Speaker A: Final challenge.
+
+Speaker B: Write B2 as a path, not as a list of tools.
+
+Speaker A: Go.
+
+Speaker B: Change -> Review -> Test -> Artifact -> Deploy -> Verify.
+
+Speaker A: And what connects every stage?
+
+Speaker B: Evidence and identity.
+
+Speaker A: Exactly.
+
+Speaker B: Then safe delivery is not "deploy carefully."
+
+Speaker A: It is a system where we can explain what changed, prove what was tested, know what is running, observe what users experience, and recover with a plan.
+
+Speaker B: That's the standard.
+
+Speaker A: Yes.
+
+Speaker B: Now run the lab and bring back the release evidence.
