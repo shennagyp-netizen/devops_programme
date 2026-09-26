@@ -12,7 +12,12 @@ const context = {
         kind: "lesson",
         completion: {
           mode: "evidence",
-          requiredEvidence: ["runtime-b1-2"]
+          requiredEvidence: [
+          {
+            kind: "runtime-b1-2",
+            minimumVerificationLevel: "structured"
+          }
+        ]
         }
       }
     ]
@@ -43,6 +48,7 @@ describe("v3 learning authority", () => {
               learnerId: "user_2",
               itemId: "B1.2",
               kind: "runtime-b1-2",
+              verificationLevel: "structured",
               verifierId: "local-agent-v1",
               verificationRef: "attestation:1",
               attestationDigest: "sha256:" + "a".repeat(64),
@@ -73,6 +79,7 @@ describe("v3 learning authority", () => {
               learnerId: "user_1",
               itemId: "B1.2",
               kind: "runtime-b1-2",
+              verificationLevel: "structured",
               verifierId: "local-agent-v1",
               verificationRef: "attestation:1",
               verifiedAt: "2026-09-26T10:00:00.000Z"
@@ -90,8 +97,72 @@ describe("v3 learning authority", () => {
       accepted: true,
       itemId: "B1.2",
       learnerId: "user_1",
-      satisfiedEvidence: ["evidence-1"]
+      satisfiedEvidence: ["evidence-1"],
+      verificationLevel: "structured"
     });
+  });
+
+
+  it("does not allow self-report evidence to satisfy a structured requirement", () => {
+    const result = evaluateLearningTransition(
+      {
+        ...context,
+        verifiedEvidence: new Map([
+          [
+            "evidence-self",
+            {
+              id: "evidence-self",
+              learnerId: "user_1",
+              itemId: "B1.2",
+              kind: "runtime-b1-2",
+              verificationLevel: "self-report",
+              verifierId: "learner-entry",
+              verificationRef: "attestation:self",
+              verifiedAt: "2026-09-26T10:00:00.000Z"
+            }
+          ]
+        ])
+      },
+      {
+        learnerId: "user_1",
+        itemId: "B1.2",
+        evidenceRefs: ["evidence-self"]
+      }
+    );
+
+    expect(result.accepted).toBe(false);
+    expect(result.reason).toBe("REQUIRED_EVIDENCE_MISSING");
+  });
+
+  it("can use all server-owned evidence when the client omits evidence references", () => {
+    const result = evaluateLearningTransition(
+      {
+        ...context,
+        verifiedEvidence: new Map([
+          [
+            "evidence-1",
+            {
+              id: "evidence-1",
+              learnerId: "user_1",
+              itemId: "B1.2",
+              kind: "runtime-b1-2",
+              verificationLevel: "structured",
+              verifierId: "structured-validator-v1",
+              verificationRef: "attestation:1",
+              verifiedAt: "2026-09-26T10:00:00.000Z"
+            }
+          ]
+        ])
+      },
+      {
+        learnerId: "user_1",
+        itemId: "B1.2"
+      }
+    );
+
+    expect(result.accepted).toBe(true);
+    expect(result.verificationLevel).toBe("structured");
+    expect(result.satisfiedEvidence).toEqual(["evidence-1"]);
   });
 
   it("rejects cross-item evidence even when it is otherwise verified", () => {
@@ -106,6 +177,7 @@ describe("v3 learning authority", () => {
               learnerId: "user_1",
               itemId: "B1.3",
               kind: "runtime-b1-2",
+              verificationLevel: "structured",
               verifierId: "local-agent-v1",
               verificationRef: "attestation:1",
               verifiedAt: "2026-09-26T10:00:00.000Z"
