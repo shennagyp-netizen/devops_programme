@@ -3,13 +3,14 @@ import { and, eq } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import { getDb } from "./db";
 import { learnerAssessmentAttempts, type LearnerAssessmentAttempt } from "./schema";
-import { requireCurrentUser } from "./auth";\nimport { assessmentPool } from "../../data/assessmentBanks";
+import { requireCurrentUser } from "./auth";
+import { assessmentPool } from "../../data/assessmentBanks";
 import {
   getSectionAssessments,
   type AssessmentFamily,
   type AssessmentItem,
   type CourseLevel
-} from "../data/assessment";
+} from "../../data/assessment";
 import { generateAssessmentForm } from "../../assessment/formGenerator";
 import {
   attemptExpiresAt,
@@ -59,29 +60,9 @@ async function ensureAssessmentSchema() {
   assessmentSchemaReady = true;
 }
 
-async function loadPool(
-  courseId: CourseLevel,
-  sectionId: string
-): Promise<AssessmentItem[]> {
-  const file = path.resolve(
-    process.cwd(),
-    "..",
-    "exams",
-    "items",
-    courseDirectory[courseId],
-    `${sectionId}.json`
-  );
-
-  const source = JSON.parse(await readFile(file, "utf8")) as {
-    sectionId: string;
-    items: Omit<AssessmentItem, "sectionId">[];
-  };
-
-  if (source.sectionId !== sectionId) {
-    throw new Error("Assessment bank section mismatch.");
-  }
-
-  return source.items.map((item) => ({ ...item, sectionId }));
+function loadPool(courseId: CourseLevel, sectionId: string): AssessmentItem[] {
+  void courseId;
+  return assessmentPool(sectionId);
 }
 
 function assertSelection(
