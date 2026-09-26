@@ -31,11 +31,13 @@ export const dnsResolutionAnimation: AnimationDefinitionV1 = {
     { kind: "connection", id: "resolver-root", from: "resolver", to: "root" },
     { kind: "connection", id: "root-tld", from: "root", to: "tld" },
     { kind: "connection", id: "tld-authoritative", from: "tld", to: "authoritative" },
-    { kind: "connection", id: "authoritative-answer", from: "authoritative", to: "answer" }
+    { kind: "connection", id: "authoritative-answer", from: "authoritative", to: "answer" },
+    { kind: "packet", id: "query-packet", label: "DNS query", from: "client", to: "resolver" },
+    { kind: "packet", id: "response-packet", label: "DNS answer", from: "authoritative", to: "answer" }
   ],
   states: [
     {
-      id: "initial",
+      id: "idle",
       status: "neutral",
       targetStatuses: [
         { targetId: "client", status: "neutral" },
@@ -47,24 +49,33 @@ export const dnsResolutionAnimation: AnimationDefinitionV1 = {
       ]
     },
     {
-      id: "active",
+      id: "query-flow",
       status: "active",
       targetStatuses: [
         { targetId: "resolver", status: "active" },
         { targetId: "root", status: "active" },
         { targetId: "tld", status: "active" },
-        { targetId: "authoritative", status: "active" },
-        { targetId: "answer", status: "active" }
+        { targetId: "authoritative", status: "active" }
+      ]
+    },
+    {
+      id: "resolution-complete",
+      status: "healthy",
+      targetStatuses: [
+        { targetId: "client", status: "healthy" },
+        { targetId: "resolver", status: "healthy" },
+        { targetId: "authoritative", status: "healthy" },
+        { targetId: "answer", status: "healthy" }
       ]
     }
   ],
   events: [
-    { id: "query", action: "highlight", targetId: "client", targetStateId: "initial" },
-    { id: "resolver", action: "highlight", targetId: "resolver", targetStateId: "active" },
-    { id: "root", action: "highlight", targetId: "root", targetStateId: "active" },
-    { id: "tld", action: "highlight", targetId: "tld", targetStateId: "active" },
-    { id: "authoritative", action: "highlight", targetId: "authoritative", targetStateId: "active" },
-    { id: "answer", action: "highlight", targetId: "answer", targetStateId: "active" }
+    { id: "query", action: "highlight", targetId: "client", targetStateId: "query-flow" },
+    { id: "resolver", action: "highlight", targetId: "resolver", targetStateId: "query-flow" },
+    { id: "root", action: "highlight", targetId: "root", targetStateId: "query-flow" },
+    { id: "tld", action: "highlight", targetId: "tld", targetStateId: "query-flow" },
+    { id: "authoritative", action: "highlight", targetId: "authoritative", targetStateId: "query-flow" },
+    { id: "answer", action: "highlight", targetId: "answer", targetStateId: "resolution-complete" }
   ],
   interactions: [
     { id: "query", action: "click", targetId: "client", eventIds: ["query"] },
