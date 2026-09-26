@@ -27,7 +27,6 @@ type SafeQuestion = {
 type ActiveAssessment = {
   id: string;
   family: AssessmentFamily;
-  formId: string;
   expiresAt: string;
   questions: SafeQuestion[];
 };
