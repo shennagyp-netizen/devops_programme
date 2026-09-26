@@ -291,6 +291,7 @@ async function main() {
           if (
             challenge.providerId !== PROVIDER_ID ||
             challenge.itemId !== task.lessonId ||
+            challenge.targetRef !== task.taskId ||
             challenge.learnerId === undefined ||
             !challenge.nonce
           ) {
