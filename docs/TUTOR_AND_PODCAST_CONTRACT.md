@@ -152,3 +152,4 @@ This is an application-abuse boundary, not an assessment rule.
 
 The prompt also treats prior tutor transcripts and current learner messages as untrusted quoted data. They are context for the tutor, not new system instructions.
 
+The tutor persistence migration also enforces valid message roles (user/assistant) and non-negative turn indexes at the database boundary, matching the Drizzle schema.
