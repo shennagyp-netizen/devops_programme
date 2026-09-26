@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Lesson } from "../data/curriculum";
+import type { CourseLesson } from "../data/courseLessons";
 import type { MasteryPlan } from "../data/mastery";
 import { buildRecoveryVoiceOptions } from "../data/remediationVoice";
 import {
@@ -29,7 +29,7 @@ const cueToPhase: Partial<Record<PodcastCueKind, VoicePhase>> = {
   recall: "learner-action"
 };
 
-export function PodcastCoach({ lesson, remediationPlan }: { lesson: Lesson; remediationPlan?: MasteryPlan | null }) {
+export function PodcastCoach({ lesson, remediationPlan }: { lesson: CourseLesson; remediationPlan?: MasteryPlan | null }) {
   const [phase, setPhase] = useState<VoicePhase>("ready");
   const [turnIndex, setTurnIndex] = useState(0);
   const [prediction, setPrediction] = useState("");
@@ -126,7 +126,7 @@ export function PodcastCoach({ lesson, remediationPlan }: { lesson: Lesson; reme
 
   const current: Turn | undefined = turns[turnIndex];
   const recoveryOptions = useMemo(
-    () => (remediationPlan ? buildRecoveryVoiceOptions(lesson as any, remediationPlan) : []),
+    () => (remediationPlan ? buildRecoveryVoiceOptions(lesson, remediationPlan) : []),
     [lesson, remediationPlan]
   );
   const activeRecoveryOption = recoveryOptions[recoveryMethodIndex] ?? recoveryOptions[0];
