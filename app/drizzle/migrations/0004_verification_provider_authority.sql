@@ -35,3 +35,18 @@ CREATE INDEX IF NOT EXISTS "verification_attempts_user_item_idx"
 
 CREATE INDEX IF NOT EXISTS "verification_attempts_user_provider_idx"
   ON "verification_attempts" ("user_id", "provider_id", "created_at");
+
+ALTER TABLE "learner_verified_evidence"
+  ADD COLUMN IF NOT EXISTS "provider_key_id" text;
+
+ALTER TABLE "learner_verified_evidence"
+  ADD COLUMN IF NOT EXISTS "verification_attempt_id" uuid;
+
+ALTER TABLE "learner_verified_evidence"
+  ADD COLUMN IF NOT EXISTS "signature" text;
+
+ALTER TABLE "learner_verified_evidence"
+  ADD CONSTRAINT "learner_verified_evidence_attempt_fk"
+  FOREIGN KEY ("verification_attempt_id")
+  REFERENCES "verification_attempts"("id")
+  ON DELETE SET NULL;
