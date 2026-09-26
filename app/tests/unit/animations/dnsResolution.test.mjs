@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   validateAnimationDefinition,
   validateAnimationLessonBinding
-} from "../../src/animations/contracts.ts";
-import { dnsResolutionAnimation } from "../../src/animations/scenarios/dnsResolution.ts";
+} from "../../../src/animations/contracts.ts";
+import { dnsResolutionAnimation } from "../../../src/animations/scenarios/dnsResolution.ts";
 
 describe("DNS resolution animation", () => {
   it("satisfies the canonical animation contract", () => {
