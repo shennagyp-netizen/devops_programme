@@ -172,23 +172,24 @@ The MVP contract covers:
 - integration coverage for continuous voice behavior and playback speed
 
 
-## Four cognitive podcast speeches — 2026-09-26
 
-The fixed podcast contract is four complete authored speech files per lesson, not four sequential audio segments and not four playback-rate settings.
+## Four cognitive podcast TTS versions — 2026-09-26
 
-The four cognitive levels are:
-1. Foundation — mental model and purpose.
-2. Mechanism — internal mechanism and boundaries.
-3. Diagnosis — failure analysis and evidence.
-4. Design & transfer — system design and transfer.
+The fixed podcast contract is one authored podcast concept with four complete cognitive speeches:
+1. Foundation
+2. Mechanism
+3. Diagnosis
+4. Design & transfer
+
+These are text-authored TTS versions. The repository must not depend on human recordings or committed audio assets.
 
 Required tests:
-- reject bundles that do not contain exactly four distinct cognitive levels
-- reject duplicate levels and level/identity mismatches
-- reject unsafe or missing audio URLs
-- reject missing or stale script versions
-- verify the selected speech uses its real audio clock
-- verify transcript position never comes from text length or TTS speed
-- verify level changes reload the corresponding authored speech
-- verify media failure falls back to the selected transcript
-- verify the private tutor remains outside podcast generation
+- reject bundles missing one of the four cognitive levels
+- reject duplicate or mismatched level identities
+- preserve independent script version hashes per level
+- verify the TTS player uses SpeechSynthesisUtterance
+- verify cognitive level changes the selected script rather than speech playback rate
+- verify transcript highlighting follows runtime TTS events
+- verify browser TTS failure leaves the authored transcript usable
+- verify no audio URL, recording manifest or MP3 dependency exists in the podcast runtime
+- verify the private LLM tutor remains outside podcast generation
