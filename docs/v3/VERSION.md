@@ -10,11 +10,14 @@
 
 The repository is now explicitly being evolved as a reusable learning framework rather than only a DevOps course application.
 
-The first v3 implementation seam is the server-policy boundary represented by:
+The first v3 implementation seam is the server-policy boundary plus the server-side programme metadata boundary represented by:
 
 - `app/src/framework/contracts.ts`
 - `app/src/framework/authority.ts`
 - `app/tests/unit/framework-authority.test.mjs`
+- `app/src/framework/authorityRequest.ts`
+- `app/src/lib/server/programmeAuthority.ts`
+- `app/tests/unit/authoritative-completion-boundary.test.mjs`
 
 This version marker does not claim that the full migration is complete.
 
@@ -26,4 +29,6 @@ This version marker does not claim that the full migration is complete.
 
 **V3.1 — Authoritative learner-state service**
 
-Move the pure transition policy behind a server-side service that resolves authenticated learner identity, authoritative learning-item definitions, and verified evidence from persistent state.
+Current V3.1 work establishes the authenticated command boundary and authoritative programme metadata lookup.
+
+The remaining V3.1 work is to resolve verified evidence from persistent server state and make completion transactional through the pure authority policy.
