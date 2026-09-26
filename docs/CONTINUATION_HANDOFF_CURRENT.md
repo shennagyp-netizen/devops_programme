@@ -1973,3 +1973,47 @@ Do not remove the multi-method recovery loop in favor of replaying the original 
 ============================================================
 END PREMIUM PRODUCT DEPTH OVERRIDE
 ============================================================
+
+============================================================
+2026-09-26 LIVE TUTOR CONVERSATION POC
+============================================================
+
+The podcast/recovery teaching system is now paired with an authenticated live tutor.
+
+Implemented:
+- new TutorCoach UI embedded in LessonPanel;
+- six tutor modes: teaching, failure-investigation, assignment-coach, incident-review, design-defense, oral-assessment;
+- tutor request/response contract with strict bounds;
+- server-side authenticated /api/tutor route;
+- Vercel AI Gateway Responses integration;
+- model routing by conversational complexity with TUTOR_MODEL override;
+- PostgreSQL tutor_sessions and tutor_messages persistence;
+- session ownership checks against the authenticated first-party user;
+- canonical server-side lesson/project context;
+- bounded server-known completion and mastery context;
+- bounded learner evidence context;
+- deterministic non-authority response fields;
+- contract gate and red-team tests for authentication, provider configuration, session ownership, certification attempts and oversized evidence.
+
+Architecture:
+Podcast / recovery podcast = authored multi-method teaching.
+Live tutor = interactive discussion, diagnosis, questioning and design review.
+Mastery engine = deterministic remediation and retry rules.
+Assessment/runtime = deterministic evidence and completion authority.
+
+Important:
+The tutor is a teaching system, not a grading shortcut. It cannot unlock retry, certify mastery or write completion state.
+
+Current limitation:
+- no streaming tutor response yet;
+- no realtime voice tutor yet;
+- no read-only runtime tools attached yet;
+- browser visuals for the new tutor have not yet been validated against a live deployment.
+
+Next implementation gate:
+Connect narrowly scoped read-only programme tools so the tutor can inspect authoritative evidence and project state without acquiring command execution or assessment authority. Then add streaming/voice while preserving the same contract and red-team suite.
+
+============================================================
+END LIVE TUTOR CONVERSATION POC
+============================================================
+
