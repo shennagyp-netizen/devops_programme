@@ -22,7 +22,6 @@ const AUTHORITY_VERIFICATION_LEVEL = "authoritative-evidence";
 
 const messages: Record<LearningTransitionFailure, string> = {
   UNKNOWN_LEARNING_ITEM: "Unknown learning item.",
-  LEARNER_MISMATCH: "Learning learner identity mismatch.",
   UNSUPPORTED_COMPLETION_MODE: "This learning item does not support evidence completion.",
   EVIDENCE_NOT_VERIFIED: "Required evidence was not verified.",
   EVIDENCE_LEARNER_MISMATCH: "Required evidence belongs to another learner.",
@@ -126,7 +125,6 @@ export async function completeLearningItemForUser(
         verifiedEvidence: evidence
       },
       {
-        learnerId,
         itemId: item.id,
         evidenceRefs
       }
