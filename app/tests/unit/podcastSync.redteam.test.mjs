@@ -48,3 +48,25 @@ describe("TTS explanation-level red-team contract", () => {
     }, "B1.4")).toBe(false);
   });
 });
+
+
+describe("TTS speed red-team contract", () => {
+  it.each([
+    [0.5, false],
+    [1, true],
+    [1.25, true],
+    [1.5, true],
+    [1.75, false],
+    [2, true],
+    [2.5, false]
+  ])("accepts/rejects speech rate %s correctly", async (rate, expected) => {
+    const { isPodcastSpeechRate } = await import("../../src/data/podcastSync.ts");
+    expect(isPodcastSpeechRate(rate)).toBe(expected);
+  });
+
+  it("keeps the explanation bundle free from speed-dependent content fields", () => {
+    const valid = bundle();
+    expect(valid.speeches.every((speech) => !("speed" in speech))).toBe(true);
+    expect(valid.speeches.every((speech) => !("rate" in speech))).toBe(true);
+  });
+});
