@@ -18,6 +18,8 @@
 
 **CI truth:** all programme/content contracts, authenticated progress architecture contract, full unit/integration test suite, TypeScript typecheck and Next.js production build are green on this branch.
 
+**Current product-completeness findings:** the assessment UI currently exposes the three assessment forms and validated pilot banks but does not yet run a full learner exam/scoring workflow. Final production deployment/screenshot smoke verification is also still an explicit release gate. These are product-completion gaps, not CI failures.
+
 **Authoritative reading order**
 1. docs/MVP_ARCHITECTURE_V3.md
 2. docs/architecture/LEARNER_PROGRESS_STORAGE.md
