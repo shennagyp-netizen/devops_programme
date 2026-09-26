@@ -80,6 +80,7 @@ function buildAttestation(privateKey) {
     id: "challenge-1",
     learnerId: "user_1",
     itemId: "B1.2",
+    targetRef: "runtime-probe-B1.2",
     evidenceKind: "exercise",
     providerId: "local-terminal",
     issuedAt: "2026-09-26T12:00:00.000Z",
@@ -91,6 +92,7 @@ function buildAttestation(privateKey) {
     challengeId: challenge.id,
     learnerId: challenge.learnerId,
     itemId: challenge.itemId,
+    targetRef: challenge.targetRef,
     evidenceKind: challenge.evidenceKind,
     providerId: challenge.providerId,
     keyId: "key-1",
@@ -187,6 +189,7 @@ describe("verification provider authority", () => {
       id: "challenge-2",
       userId: "user_1",
       itemId: "B1.2",
+      targetRef: "runtime-probe-B1.2",
       evidenceKind: "exercise",
       providerId: "local-terminal",
       nonce: "nonce-2",
@@ -217,7 +220,7 @@ describe("verification provider authority", () => {
     const challenge = await issueVerificationChallengeForUser("user_1", {
       itemId: "B1.2",
       providerId: "local-terminal",
-      evidenceKind: "exercise"
+      targetRef: "runtime-probe-B1.2"
     });
 
     expect(challenge).toMatchObject({
@@ -316,6 +319,7 @@ describe("verification provider authority", () => {
       id: challenge.id,
       userId: "user_1",
       itemId: "B1.2",
+      targetRef: "runtime-probe-B1.2",
       evidenceKind: "exercise",
       providerId: "local-terminal",
       nonce: "nonce-1",
