@@ -342,7 +342,7 @@ A premium project is long-running work, not a single end-of-course lab. Every pr
 Project pattern:
 baseline -> change -> failure -> diagnosis -> recovery -> harder failure -> redesign -> review -> redesign again
 
-The current nine-project spine targets about 300 total project hours across Beginner, Intermediate and Advanced. Hours are workload targets for the authored project contract; they are not a claim that every learner will require the same time.
+The current nine-project spine targets 308 total project hours across Beginner, Intermediate and Advanced. Hours are workload targets for the authored project contract; they are not a claim that every learner will require the same time.
 
 Beginner: B1, B2, B3.
 Intermediate: I1, I2, I3.
@@ -721,3 +721,27 @@ It must not:
 Production lesson timing remains driven by the actual aligned audio clock. The curriculum binding maps authored lesson cues to declared animation events.
 
 This separation permits direct inspection of reusable visual capabilities without weakening curriculum authority.
+
+# 18. Live tutor standard
+
+The programme may use an authenticated LLM tutor as a conversational teaching layer.
+
+The tutor can:
+- explain a mechanism in a different representation
+- ask evidence-focused questions
+- investigate a learner-reported failure
+- review an incident
+- challenge a design
+- conduct an oral-style technical discussion.
+
+The tutor cannot:
+- certify mastery
+- unlock remediation
+- write completion state
+- replace machine verification
+- invent system evidence.
+
+The canonical lesson/project data and deterministic assessment system remain authoritative.
+
+Tutor conversation is therefore an adaptive teaching layer over the existing curriculum, not a second curriculum or a general-purpose chatbot.
+
