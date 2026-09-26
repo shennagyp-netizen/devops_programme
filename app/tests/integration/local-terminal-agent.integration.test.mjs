@@ -180,6 +180,7 @@ describe("local terminal agent", () => {
         learnerId: "user_1",
         itemId: "B1.1",
         targetRef: "runtime-exercise-B1.1",
+        evidenceKind: "exercise",
         providerId: healthBody.providerId,
         issuedAt: new Date(Date.now() - 1000).toISOString(),
         expiresAt: new Date(Date.now() + 120000).toISOString(),
