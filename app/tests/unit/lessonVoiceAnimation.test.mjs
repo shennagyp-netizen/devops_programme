@@ -13,11 +13,10 @@ const binding = {
 
 const speech = {
   episodeId: "B1.2",
-  cognitiveLevel: 1,
-  cognitiveLevelId: "foundation",
-  label: "Foundation",
-  description: "Simple mental model and purpose.",
-  scriptUrl: "/podcasts/beginner/B1.2.cognitive-1.txt",
+  explanationLevel: 1,
+  explanationLevelId: "very-simple",
+  label: "Very simple",
+  description: "The complete lesson information, explained with very explicit everyday language.",
   scriptVersion: "exact-script"
 };
 
@@ -26,12 +25,10 @@ describe("TTS voice-to-animation synchronization", () => {
     expect(animationCuesForVoice(binding, speech)).toEqual([]);
   });
 
-  it("fails closed until runtime TTS events are connected to an authored animation binding", () => {
-    expect(animationCuesForVoice(binding, undefined)).toEqual([]);
-    expect(missingVoiceCueIds(binding, undefined)).toEqual([
+  it("fails closed until runtime TTS events are connected to authored animation boundaries", () => {
+    expect(missingVoiceCueIds(binding, speech)).toEqual([
       "cue.request",
       "cue.response"
     ]);
-    expect(missingVoiceCueIds(binding, speech)).toEqual([]);
   });
 });
