@@ -64,6 +64,27 @@ Next:
 3. migrate SSH/managed execution to the same provider SPI;
 4. replace localStorage machine verification as an authority source with the server attestation action.
 
+### A.2 Local terminal provider enrollment
+
+The local agent now generates a persistent Ed25519 provider keypair and exposes its public key through `/health`.
+
+The public key is not accepted from the browser. A trusted server/deployment operator must register it with:
+
+```text
+DATABASE_URL=... node scripts/register-local-terminal-provider.mjs \
+  --learner-id <authenticated-user-id> \
+  --provider-id <agent-provider-id> \
+  --key-id <agent-key-id> \
+  --public-key-file <path-to-provider-public-key.pem>
+```
+
+For a deployed learning gateway, set:
+
+```text
+DEVOPS_TERMINAL_ALLOWED_ORIGINS=https://<learning-gateway-origin>
+```
+
+The local agent no longer reflects arbitrary browser origins. Preflight requests from unapproved origins are rejected.
 ### B. Machine verification migration
 
 Move local-agent and SSH execution behind the provider boundary.
