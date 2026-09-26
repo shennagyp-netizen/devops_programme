@@ -29,7 +29,7 @@ describe("verification server actions", () => {
       id: "challenge-1",
       learnerId: "user_1",
       itemId: "B1.1",
-      evidenceKind: "exercise",
+      targetRef: "runtime-exercise-B1.1",
       providerId: "local-terminal",
       issuedAt: "2026-09-26T12:00:00.000Z",
       expiresAt: "2026-09-26T12:02:00.000Z",
@@ -39,7 +39,7 @@ describe("verification server actions", () => {
     const result = await requestVerificationChallengeAction({
       itemId: "B1.1",
       providerId: "local-terminal",
-      evidenceKind: "exercise"
+      targetRef: "runtime-exercise-B1.1"
     });
 
     expect(issueChallengeMock).toHaveBeenCalledWith("user_1", {
