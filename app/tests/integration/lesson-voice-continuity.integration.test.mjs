@@ -32,10 +32,10 @@ describe("continuous voice architecture", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
 
     expect(podcastCoach).toContain("CO-TEACHER · CONTINUOUS");
-    expect(podcastCoach).toContain("Your voice guide stays with the lesson.");
-    expect(podcastCoach).toContain("One voice layer for the whole lesson");
-    expect(podcastCoach).toContain("There is no separate listening mode.");
-    expect(podcastCoach).toContain("same voice session remains attached to this lesson");
+    expect(podcastCoach).toContain("The authored conversation stays the same.");
+    expect(podcastCoach).toContain("One fixed co-teacher for the whole lesson");
+    expect(podcastCoach).toContain("The private tutor is a separate learner-specific conversation.");
+    expect(podcastCoach).toContain("fixed recording reached the end of its authored timeline");
     expect(podcastCoach).toContain("Continue voice");
   });
 
@@ -89,10 +89,21 @@ describe("continuous voice architecture", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
 
     expect(podcastCoach).toContain("GUIDED_TURN_INTERVAL_MS");
-    expect(podcastCoach).toContain("Guided text reading pace");
+    expect(podcastCoach).toContain("Podcast playback speed");
     expect(podcastCoach).toContain("[1, 1.25, 1.5, 1.75, 2]");
-    expect(podcastCoach).toContain("Pause guided text");
-    expect(podcastCoach).toContain("Resume guided text");
+    expect(podcastCoach).toContain("Pause transcript");
+    expect(podcastCoach).toContain("Resume transcript");
+  });
+
+  it("supports a fixed four-speech manifest and a 1x to 2x playback control", () => {
+    const podcastCoach = source("src/components/PodcastCoach.tsx");
+
+    expect(podcastCoach).toContain("audioManifest.segments.map");
+    expect(podcastCoach).toContain("Four fixed speech files drive the real voice clock and transcript.");
+    expect(podcastCoach).toContain("const PLAYBACK_SPEEDS = [1, 1.25, 1.5, 1.75, 2]");
+    expect(podcastCoach).toContain('aria-label="Podcast playback speed"');
+    expect(podcastCoach).toContain("audio.currentTime");
+    expect(podcastCoach).toContain("setAudioTimeMs");
   });
 
   it("attaches and cleans up all audio event listeners", () => {
