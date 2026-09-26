@@ -1,0 +1,7 @@
+import type{ExperienceSession,LearningControl,LearningItem,LearnerState}from"../core/contracts";
+import{evaluateCompletion}from"../core/authority";
+export function deriveControls(item:LearningItem,session:ExperienceSession,state:LearnerState):LearningControl[]{const completed=state.completedItemIds.includes(item.id);const completion=evaluateCompletion(item,state);return[
+{id:"request-evidence",label:"Collect evidence",intent:{type:"REQUEST_EVIDENCE"},state:completed?{status:"disabled",reason:"ALREADY_COMPLETED"}:item.completion.kind==="assessment"?{status:"disabled",reason:"NOT_APPLICABLE"}:{status:"enabled"}},
+{id:"submit-assessment",label:"Submit assessment",intent:{type:"SUBMIT_ASSESSMENT",assessmentId:item.completion.kind==="assessment"?item.completion.assessmentId:"not-applicable"},state:completed?{status:"disabled",reason:"ALREADY_COMPLETED"}:item.completion.kind==="assessment"?{status:"enabled"}:{status:"disabled",reason:"NOT_APPLICABLE"}},
+{id:"complete",label:"Mark complete",intent:{type:"COMPLETE_ITEM"},state:completed?{status:"disabled",reason:"ALREADY_COMPLETED"}:completion.accepted?{status:"enabled"}:{status:"locked",reason:completion.reason==="EVIDENCE_REQUIRED"?"EVIDENCE_REQUIRED":"ASSESSMENT_REQUIRED"}},
+{id:"remediation",label:"Open remediation",intent:{type:"OPEN_REMEDIATION"},state:session.remediationOpen?{status:"disabled",reason:"NOT_APPLICABLE"}:{status:"enabled"}}]}
