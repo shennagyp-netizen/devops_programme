@@ -10,7 +10,8 @@ const context = {
   lessonObjective: "See the problem that containers solve.",
   domain: "beginner-application",
   projectId: "B1",
-  course: "beginner"
+  course: "beginner",
+  learningMode: "learn"
 };
 
 function renderAssistant() {
