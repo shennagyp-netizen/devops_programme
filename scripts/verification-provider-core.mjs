@@ -19,6 +19,7 @@ export function canonicalVerificationSigningPayload(challenge, attestation) {
     challenge.id,
     challenge.learnerId,
     challenge.itemId,
+    challenge.targetRef,
     challenge.evidenceKind,
     challenge.providerId,
     attestation.keyId,
