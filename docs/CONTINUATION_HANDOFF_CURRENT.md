@@ -2021,9 +2021,13 @@ Final pre-merge GitHub gate:
 Post-merge verification:
 - PR #116 is closed and merged.
 - main contains merge commit 29f3b276caea6d6b17d9d8e04d790ebe030d8115.
-- Do not claim Vercel production deployment for this merge yet.
-- Vercel is currently returning a build-rate-limit account restriction for recent deployments; this is infrastructure/account state, not an application CI failure.
-- Last verified application gate is GitHub Actions run 36234073298, PASS on the merged main head.
+- Vercel did create a production deployment for merged main commit 2cb6518e3c30c004d6f9b04981d673d397857836.
+- Deployment: dpl_BxrV6cTYqA4vBsvy2t1FF2hn2ws6.
+- Vercel result: ERROR at buildStep with BUILD_UTILS_SPAWN_1; reported command: "npm run build" exited with 1.
+- The Vercel connector session does not currently expose the underlying build log, so the precise Vercel-only failure cause is not verified.
+- This must not be treated as an application CI failure: GitHub Actions run 36234073298 passed the full programme gate, including 459 tests, TypeScript and Next.js production build.
+- Older Vercel build-rate-limit errors also occurred on prior commits, but that is not the current merged-main deployment result.
+- Visual production verification remains pending until a successful Vercel deployment exists.
 
 Next work:
 - Resolve/await the Vercel build-rate-limit restriction, then visually verify the merged production deployment.
