@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { MantineProvider } from "@mantine/core";
 import { FloatingLLMAssistant } from "../../src/components/FloatingLLMAssistant/FloatingLLMAssistant.tsx";
+import { AssistantPanel } from "../../src/components/FloatingLLMAssistant/AssistantPanel.tsx";
 
 const context = {
   lessonId: "B1.4",
@@ -21,6 +22,20 @@ function renderAssistant() {
       MantineProvider,
       null,
       React.createElement(FloatingLLMAssistant, { context })
+    )
+  );
+}
+
+function renderAssistantPanel() {
+  return render(
+    React.createElement(
+      MantineProvider,
+      null,
+      React.createElement(AssistantPanel, {
+        context,
+        onClose: vi.fn(),
+        mobile: false
+      })
     )
   );
 }
@@ -94,18 +109,16 @@ describe("FloatingLLMAssistant", () => {
     vi.unstubAllGlobals();
   });
 
-  it("mounts the real assistant and opens the actual panel", async () => {
+  it("mounts the real assistant shell and toggles its trigger state", () => {
     renderAssistant();
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Open DevOps tutor" })
-    );
+    const trigger = screen.getByRole("button", { name: "Open DevOps tutor" });
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
 
-    expect(
-      await screen.findByRole("dialog", { name: "DevOps tutor" })
-    ).toBeInTheDocument();
-    expect(screen.getByText("B1.4")).toBeInTheDocument();
-    expect(screen.getByText("Why Containers Exist")).toBeInTheDocument();
+    fireEvent.click(trigger);
+
+    const closeTrigger = screen.getByRole("button", { name: "Close DevOps tutor" });
+    expect(closeTrigger.getAttribute("aria-expanded")).toBe("true");
   });
 
   it("submits a real lesson-aware query and renders the returned response", async () => {
@@ -124,8 +137,7 @@ describe("FloatingLLMAssistant", () => {
       )
     );
 
-    renderAssistant();
-    fireEvent.click(screen.getByRole("button", { name: "Open DevOps tutor" }));
+    renderAssistantPanel();
     const textbox = await screen.findByRole(
       "textbox",
       { name: "Question for DevOps tutor" }
@@ -189,10 +201,7 @@ describe("FloatingLLMAssistant", () => {
       value: RecognitionMock
     });
 
-    renderAssistant();
-    fireEvent.click(
-      screen.getByRole("button", { name: "Open DevOps tutor" })
-    );
+    renderAssistantPanel();
     fireEvent.click(
       screen.getByRole("button", { name: "Start voice input" })
     );
@@ -213,8 +222,7 @@ describe("FloatingLLMAssistant", () => {
   it("keeps the question locally when the tutor is unreachable", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Network down")));
 
-    renderAssistant();
-    fireEvent.click(screen.getByRole("button", { name: "Open DevOps tutor" }));
+    renderAssistantPanel();
     fireEvent.change(
       await screen.findByRole(
         "textbox",
