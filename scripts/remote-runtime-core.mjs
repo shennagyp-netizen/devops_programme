@@ -159,6 +159,7 @@ export function parseRemoteArgs(argv) {
     identity: options.get("identity"),
     knownHostsFile: options.get("known-hosts"),
     output: options.get("output"),
+    challengeFile: options.get("challenge-file"),
     dryRun: !execute
   };
 }
