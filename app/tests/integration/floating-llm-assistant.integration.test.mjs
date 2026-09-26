@@ -79,7 +79,7 @@ describe("FloatingLLMAssistant", () => {
     vi.unstubAllGlobals();
   });
 
-  it("mounts the real assistant and opens the actual panel", () => {
+  it("mounts the real assistant and opens the actual panel", async () => {
     renderAssistant();
 
     fireEvent.click(
