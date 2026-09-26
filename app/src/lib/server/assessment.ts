@@ -1,31 +1,23 @@
 import { randomUUID } from "node:crypto";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { and, eq } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import { getDb } from "./db";
 import { learnerAssessmentAttempts, type LearnerAssessmentAttempt } from "./schema";
-import { requireCurrentUser } from "./auth";
+import { requireCurrentUser } from "./auth";\nimport { assessmentPool } from "../../data/assessmentBanks";
 import {
   getSectionAssessments,
   type AssessmentFamily,
   type AssessmentItem,
   type CourseLevel
 } from "../data/assessment";
-import { generateAssessmentForm } from "../assessment/formGenerator";
+import { generateAssessmentForm } from "../../assessment/formGenerator";
 import {
   attemptExpiresAt,
   publicAssessmentItem,
   scoreAssessment,
   type AssessmentAnswer,
   type AssessmentResult
-} from "../assessment/operational";
-
-const courseDirectory: Record<CourseLevel, string> = {
-  beginner: "beginner",
-  intermediate: "intermediate",
-  advanced: "advanced"
-};
+} from "../../assessment/operational";
 
 let assessmentSchemaReady = false;
 
