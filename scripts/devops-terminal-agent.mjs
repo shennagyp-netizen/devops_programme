@@ -6,6 +6,7 @@ import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { spawn } from "node:child_process";
+import { readFile } from "node:fs/promises";
 import {
   loadOrCreateEd25519ProviderKey,
   signVerificationAttestation,
@@ -285,7 +286,19 @@ async function main() {
           return;
         }
 
-        
+        const actualPlatform = platformId();
+        const platform = body.platform || actualPlatform;
+        if (!["macos", "linux", "windows"].includes(platform)) {
+          send(res, 400, { error: "Unsupported platform." }, origin);
+          return;
+        }
+        if (platform !== actualPlatform) {
+          send(res, 409, {
+            error: `Selected platform ${platform} does not match this laptop's platform ${actualPlatform}.`
+          }, origin);
+          return;
+        }
+
         if (body.challenge) {
           const challenge = body.challenge;
           if (
@@ -317,21 +330,9 @@ async function main() {
           return;
         }
 
-        const actualPlatform = platformId();
-        const platform = body.platform || actualPlatform;
-        if (!["macos", "linux", "windows"].includes(platform)) {
-          send(res, 400, { error: "Unsupported platform." }, origin);
-          return;
-        }
-        if (platform !== actualPlatform) {
-          send(res, 409, {
-            error: `Selected platform ${platform} does not match this laptop's platform ${actualPlatform}.`
-          }, origin);
-          return;
-        }
-
-        const envelope = await executeTask(task, platform);
-        send(res, 200, envelope, origin);
+        send(res, 400, {
+          error: "A server-issued verification challenge is required for machine verification."
+        }, origin);
       } catch (error) {
         send(res, 400, {
           error: error instanceof Error ? error.message : String(error)
