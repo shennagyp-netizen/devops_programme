@@ -84,7 +84,6 @@ export function LessonPanel({
       };
       setHandsOnEvidence(parsed.evidence ?? {});
       setExerciseRecorded(parsed.verified === true);
-      setMachineResults([]);
     } catch {
       setHandsOnEvidence({});
       setExerciseRecorded(false);
