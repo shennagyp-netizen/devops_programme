@@ -2,11 +2,9 @@
 
 **Status:** authoritative for the V3 MVP.
 
-V3 intentionally removes the account, session and database-backed learner-progress architecture.
-
 ## Architecture
 
-The learner application is one React/Next.js application.
+The learner application is one React/Next.js application with a small first-party identity layer.
 
 The progress path is:
 
@@ -14,96 +12,64 @@ The progress path is:
 Learner UI
    |
    v
-browser-local state
+Server Action
    |
    v
-localStorage
+authenticated session
+   |
+   v
+PostgreSQL / Drizzle
 ```
-
-There is no learner identity authority.
-
-There is no:
-
-- account
-- password
-- session cookie
-- learner UUID
-- Server Action for progress
-- progress REST API
-- database progress record.
-
-## Completion state
-
-The browser stores lesson completion records under the local MVP progress key.
-
-A completion record contains only learning metadata:
-
-- item type
-- item ID
-- course
-- project
-- completion time
-- `verificationLevel = structured`.
-
-The browser never stores `machine-verified` completion.
-
-Duplicate local completion of the same lesson is idempotent.
-
-## Evidence
-
-Hands-on evidence is also local browser state.
-
-The current evidence validator checks:
-
-- required fields
-- minimum evidence lengths
-- lesson/task structure.
-
-It does not prove that commands were executed.
-
-That distinction is intentional.
 
 ## Authentication
 
-There is no authentication in the V3 MVP.
+The MVP uses:
 
-The learner gateway is public.
+- email/password registration;
+- scrypt password hashing;
+- opaque HTTP-only session cookie;
+- PostgreSQL-backed session records.
 
-This is not an omission to be hidden: cross-device identity, paid entitlements, certification and secure transcripts are outside the MVP.
+There is no Clerk, OAuth, JWT, or separate API-token scheme.
+
+The browser never submits a trusted userId.
+
+## Completion state
+
+A completion record contains authenticated user identity, item type, item ID, course, project, verification level and completion time.
+
+The database enforces one completion row per user + item type + item ID.
+
+Duplicate completion is idempotent.
+
+## Evidence
+
+Hands-on evidence can remain locally structured for the immediate exercise experience.
+
+The application must not present browser-entered evidence as cryptographic attestation or certification.
+
+## API boundary
+
+There is no custom progress REST API.
+
+The browser uses the existing Server Action.
+
+Input is parsed and bounded by progress-contract.ts.
 
 ## AI tutor
 
-The AI tutor is a same-application route backed by the configured AI Gateway.
+The tutor is integrated into the same application and does not introduce another learner authentication/token layer.
 
-The tutor does not use learner identity.
+Its lesson context is resolved server-side from the authored curriculum.
 
-It receives only:
+## Machine execution
 
-- selected lesson ID
-- learning mode
-- recent user questions.
+Terminal-agent pairing is intentionally outside the V3 MVP.
 
-The server reconstructs lesson context from authored curriculum data rather than trusting client-provided lesson metadata.
+The MVP does not need a second token system just to preserve learner progress.
 
-The client cannot submit assistant-role messages as authoritative conversation history.
+## Historical note
 
-Anonymous request throttling is a best-effort cost-abuse control, not authentication.
+An earlier V3 simplification pass incorrectly removed authentication entirely. That was superseded.
 
-## Machine verification
-
-Machine verification is not part of the V3 learner trust model.
-
-The browser does not:
-
-- pair with a local agent
-- send a pairing token
-- import remote machine evidence
-- mark an exercise machine-verified.
-
-Runtime verification contracts remain available as future engineering infrastructure but are not exposed as secure learner evidence.
-
-## Migration note
-
-Older documents described Clerk, first-party sessions, PostgreSQL progress and Server Actions. Those designs are superseded by `docs/MVP_ARCHITECTURE_V3.md`.
-
-Do not reintroduce the old account architecture into V3 without an explicit product requirement and a new security review.
+The current V3 rule is: simple first-party authentication, no complex identity platform.
