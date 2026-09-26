@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Lesson } from "../data/curriculum";
 import {
   findActiveCue,
+  findCurrentSegment,
   findCurrentTurnId,
   loadPodcastAudioManifest,
   type PodcastCueKind,
@@ -29,22 +30,28 @@ const cueToPhase: Partial<Record<PodcastCueKind, VoicePhase>> = {
 };
 
 const GUIDED_TURN_INTERVAL_MS = 6500;
+const PLAYBACK_SPEEDS = [1, 1.25, 1.5, 1.75, 2] as const;
+type PlaybackSpeed = typeof PLAYBACK_SPEEDS[number];
 
 export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   const voiceClock = useLessonVoiceClock();
   const publishVoiceClock = voiceClock?.publishVoiceClock;
+
   const [phase, setPhase] = useState<VoicePhase>("ready");
   const [turnIndex, setTurnIndex] = useState(0);
   const [prediction, setPrediction] = useState("");
-  const [audioStarted, setAudioStarted] = useState(false);
   const [episodeSource, setEpisodeSource] = useState("");
   const [audioTimeMs, setAudioTimeMs] = useState(0);
   const [audioPlaying, setAudioPlaying] = useState(false);
+  const [audioStarted, setAudioStarted] = useState(false);
   const [guidedPlaying, setGuidedPlaying] = useState(false);
-  const [guidedSpeed, setGuidedSpeed] = useState<1 | 1.25 | 1.5 | 1.75 | 2>(1);
+  const [playbackSpeed, setPlaybackSpeed] = useState<PlaybackSpeed>(1);
   const [scriptVersions, setScriptVersions] = useState<Record<string, string>>({});
   const [audioManifests, setAudioManifests] = useState<Record<string, PodcastAudioManifest>>({});
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
+
+  const audioRefs = useRef<Record<string, HTMLAudioElement | null>>({});
+  const transcriptRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const lastCueIdRef = useRef<string | null>(null);
   const lastAudioTimeMsRef = useRef(0);
 
@@ -58,7 +65,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   const audioSyncState =
     rawAudioManifest && !scriptVersion
       ? "checking"
-      : rawAudioManifest && audioManifest
+      : audioManifest
         ? "voice-synced"
         : rawAudioManifest
           ? "stale-audio"
@@ -70,15 +77,17 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     setPhase("ready");
     setTurnIndex(0);
     setPrediction("");
-    setAudioStarted(false);
+    setEpisodeSource("");
     setAudioTimeMs(0);
     setAudioPlaying(false);
+    setAudioStarted(false);
     setGuidedPlaying(false);
+    setCurrentSegmentIndex(0);
     lastCueIdRef.current = null;
     lastAudioTimeMsRef.current = 0;
 
-    audioRef.current?.pause();
-    audioRef.current = null;
+    Object.values(audioRefs.current).forEach((audio) => audio?.pause());
+    audioRefs.current = {};
 
     Promise.all([
       fetch(podcastUrl(lesson.podcast)).then((response) =>
@@ -116,6 +125,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
 
     return () => {
       cancelled = true;
+      Object.values(audioRefs.current).forEach((audio) => audio?.pause());
     };
   }, [lesson.id, lesson.podcast]);
 
@@ -143,130 +153,243 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
         }
         return index + 1;
       });
-    }, GUIDED_TURN_INTERVAL_MS / guidedSpeed);
+    }, GUIDED_TURN_INTERVAL_MS / playbackSpeed);
 
     return () => window.clearInterval(interval);
-  }, [audioManifest, guidedPlaying, guidedSpeed, turns.length]);
+  }, [audioManifest, guidedPlaying, playbackSpeed, turns.length]);
 
   useEffect(() => {
-    if (!audioManifest || !audioRef.current) return;
+    if (current) {
+      transcriptRefs.current[current.id]?.scrollIntoView({
+        block: "nearest",
+        behavior: "smooth"
+      });
+    }
+  }, [current?.id]);
 
-    const audio = audioRef.current;
+  function activeAudio() {
+    if (!audioManifest) return null;
+    return audioRefs.current[audioManifest.segments[currentSegmentIndex]?.id ?? ""] ?? null;
+  }
 
-    const onTime = () => {
-      const timeMs = Math.round(audio.currentTime * 1000);
-      const movedBackward = timeMs + 250 < lastAudioTimeMsRef.current;
-
-      if (movedBackward) lastCueIdRef.current = null;
-      lastAudioTimeMsRef.current = timeMs;
-      setAudioTimeMs(timeMs);
-      publishVoiceClock?.({ timeMs, manifest: audioManifest });
-
-      const currentTurnId = findCurrentTurnId(audioManifest, timeMs);
-      if (currentTurnId) {
-        const targetIndex = turns.findIndex((turn) => turn.id === currentTurnId);
-        if (targetIndex >= 0) setTurnIndex(targetIndex);
+  function pauseAllAudio() {
+    Object.values(audioRefs.current).forEach((audio) => {
+      if (audio) {
+        audio.pause();
+        audio.playbackRate = playbackSpeed;
       }
+    });
+    setAudioPlaying(false);
+  }
 
-      const activeCue = findActiveCue(audioManifest, timeMs);
-      if (!activeCue || activeCue.id === lastCueIdRef.current) return;
+  function syncFromAudio(segmentIndex: number) {
+    if (!audioManifest) return;
+    const segment = audioManifest.segments[segmentIndex];
+    const audio = audioRefs.current[segment.id];
+    if (!audio || segmentIndex !== currentSegmentIndex) return;
 
-      lastCueIdRef.current = activeCue.id;
-      const nextPhase = cueToPhase[activeCue.kind];
-      if (!nextPhase) return;
+    const timeMs = Math.min(
+      segment.endMs,
+      Math.round(segment.startMs + audio.currentTime * 1000)
+    );
+    const movedBackward = timeMs + 250 < lastAudioTimeMsRef.current;
 
-      audio.pause();
-      setAudioPlaying(false);
-      setPhase(nextPhase);
-    };
+    if (movedBackward) lastCueIdRef.current = null;
+    lastAudioTimeMsRef.current = timeMs;
+    setAudioTimeMs(timeMs);
+    publishVoiceClock?.({ timeMs, manifest: audioManifest });
 
-    const onPlay = () => {
-      setAudioPlaying(true);
+    const currentTurnId = findCurrentTurnId(audioManifest, timeMs);
+    if (currentTurnId) {
+      const targetIndex = turns.findIndex((turn) => turn.id === currentTurnId);
+      if (targetIndex >= 0) setTurnIndex(targetIndex);
+    }
+
+    const currentSegment = findCurrentSegment(audioManifest, timeMs);
+    if (currentSegment) {
+      const targetSegmentIndex = audioManifest.segments.findIndex(
+        (candidate) => candidate.id === currentSegment.id
+      );
+      if (targetSegmentIndex >= 0 && targetSegmentIndex !== currentSegmentIndex) {
+        setCurrentSegmentIndex(targetSegmentIndex);
+      }
+    }
+
+    const activeCue = findActiveCue(audioManifest, timeMs);
+    if (!activeCue || activeCue.id === lastCueIdRef.current) return;
+
+    lastCueIdRef.current = activeCue.id;
+    const nextPhase = cueToPhase[activeCue.kind];
+    if (!nextPhase) return;
+
+    pauseAllAudio();
+    setPhase(nextPhase);
+  }
+
+  function handleSegmentEnded(segmentIndex: number) {
+    if (!audioManifest || segmentIndex !== currentSegmentIndex) return;
+
+    const nextIndex = segmentIndex + 1;
+    setAudioPlaying(false);
+
+    if (nextIndex >= audioManifest.segments.length) {
+      setAudioTimeMs(audioManifest.durationMs);
+      publishVoiceClock?.({
+        timeMs: audioManifest.durationMs,
+        manifest: audioManifest
+      });
+      setPhase("done");
+      return;
+    }
+
+    const nextSegment = audioManifest.segments[nextIndex];
+    const nextAudio = audioRefs.current[nextSegment.id];
+
+    setCurrentSegmentIndex(nextIndex);
+    setTurnIndex(
+      Math.max(
+        0,
+        turns.findIndex((turn) => turn.id === nextSegment.turnId)
+      )
+    );
+
+    if (nextAudio) {
+      nextAudio.currentTime = 0;
+      nextAudio.playbackRate = playbackSpeed;
       setAudioStarted(true);
       setPhase("speaking");
-    };
-    const onPause = () => setAudioPlaying(false);
-    const onEnded = () => {
-      setAudioPlaying(false);
-      setPhase("done");
-    };
-
-    audio.addEventListener("timeupdate", onTime);
-    audio.addEventListener("play", onPlay);
-    audio.addEventListener("pause", onPause);
-    audio.addEventListener("ended", onEnded);
-
-    return () => {
-      audio.removeEventListener("timeupdate", onTime);
-      audio.removeEventListener("play", onPlay);
-      audio.removeEventListener("pause", onPause);
-      audio.removeEventListener("ended", onEnded);
-    };
-  }, [audioManifest, turns, publishVoiceClock]);
+      void nextAudio.play().catch(() => setAudioPlaying(false));
+    }
+  }
 
   function startVoice() {
-    const audio = audioRef.current;
-    if (!audio) {
+    if (!audioManifest) {
       setAudioStarted(true);
       setPhase("speaking");
       setGuidedPlaying(true);
       return;
     }
+
+    const audio = activeAudio();
+    if (!audio) return;
+
+    pauseAllAudio();
+    audio.playbackRate = playbackSpeed;
     setAudioStarted(true);
-    void audio.play();
+    setPhase("speaking");
+    void audio.play().catch(() => setAudioPlaying(false));
   }
 
   function toggleVoice() {
-    if (!audioRef.current) {
+    if (!audioManifest) {
       setAudioStarted(true);
       setPhase("speaking");
       setGuidedPlaying((playing) => !playing);
       return;
     }
-    if (audioPlaying) audioRef.current?.pause();
-    else startVoice();
+
+    const audio = activeAudio();
+    if (!audio) return;
+
+    if (audioPlaying) {
+      audio.pause();
+      setAudioPlaying(false);
+    } else {
+      startVoice();
+    }
   }
 
   function seek(deltaSeconds: number) {
-    const audio = audioRef.current;
-    if (!audio) return;
+    if (!audioManifest) return;
+
+    const wasPlaying = audioPlaying;
     const nextTime = Math.max(
       0,
-      Math.min(
-        Number.isFinite(audio.duration) ? audio.duration : Number.MAX_SAFE_INTEGER,
-        audio.currentTime + deltaSeconds
-      )
+      Math.min(audioManifest.durationMs, audioTimeMs + deltaSeconds * 1000)
     );
-    audio.currentTime = nextTime;
+
+    if (nextTime >= audioManifest.durationMs) {
+      reset();
+      return;
+    }
+
+    const target = findCurrentSegment(audioManifest, nextTime);
+    if (!target) return;
+
+    pauseAllAudio();
+
+    const targetIndex = audioManifest.segments.findIndex(
+      (segment) => segment.id === target.id
+    );
+    const targetAudio = audioRefs.current[target.id];
+    if (!targetAudio || targetIndex < 0) return;
+
+    setCurrentSegmentIndex(targetIndex);
+    targetAudio.currentTime = Math.max(0, (nextTime - target.startMs) / 1000);
+    targetAudio.playbackRate = playbackSpeed;
+    setAudioTimeMs(Math.round(nextTime));
+    lastAudioTimeMsRef.current = Math.round(nextTime);
     lastCueIdRef.current = null;
+
+    const targetTurnIndex = turns.findIndex((turn) => turn.id === target.turnId);
+    if (targetTurnIndex >= 0) setTurnIndex(targetTurnIndex);
+
+    if (wasPlaying) {
+      setPhase("speaking");
+      setAudioStarted(true);
+      void targetAudio.play().catch(() => setAudioPlaying(false));
+    }
   }
 
   function resumeVoice() {
     setPhase("speaking");
-    if (audioRef.current) void audioRef.current?.play();
-    else setGuidedPlaying(true);
+
+    if (audioManifest) {
+      const audio = activeAudio();
+      if (audio) {
+        audio.playbackRate = playbackSpeed;
+        void audio.play().catch(() => setAudioPlaying(false));
+      }
+      return;
+    }
+
+    setGuidedPlaying(true);
   }
 
   function reset() {
-    audioRef.current?.pause();
-    if (audioRef.current) audioRef.current.currentTime = 0;
+    pauseAllAudio();
+    Object.values(audioRefs.current).forEach((audio) => {
+      if (audio) audio.currentTime = 0;
+    });
+
     setPhase("ready");
     setTurnIndex(0);
     setPrediction("");
     setAudioStarted(false);
     setAudioTimeMs(0);
-    setAudioPlaying(false);
     setGuidedPlaying(false);
+    setCurrentSegmentIndex(0);
     lastCueIdRef.current = null;
     lastAudioTimeMsRef.current = 0;
   }
 
+  function onPlaybackSpeedChange(value: string) {
+    const speed = Number(value) as PlaybackSpeed;
+    setPlaybackSpeed(speed);
+    Object.values(audioRefs.current).forEach((audio) => {
+      if (audio) audio.playbackRate = speed;
+    });
+  }
+
   return (
-    <aside className="podcast-coach podcast-coach-continuous" aria-label="Continuous co-teacher">
+    <aside
+      className="podcast-coach podcast-coach-continuous"
+      aria-label="Continuous fixed co-teacher"
+    >
       <div className="coach-banner">
         <div>
-          <span className="eyebrow">CO-TEACHER · CONTINUOUS</span>
-          <h3>Your voice guide stays with the lesson.</h3>
+          <span className="eyebrow">CO-TEACHER · FIXED</span>
+          <h3>The authored conversation stays the same.</h3>
         </div>
         <div className="coach-phase">
           {phase === "ready"
@@ -281,34 +404,58 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
         </div>
       </div>
 
-      {audioManifest ? (
-        <audio
-          ref={audioRef}
-          src={audioManifest.audioUrl}
-          preload="metadata"
-          onLoadedMetadata={(event) =>
-            setAudioTimeMs(Math.round(event.currentTarget.currentTime * 1000))
-          }
-        />
-      ) : null}
+      {audioManifest
+        ? audioManifest.segments.map((segment) => (
+            <audio
+              key={segment.id}
+              ref={(element) => {
+                audioRefs.current[segment.id] = element;
+              }}
+              src={segment.audioUrl}
+              preload="auto"
+              className="podcast-audio-source"
+              onTimeUpdate={() =>
+                syncFromAudio(
+                  audioManifest.segments.findIndex((item) => item.id === segment.id)
+                )
+              }
+              onPlay={() => {
+                if (segment.id === audioManifest.segments[currentSegmentIndex]?.id) {
+                  setAudioPlaying(true);
+                  setAudioStarted(true);
+                  setPhase("speaking");
+                }
+              }}
+              onPause={() => {
+                if (segment.id === audioManifest.segments[currentSegmentIndex]?.id) {
+                  setAudioPlaying(false);
+                }
+              }}
+              onEnded={() =>
+                handleSegmentEnded(
+                  audioManifest.segments.findIndex((item) => item.id === segment.id)
+                )
+              }
+              onLoadedMetadata={(event) => {
+                event.currentTarget.playbackRate = playbackSpeed;
+              }}
+            />
+          ))
+        : null}
 
       <div className="continuous-voice-row">
         <div>
           <strong>
-            {current
-              ? "Engineer " + current.speaker
-              : audioSyncState === "guided"
-                ? "Guided co-teacher"
-                : "Preparing the voice"}
+            {current ? "Engineer " + current.speaker : "Fixed co-teacher"}
           </strong>
           <span className="range">
             {audioSyncState === "voice-synced"
-              ? "Voice, transcript and authored learner pauses are synchronized."
+              ? "Four fixed speech files drive the real voice clock and transcript."
               : audioSyncState === "stale-audio"
-                ? "The recording is from an older lesson script; the safe guided transcript is active."
+                ? "The recording does not match the current script. The transcript remains available."
                 : audioSyncState === "checking"
-                  ? "Checking that the recording matches the current lesson script."
-                  : "A matched recording is not published yet; the guided spoken script remains available."}
+                  ? "Checking that the fixed recording matches the current script."
+                  : "No fixed recording is published for this lesson. The authored transcript remains available."}
           </span>
         </div>
 
@@ -320,50 +467,74 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
                 {audioPlaying ? "Pause voice" : audioStarted ? "Resume voice" : "Start voice"}
               </button>
               <button onClick={() => seek(10)} aria-label="Forward 10 seconds">+10s</button>
-              <span className="audio-time">
-                {Math.floor(audioTimeMs / 1000)}s / {Math.round(audioManifest.durationMs / 1000)}s
-              </span>
             </>
           ) : (
-            <>
-              <button className="primary" onClick={toggleVoice}>
-                {guidedPlaying ? "Pause guided text" : audioStarted ? "Resume guided text" : "Start guided text"}
-              </button>
-              <label className="guided-speed-control">
-                <span>Reading pace</span>
-                <select
-                  aria-label="Guided text reading pace"
-                  value={guidedSpeed}
-                  onChange={(event) => setGuidedSpeed(Number(event.target.value) as typeof guidedSpeed)}
-                >
-                  {[1, 1.25, 1.5, 1.75, 2].map((speed) => (
-                    <option key={speed} value={speed}>{speed}x</option>
-                  ))}
-                </select>
-              </label>
-            </>
+            <button className="primary" onClick={toggleVoice}>
+              {guidedPlaying ? "Pause transcript" : audioStarted ? "Resume transcript" : "Start transcript"}
+            </button>
           )}
+
+          <label className="guided-speed-control">
+            <span>Speed</span>
+            <select
+              aria-label="Podcast playback speed"
+              value={playbackSpeed}
+              onChange={(event) => onPlaybackSpeedChange(event.target.value)}
+            >
+              {PLAYBACK_SPEEDS.map((speed) => (
+                <option key={speed} value={speed}>{speed}x</option>
+              ))}
+            </select>
+          </label>
+
+          {audioManifest ? (
+            <span className="audio-time">
+              {Math.floor(audioTimeMs / 1000)}s / {Math.round(audioManifest.durationMs / 1000)}s
+            </span>
+          ) : null}
         </div>
       </div>
 
-      {current ? (
-        <div className="continuous-transcript">
-          <span className="eyebrow">LIVE TRANSCRIPT</span>
-          <p>{current.text}</p>
+      <div className="continuous-transcript" role="log" aria-label="Podcast transcript">
+        <div className="transcript-header">
+          <span className="eyebrow">PODCAST TRANSCRIPT</span>
+          <span className="range">
+            {audioManifest
+              ? "Live position follows the fixed recording."
+              : "Transcript mode remains available without audio."}
+          </span>
         </div>
-      ) : null}
+
+        <div className="transcript-list">
+          {turns.map((turn, index) => (
+            <div
+              key={turn.id}
+              ref={(element) => {
+                transcriptRefs.current[turn.id] = element;
+              }}
+              className={"transcript-turn" + (index === turnIndex ? " active" : "")}
+              aria-current={index === turnIndex ? "true" : undefined}
+            >
+              <span className="transcript-speaker">Engineer {turn.speaker}</span>
+              <p>{turn.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {phase === "ready" ? (
         <div className="content-card continuous-prompt">
-          <h4>One voice layer for the whole lesson</h4>
+          <h4>One fixed co-teacher for the whole lesson</h4>
           <p>
-            The co-teacher follows you through reading, watching, operating, diagnosing, recalling and designing. There is no separate listening mode.
+            The spoken lesson is authored once. Playback can be faster or slower,
+            but the educational content does not change.
           </p>
           <p>
-            The browser may require one click before audio can start. After that first interaction, the same voice session remains attached to this lesson until you change lessons or explicitly pause it.
+            The private tutor is a separate learner-specific conversation. It
+            does not rewrite or regenerate this podcast.
           </p>
           {audioSyncState === "voice-synced" ? (
-            <button className="primary" onClick={startVoice}>Start the continuous voice lesson</button>
+            <button className="primary" onClick={startVoice}>Start the fixed voice lesson</button>
           ) : null}
         </div>
       ) : null}
@@ -389,7 +560,8 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
           <span className="eyebrow">YOUR TURN</span>
           <h4>Work with the learner controls, then return to the voice.</h4>
           <p>
-            The voice pauses here deliberately. Use Learn, Do, Recall, Design or Assessment without losing the co-teacher session.
+            The fixed voice pauses here deliberately. Use Learn, Do, Recall,
+            Design or Assessment without losing the co-teacher session.
           </p>
           <button className="primary" onClick={resumeVoice}>Continue voice</button>
         </div>
@@ -398,7 +570,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
       {phase === "done" ? (
         <div className="continuous-prompt">
           <span className="eyebrow">VOICE SESSION COMPLETE</span>
-          <h4>The lesson voice reached the end of its authored script.</h4>
+          <h4>The fixed recording reached the end of its authored timeline.</h4>
           <button className="secondary" onClick={reset}>Replay voice</button>
         </div>
       ) : null}
