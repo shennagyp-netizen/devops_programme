@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, gt, sql } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { courseLessons, type CourseLesson } from "../../data/courseLessons";
 import { projects, type ProjectDefinition } from "../../data/projects";
@@ -146,6 +146,37 @@ export async function verifyTutorSessionForUser(
   if (!row) return null;
   if (row.lessonId !== lessonId || row.projectId !== projectId) return null;
   return row;
+}
+
+export async function assertTutorRateLimit(
+  userId: string,
+  maxMessages = 20,
+  windowMs = 5 * 60 * 1000
+) {
+  await ensureTutorSchema();
+
+  const cutoff = new Date(Date.now() - windowMs);
+  const rows = await getDb()
+    .select({ id: tutorMessages.id })
+    .from(tutorMessages)
+    .innerJoin(tutorSessions, eq(tutorMessages.sessionId, tutorSessions.id))
+    .where(
+      and(
+        eq(tutorSessions.userId, userId),
+        eq(tutorMessages.role, "user"),
+        gt(tutorMessages.createdAt, cutoff)
+      )
+    )
+    .limit(maxMessages + 1);
+
+  if (rows.length >= maxMessages) {
+    throw new Error("Tutor rate limit reached. Please continue shortly.");
+  }
+
+  return {
+    allowed: true as const,
+    remaining: Math.max(0, maxMessages - rows.length)
+  };
 }
 
 export async function listTutorMessagesForUser(
