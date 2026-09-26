@@ -18,14 +18,14 @@ test.describe("real-user public and authentication journey", () => {
   test("learner can create an account, leave the gateway, and sign back in", async ({
     page
   }, testInfo) => {
-    const email = e2eEmail(testInfo.title, testInfo.workerIndex);
+    const email = e2eEmail(testInfo.title, testInfo.workerIndex, testInfo.retry);
 
     await signUp(page, email, "auth-signup");
 
     await expect(page.getByText("intermediate", { exact: true })).toBeVisible();
     await signOut(page);
 
-    await expect(page.getByRole("heading", { name: "DevOps Programme", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Learn DevOps by operating systems, breaking them, and recovering them." })).toBeVisible();
     await signIn(page, email, "auth-resignin");
 
     await expect(page.getByText("Operational mastery", { exact: true })).toBeVisible();
