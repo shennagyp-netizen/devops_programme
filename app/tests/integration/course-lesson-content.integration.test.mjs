@@ -57,7 +57,10 @@ describe("course lesson content integration", () => {
   it("preserves text-first and illustration-second default ordering", () => {
     for (const lesson of allLessons.filter((item) => item.id !== "B1.4")) {
       expect(lesson.content.blocks[0].type, lesson.id).toBe("text");
-      expect(lesson.content.blocks[1].type, lesson.id).toBe("illustration");
+      expect(
+        ["illustration", "interactive-illustration"],
+        lesson.id
+      ).toContain(lesson.content.blocks[1].type);
     }
   });
   it("uses the authored incident-loop visual for B3.2", () => {
@@ -455,13 +458,15 @@ describe("course lesson content integration", () => {
     expect(lesson).toBeDefined();
 
     const illustration = lesson.content.blocks.find(
-      (block) => block.type === "illustration"
+      (block) =>
+        block.type === "illustration" ||
+        block.type === "interactive-illustration"
     );
 
     expect(illustration).toMatchObject({
       id: "d2-2-dns",
       bindingId: "D2.2:d2-2-dns",
-      variant: "dns-resolution-v1"
+      type: "interactive-illustration"
     });
   });
 
