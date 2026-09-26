@@ -153,17 +153,18 @@ export async function POST(request: Request) {
     );
   }
 
+  const authoritativeContext = lessonContext(
+    lesson,
+    parsed.learningMode
+  );
+
   const messages: Array<{
     role: "system" | "user" | "assistant";
     content: string;
   }> = [
     {
       role: "system",
-      content: lessonContext(lesson, parsed.learningMode)
-    },
-    {
-      role: "system",
-      content: systemPrompt(lessonContext(lesson, parsed.learningMode))
+      content: systemPrompt(authoritativeContext)
     },
     ...parsed.messages.map((message: TutorMessage) => ({
       role: message.role,
