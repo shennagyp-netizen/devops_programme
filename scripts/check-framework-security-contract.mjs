@@ -66,6 +66,7 @@ assert.match(provider, /consumedAt/);
 assert.match(provider, /isNull/);
 assert.match(provider, /verificationSigningPayload/);
 assert.match(provider, /ensureRuntimeVerificationTarget/);
+assert.match(provider, /providerKeyId/);
 assert.match(localAgent, /signVerificationAttestation/);
 assert.doesNotMatch(localAgent, /send\(res, 200, envelope/);
 assert.match(sshRunner, /signVerificationAttestation/);
