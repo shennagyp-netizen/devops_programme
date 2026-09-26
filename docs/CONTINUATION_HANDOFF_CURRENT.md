@@ -2052,3 +2052,41 @@ Authoritative rules:
 
 The authoritative security document is `docs/MVP_ARCHITECTURE_V3.md`.
 Historical authenticated sections of this handoff remain only as migration evidence.
+
+
+## ASSESSMENT RUNNER CLOSED — 2026-09-26
+
+The learner-facing assessment product has moved from blueprint-only presentation to an operational timed session runner.
+
+Implemented without changing authored question content:
+- three existing assessment families remain the same;
+- server-generated form from the existing blueprint/pilot bank;
+- server-owned answer key;
+- public item delivery strips `correctOption`;
+- authenticated attempt persistence;
+- server-derived assessment clock;
+- previous/next navigation;
+- item palette;
+- mark-for-review;
+- one-way submission state;
+- objective selected-response automatic scoring;
+- constructed/hands-on review-required state rather than fabricated scoring;
+- late-submission state;
+- concurrent in-progress attempt guard;
+- red-team checks for answer-key exposure, injected item IDs, invalid choices, duplicate answers, and open-response scoring.
+
+Runtime bank packaging:
+- `exams/items/` remains the sole authored source of truth.
+- `scripts/generate-assessment-runtime.mjs` generates an ignored in-app runtime module during test/typecheck/build.
+- This avoids duplicating or manually copying question content and allows the Next.js/Vercel app-root build to package the existing banks safely.
+
+Current verification:
+- full programme contracts: PASS
+- unit + integration suite: PASS
+- TypeScript typecheck: PASS
+- Next.js production build: PASS
+- latest GitHub Actions full-programme gate: PASS
+
+This closes the MVP learner-facing operational assessment gap.
+
+It does not claim certification-grade testing. Formal psychometric calibration, standard setting, secure operational item-pool separation, controlled exposure, and formal reviewer workflows remain distinct future maturity work.
