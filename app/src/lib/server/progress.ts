@@ -1,11 +1,7 @@
 import { and, asc, desc, eq } from "drizzle-orm";
 import { getDb } from "./db";
 import { learnerMasteryAttempts, learnerProgressHistory } from "./schema";
-import {
-  parseCompletionInput,
-  type CompletionInput,
-  type CompletionRecord
-} from "../progress-contract";
+import type { CompletionRecord } from "../progress-contract";
 import {
   parseMasteryAttemptInput,
   type MasteryAttemptInput,
@@ -43,58 +39,21 @@ export async function listCompletionHistoryForUser(
   const rows = await db
     .select()
     .from(learnerProgressHistory)
-    .where(eq(learnerProgressHistory.userId, safeUserId))
+    .where(
+      and(
+        eq(learnerProgressHistory.userId, safeUserId),
+        eq(
+          learnerProgressHistory.verificationLevel,
+          "authoritative-evidence"
+        )
+      )
+    )
     .orderBy(
       asc(learnerProgressHistory.completedAt),
       asc(learnerProgressHistory.id)
     );
 
   return rows.map(toCompletionRecord);
-}
-
-export async function completeLearningItemForUser(
-  userId: string,
-  rawInput: unknown
-): Promise<CompletionRecord> {
-  const safeUserId = requireUserId(userId);
-  const input: CompletionInput = parseCompletionInput(rawInput);
-  const db = getDb();
-
-  await db
-    .insert(learnerProgressHistory)
-    .values({
-      userId: safeUserId,
-      itemType: input.itemType,
-      itemId: input.itemId,
-      course: input.course ?? null,
-      projectId: input.projectId ?? null,
-      verificationLevel: input.verificationLevel ?? null
-    })
-    .onConflictDoNothing({
-      target: [
-        learnerProgressHistory.userId,
-        learnerProgressHistory.itemType,
-        learnerProgressHistory.itemId
-      ]
-    });
-
-  const [row] = await db
-    .select()
-    .from(learnerProgressHistory)
-    .where(
-      and(
-        eq(learnerProgressHistory.userId, safeUserId),
-        eq(learnerProgressHistory.itemType, input.itemType),
-        eq(learnerProgressHistory.itemId, input.itemId)
-      )
-    )
-    .limit(1);
-
-  if (!row) {
-    throw new Error("Completion could not be stored.");
-  }
-
-  return toCompletionRecord(row);
 }
 
 function toMasteryAttemptRecord(
