@@ -99,11 +99,11 @@ describe("lesson panel integration contract", () => {
     expect(code).toContain("startMasteryRemediation");
   });
 
-  it("uses browser-local mastery state instead of authenticated history", () => {
+  it("keeps optional authenticated mastery history separate from local remediation state", () => {
     const code = source();
 
     expect(code).toContain("readMasteryAttempts(lesson.id)");
-    expect(code).not.toContain("initialMasteryHistory");
+    expect(code).toContain("initialMasteryHistory");
     expect(code).not.toContain("serverAttemptsForLesson");
     expect(code).not.toContain("recordMasteryAttemptAction");
   });
