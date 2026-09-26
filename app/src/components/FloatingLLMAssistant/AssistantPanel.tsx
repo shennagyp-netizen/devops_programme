@@ -186,41 +186,39 @@ export function AssistantPanel({
     let lastError: Error | undefined;
 
     for (let attempt = 0; attempt < 3; attempt += 1) {
+      let response: Response;
+
       try {
-        const response = await fetch("/api/tutor", {
+        response = await fetch("/api/tutor", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: requestBody
         });
-
-        const payload = (await response.json()) as {
-          text?: string;
-          error?: string;
-        };
-
-        if (response.ok && payload.text) {
-          return payload.text;
-        }
-
-        const error = new Error(
-          payload.error || "Tutor request failed."
-        );
-        lastError = error;
-
-        if (!shouldRetryTutorStatus(response.status) || attempt === 2) {
-          throw error;
-        }
       } catch (error) {
-        const normalized =
+        lastError =
           error instanceof Error
             ? error
             : new Error("Tutor request failed.");
+        if (attempt === 2) throw lastError;
+        await new Promise((resolve) =>
+          window.setTimeout(resolve, tutorRetryDelayMs(attempt))
+        );
+        continue;
+      }
 
-        lastError = normalized;
+      const payload = (await response.json()) as {
+        text?: string;
+        error?: string;
+      };
 
-        if (attempt === 2 || normalized.name === "AbortError") {
-          throw normalized;
-        }
+      if (response.ok && payload.text) {
+        return payload.text;
+      }
+
+      lastError = new Error(payload.error || "Tutor request failed.");
+
+      if (!shouldRetryTutorStatus(response.status) || attempt === 2) {
+        throw lastError;
       }
 
       await new Promise((resolve) =>
