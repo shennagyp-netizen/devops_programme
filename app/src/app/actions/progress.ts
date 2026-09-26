@@ -21,7 +21,7 @@ export async function completeLearningItemAction(rawInput: unknown) {
   }
 
   return completeLearningItemForUser(user.id, {
-    itemType: item.itemType === "assessment" ? "question" : item.itemType,
+    itemType: item.itemType,
     itemId: item.id,
     course: item.course,
     ...(item.projectId ? { projectId: item.projectId } : {})
