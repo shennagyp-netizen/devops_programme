@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const currentUserMock = vi.fn();
 const completeForUserMock = vi.fn();
+const masteryForUserMock = vi.fn();
 
 vi.mock("../../src/lib/server/auth.ts", () => ({
   requireCurrentUser: currentUserMock
@@ -15,14 +16,20 @@ vi.mock("../../src/lib/server/progress.ts", () => ({
   recordMasteryAttemptForUser: vi.fn()
 }));
 
-const { completeLearningItemAction } = await import(
-  "../../src/app/actions/progress.ts"
-);
+vi.mock("../../src/lib/server/masteryAuthority.ts", () => ({
+  recordAuthoritativeMasteryAttemptForUser: masteryForUserMock
+}));
+
+const {
+  completeLearningItemAction,
+  recordMasteryAttemptAction
+} = await import("../../src/app/actions/progress.ts");
 
 describe("completeLearningItemAction", () => {
   beforeEach(() => {
     currentUserMock.mockReset();
     completeForUserMock.mockReset();
+    masteryForUserMock.mockReset();
   });
 
   it("fails closed when the request is unauthenticated", async () => {
@@ -132,5 +139,51 @@ describe("completeLearningItemAction", () => {
 
     expect(completeForUserMock).not.toHaveBeenCalled();
   });
+
+
+  it("does not trust a browser mastery outcome or task identity", async () => {
+    currentUserMock.mockResolvedValue({ id: "user_999" });
+
+    await expect(
+      recordMasteryAttemptAction({
+        itemId: "B1.2",
+        taskId: "attacker-task",
+        outcome: "mastered",
+        stage: "foundation-reteach",
+        summary: "forged"
+      })
+    ).rejects.toThrow(/unsupported field/i);
+
+    expect(masteryForUserMock).not.toHaveBeenCalled();
+  });
+
+  it("binds mastery recording to the authenticated learner and parsed command", async () => {
+    currentUserMock.mockResolvedValue({ id: "user_999" });
+    masteryForUserMock.mockResolvedValue({
+      id: "mastery-1",
+      lessonId: "B1.2",
+      taskId: "hands-on-B1.2",
+      attemptNumber: 1,
+      outcome: "failure",
+      stage: "foundation-reteach",
+      summary: "retry",
+      createdAt: "2026-09-26T12:00:00.000Z"
+    });
+
+    await recordMasteryAttemptAction({
+      itemId: "B1.2",
+      stage: "foundation-reteach",
+      summary: "retry",
+      evidenceRefs: []
+    });
+
+    expect(masteryForUserMock).toHaveBeenCalledWith("user_999", {
+      itemId: "B1.2",
+      stage: "foundation-reteach",
+      summary: "retry",
+      evidenceRefs: []
+    });
+  });
+
 
 });
