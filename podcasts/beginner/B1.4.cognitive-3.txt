@@ -1,13 +1,39 @@
-EPISODE B1.4 — Cognitive Level 3: Diagnosis
+EPISODE B1.4 — Explanation Level 3: Professional
 
-Now use the container model to diagnose failure instead of memorizing commands.
+@knowledge K01
+The core DevOps problem is environment non-repeatability. The same application artifact can produce different behavior across machines because runtime version, dependencies, files, configuration, networking, or external services differ. The environment is part of the executable system, not a detail outside it.
 
-Suppose a service is reported as running, but the client receives a connection error. Do not restart everything. First ask whether the application process is actually alive. Then ask whether it is listening on the expected port inside the container. Next check whether that container port is published to the host. Finally check the network path between the client and the published host port.
+@knowledge K02
+The first diagnostic inputs are concrete environment facts: runtime version, dependency set, expected files, environment variables, and external dependencies. Inspect these before changing application logic because they define the conditions under which the process actually runs.
 
-Each step tests a different boundary. A process failure is different from a container-port problem. A container-port problem is different from a missing host publication. A correct host publication can still fail if the client cannot reach the host.
+@knowledge K03
+The kitchen analogy captures the dependency problem: the same recipe can produce different results when the execution environment differs. It is only an analogy. A container is not a miniature kitchen and is not a virtual machine with another guest operating system.
 
-The same reasoning applies to storage. If data disappears after a container is recreated, ask whether the data was written only to the disposable container layer or to a persistent volume. The important question is not whether the command succeeded. The question is which lifecycle the data was attached to.
+@knowledge K04
+Keep the Docker vocabulary precise. The image is the reproducible packaged starting point: application files, runtime pieces, defaults, and startup instructions. The container is a running instance created from the image. The process is the operating-system process doing the application work. Confusing image, container, and process makes diagnosis harder.
 
-This is why the container model matters. It turns vague statements such as "Docker is broken" into a small evidence tree: process, container boundary, host boundary, network path, or data lifecycle.
+@knowledge K05
+Container isolation is implemented with operating-system mechanisms. The container uses the host kernel rather than booting a separate guest kernel. Namespaces provide separate views of processes, networking, and filesystem-related resources. Cgroups provide resource accounting and limits. The result is process isolation plus resource control, not a second computer.
 
-Good diagnosis changes one boundary at a time and asks what observation would prove the next step.
+@knowledge K06
+The host remains part of the execution model. A container changes process visibility and resource boundaries, but the process still depends on shared host infrastructure. Kernel behavior, hardware, networking, and resource pressure remain relevant. Isolation narrows the dependency surface; it does not remove the host from the system.
+
+@knowledge K07
+A short concrete example is:
+docker run --rm nginx:alpine nginx -t
+The image supplies the starting state. The runtime creates the container. The nginx configuration test is the process. Because the command is short-lived, the process exits and --rm removes the container. The example separates environment creation from the application work performed inside it.
+
+@knowledge K08
+Container writable state has container lifecycle semantics. If an important database file is stored only there, removing the container can remove that state. A persistent volume gives important data a separate lifecycle so the data can survive container replacement. Therefore process lifecycle, container lifecycle, and data lifecycle should not be treated as the same thing.
+
+@knowledge K09
+Networking has at least two relevant port boundaries. The service can listen on a container-side port, while the host publishes that service through a host-side port. Those values need not be identical. A running container proves that a runtime environment exists; it does not prove that an external client has a valid path to the service.
+
+@knowledge K10
+For a running-but-unreachable service, use a narrow evidence tree: verify the process and socket/listening state, verify the expected container port, verify host-port publication, and verify the client-to-host network path. Each check tests a different boundary. Avoid broad changes because a restart can change evidence without explaining the original failure.
+
+@knowledge K11
+A frontend, API, and database illustrate the same model at service level. The API requires an explicit network path to the database. The database requires persistent storage. The frontend can usually be treated as replaceable compute. Each service still has process, configuration, networking, and storage behavior, so the overall system is the composition of these explicit boundaries.
+
+@knowledge K12
+The hands-on proof should be evidence-driven. Run the nginx test. Inspect the running container or equivalent short-lived execution and identify image, process configuration, network configuration, and mounts. Introduce one controlled failure, predict the observable symptom, inspect evidence, repair the smallest broken boundary, and verify recovery. The evidence should support an explanation, not just a zero exit code. Kubernetes can schedule and manage containers later, but it still depends on the same process, resource, networking, storage, evidence, and recovery reasoning.
