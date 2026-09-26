@@ -100,7 +100,10 @@ export const learnerVerifiedEvidence = pgTable(
     itemId: text("item_id").notNull(),
     kind: text("kind").notNull(),
     verifierId: text("verifier_id").notNull(),
+    providerKeyId: text("provider_key_id"),
+    verificationAttemptId: uuid("verification_attempt_id"),
     verificationRef: text("verification_ref").notNull(),
+    signature: text("signature"),
     attestationDigest: text("attestation_digest").notNull(),
     verifiedAt: timestamp("verified_at", { withTimezone: true }).defaultNow().notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
