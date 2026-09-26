@@ -23,9 +23,9 @@ The 3.1 implementation establishes an authoritative completion/evidence boundary
 - `app/tests/unit/evidence-authority.test.mjs`
 - `app/tests/unit/authoritative-completion-boundary.test.mjs`
 
-The current CI gate is green for tests, typecheck, and production build.
+The V3.2 implementation now includes a real signed provider path for both the local terminal agent and SSH runner. Authoritative machine evidence is created only after server-side challenge validation, provider-key verification, signature verification, freshness checks, and one-time challenge consumption.
 
-This version marker does not claim that machine attestation, mastery authority, assessment authority, or tutor trust migration is complete.
+This version marker does not claim that mastery authority, assessment authority, or tutor trust migration is complete.
 
 ## Stability rule
 
@@ -37,16 +37,19 @@ The provider-authority slice now contains:
 
 - server-issued, short-lived verification challenges;
 - trusted Ed25519 provider keys provisioned server-side;
+- exact provider-key binding across the challenge lifecycle;
 - canonical signed attestation payloads;
-- authenticated learner/provider/item/evidence binding;
+- authenticated learner/provider/item/target/evidence binding;
 - atomic one-time challenge consumption for replay resistance;
 - persisted signature, provider-key, and verification-attempt provenance;
-- strict browser request parsers and red-team tests.
+- strict browser request parsers and red-team tests;
+- signed local-terminal and SSH provider adapters;
+- rejection of legacy unsigned machine-evidence imports.
 
-The existing local-agent and SSH runners still produce the older unsigned runtime envelope. Those adapters cannot mint authoritative evidence until they are migrated to the signed provider protocol.
+The operational trust boundary is therefore complete for the signed provider path. Provider-key enrollment remains an explicit deployment/provisioning operation rather than a browser action.
 
 ## Next milestone
 
-**V3.2.1 — Signed runtime-provider adapters**
+**V3.3 — Authoritative mastery**
 
-Migrate the local terminal agent and SSH runner to consume server challenges and return Ed25519-signed attestations, then connect the Learning Gateway to the server challenge/attestation actions.
+Move mastery outcome semantics behind server-owned evaluation and make the browser a presentation/remediation surface only.
