@@ -108,6 +108,7 @@ describe("tutor route", () => {
       id: "user-1",
       email: "learner@example.com"
     });
+    process.env.AI_GATEWAY_API_KEY = "test-key";
     assertTutorRateLimitMock.mockRejectedValue(
       new Error("Tutor rate limit reached. Please continue shortly.")
     );
