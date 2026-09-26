@@ -7,7 +7,7 @@ import {
 import { getCurrentUser } from "../../../lib/server/auth";
 import {
   appendTutorMessage,
-  assertTutorRateLimit,
+  reserveTutorRequest,
   buildTutorContext,
   createTutorSessionForUser,
   listTutorMessagesForUser,
@@ -349,7 +349,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    await assertTutorRateLimit(user.id);
+    await reserveTutorRequest(user.id);
   } catch (error) {
     return NextResponse.json(
       {
@@ -490,7 +490,6 @@ export async function POST(request: Request) {
 
   const tutorResponse = parseTutorResponse(rawTutorText, input.mode);
 
-  await appendTutorMessage(user.id, sessionId, "user", input.message);
   await appendTutorMessage(
     user.id,
     sessionId,
