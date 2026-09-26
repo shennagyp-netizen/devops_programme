@@ -182,6 +182,7 @@ describe("local terminal agent", () => {
         targetRef: "runtime-exercise-B1.1",
         evidenceKind: "exercise",
         providerId: healthBody.providerId,
+        providerKeyId: healthBody.providerKeyId,
         issuedAt: new Date(Date.now() - 1000).toISOString(),
         expiresAt: new Date(Date.now() + 120000).toISOString(),
         nonce: "nonce-agent-1"
@@ -212,6 +213,7 @@ describe("local terminal agent", () => {
         targetRef: challenge.targetRef,
         evidenceKind: challenge.evidenceKind,
         providerId: challenge.providerId,
+        providerKeyId: challenge.providerKeyId,
         keyId: healthBody.providerKeyId,
         nonce: challenge.nonce,
         signatureAlgorithm: "ed25519"
