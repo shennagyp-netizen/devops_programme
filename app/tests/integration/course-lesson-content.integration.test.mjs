@@ -156,7 +156,8 @@ describe("course lesson content integration", () => {
 
     expect(b12?.content.blocks.map((block) => block.id)).toEqual([
       "b1-2-problem",
-      "b1-2-request-path"
+      "b1-2-request-path",
+      "b1-2-request-replay"
     ]);
     expect(b12?.content.blocks[1]).toMatchObject({
       variant: "request-path-v1",
@@ -170,6 +171,11 @@ describe("course lesson content integration", () => {
     expect(b13?.content.blocks[1]).toMatchObject({
       variant: "https-stack-v1",
       bindingId: "B1.3:b1-3-request-stack"
+    });
+
+    expect(b12?.content.blocks[2]).toMatchObject({
+      type: "interactive-illustration",
+      bindingId: "B1.2:b1-2-request-replay"
     });
 
     expect(b12?.content.blocks.some((block) => block.id.startsWith("b1-4-"))).toBe(false);
