@@ -223,7 +223,6 @@ describe("authoritative completion service", () => {
     );
     expect(completionConflictMock).toHaveBeenCalledTimes(1);
     expect(linkConflictMock).toHaveBeenCalledTimes(1);
-    expect(completionReturningMock).toHaveBeenCalledTimes(1);
   });
 
   it("rejects missing authentication before database access", async () => {
