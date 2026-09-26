@@ -23,12 +23,7 @@ const context = {
 describe("v3 learning authority", () => {
   it("does not trust client completion assertions", () => {
     const result = evaluateLearningTransition(context, {
-      learnerId: "user_1",
       itemId: "B1.2",
-      clientAssertions: {
-        completed: true,
-        verificationLevel: "machine-verified"
-      },
       evidenceRefs: []
     });
 
@@ -56,7 +51,6 @@ describe("v3 learning authority", () => {
         ])
       },
       {
-        learnerId: "user_1",
         itemId: "B1.2",
         evidenceRefs: ["evidence-1"]
       }
