@@ -49,7 +49,8 @@ for (const projectId of projectIds) {
     console.error(`Project ${projectId} must define change and incident history.`);
   }
   const phaseCount = (projectBlock.match(new RegExp('id: "' + projectId + '-P\\d+"', 'g')) || []).length;
-  const milestoneBlock = projectBlock.match(/    milestones: \[[\s\S]*?\n    \],/);\n  const milestoneCount = (milestoneBlock?.[0].match(/^      "/gm) || []).length;
+  const milestoneBlock = projectBlock.match(/    milestones: \[[\s\S]*?\n    \],/);
+  const milestoneCount = (milestoneBlock?.[0].match(/^      "/gm) || []).length;
   if (!projectBlock.includes("estimatedHours:") || !projectBlock.includes("phases: [") || !projectBlock.includes("deliverables: [") || !projectBlock.includes("reviewGates: [") || phaseCount < 4 || milestoneCount < 8) {
     failed = true;
     console.error(`Project ${projectId} must define four phases, at least eight milestones, deliverables, review gates and an estimated workload.`);
