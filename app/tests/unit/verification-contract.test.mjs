@@ -63,7 +63,7 @@ describe("framework verification attestation contract", () => {
 
     const after = validateVerificationAttestation(
       challenge,
-      { ...validAttestation, expiresAt: "2026-09-26T12:10:00.000Z" },
+      { ...validAttestation, expiresAt: "2026-09-26T12:04:00.000Z" },
       new Date("2026-09-26T12:06:00.000Z")
     );
 
