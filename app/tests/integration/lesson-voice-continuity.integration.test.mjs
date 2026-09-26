@@ -36,13 +36,13 @@ describe("continuous fixed TTS explanation architecture", () => {
     const coach = source("src/components/PodcastCoach.tsx");
 
     expect(coach).toContain("TTS speech speed");
-    expect(coach).toContain('<option value="1">1×</option>');
-    expect(coach).toContain('<option value="1.5">1.5×</option>');
-    expect(coach).toContain('<option value="2">2×</option>');
+    expect(coach).toContain("PODCAST_SPEECH_RATES");
+    expect(coach).toContain("1.25");
     expect(coach).toContain("utterance.rate = speechRateRef.current");
     expect(coach).toContain("speakTurn(restartIndex, sessionId)");
     expect(coach).toContain("This explanation contains the complete authored information");
     expect(coach).toContain("The explanation style changes; the information does not.");
+    expect(coach).toContain("selectSpeechRate(rate: PodcastSpeechRate)");
   });
 
   it("does not skip or branch learning content by speech rate", () => {
