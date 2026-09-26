@@ -22,7 +22,10 @@ import advanced_A_A1 from "../../../../exams/items/advanced/A-A1.json" with { ty
 import advanced_A_A2 from "../../../../exams/items/advanced/A-A2.json" with { type: "json" };
 import advanced_A_A3 from "../../../../exams/items/advanced/A-A3.json" with { type: "json" };
 
-type AssessmentBankFile = { sectionId: string; items: AssessmentItem[] };
+type AssessmentBankFile = {
+  sectionId: string;
+  items: Array<Omit<AssessmentItem, "sectionId">>;
+};
 
 const banks: Record<string, AssessmentBankFile> = {
   "beginner/B-F1": beginner_B_F1 as AssessmentBankFile,
@@ -53,5 +56,8 @@ export function assessmentItemPool(courseId: string, sectionId: string): Assessm
   if (!bank || bank.sectionId !== sectionId) {
     throw new Error("Assessment item bank is unavailable for this section.");
   }
-  return bank.items;
+  return bank.items.map((item) => ({
+    ...item,
+    sectionId
+  }));
 }
