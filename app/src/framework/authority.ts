@@ -28,13 +28,6 @@ export function evaluateLearningTransition(
     };
   }
 
-  if (request.learnerId !== context.learnerId) {
-    return {
-      accepted: false,
-      reason: "LEARNER_MISMATCH"
-    };
-  }
-
   if (item.completion.mode !== "evidence") {
     return {
       accepted: false,
@@ -57,7 +50,7 @@ export function evaluateLearningTransition(
       };
     }
 
-    if (evidence.learnerId !== request.learnerId) {
+    if (evidence.learnerId !== context.learnerId) {
       return {
         accepted: false,
         reason: "EVIDENCE_LEARNER_MISMATCH"
@@ -88,7 +81,7 @@ export function evaluateLearningTransition(
   return {
     accepted: true,
     itemId: item.id,
-    learnerId: request.learnerId,
+    learnerId: context.learnerId,
     satisfiedEvidence: selected.map((evidence) => evidence.id)
   };
 }
