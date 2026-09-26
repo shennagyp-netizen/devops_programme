@@ -18,7 +18,7 @@ Security objective:
 | ID | Finding | Severity | Status |
 |---|---|---:|---|
 | V3-RT-01 | Completion accepted browser-selected item metadata. | Medium | **Mitigated** |
-| V3-RT-02 | Completion can still reach legacy persistence without authoritative evidence resolution. | High | **Open** |
+| V3-RT-02 | Completion could reach legacy persistence without authoritative evidence resolution. | High | **Mitigated** |
 | V3-RT-03 | Browser-produced machine-verification envelopes are not server-attested. | High | **Open** |
 | V3-RT-04 | Mastery attempt content/outcome remains client-supplied. | Medium | **Open** |
 | V3-RT-05 | Assessment authority remains client-exposed. | Medium | **Open** |
@@ -40,25 +40,28 @@ Covered by:
 
 ## V3-RT-02 — legacy completion authority
 
-The current learner_progress_history persistence API still represents completion as a direct insert and does not resolve verified evidence from a server-owned evidence ledger.
+This finding is **mitigated**.
 
-Therefore:
+The live completion action now accepts only the strict authority command and calls the transactional learning authority service. The service:
 
-> An authenticated caller can still obtain completion for a known learning item without proving the required evidence.
+- authenticates the learner server-side;
+- resolves the learning item from the immutable programme registry;
+- resolves verified evidence from the server-owned evidence table;
+- evaluates the pure authority policy;
+- writes completion and evidence links transactionally;
+- normalizes legacy completion metadata before treating the row as authoritative.
 
-This remains **open**.
+The ordinary progress read projection now returns only rows marked `authoritative-evidence`.
 
-Required next implementation:
+Covered by:
 
-```text
-authenticated user
-    -> authoritative item registry
-    -> server evidence store
-    -> evidence policy evaluation
-    -> transactional completion write
-```
+- `app/src/lib/server/learningAuthority.ts`
+- `app/src/lib/server/evidenceAuthority.ts`
+- `app/tests/unit/learning-authority.test.mjs`
+- `app/tests/unit/evidence-authority.test.mjs`
+- `app/tests/integration/progress-action.test.mjs`
+- `scripts/check-learner-progress-contract.mjs`
 
-The pure policy already exists in app/src/framework/authority.ts; persistent authority wiring is still missing.
 
 ## V3-RT-03 — machine evidence provenance
 
@@ -102,8 +105,13 @@ Next implementation should reconstruct assistant history from server persistence
 
 ## Exit rule
 
-The red-team gate is green only when a malicious browser cannot:
-- mark a learning item complete by payload manipulation;
+The current completion-authority red-team gate is green for browser-payload manipulation:
+
+- a malicious browser cannot mark a learning item complete without server-verified evidence;
+- legacy completion metadata is not trusted as authoritative state.
+
+The broader V3 exit gate remains open until a real verification-provider attestation path exists, and until mastery, assessment, and tutor authority are migrated:
+
 - forge machine verification into authoritative evidence;
 - manufacture mastery outcomes;
 - manufacture assessment passes;
