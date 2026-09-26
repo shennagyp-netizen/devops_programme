@@ -11,6 +11,7 @@ const component = read("src/components/TutorCoach.tsx");
 const env = read(".env.example");
 const authMigration = read("drizzle/migrations/0001_self_hosted_auth.sql");
 const tutorMigration = read("drizzle/migrations/0003_tutor.sql");
+const rateLimitMigration = read("drizzle/migrations/0004_tutor_rate_limit.sql");
 
 
 const required = [
