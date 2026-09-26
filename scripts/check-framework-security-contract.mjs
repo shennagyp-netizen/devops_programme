@@ -68,7 +68,7 @@ assert.match(migration, /learner_verified_evidence/);
 assert.match(migration, /learner_completion_evidence/);
 assert.match(migration, /attestation_digest/);
 
-console.log("Framework security architecture contract: PASS");
+console.log("Framework security architecture contract: PASS — completion, provider attestation, and mastery boundaries.");
 
 assert.match(provider, /registerTrustedProviderKey/);
 assert.match(provider, /verifySignature/);
