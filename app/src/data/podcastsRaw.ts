@@ -5,9 +5,19 @@ export type Turn = {
   kind: "dialogue" | "prediction" | "lab" | "recall";
 };
 
+export type PodcastCognitiveLevel = 1 | 2 | 3 | 4;
+
 export function podcastUrl(path: string) {
   if (path.startsWith("/")) return path;
   return `/${path}`;
+}
+
+export function cognitivePodcastUrl(path: string, level: PodcastCognitiveLevel) {
+  const normalized = podcastUrl(path);
+  const extensionIndex = normalized.lastIndexOf(".");
+  if (extensionIndex < 0) return `${normalized}.cognitive-${level}.txt`;
+
+  return `${normalized.slice(0, extensionIndex)}.cognitive-${level}${normalized.slice(extensionIndex)}`;
 }
 
 export function getEpisodeText(source: string, lessonId: string) {
