@@ -18,6 +18,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: browser-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   browser-e2e:
     name: real-user-browser-e2e
