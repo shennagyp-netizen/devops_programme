@@ -1,42 +1,53 @@
 {
   "runtimeTasks": [
     {
+      "taskId": "runtime-exercise-B1.1",
+      "lessonId": "B1.1",
+      "verificationLevel": "machine-verified",
+      "resetRequired": false,
+      "scope": "exercise",
+      "contractVersion": 1,
+      "steps": [
+        {
+          "id": "processes",
+          "kind": "observe",
+          "purpose": "Inspect running processes without changing machine state.",
+          "commands": {
+            "macos": { "program": "ps", "args": ["-axo", "pid,comm"], "timeoutMs": 30000, "destructive": false },
+            "linux": { "program": "ps", "args": ["-eo", "pid,comm"], "timeoutMs": 30000, "destructive": false },
+            "windows": { "program": "powershell.exe", "args": ["-NoProfile", "-Command", "Get-Process | Select-Object -First 20 Id,ProcessName"], "timeoutMs": 30000, "destructive": false }
+          },
+          "required": true
+        },
+        {
+          "id": "memory",
+          "kind": "observe",
+          "purpose": "Collect a read-only memory snapshot.",
+          "commands": {
+            "macos": { "program": "vm_stat", "args": [], "timeoutMs": 30000, "destructive": false },
+            "linux": { "program": "free", "args": ["-b"], "timeoutMs": 30000, "destructive": false },
+            "windows": { "program": "powershell.exe", "args": ["-NoProfile", "-Command", "Get-CimInstance Win32_OperatingSystem | Select-Object TotalVisibleMemorySize,FreePhysicalMemory"], "timeoutMs": 30000, "destructive": false }
+          },
+          "required": true
+        }
+      ]
+    },
+    {
       "taskId": "runtime-probe-B1.2",
       "lessonId": "B1.2",
       "verificationLevel": "machine-verified",
       "resetRequired": false,
+      "scope": "probe",
+      "contractVersion": 1,
       "steps": [
         {
           "id": "resolve-name",
           "kind": "observe",
           "purpose": "Resolve the service name before testing the connection path.",
           "commands": {
-            "macos": {
-              "program": "dig",
-              "args": [
-                "example.com"
-              ],
-              "timeoutMs": 30000,
-              "destructive": false
-            },
-            "linux": {
-              "program": "dig",
-              "args": [
-                "example.com"
-              ],
-              "timeoutMs": 30000,
-              "destructive": false
-            },
-            "windows": {
-              "program": "powershell.exe",
-              "args": [
-                "-NoProfile",
-                "-Command",
-                "Resolve-DnsName example.com"
-              ],
-              "timeoutMs": 30000,
-              "destructive": false
-            }
+            "macos": { "program": "dig", "args": ["example.com"], "timeoutMs": 30000, "destructive": false },
+            "linux": { "program": "dig", "args": ["example.com"], "timeoutMs": 30000, "destructive": false },
+            "windows": { "program": "powershell.exe", "args": ["-NoProfile", "-Command", "Resolve-DnsName example.com"], "timeoutMs": 30000, "destructive": false }
           },
           "required": true
         },
@@ -45,42 +56,45 @@
           "kind": "verify",
           "purpose": "Test whether the target HTTPS port is reachable.",
           "commands": {
-            "macos": {
-              "program": "nc",
-              "args": [
-                "-z",
-                "example.com",
-                "443"
-              ],
-              "timeoutMs": 30000,
-              "destructive": false
-            },
-            "linux": {
-              "program": "nc",
-              "args": [
-                "-z",
-                "example.com",
-                "443"
-              ],
-              "timeoutMs": 30000,
-              "destructive": false
-            },
-            "windows": {
-              "program": "powershell.exe",
-              "args": [
-                "-NoProfile",
-                "-Command",
-                "Test-NetConnection example.com -Port 443"
-              ],
-              "timeoutMs": 30000,
-              "destructive": false
-            }
+            "macos": { "program": "nc", "args": ["-z", "example.com", "443"], "timeoutMs": 30000, "destructive": false },
+            "linux": { "program": "nc", "args": ["-z", "example.com", "443"], "timeoutMs": 30000, "destructive": false },
+            "windows": { "program": "powershell.exe", "args": ["-NoProfile", "-Command", "Test-NetConnection example.com -Port 443"], "timeoutMs": 30000, "destructive": false }
           },
           "required": true
         }
-      ],
-      "scope": "probe",
-      "contractVersion": 1
+      ]
+    },
+    {
+      "taskId": "runtime-exercise-B1.3",
+      "lessonId": "B1.3",
+      "verificationLevel": "machine-verified",
+      "resetRequired": false,
+      "scope": "exercise",
+      "contractVersion": 1,
+      "steps": [
+        {
+          "id": "dns",
+          "kind": "observe",
+          "purpose": "Resolve the application hostname before evaluating the secure request.",
+          "commands": {
+            "macos": { "program": "nslookup", "args": ["example.com"], "timeoutMs": 30000, "destructive": false },
+            "linux": { "program": "getent", "args": ["ahosts", "example.com"], "timeoutMs": 30000, "destructive": false },
+            "windows": { "program": "powershell.exe", "args": ["-NoProfile", "-Command", "Resolve-DnsName example.com"], "timeoutMs": 30000, "destructive": false }
+          },
+          "required": true
+        },
+        {
+          "id": "https-request",
+          "kind": "verify",
+          "purpose": "Inspect the HTTPS response without changing the remote service.",
+          "commands": {
+            "macos": { "program": "curl", "args": ["-I", "https://example.com"], "timeoutMs": 30000, "destructive": false },
+            "linux": { "program": "curl", "args": ["-I", "https://example.com"], "timeoutMs": 30000, "destructive": false },
+            "windows": { "program": "curl.exe", "args": ["-I", "https://example.com"], "timeoutMs": 30000, "destructive": false }
+          },
+          "required": true
+        }
+      ]
     }
   ]
 }
