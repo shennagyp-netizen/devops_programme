@@ -140,11 +140,16 @@ A failure in an invariant test blocks the build.
 
 ## CI interpretation
 
-The current GitHub Actions runner is not considered green because the connector exposes no workflow steps or artifacts for the latest failed build.
+The authoritative CI result is the GitHub Actions workflow run for the exact commit under review.
 
-Do not infer which application stage failed when the runner does not expose that evidence.
+For the 2026-09-26 Kiro → Podcast V2 merge:
+- run 36233862079 passed;
+- curriculum/programme contracts passed;
+- full unit + integration tests passed;
+- TypeScript typecheck passed;
+- Next.js production build passed.
 
-Temporary runner-isolation probes were used previously and removed after they established that the environment could fail before useful application diagnostics became observable.
+Temporary runner-isolation probes may be used only as diagnostic tooling and must be removed after the failure mode is understood. A probe is never a substitute for the canonical programme gate.
 
 ## Future testing requirement
 
@@ -183,3 +188,16 @@ Required tests:
 - verify transcript fallback when browser TTS is unavailable
 - verify no MP3, WAV, audio URL, or recording manifest is part of podcast generation
 - verify the private LLM tutor remains outside podcast generation
+
+
+## Current verified gate — 2026-09-26
+
+Merged PR #116:
+- main merge commit: `29f3b276caea6d6b17d9d8e04d790ebe030d8115`
+- GitHub Actions run: `36233862079`
+- final gate: PASS
+- 459 tests verified across the corrected V2 sequence
+- TypeScript: PASS
+- Next.js production build: PASS
+
+Vercel status is tracked separately. Recent Vercel failures report an account build-rate-limit condition and must not be interpreted as application test or build failures when GitHub CI is green.
