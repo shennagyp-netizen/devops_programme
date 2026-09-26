@@ -60,7 +60,7 @@ async function collectMediaFiles(directory, relative = "") {
   return files.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
 }
 
-function episodeHashes(source) {
+function episodeHashes(source, relativePath = "") {
   const hashes = {};
   const matcher = /(?:^|\n)EPISODE ([A-Z0-9]+\.[0-9]+) —[^\n]*\n/g;
   const matches = [...source.matchAll(matcher)];
@@ -84,6 +84,7 @@ await mkdir(targetDir, { recursive: true });
 const files = await collectTextFiles(sourceDir);
 const mediaFiles = await collectMediaFiles(sourceDir);
 const episodes = {};
+const cognitiveLevels = {};
 
 for (const file of files) {
   const source = await readFile(file.absolutePath, "utf8");
@@ -92,7 +93,18 @@ for (const file of files) {
   await mkdir(path.dirname(targetPath), { recursive: true });
   await writeFile(targetPath, source, "utf8");
 
-  Object.assign(episodes, episodeHashes(source));
+  const hashes = episodeHashes(source, file.relativePath);
+
+  if (/\.cognitive-[1-4]\.txt$/i.test(file.relativePath)) {
+    const match = file.relativePath.match(/(?:^|[/\\])([A-Z0-9]+\.[0-9]+)\.cognitive-([1-4])\.txt$/i);
+    if (match) {
+      const [, episodeId, level] = match;
+      cognitiveLevels[episodeId] ??= {};
+      cognitiveLevels[episodeId][level] = Object.values(hashes)[0];
+    }
+  } else {
+    Object.assign(episodes, hashes);
+  }
 }
 
 for (const file of mediaFiles) {
@@ -104,7 +116,8 @@ for (const file of mediaFiles) {
 const manifest = {
   schemaVersion: 2,
   source: "podcasts/",
-  episodes
+  episodes,
+  cognitiveLevels
 };
 
 await writeFile(
