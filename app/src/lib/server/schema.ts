@@ -140,6 +140,25 @@ export const tutorSessions = pgTable(
   })
 );
 
+export const tutorRateLimitReservations = pgTable(
+  "tutor_rate_limit_reservations",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => authUsers.id, { onDelete: "cascade" }),
+    reservedAt: timestamp("reserved_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => ({
+    userReservedAtIndex: index("tutor_rate_limit_reservations_user_reserved_at_idx").on(
+      table.userId,
+      table.reservedAt
+    )
+  })
+);
+
 export const tutorMessages = pgTable(
   "tutor_messages",
   {
