@@ -56,13 +56,13 @@ test.describe("real-user learning gateway journey", () => {
 
     await page.getByRole("button", { name: "do", exact: true }).click();
     await expect(page.getByText("VERIFIED LAPTOP TERMINAL", { exact: true })).toBeVisible();
-    await expect(page.getByText("Connected to local terminal agent", { exact: true })).toBeVisible();
+    await expect(page.getByText(/Connected · linux · agent/)).toBeVisible();
 
     await page.getByLabel("Pair this browser with the local agent").fill("e2e-terminal-token");
     await page.getByRole("button", { name: "Run verified exercise on this laptop" }).click();
 
     await expect(
-      page.getByText("Machine verification recorded.", { exact: true })
+      page.getByText("Laptop terminal execution verified for this session.", { exact: true })
     ).toBeVisible();
     await expect(page.getByText("LAPTOP TERMINAL RESULTS", { exact: true })).toBeVisible();
     await expect(page.getByText(/processes · passed · exit 0/)).toBeVisible();
