@@ -150,7 +150,7 @@ describe("authoritative mastery service", () => {
 
     const result = await recordAuthoritativeMasteryAttemptForUser("user_1", {
       itemId: "B1.2",
-      stage: "mastered",
+      stage: "mechanism-reteach",
       summary: "server evidence proved the exercise",
       evidenceRefs: ["evidence-1"]
     });
