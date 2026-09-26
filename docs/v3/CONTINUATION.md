@@ -26,9 +26,11 @@ V3 is intentionally additive. Main has not been replaced.
 - Filtered progress reads to authoritative completions only.
 - Gated the UI completion control on server-verified evidence.
 - Added TDD and red-team coverage for the new trust boundary.
-- Full GitHub Actions gate is green for the current branch state: 68 test files / 496 tests, typecheck, production build, and framework-security architecture contract all pass.
+- Signed-provider milestone is green: provider challenges, exact provider-key binding, signed local/SSH attestations, authoritative evidence, red-team replay/key-substitution coverage, unit/integration tests, typecheck, and production build pass.
 - Added the framework attestation contract in `app/src/framework/verification.ts` with TDD coverage for binding, freshness, expiry, and digest validation.
 - Added exact provider-key binding to the challenge lifecycle and red-team coverage for key substitution/revocation.
+- Added authoritative mastery recording with server-derived outcome and attempt number.
+- Restricted mastery commands to the published coaching stage set and added server-action boundary coverage.
 - Added a dedicated `check:framework-security` CI gate to prevent trust-boundary regressions.
 - Migrated the local terminal agent and SSH runner to signed challenge-bound provider attestations.
 - Rejected unsigned machine-evidence imports at the Learning Gateway.
@@ -42,7 +44,7 @@ First create the authoritative policy boundary, then migrate current persistence
 
 ## Latest TDD and red-team work
 
-The completion-authority migration is complete for this slice. The remaining trust gap is now explicitly the **verification-provider attestation boundary**, not the completion persistence path.
+The completion and signed-provider boundaries are complete for these slices. The current open trust boundary is **assessment authority**, followed by tutor trust/rate-limit hardening.
 
 ### Immediate next work
 
@@ -104,11 +106,11 @@ The server must verify:
 
 ### C. Mastery migration
 
-Move mastery outcome semantics behind the same authority.
+Implemented in V3.3. Keep browser remediation UX non-authoritative.
 
 ### D. Assessment migration
 
-Issue server-owned assessment instances and score them against server-owned keys/rubrics.
+Next: issue server-owned assessment instances and score them against server-owned keys/rubrics.
 
 ### E. Tutor migration
 
@@ -162,14 +164,12 @@ Add shared distributed rate limiting.
 
 ### G. Verification providers
 
-Start with:
+Implemented for the current machine providers:
 
-1. structured human evidence
-2. local terminal agent
-3. SSH
-4. managed runtime as a future provider
-
-Local-agent and SSH evidence must use server-verifiable provenance before they can unlock authoritative completion.
+1. structured human evidence remains a future explicit provider;
+2. local terminal agent uses signed challenge-bound attestations;
+3. SSH uses the same signed attestation SPI;
+4. managed runtime remains a future provider.
 
 ## V3 quality gate
 
