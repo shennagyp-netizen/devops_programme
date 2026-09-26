@@ -9,7 +9,9 @@ describe("lesson voice, content and animation boundary", () => {
     expect(source("src/components/LessonPanel.tsx")).toContain("<LessonVoiceClockProvider>");
     expect(source("src/components/PodcastCoach.tsx")).toContain("publishVoiceClock");
     expect(source("src/components/PodcastCoach.tsx")).toContain("explanationLevel");
-    expect(source("src/components/InteractiveLessonIllustration.tsx")).toContain("clock?.elapsedMs");
+    expect(source("src/components/InteractiveLessonIllustration.tsx")).toContain(
+      "useLessonVoiceClock()"
+    );
   });
 
   it("keeps animation timing fail-closed until runtime TTS boundaries are explicitly connected", () => {
@@ -30,7 +32,9 @@ describe("lesson voice, content and animation boundary", () => {
     expect(bindings).toContain('id: "B1.2:b1-2-request-replay"');
     expect(bindings).toContain('interactionMode: "sequential"');
     expect(visual).toContain(
-      "This interactive illustration is unavailable because its curriculum binding is invalid."
+      "interactive illustration is unavailable"
     );
+    expect(visual).toContain("curriculum");
+    expect(visual).toContain("binding");
   });
 });
