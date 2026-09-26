@@ -7,7 +7,9 @@ import {
   podcastExplanationUrl,
   podcastLevelDescription,
   podcastLevelId,
-    type PodcastExplanationLevel,
+  PODCAST_SPEECH_RATES,
+  type PodcastExplanationLevel,
+  type PodcastSpeechRate,
   type PodcastTtsBundle
 } from "../data/podcastSync";
 import { getEpisodeText, parseTurns, type Turn } from "../data/podcastsRaw";
@@ -52,7 +54,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   const [prediction, setPrediction] = useState("");
   const [episodeSource, setEpisodeSource] = useState("");
   const [explanationLevel, setExplanationLevel] = useState<PodcastExplanationLevel>(1);
-  const [speechRate, setSpeechRate] = useState<1 | 1.5 | 2>(1);
+  const [speechRate, setSpeechRate] = useState<PodcastSpeechRate>(1);
   const [scriptVersions, setScriptVersions] = useState<Record<string, string>>({});
   const [ttsSupported, setTtsSupported] = useState(false);
   const [ttsBundle, setTtsBundle] = useState<PodcastTtsBundle>();
@@ -61,7 +63,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   const transcriptRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const sessionIdRef = useRef(0);
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-  const speechRateRef = useRef<1 | 1.5 | 2>(1);
+  const speechRateRef = useRef<PodcastSpeechRate>(1);
   const sessionStartedAtRef = useRef<number | null>(null);
   const nextTurnIndexRef = useRef(0);
 
@@ -325,7 +327,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     setExplanationLevel(level);
   }
 
-  function selectSpeechRate(rate: 1 | 1.5 | 2) {
+  function selectSpeechRate(rate: PodcastSpeechRate) {
     if (rate === speechRate) return;
     setSpeechRate(rate);
     speechRateRef.current = rate;
@@ -404,12 +406,14 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
               aria-label="TTS speech speed"
               value={speechRate}
               onChange={(event) =>
-                selectSpeechRate(Number(event.target.value) as 1 | 1.5 | 2)
+                selectSpeechRate(Number(event.target.value) as PodcastSpeechRate)
               }
             >
-              <option value="1">1×</option>
-              <option value="1.5">1.5×</option>
-              <option value="2">2×</option>
+              {PODCAST_SPEECH_RATES.map((rate) => (
+                <option key={rate} value={rate}>
+                  {rate}×
+                </option>
+              ))}
             </select>
           </label>
 
@@ -435,11 +439,11 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
       <div className="continuous-transcript" role="log" aria-label="Podcast transcript">
         <div className="transcript-header">
           <span className="eyebrow">
-            LEVEL {explanationLevel} · {podcastLevelId(explanationLevel)}
+            EXPLANATION {explanationLevel} · {podcastLevelId(explanationLevel)}
           </span>
           <span className="range">
             {scriptReady
-              ? "The authored script is the source for this TTS version."
+              ? "The authored script is the source for this explanation version."
               : "Loading the fixed authored script."}
           </span>
         </div>
