@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  evaluateLearningTransition,
-  type AuthorityContext
-} from "../../src/framework/authority.ts";
+import { evaluateLearningTransition } from "../../src/framework/authority.ts";
 
 const context = {
   learnerId: "user_1",
