@@ -94,8 +94,9 @@ assert.match(content.evidenceAuthority, /attestationDigest/);
 assert.match(content.action, /completeLearningItemForUser/);
 assert.match(content.action, /lib\/server\/learningAuthority/);
 assert.match(content.progress, /orderBy\([\s\S]*completedAt/);
-assert.match(content.progress, /recordMasteryAttemptForUser/);
+assert.doesNotMatch(content.progress, /recordMasteryAttemptForUser/);
 assert.match(content.progress, /attemptNumber/);
+assert.match(content.authority, /recordAuthoritativeMasteryAttemptForUser|completeLearningItemForUser/);
 assert.match(content.progress, /listMasteryHistoryForUser/);
 assert.doesNotMatch(content.progress, /stdout|stderr|machineEnvelope/);
 
@@ -145,6 +146,7 @@ assert.match(content.authActionsTest, /generic login error/);
 assert.match(content.authBoundaryTest, /no Clerk dependency/);
 assert.match(content.migrationAuth, /auth_users/);
 assert.match(content.migrationAuth, /auth_sessions/);
+assert.match(content.migrationEvidence ?? content.migration, /learner_verified_evidence/);
 assert.match(content.migrationAuth, /auth_users/);
 assert.match(content.migrationMastery, /learner_mastery_attempts/);
 assert.match(content.migrationMastery, /attempt_number/);
