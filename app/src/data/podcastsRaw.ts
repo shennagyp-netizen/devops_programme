@@ -5,20 +5,11 @@ export type Turn = {
   kind: "dialogue" | "prediction" | "lab" | "recall";
 };
 
-export type PodcastCognitiveLevel = 1 | 2 | 3 | 4;
-
 export function podcastUrl(path: string) {
   if (path.startsWith("/")) return path;
   return `/${path}`;
 }
 
-export function cognitivePodcastUrl(path: string, level: PodcastCognitiveLevel) {
-  const normalized = podcastUrl(path);
-  const extensionIndex = normalized.lastIndexOf(".");
-  if (extensionIndex < 0) return `${normalized}.cognitive-${level}.txt`;
-
-  return `${normalized.slice(0, extensionIndex)}.cognitive-${level}${normalized.slice(extensionIndex)}`;
-}
 
 export function getEpisodeText(source: string, lessonId: string) {
   const marker = new RegExp(`(?:^|\\n)EPISODE ${lessonId} —[^\\n]*\\n`);
@@ -63,9 +54,13 @@ function classifyTurn(text: string): Turn["kind"] {
 }
 
 export function parseTurns(text: string, lessonId = "episode"): Turn[] {
-  const sourceTurns = /(^|\n)\s*Speaker [AB]:/i.test(text)
-    ? text.split(/\n\s*(?=Speaker [AB]:)/)
-    : text.split(/\n\s*\n/);
+  const withoutKnowledgeMetadata = text
+    .replace(/^@knowledge\\s+[A-Z0-9._-]+\\s*$/gim, "")
+    .trim();
+
+  const sourceTurns = /(^|\\n)\\s*Speaker [AB]:/i.test(withoutKnowledgeMetadata)
+    ? withoutKnowledgeMetadata.split(/\\n\\s*(?=Speaker [AB]:)/)
+    : withoutKnowledgeMetadata.split(/\\n\\s*\\n/);
 
   return sourceTurns
     .map((x) => x.trim())
