@@ -108,7 +108,7 @@ export function AssessmentPanel({
     tick();
     const interval = window.setInterval(tick, 1000);
     return () => window.clearInterval(interval);
-  }, [assessment, result, busy]);
+  }, [assessment, result, busy, answers]);
 
   async function start() {
     setBusy(true);
