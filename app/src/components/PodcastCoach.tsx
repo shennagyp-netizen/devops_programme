@@ -174,6 +174,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     let cancelled = false;
 
     setPhase("ready");
+    setEpisodeSource("");
     setTurnIndex(0);
     setPrediction("");
     setAudioTimeMs(0);
@@ -555,7 +556,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
             The private tutor is separate. It may discuss the lesson with the
             learner, but it does not rewrite or regenerate these speeches.
           </p>
-          {audioSyncState === "voice-synced" ? (
+          {audioSyncState === "voice-synced" && turns.length > 0 ? (
             <button className="primary" onClick={startVoice}>
               Start Level {selectedLevel.level} speech
             </button>
