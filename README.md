@@ -1,117 +1,99 @@
-# DevOps Programme - Mobile-First Learning Platform
+# DevOps Programme V3 MVP
 
-A multi-course, multi-modal DevOps learning system with AI-powered mobile-first experience.
+A multi-course, multi-modal DevOps learning application built with React and Next.js.
 
-## 🚀 New Feature: Mobile-First LLM Assistant
+## MVP boundary
 
-### Overview
-Integrated AI-powered learning assistant with voice input/output, context-aware responses, and mobile-optimized interface.
+V3 is intentionally simple:
 
-### Key Components
-- **Floating LLM Assistant**: Context-aware AI assistant with voice capabilities
-- **Mobile-First Responsive Layout**: Three-column desktop to single-column mobile
-- **Enhanced Animation Library**: Interactive DevOps concept visualizations
-- **Podcast Audio Completion**: Synchronized audio learning experiences
-- **Machine Verification**: Automated exercise validation
-- **CI Infrastructure**: Robust validation and testing pipeline
+- no account or sign-in flow;
+- no learner sessions or learner IDs;
+- no pairing tokens;
+- no database-backed learner progress;
+- progress, structured evidence and remediation state stay in the browser;
+- machine verification is disabled in the learner UI;
+- the AI tutor uses public authored curriculum context and anonymous best-effort throttling.
 
-### Security & Testing
-- **Test-Driven Development (TDD)**: 547/548 tests passing (99.8%)
-- **Red Team Security Testing**: Comprehensive security validation
-- **Accessibility Compliance**: WCAG 2.1 AA standards
+Clearing browser/site storage resets local learning state. This MVP state is not a secure transcript, certificate or entitlement record.
 
-## Programme Architecture
+The authoritative security/product boundary is docs/MVP_ARCHITECTURE_V3.md.
 
-### Core Learning Components
-- `courses/beginner/`: DevOps through concrete problems with mobile optimization
-- `courses/intermediate/`: Deep production DevOps engineering
-- `courses/advanced/`: Large-scale distributed systems and operations
-- `foundations/`: Reusable competencies across Linux, networking, databases
-- `projects/`: Continuous project instances with mobile collaboration
-- `exams/`: Standardized assessment with AI-assisted evaluation
+## Learning experience
 
-### Platform Components
-- `platforms/`: macOS, Linux and Windows environment profiles
-- `app/`: Adaptive learning application with LLM integration
-- `podcasts/`: Spoken learning scripts with audio synchronization
-- `book/`: Long-form curriculum with interactive elements
+The application provides:
 
-### New Technical Components
-- `app/src/components/FloatingLLMAssistant/`: AI assistant with security hardening
-- `app/src/animations/scenarios/dnsResolution.ts`: DNS visualization animation
-- `app/src/lib/verification/`: Machine verification contracts
-- `app/tests/unit/floating-llm-assistant/`: Comprehensive test suite
+- Beginner, Intermediate and Advanced DevOps paths;
+- projects and hands-on exercises;
+- Learn / Do / Recall / Design / Assessment modes;
+- continuous podcast/co-teacher presentation;
+- reusable SVG/React illustrations;
+- structured learner evidence;
+- adaptive mastery remediation;
+- optional AI tutor assistance.
 
-## Learning Loop (Enhanced)
+## Verification boundary
 
-**Understand** → **Predict** → **Operate** → **Break** → **Diagnose** → **Repair** → **Recall** → **Design** → **AI-Assist**
+For MVP hands-on work:
 
-Theory can be skipped when demonstrated knowledge is sufficient. Required exercises cannot be skipped. AI assistant provides context-aware guidance throughout.
+1. the app shows the exact platform command;
+2. the learner runs it manually;
+3. the learner records observation, change, failure and recovery evidence;
+4. the browser validates evidence structure.
 
-## Assessment System
+The app does not claim that browser-entered evidence proves actual machine execution.
 
-### Three Assessment Families:
-1. **Conceptual** — Mechanism and prediction with AI verification
-2. **Diagnostic** — Evidence-based troubleshooting with machine validation
-3. **Hands-on** — Demonstrated operation and recovery with automated verification
+Future runtime contracts remain in app/src/data/runtimeTasks.json and app/src/data/runtimeVerification.ts, but they are not a learner authorization mechanism in V3.
 
-### Mobile-Optimized Assessment:
-- Touch-friendly interface design
-- Voice input for responses
-- Offline assessment capability
-- Progressive enhancement for varying network conditions
+## AI tutor
 
-## Development Standards
+The tutor is a same-application route backed by the configured AI Gateway.
 
-### Testing Requirements
-- **Test-Driven Development (TDD)**: Write tests before implementation
-- **Red Team Security Testing**: Attack simulation and vulnerability assessment
-- **Accessibility Testing**: WCAG 2.1 AA compliance verification
-- **Performance Testing**: Mobile-optimized load times and responsiveness
+It:
 
-### Security Standards
-- Input sanitization for all user-facing components
-- XSS prevention through HTML entity encoding
-- Resource exhaustion protection
-- Secure animation and content loading
+- reconstructs lesson context from authored curriculum;
+- accepts only user-role conversation turns;
+- limits request size;
+- applies best-effort anonymous throttling;
+- keeps provider credentials server-side.
 
-### Quality Metrics
-- 99%+ test coverage for new components
-- Zero critical security vulnerabilities
-- Mobile performance: <2s load on 4G
-- Accessibility: Full keyboard navigation support
+Deployment should also enforce provider/API spending limits.
 
-## Getting Started
+## Development
 
-### For Developers
 ```bash
 cd app
 npm install
-npm run test:unit  # Run comprehensive test suite
-npm run dev       # Start development server
+npm run dev
 ```
 
-### Testing Commands
+Run the complete test suite:
+
 ```bash
-npm test                   # Run all tests
-npm run test:unit          # Unit tests only
-npm run check:content      # Content validation
-npm run check:assessment   # Assessment validation
+npm test
 ```
 
-### Mobile Development
-- Test on viewports: <768px (mobile), 768-1199px (tablet), ≥1200px (desktop)
-- Ensure touch targets ≥44×44px
-- Support reduced motion preferences
-- Test offline functionality
+Run the programme contracts:
+
+```bash
+npm run check:content
+npm run check:assessment
+npm run check:diagnostics
+npm run check:projects
+npm run check:platforms
+npm run check:hands-on
+npm run check:programme
+npm run check:progress
+```
 
 ## Documentation
-- `/.kiro/specs/mobile-first-llm-assistant/` - Feature specifications
-- `/app/tests/` - Comprehensive test suites
-- `/.kiro/specs/mobile-first-llm-assistant/comprehensive-test-plan.md` - Complete test strategy
 
-## Support
-- Report security issues immediately
-- Test failures block deployment
-- Accessibility issues are P0 priority
-- Mobile performance regressions require immediate attention
+Key architecture/security documents:
+
+- docs/MVP_ARCHITECTURE_V3.md
+- docs/architecture/LEARNER_PROGRESS_STORAGE.md
+- docs/curriculum/HANDS_ON_RUNTIME_VERIFICATION.md
+- docs/MASTERY_AND_REMEDIATION_CONTRACT.md
+- docs/INTEGRITY_AUDIT.md
+- docs/CONTINUATION_HANDOFF_CURRENT.md
+
+Historical Kiro specifications remain in .kiro/ for implementation history; they are not the current V3 security authority.
