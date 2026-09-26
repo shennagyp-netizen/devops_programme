@@ -95,7 +95,22 @@ function runCommand(command) {
 
     let stdout = "";
     let stderr = "";
+    let stdoutTruncated = false;
+    let stderrTruncated = false;
     let settled = false;
+
+    const appendBounded = (current, chunk, truncatedState) => {
+      if (truncatedState.value) return current;
+
+      const next = current + chunk.toString();
+      if (next.length <= MAX_OUTPUT) return next;
+
+      truncatedState.value = true;
+      return next.slice(0, MAX_OUTPUT);
+    };
+
+    const stdoutState = { value: false };
+    const stderrState = { value: false };
 
     const finish = (result) => {
       if (settled) return;
@@ -113,10 +128,10 @@ function runCommand(command) {
     }, command.timeoutMs);
 
     child.stdout.on("data", (chunk) => {
-      stdout += chunk.toString();
+      stdout = appendBounded(stdout, chunk, stdoutState);
     });
     child.stderr.on("data", (chunk) => {
-      stderr += chunk.toString();
+      stderr = appendBounded(stderr, chunk, stderrState);
     });
 
     child.on("error", (error) => {
