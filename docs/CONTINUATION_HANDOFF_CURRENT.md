@@ -2036,4 +2036,10 @@ The next AI implementation gate remains:
 5. connect only additional read-only authoritative evidence sources before considering any controlled action tools.
 ### Persistence migration correction
 Tutor persistence is now versioned in `app/drizzle/migrations/0003_tutor.sql`. The historical `0001_self_hosted_auth.sql` migration is restored to its original authentication-only scope. Runtime schema bootstrap remains a safety net, not the canonical migration path.
+### Tutor hardening continuation
+The live tutor now has a persistent per-learner rolling rate limit of 20 learner messages per five minutes.
+
+The tutor prompt explicitly labels prior conversation and the current learner message as untrusted data. This reduces prompt-injection confusion without changing the deterministic authority boundary.
+
+Red-team coverage now includes rate-limit rejection before provider calls.
 
