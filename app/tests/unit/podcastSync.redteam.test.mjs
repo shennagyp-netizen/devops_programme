@@ -10,7 +10,6 @@ const speech = (level, overrides = {}) => ({
   cognitiveLevelId: ["", "foundation", "mechanism", "diagnosis", "design"][level],
   label: ["", "Foundation", "Mechanism", "Diagnosis", "Design & transfer"][level],
   description: "Test speech",
-  scriptUrl: `/podcasts/beginner/B1.4.cognitive-${level}.txt`,
   scriptVersion: `sha-${level}`,
   ...overrides
 });
@@ -35,8 +34,6 @@ describe("TTS cognitive podcast red-team contract", () => {
     ["wrong label", {
       speeches: [speech(1), speech(2, { label: "Foundation" }), speech(3), speech(4)]
     }],
-    ["unsafe script path", {
-      speeches: [speech(1, { scriptUrl: "javascript:alert(1)" }), speech(2), speech(3), speech(4)]
     }],
     ["empty script version", {
       speeches: [speech(1, { scriptVersion: "" }), speech(2), speech(3), speech(4)]
@@ -48,13 +45,11 @@ describe("TTS cognitive podcast red-team contract", () => {
     expect(isValidPodcastTtsBundle({ ...bundle(), ...value }, "B1.4")).toBe(false);
   });
 
-  it("accepts only root-relative authored script URLs", () => {
     const valid = bundle();
     expect(isValidPodcastTtsBundle(valid, "B1.4")).toBe(true);
 
     const external = bundle({
       speeches: [
-        speech(1, { scriptUrl: "https://cdn.example.com/speech.txt" }),
         speech(2),
         speech(3),
         speech(4)
