@@ -79,6 +79,20 @@ describe("framework verification attestation contract", () => {
     expect(after).toMatchObject({ accepted: false, reason: "ATTESTATION_EXPIRED" });
   });
 
+
+  it("rejects provider-key substitution even when the provider identity matches", () => {
+    const result = validateVerificationAttestation(
+      challenge,
+      { ...validAttestation, keyId: "key-attacker" },
+      new Date("2026-09-26T12:02:00.000Z")
+    );
+
+    expect(result).toMatchObject({
+      accepted: false,
+      reason: "PROVIDER_KEY_MISMATCH"
+    });
+  });
+
   it("rejects malformed or non-canonical digests", () => {
     for (const digest of ["", "sha256:abc", "md5:" + "a".repeat(32)]) {
       const result = validateVerificationAttestation(
