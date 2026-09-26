@@ -18,6 +18,7 @@ export type VerificationAttestationCommand = {
   challengeId: string;
   learnerId: string;
   itemId: string;
+  targetRef: string;
   evidenceKind: string;
   providerId: string;
   keyId: string;
@@ -40,6 +41,7 @@ const ATTESTATION_FIELDS = new Set([
   "challengeId",
   "learnerId",
   "itemId",
+  "targetRef",
   "evidenceKind",
   "providerId",
   "keyId",
@@ -128,6 +130,11 @@ export function parseVerificationAttestationCommand(
     ),
     learnerId: requiredString(source.learnerId, "learnerId", 200),
     itemId: requiredString(source.itemId, "itemId", MAX_ITEM_ID_LENGTH),
+    targetRef: requiredString(
+      source.targetRef,
+      "targetRef",
+      MAX_VERIFICATION_REF_LENGTH
+    ),
     evidenceKind: requiredString(
       source.evidenceKind,
       "evidenceKind",
