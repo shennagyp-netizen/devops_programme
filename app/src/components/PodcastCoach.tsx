@@ -33,10 +33,10 @@ const EXPLANATION_LEVELS: ReadonlyArray<{
   label: string;
   description: string;
 }> = [
-  { level: 1, label: "Foundation", description: podcastLevelDescription(1) },
-  { level: 2, label: "Mechanism", description: podcastLevelDescription(2) },
-  { level: 3, label: "Diagnosis", description: podcastLevelDescription(3) },
-  { level: 4, label: "Design & transfer", description: podcastLevelDescription(4) }
+  { level: 1, label: "Very simple", description: podcastLevelDescription(1) },
+  { level: 2, label: "Simple technical", description: podcastLevelDescription(2) },
+  { level: 3, label: "Professional", description: podcastLevelDescription(3) },
+  { level: 4, label: "Expert", description: podcastLevelDescription(4) }
 ];
 
 function getSpeechSynthesis() {
@@ -392,7 +392,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
           <span className="range">{selectedLevel.description}</span>
           <span className="range">
             {ttsSupported
-              ? "This level is spoken from its fixed authored script by TTS."
+              ? "This explanation contains the complete authored information; TTS changes only presentation."
               : "TTS is unavailable in this browser. The fixed authored script remains readable."}
           </span>
         </div>
