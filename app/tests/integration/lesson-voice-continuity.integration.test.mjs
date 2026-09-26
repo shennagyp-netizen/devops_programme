@@ -42,7 +42,7 @@ describe("continuous fixed TTS explanation architecture", () => {
     expect(coach).toContain("utterance.rate = speechRateRef.current");
     expect(coach).toContain("speakTurn(restartIndex, sessionId)");
     expect(coach).toContain("This explanation contains the complete authored information");
-    expect(coach).toContain("The four levels contain the same information");
+    expect(coach).toContain("The explanation style changes; the information does not.");
   });
 
   it("does not skip or branch learning content by speech rate", () => {
@@ -62,7 +62,7 @@ describe("continuous fixed TTS explanation architecture", () => {
     expect(coach).toContain("utterance.onstart");
     expect(coach).toContain("utterance.onend");
     expect(coach).toContain("publishVoiceClock");
-    expect(animation).toContain("runtime start/end/boundary events");
+    expect(animation).toContain("runtime speech timing");
     expect(animation).not.toContain("averageSpeakingRate");
   });
 
