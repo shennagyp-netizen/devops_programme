@@ -368,7 +368,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
         </div>
       </div>
 
-      <div className="cognitive-level-picker" aria-label="Podcast explanation level">
+      <div className="explanation-level-picker" aria-label="Podcast explanation level">
         {EXPLANATION_LEVELS.map((item) => (
           <button
             key={item.level}
