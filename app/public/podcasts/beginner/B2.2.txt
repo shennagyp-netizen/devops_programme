@@ -1,0 +1,489 @@
+EPISODE B2.2 — When "Everything Is Slow" Is Not Enough
+
+Speaker A: Support just sent us three words.
+
+Speaker B: Let me guess.
+
+Speaker A: "Everything is slow."
+
+Speaker B: Helpful.
+
+Speaker A: It is a symptom. It is not a diagnosis.
+
+Speaker B: So where do we start?
+
+Speaker A: With the user-visible problem, then we make it smaller.
+
+Speaker B: The picture for this lesson is:
+
+Speaker B: Symptom -> Scope -> Service -> Dependency -> Proof.
+
+Speaker A: Exactly.
+
+Speaker B: And the point is not to collect every possible signal.
+
+Speaker A: Right. The point is to ask a question, choose evidence that can answer it, and update the next decision.
+
+Speaker B: Make a prediction.
+
+Speaker A: A user says the order screen is slow. API CPU is only 20%. Is low CPU enough to stop investigating the API?
+
+Speaker B: No.
+
+Speaker A: Why?
+
+Speaker B: The API could be waiting on a database, a network call, a lock, storage, or another dependency.
+
+Speaker A: Good.
+
+Speaker B: So one metric does not finish the diagnosis.
+
+Speaker A: Exactly.
+
+Speaker B: Stage one: symptom.
+
+Speaker A: We start with what the user can observe.
+
+Speaker B: "Orders take four seconds."
+
+Speaker A: Better than "the system is slow."
+
+Speaker B: Because now we have an endpoint and a measurable behavior.
+
+Speaker A: Yes.
+
+Speaker B: Stage two: scope.
+
+Speaker A: Ask which requests are affected.
+
+Speaker B: Which endpoint?
+
+Speaker A: Which users?
+
+Speaker B: What time window?
+
+Speaker A: Is every request slow, or just the slowest few?
+
+Speaker B: So scope turns a vague complaint into a smaller population.
+
+Speaker A: Exactly.
+
+Speaker B: This is where latency distributions help.
+
+Speaker A: Right.
+
+Speaker B: Suppose ninety-nine requests take 50 milliseconds and one takes 20 seconds.
+
+Speaker A: What does the average hide?
+
+Speaker B: One user can have a terrible experience while the average looks acceptable.
+
+Speaker A: Exactly.
+
+Speaker B: So p50, p95 and p99 become useful views of the distribution.
+
+Speaker A: Yes. The exact percentile you care about depends on the service and user expectation.
+
+Speaker B: Good. We are not turning this into a statistics lecture.
+
+Speaker A: Not today.
+
+Speaker B: Stage three: service evidence.
+
+Speaker A: Now compare signals around the affected behavior.
+
+Speaker B: Request latency.
+
+Speaker A: Request rate.
+
+Speaker B: Error rate.
+
+Speaker A: CPU and memory.
+
+Speaker B: Focused health signals.
+
+Speaker A: Good.
+
+Speaker B: And each signal answers a different question.
+
+Speaker A: Exactly.
+
+Speaker B: Metrics show measured values over time.
+
+Speaker A: Yes.
+
+Speaker B: Logs show events or messages.
+
+Speaker A: Yes.
+
+Speaker B: Health checks answer a focused state question.
+
+Speaker A: Yes.
+
+Speaker B: Traces show where one request spent its time.
+
+Speaker A: Exactly.
+
+Speaker B: That should be the second part of the picture.
+
+Speaker A: The signals are not interchangeable.
+
+Speaker B: Let's create a real incident.
+
+Speaker A: B2 order creation latency rises from 300 milliseconds to 4 seconds.
+
+Speaker B: Good. That is measurable.
+
+Speaker A: API CPU stays normal.
+
+Speaker B: Useful.
+
+Speaker A: Database latency rises from 20 milliseconds to 3 seconds at the same time.
+
+Speaker B: Now the database path is a strong next place to inspect.
+
+Speaker A: Notice the wording.
+
+Speaker B: "Strong next place."
+
+Speaker A: Not "database is proven guilty."
+
+Speaker B: Right. We have a hypothesis.
+
+Speaker A: Stage four: dependency evidence.
+
+Speaker B: Check slow queries.
+
+Speaker A: Good.
+
+Speaker B: Check request rate.
+
+Speaker A: Good.
+
+Speaker B: Check database CPU and storage behavior.
+
+Speaker A: Good.
+
+Speaker B: Compare those signals with the release timeline.
+
+Speaker A: Good.
+
+Speaker B: If a trace exists, inspect where the four seconds were spent.
+
+Speaker A: Excellent.
+
+Speaker B: So we are correlating signals instead of staring at one alarming graph.
+
+Speaker A: Exactly.
+
+Speaker B: Give me a misleading signal.
+
+Speaker A: API CPU jumps to 80%.
+
+Speaker B: Everyone panics.
+
+Speaker A: But request latency stays normal.
+
+Speaker B: Then 80% might be normal for this workload.
+
+Speaker A: Correct.
+
+Speaker B: The number is not the diagnosis.
+
+Speaker A: Context matters.
+
+Speaker B: Another one.
+
+Speaker A: Error rate is zero.
+
+Speaker B: Sounds healthy.
+
+Speaker A: But the API returns successful responses with empty order data.
+
+Speaker B: Then transport can look healthy while application behavior is wrong.
+
+Speaker A: Exactly.
+
+Speaker B: So observability may need business-level signals too.
+
+Speaker A: When they matter to the decision, yes.
+
+Speaker B: Now logs.
+
+Speaker A: Logs are useful evidence, but they are not magic truth.
+
+Speaker B: They can be missing.
+
+Speaker A: Yes.
+
+Speaker B: Too noisy.
+
+Speaker A: Yes.
+
+Speaker B: Wrong.
+
+Speaker A: Yes.
+
+Speaker B: Or they can record only one component while the real delay is somewhere else.
+
+Speaker A: Exactly.
+
+Speaker B: So logs become stronger when they agree with other signals.
+
+Speaker A: Good.
+
+Speaker B: Health checks are similar.
+
+Speaker A: They are focused signals.
+
+Speaker B: Liveness asks whether the process is alive.
+
+Speaker A: Right.
+
+Speaker B: Readiness asks whether traffic should be sent.
+
+Speaker A: Right.
+
+Speaker B: A dependency check can be useful, but making every optional dependency turn the whole service red can create false alarms.
+
+Speaker A: Exactly.
+
+Speaker B: The check has to match the decision it controls.
+
+Speaker A: That's the rule.
+
+Speaker B: Trace.
+
+Speaker A: A trace follows one request across components.
+
+Speaker B: So if total latency is four seconds, the trace might show three seconds in the database call.
+
+Speaker A: Exactly.
+
+Speaker B: Or it might show almost all the time in the API before it reaches the database.
+
+Speaker A: Exactly.
+
+Speaker B: That changes the next question.
+
+Speaker A: Which is the real reason we use observability.
+
+Speaker B: It helps us choose the next useful observation.
+
+Speaker A: Yes.
+
+Speaker B: Not collect dashboards.
+
+Speaker A: Exactly.
+
+Speaker B: Give me a competing hypothesis.
+
+Speaker A: The database latency is high.
+
+Speaker B: Hypothesis one: a new release changed a query.
+
+Speaker A: Good.
+
+Speaker B: Hypothesis two: traffic increased.
+
+Speaker A: Good.
+
+Speaker B: Hypothesis three: storage became slow.
+
+Speaker A: Good.
+
+Speaker B: How do we separate them?
+
+Speaker A: What would you inspect?
+
+Speaker B: Query timings around the release, request rate, and database storage behavior.
+
+Speaker A: Good.
+
+Speaker B: Maybe a trace to prove where the request spent time.
+
+Speaker A: Good.
+
+Speaker B: So diagnosis is a sequence of narrowing questions.
+
+Speaker A: Exactly.
+
+Speaker B: That is better than "check the dashboard."
+
+Speaker A: Much better.
+
+Speaker B: Pause me.
+
+Speaker A: Go ahead.
+
+Speaker B: Make a prediction. API latency goes from 300 milliseconds to 4 seconds. API CPU stays low. Database latency jumps at the same time.
+
+Speaker A: Where do you look first?
+
+Speaker B: The database path.
+
+Speaker A: Why?
+
+Speaker B: Because the signals changed together and the database latency explains a large part of the end-to-end symptom.
+
+Speaker A: Good.
+
+Speaker B: But I still want evidence that can prove or disprove the hypothesis.
+
+Speaker A: Exactly.
+
+Speaker B: Another prediction.
+
+Speaker A: Go.
+
+Speaker B: A dashboard shows a CPU spike, but user latency does not change.
+
+Speaker A: What does that prove?
+
+Speaker B: Very little by itself. I need context about workload, normal range and user impact.
+
+Speaker A: Good.
+
+Speaker B: So "red graph" is not a diagnosis.
+
+Speaker A: Never.
+
+Speaker B: Stage five: proof.
+
+Speaker A: Once you have a strong hypothesis, test it.
+
+Speaker B: Controlled change.
+
+Speaker A: Good.
+
+Speaker B: Observe the same user-visible behavior.
+
+Speaker A: Good.
+
+Speaker B: Then remove the fault or restore the known-good condition.
+
+Speaker A: Good.
+
+Speaker B: And verify the original symptom has recovered.
+
+Speaker A: Exactly.
+
+Speaker B: So the proof closes the loop.
+
+Speaker A: It does.
+
+Speaker B: Let's connect that to B2.
+
+Speaker A: Start with the known-good order request.
+
+Speaker B: Measure its latency.
+
+Speaker A: Good.
+
+Speaker B: Introduce a safe, local slowdown in the backend.
+
+Speaker A: Good.
+
+Speaker B: Measure again.
+
+Speaker A: Good.
+
+Speaker B: Compare API latency with CPU and the dependency latency.
+
+Speaker A: Good.
+
+Speaker B: Add one useful log around the slow operation.
+
+Speaker A: Good.
+
+Speaker B: If the environment supports tracing, inspect one request.
+
+Speaker A: Good.
+
+Speaker B: Remove the slowdown.
+
+Speaker A: And?
+
+Speaker B: Prove the request returns to the known-good behavior.
+
+Speaker A: Exactly.
+
+Speaker B: What should the evidence record contain?
+
+Speaker A: The symptom.
+
+Speaker B: The scope.
+
+Speaker A: The signals you selected and why.
+
+Speaker B: The competing hypothesis.
+
+Speaker A: The controlled change.
+
+Speaker B: The failure evidence.
+
+Speaker A: The recovery evidence.
+
+Speaker B: Good.
+
+Speaker A: The goal is not a beautiful dashboard.
+
+Speaker B: It is a defensible diagnosis.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: Why is "everything is slow" weak?
+
+Speaker B: Because it does not tell us which request, user, component or time window is affected.
+
+Speaker A: Why can averages hide a failure?
+
+Speaker B: A small number of very slow requests can disappear inside many fast requests.
+
+Speaker A: Metric?
+
+Speaker B: A measured value over time, such as latency, CPU or request rate.
+
+Speaker A: Log?
+
+Speaker B: An event or message recorded by the system.
+
+Speaker A: Health check?
+
+Speaker B: A focused state signal for a specific operational decision.
+
+Speaker A: Trace?
+
+Speaker B: Evidence showing where one request spent time across components.
+
+Speaker A: Final challenge.
+
+Speaker B: B2 is slow, API CPU is normal, database latency is high, and users report only the order endpoint is affected.
+
+Speaker A: Your first move?
+
+Speaker B: Scope is already partly known. I correlate the order-request latency with the database evidence, then inspect queries, request rate, storage behavior and one trace if available.
+
+Speaker A: And after the fix?
+
+Speaker B: Re-run the same user-path measurement and prove the known-good behavior returned.
+
+Speaker A: Good.
+
+Speaker B: So observability is not "watch everything."
+
+Speaker A: It is "have enough useful evidence to answer the next question."
+
+Speaker B: That's much better.
+
+Speaker A: Now make the service slow on purpose.
+
+Speaker B: Then diagnose it.
+
+Speaker A: Then recover it.
+
+Speaker B: And prove it.
+
+Speaker A: Evidence first.

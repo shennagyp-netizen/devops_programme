@@ -2,434 +2,2018 @@ DAY 2 — NETWORKING PROTOCOLS + DOCKER
 
 EPISODE D2.1 — TCP and UDP
 
-Speaker A: Yesterday we reached IP. Today we ask how two endpoints actually communicate.
+Speaker A: Yesterday we ended with IP.
 
-Speaker B: This is where TCP, ports, sockets, and the mysterious handshake enter the room.
+Speaker B: So today we ask what happens after the packet reaches the right host.
 
-Speaker A: Think of a phone call. An IP address is roughly the phone number; a port identifies the service; a socket represents an endpoint of communication. TCP establishes a connection and provides ordered, reliable delivery.
+Speaker A: Exactly. The new question is:
 
-Speaker B: So TCP is the person who keeps saying, 'I did send that message, please stop sending it again.'
+Speaker B: Which service is listening, and what transport contract does it expect?
 
-Speaker A: Fair. TCP has mechanisms for acknowledgement, retransmission, ordering, flow control, and congestion control.
+Speaker A: The visual is:
 
-Speaker A: UDP is different: it gives you datagrams without TCP's connection and reliability machinery. That can be useful when the application prefers timeliness or implements its own reliability.
+Speaker B: Endpoint -> Port -> Transport -> Delivery -> Evidence.
 
-Speaker A: Real-life example: a live sports commentator may prefer the latest score to arrive quickly rather than replaying every missed sentence. Other applications absolutely need every byte in order.
+Speaker A: Good. Keep that model. It separates several things that people often call the network.
 
-Speaker A: Mac lab: inspect listening TCP ports and make a simple localhost connection. Then compare the behavior with a UDP experiment.
+Speaker B: IP identifies the destination host.
 
-Speaker B: What failure should I learn to recognize?
+Speaker A: Roughly, yes. Then a transport port identifies the service endpoint on that host.
 
-Speaker A: Connection refused, timeout, connection reset, and application-level error are different observations. Do not collapse them into 'the network is broken.'
-Speaker B: Let me check the layers again. IP gets the packet toward a host. Then TCP or UDP gets it toward a service.
-
-Speaker A: Good. A port is part of the endpoint identity at the transport layer. A socket is the actual communication endpoint represented to the operating system.
-
-Speaker B: And TCP adds all the machinery people forget until something is slow.
-
-Speaker A: Right. Sequence numbers. Acknowledgements. Retransmission. Flow control. Congestion control. The important thing isn't memorizing every field. It's understanding why the machinery exists.
-
-Speaker B: Because packets can be lost, duplicated, reordered, or delayed.
-
-Speaker A: Exactly. The network is not a perfect pipe. TCP gives the application a much more useful abstraction on top of that imperfect environment.
-
-Speaker B: And UDP says, basically, “Here's a datagram. Good luck.”
-
-Speaker A: That's funny, but slightly unfair. UDP is valuable precisely because it stays simple. Applications can choose different trade-offs.
-
-Speaker B: Prediction. A server has a listening TCP port, but my client gets a timeout. Is that the same as connection refused?
-
-Speaker A: No. And I want you to feel the difference. A refusal tells you something answered and rejected the connection at that point. A timeout tells you that the expected response didn't arrive in the allowed time. The underlying causes can be completely different.
-
-Speaker B: So “can't connect” is almost useless information.
-
-Speaker A: It's a starting symptom, not a diagnosis.
-
-Speaker B: Real-life version?
-
-Speaker A: Imagine a phone call. “The call failed” could mean the number doesn't exist, the person rejected it, the network never delivered the call, or your phone had no signal. Same complaint. Different evidence.
-
-Speaker B: That's annoyingly familiar.
-
-Speaker A: Good. Use that feeling when you debug.
-
-Speaker B: Mac lab?
-
-Speaker A: First find listening TCP ports on your machine. Then make a local connection. Next try a port you know is closed. Compare the errors. You're training yourself to recognize evidence, not memorize screenshots.
-
-Speaker B: And UDP?
-
-Speaker A: Use a tiny local experiment. Observe that a UDP send can succeed without the same connection semantics as TCP. The lesson is not “UDP is faster.” That's too vague. The lesson is that the transport contract is different.
-
-
-EPISODE D2.2 — DNS
-
-Speaker A: DNS maps names to information. It is a distributed naming system, not a magical Internet phonebook stored in one server.
-
-Speaker B: People usually remember DNS only when a website stops working.
-
-Speaker A: Which is unfortunate because DNS is everywhere.
-
-Speaker A: Think of a hotel reservation system. You remember the hotel name; a backend system resolves that name into a concrete destination. DNS does something analogous for network names.
-
-Speaker A: Learn recursive resolvers, authoritative servers, A and AAAA records, CNAME, TTL, caching, and negative answers.
-
-Speaker B: Joke: DNS is proof that humans invented names because remembering eight groups of numbers was emotionally unacceptable.
-
-Speaker A: Technically accurate enough to be dangerous.
-
-Speaker A: Real-life example: changing a DNS record is not always instantly visible everywhere because cached information can live according to TTL.
-
-Speaker A: Lab: use dig to inspect a real domain. Ask the resolver different questions and observe record types and TTL.
-Speaker B: DNS seems simple until someone says “it must be DNS” and then starts restarting things.
-
-Speaker A: Yes. DNS is a distributed naming system, and diagnosis gets easier when you know which part of that system answered your question.
-
-Speaker B: Resolver first.
-
-Speaker A: Usually. A recursive resolver may answer from cache or go ask authoritative servers on your behalf. The authoritative server holds the authoritative data for a zone.
-
-Speaker B: So when I use dig, I'm not necessarily talking directly to the owner of the domain.
-
-Speaker A: Correct. That's why you should know what server you are asking.
-
-Speaker B: TTL is the part everyone vaguely remembers.
-
-Speaker A: Think of a shop posting a new opening time. You don't want every customer calling the shop every thirty seconds, so information is cached for a while. TTL is part of the mechanism that tells caches how long the answer may be retained.
-
-Speaker B: And negative answers can be cached too.
-
-Speaker A: Right. Which is why “I fixed the DNS record” does not necessarily mean every client immediately sees the new answer.
-
-Speaker B: Prediction pause. I change an A record, and one machine still gets the old address. Do I immediately conclude the DNS server is broken?
-
-Speaker A: No. First ask which resolver that machine uses, whether the answer is cached, what TTL applies, and whether the client has its own caching behavior.
-
-Speaker B: So you trace the path of the answer.
+Speaker B: And TCP or UDP tells us how the application data is carried.
 
 Speaker A: Exactly.
 
-Speaker B: Real-life example?
+Speaker B: Make a prediction.
 
-Speaker A: Hotel reservations. You update the booking information at the hotel, but a travel site may still show the old room count for a while because it cached the previous answer. The exact mechanics differ, but the operational idea is the same: information can have freshness rules.
+Speaker A: A server has the correct IP address and my packets reach the host, but no application is listening on TCP port 8080. What should I expect?
 
-Speaker B: Mac lab?
+Speaker B: The service connection should fail at the transport endpoint. If the host is reachable and the port actively refuses the connection, I may see connection refused.
 
-Speaker A: Ask for A, AAAA, and CNAME records with dig. Look at TTLs. Ask a specific resolver. Then change nothing. Just observe. The goal is to stop treating DNS as one invisible black box called “the Internet.”
+Speaker A: Good.
 
-Speaker B: That's probably the real skill.
-
-Speaker A: Yes. Name the component. Ask it a precise question. Read the answer.
-
-
-EPISODE D2.3 — HTTP
-
-Speaker A: HTTP gives applications a common language over a transport. Requests, responses, headers, status codes, bodies, cookies, and connection behavior all matter.
-
-Speaker B: So HTTP is not the network itself.
-
-Speaker A: Correct. It rides over transport and the underlying network path.
-
-Speaker A: Think of a courier package. The network gets the package from city to city. HTTP is the information inside the package describing what the application wants.
-
-Speaker A: A 404 is not the same thing as a TCP timeout. A 500 means something different from a DNS failure. Layer separation is your diagnostic superpower.
-
-Speaker A: Real-life example: ordering food online. DNS finds the restaurant system, TCP/TLS establishes communication, HTTP carries 'I want this order,' and the application responds with a result.
-
-Speaker B: That is much easier to remember than forty slides of status codes.
-
-Speaker A: We still need the status codes. We just gave them a job.
-
-Speaker A: Lab: use curl to inspect headers, status codes, redirects, and a JSON API.
-Speaker B: HTTP is where application engineers feel at home.
-
-Speaker A: Which is exactly why I want you not to skip the layers underneath it.
-
-Speaker B: Right. A browser request starts with naming, transport, security, then application semantics.
-
-Speaker A: Usually. And each layer can fail independently.
-
-Speaker B: So a 404 is not a network outage.
-
-Speaker A: Correct. A 404 is an HTTP response from an HTTP server. That tells you quite a lot already.
-
-Speaker B: And a 500 means the application or server encountered an internal problem.
-
-Speaker A: Usually, yes, though the precise source depends on the system generating it. The key is that you have received an HTTP response. You are no longer looking at a pure connectivity failure.
-
-Speaker B: Real-life example?
-
-Speaker A: Order a meal online. DNS gets you to the restaurant's system. TCP gives you a reliable transport. TLS protects the connection. HTTP says, “I'd like this particular thing.” The application decides whether it exists, whether you're authorized, and whether it can complete the request.
-
-Speaker B: And a 401 versus 403?
-
-Speaker A: Different questions. One is about authentication context; the other is about permission to perform the action. Again, don't flatten the whole system into “the request failed.”
-
-Speaker B: Prediction. If curl gets a 301, did the network fail?
-
-Speaker A: No. You received an HTTP response telling you that the resource is elsewhere. curl can follow the redirect when instructed. The important lesson is that application protocols can intentionally tell you to make another request.
-
-Speaker B: So status codes are evidence.
-
-Speaker A: Exactly. They're the server talking back.
-
-Speaker B: Mac lab?
-
-Speaker A: Use curl to inspect response headers, follow a redirect, and ask for a JSON endpoint. Read the headers before reading the body. Look for status, content type, location, caching, and any request identifiers.
-
-Speaker B: It turns a black-box request into a conversation.
-
-Speaker A: That's what HTTP is. A structured conversation carried over lower layers.
-
-
-EPISODE D2.4 — TLS and HTTPS
-
-Speaker A: HTTPS combines HTTP with TLS. TLS provides cryptographic protection and server identity mechanisms.
-
-Speaker B: Real-life analogy?
-
-Speaker A: Imagine speaking to a person through a secure room with an identity badge at the door. The badge helps establish who you are talking to; the room protects the conversation from casual listeners.
-
-Speaker A: Certificates, certificate authorities, public/private keys, and the handshake make that possible.
-
-Speaker B: So encryption is not the same as authentication.
-
-Speaker A: Exactly. You can encrypt data without correctly authenticating the endpoint. Secure systems care about both.
-
-Speaker A: Real-life example: entering banking credentials into a fake website with a convincing logo. TLS is not a magic guarantee that the business itself is trustworthy; certificate validation is part of authenticating the endpoint.
-
-Speaker A: Lab: inspect the certificate chain of a real HTTPS site with browser tools and command-line tools.
-Speaker B: TLS is one of those topics where people say “encryption” and stop.
-
-Speaker A: And then they wonder why certificate warnings are so serious.
-
-Speaker B: So TLS has more than secrecy.
-
-Speaker A: Yes. It also establishes cryptographic parameters and provides mechanisms for authenticating the endpoint through certificates and the trust system around them.
-
-Speaker B: Public key, private key, certificate authority.
-
-Speaker A: Right. You don't need to become a cryptographer this week, but you do need the mental model. Your client needs confidence that it established the secure session with the intended endpoint, not just with some random machine willing to encrypt traffic.
-
-Speaker B: Real-life version?
-
-Speaker A: Imagine walking into a secure building. The locked door protects the conversation inside, but the badge at reception helps you establish who you're actually talking to.
-
-Speaker B: And a lock without identity could protect my conversation with the wrong person.
+Speaker B: That is different from a timeout.
 
 Speaker A: Exactly.
 
-Speaker B: Prediction pause. The certificate is valid cryptographically, but the hostname doesn't match. What should you think?
+Speaker B: So our first lesson is to stop saying simply, 'the network is broken.'
 
-Speaker A: Don't think “close enough.” Think authentication failure. The certificate may be valid for a different identity.
+Speaker A: Yes. Say which layer produced the evidence.
 
-Speaker B: And if the certificate is expired?
+Speaker B: Stage one: endpoint.
 
-Speaker A: Again, evidence that the trust conditions were not met.
+Speaker A: An application wants to communicate with another service.
 
-Speaker B: Banking example?
-
-Speaker A: A fake site can look visually identical to the real one. TLS doesn't promise that every business behind a valid certificate is morally good. It helps authenticate the endpoint according to the certificate and trust model.
-
-Speaker B: That's a distinction people miss.
-
-Speaker A: Constantly.
-
-Speaker B: Mac lab?
-
-Speaker A: Inspect a real HTTPS certificate chain in your browser, then use command-line tooling to inspect the same endpoint. Don't just admire the certificate. Identify the subject, issuer, dates, and hostname relationship.
-
-Speaker B: So the exercise is learning what the browser is quietly doing for me.
-
-Speaker A: Exactly. Once you understand it, HTTPS stops being a green padlock and becomes a sequence of verifiable steps.
-
-
-EPISODE D2.5 — Why Containers Exist
-
-Speaker A: A container is an isolated process environment, not a virtual machine.
-
-Speaker B: So the container is the apartment, and the process is the person living inside it?
-
-Speaker A: A reasonable analogy. The important technical difference is that containers share the host kernel rather than emulating a full guest kernel.
-
-Speaker A: Images package filesystem layers and metadata. Containers are running instances created from those images.
-
-Speaker A: Real-life example: a food-delivery kitchen may have standardized stations and ingredients. You do not redesign the entire building every time a new order arrives. You create a repeatable working environment.
-
-Speaker B: And that is why 'works on my machine' starts becoming less persuasive.
-
-Speaker A: Exactly.
-
-Speaker A: Lab: build an image, run it, inspect its filesystem and process, and compare the image definition with the live container.
-Speaker B: Containers. Let's kill one misconception immediately: a container is not a tiny virtual machine.
-
-Speaker A: Good. A container is an isolated process environment using the host kernel. That distinction explains a lot of behavior.
-
-Speaker B: So the image is the packaged filesystem and metadata, and the container is the running instance.
-
-Speaker A: That's a useful working model.
-
-Speaker B: What problem are we buying with that isolation?
-
-Speaker A: Repeatability, packaging, dependency boundaries, and a clearer execution environment. Not perfect isolation, not a new physical computer.
-
-Speaker B: Real-life example?
-
-Speaker A: A commercial kitchen with standardized stations. You can replace one station without rebuilding the entire restaurant. The environment is repeatable.
-
-Speaker B: And “works on my machine” becomes harder to defend because the environment is described.
-
-Speaker A: Exactly. Though containers don't magically eliminate configuration bugs. They just make more of the environment explicit and reproducible.
-
-Speaker B: Prediction. My container exits immediately after I start it. Does that mean Docker is broken?
-
-Speaker A: No. First ask what the main process did. Containers are tied to their main process lifecycle. If that process exits, the container normally stops.
-
-Speaker B: So I should inspect the command and logs before blaming the runtime.
-
-Speaker A: Yes.
-
-Speaker B: Mac lab?
-
-Speaker A: Build a small image. Run it. Inspect the image layers and the container process. Then deliberately make the command exit. Watch what happens. You're learning the relationship among image, container, and process, not just learning docker run syntax.
-
-Speaker B: Which is why the motion diagram says Image → Container → Process.
-
-Speaker A: Exactly. The picture is a memory aid for a causal relationship.
-
-
-EPISODE D2.6 — Docker Networking and Storage
-
-Speaker A: Now connect the networking theory to containers.
-
-Speaker B: So all those IPs and ports were secretly preparing us for this.
-
-Speaker A: Precisely. A container can have a network namespace and an address inside a Docker network. Port publishing connects host-side access to a container service.
-
-Speaker A: Think of an apartment complex. Internal apartment numbers work inside the complex. Visitors enter through the building entrance. Docker network addressing and published ports are different paths.
-
-Speaker A: Volumes solve another problem: data that must outlive a container process.
-
-Speaker A: Real-life example: throwing away a restaurant kitchen staff should not destroy the restaurant's inventory database.
-
-Speaker B: That's a slightly dramatic way to explain a volume.
-
-Speaker A: You remembered it, though.
-
-Speaker A: Lab: run a frontend, API, and database. Break the database hostname, then break the published port, and identify why the symptoms differ.
-Speaker B: Now the networking day finally connects to Docker.
-
-Speaker A: This is where your earlier work pays off. Container networking is easier once ports, addresses, routing, and name resolution are already familiar.
-
-Speaker B: Inside a Docker network, containers can discover one another.
-
-Speaker A: Through the mechanisms Docker provides, yes. And port publishing is a separate concern: exposing a container service through the host.
-
-Speaker B: So container port eighty and host port eighty are not automatically the same thing.
+Speaker B: It needs a destination address and a service endpoint.
 
 Speaker A: Right.
 
-Speaker B: Apartment complex again?
+Speaker B: Stage two: port.
 
-Speaker A: Apartment numbers work inside the building. Visitors still need an entrance. Internal service discovery and published access are different paths.
+Speaker A: A transport port identifies the service endpoint on a host.
 
-Speaker B: Storage has a similar boundary.
+Speaker B: So two services can use different ports on the same IP address.
 
-Speaker A: Exactly. The writable layer of a container is associated with that container's lifecycle. Persistent application data usually belongs in a volume or another external storage mechanism.
+Speaker A: Exactly.
 
-Speaker B: Meaning if I delete and recreate the database container, I shouldn't expect the database files inside the disposable container filesystem to survive.
+Speaker B: What about sockets?
 
-Speaker A: Correct. That's one of the first painful lessons people learn.
+Speaker A: A socket is the operating-system communication endpoint used by an application. Think of it as the application-side representation of the transport communication.
 
-Speaker B: Prediction. Database container is healthy. Application says “cannot resolve database.”
+Speaker B: So a port is part of the endpoint identity, while a socket is the operating-system communication object.
 
-Speaker A: What does that point you toward?
+Speaker A: Good enough for this lesson.
 
-Speaker B: Name resolution or network configuration before database credentials.
+Speaker B: Stage three: transport.
 
-Speaker A: Good. Now change the symptom: the hostname resolves, but the TCP connection is refused.
+Speaker A: Here TCP and UDP differ.
 
-Speaker B: Different hypothesis. Something is reachable, but the service isn't accepting connections on that port.
+Speaker B: TCP is connection-oriented.
+
+Speaker A: Yes. It establishes connection state and gives applications ordered, reliable byte-stream delivery.
+
+Speaker B: Through acknowledgements and retransmission.
+
+Speaker A: Yes.
+
+Speaker B: And sequence numbers.
+
+Speaker A: Yes.
+
+Speaker B: Flow control and congestion control too.
+
+Speaker A: Exactly.
+
+Speaker B: So TCP is doing a lot of work to give the application a stronger abstraction than raw packets.
+
+Speaker A: That's the point.
+
+Speaker B: What about UDP?
+
+Speaker A: UDP sends datagrams without TCP's connection and retransmission machinery.
+
+Speaker B: So UDP is not 'bad TCP'.
+
+Speaker A: Correct.
+
+Speaker B: It gives the application a simpler contract.
+
+Speaker A: Exactly. That can be useful when the application wants low overhead, can tolerate loss, or implements its own recovery logic.
+
+Speaker B: So saying 'UDP is faster' is too vague.
+
+Speaker A: Yes. Speed depends on the whole application and network behavior. The useful statement is that UDP provides a different transport contract.
+
+Speaker B: Human example?
+
+Speaker A: Imagine a live sports commentary.
+
+Speaker B: Latest score now may matter more than replaying every missed sentence.
+
+Speaker A: Right. A different application may need every byte in order.
+
+Speaker B: Such as a file transfer.
+
+Speaker A: Exactly.
+
+Speaker B: Stage four: delivery behavior.
+
+Speaker A: TCP tries to turn an unreliable packet network into an ordered byte stream for the application.
+
+Speaker B: Lost data can be retransmitted.
+
+Speaker A: Yes.
+
+Speaker B: Data can be reordered before the application sees it.
+
+Speaker A: Yes.
+
+Speaker B: Flow control prevents the sender from overwhelming the receiver.
+
+Speaker A: And congestion control reacts to network conditions so the sender does not simply push as fast as possible.
+
+Speaker B: So the transport layer is actively managing risk.
+
+Speaker A: Exactly.
+
+Speaker B: Another prediction.
+
+Speaker A: A TCP server is listening. The client gets a timeout. Is that the same evidence as connection refused?
+
+Speaker B: No. Refused means something responded with a refusal at the connection point. A timeout means the expected response did not arrive within the allowed time.
+
+Speaker A: Good.
+
+Speaker B: The underlying cause could be very different.
+
+Speaker A: Exactly.
+
+Speaker B: A firewall could drop traffic. A route could be wrong. The service could be absent. The endpoint could be overloaded.
+
+Speaker A: Those are different hypotheses.
+
+Speaker B: So timeout does not prove one specific failure.
+
+Speaker A: Correct.
+
+Speaker B: Another failure: the connection establishes, but the application returns a 500.
+
+Speaker A: What does that tell you?
+
+Speaker B: Transport worked well enough for the application to receive the request. The failure is now at the application layer.
+
+Speaker A: Exactly.
+
+Speaker B: So 500 is very different from timeout.
+
+Speaker A: Yes.
+
+Speaker B: What about connection reset?
+
+Speaker A: It means the established connection was actively terminated rather than simply receiving no response. The next question is which component reset it and why.
+
+Speaker B: So the words are evidence, not final answers.
+
+Speaker A: Exactly.
+
+Speaker B: Let's build the full path.
+
+Speaker A: Client.
+
+Speaker B: Destination IP.
+
+Speaker A: Port.
+
+Speaker B: TCP or UDP.
+
+Speaker A: Application protocol.
+
+Speaker B: Application response.
+
+Speaker A: Good.
+
+Speaker B: And each boundary produces a different kind of evidence.
+
+Speaker A: That's the model.
+
+Speaker B: Mac lab?
+
+Speaker A: First inspect listening TCP ports on your machine.
+
+Speaker B: Predict what the result means.
+
+Speaker A: Good.
+
+Speaker B: Then make a localhost TCP connection to a known listening service.
+
+Speaker A: Good.
+
+Speaker B: Then try a known-closed TCP port.
+
+Speaker A: Good.
+
+Speaker B: Compare the evidence.
+
+Speaker A: Good.
+
+Speaker B: Then make a small UDP experiment.
+
+Speaker A: Observe the key difference: a UDP send does not require the same connection-establishment behavior as TCP.
+
+Speaker B: So the experiment teaches the contract difference.
+
+Speaker A: Exactly.
+
+Speaker B: Controlled failure?
+
+Speaker A: Stop a disposable local service.
+
+Speaker B: Try the same TCP connection again.
+
+Speaker A: Predict the new evidence.
+
+Speaker B: Observe it.
+
+Speaker A: Restart the service.
+
+Speaker B: Verify the connection works again.
+
+Speaker A: Good.
+
+Speaker B: What should I record?
+
+Speaker A: Endpoint. Port. Transport. Expected behavior. Actual failure signal. Recovery evidence.
+
+Speaker B: So the lab is a mini incident.
+
+Speaker A: Yes.
+
+Speaker B: Recall.
+
+Speaker A: What does a port identify?
+
+Speaker B: A transport service endpoint on a host.
+
+Speaker A: What is a socket?
+
+Speaker B: An operating-system communication endpoint used by an application.
+
+Speaker A: What does TCP add?
+
+Speaker B: Connection state, ordered reliable byte-stream delivery, acknowledgements, retransmission, flow control and congestion control.
+
+Speaker A: What is UDP's key difference?
+
+Speaker B: It provides datagrams without TCP's connection and reliability machinery, leaving more trade-offs to the application.
+
+Speaker A: Why is timeout different from refusal?
+
+Speaker B: A refusal is active evidence at the connection point; a timeout means the expected response did not arrive in time.
+
+Speaker A: What does an HTTP 500 tell you after TCP succeeds?
+
+Speaker B: The application layer returned an error. It is not the same as a transport timeout.
+
+Speaker A: Final challenge.
+
+Speaker B: A server IP is reachable. The expected TCP port times out.
+
+Speaker A: Your model?
+
+Speaker B: Endpoint -> Port -> Transport -> Delivery -> Evidence. I first distinguish route and host reachability from the transport failure, then inspect whether traffic is being dropped, whether the service is listening, and finally the application response if transport succeeds.
+
+Speaker A: Good.
+
+Speaker B: So TCP and UDP are not just names to memorize.
+
+Speaker A: They are transport contracts with different behavior and different evidence.
+
+Speaker B: And the lab makes that visible.
+
+Speaker A: Exactly. Make the local service fail, predict the signal, recover it, and explain what changed.
+
+EPISODE D2.2 — DNS
+
+Speaker A: Yesterday we separated IP, transport and application behavior.
+
+Speaker B: Today we deal with the thing that turns a human-friendly name into network information.
+
+Speaker A: DNS.
+
+Speaker B: And the picture is:
+
+Speaker A: Name -> Resolver -> Cache -> Authority -> Freshness.
+
+Speaker B: So DNS is not one server.
+
+Speaker A: Correct. It is a distributed naming system.
+
+Speaker B: Make a prediction.
+
+Speaker A: I change a DNS A record. One machine still receives the old address. Does that automatically prove the authoritative DNS server is broken?
+
+Speaker B: No. The machine may be using a resolver that still has the older answer cached.
+
+Speaker A: Exactly.
+
+Speaker B: So the first question is: which resolver actually answered me?
+
+Speaker A: Good. That is the beginning of the evidence path.
+
+Speaker B: Stage one: name.
+
+Speaker A: The application starts with a name such as a hostname.
+
+Speaker B: The application does not need to know the final IP before asking DNS.
+
+Speaker A: Right. It asks the naming system for the information associated with the name and record type it needs.
+
+Speaker B: Stage two: resolver.
+
+Speaker A: Most clients normally query a recursive resolver.
+
+Speaker B: The resolver may already know the answer.
+
+Speaker A: Or it may need to do more work and query authoritative DNS servers.
+
+Speaker B: So when I use dig, the server answering my query may be a resolver rather than the authoritative server for the domain.
+
+Speaker A: Exactly.
+
+Speaker B: That distinction matters when diagnosing a changed record.
+
+Speaker A: Very much.
+
+Speaker B: Stage three: cache.
+
+Speaker A: A resolver can keep answers in cache for a period controlled by TTL and its caching policy.
+
+Speaker B: So changing the authoritative record does not mean every resolver instantly changes its answer.
+
+Speaker A: Correct.
+
+Speaker B: And the cache is useful because the resolver does not need to repeat the whole lookup every time.
+
+Speaker A: Exactly. Caching reduces repeated work and improves response time.
+
+Speaker B: Prediction.
+
+Speaker A: Two clients use different recursive resolvers. The authoritative record changed five minutes ago. Can the clients temporarily receive different answers?
+
+Speaker B: Yes, depending on cache state, TTL and resolver behavior.
+
+Speaker A: Good.
+
+Speaker B: So different DNS answers do not automatically mean one server is lying.
+
+Speaker A: Correct. You have to compare which resolver answered and whether its cache is fresh enough.
+
+Speaker B: Stage four: authority.
+
+Speaker A: Authoritative servers hold the configured DNS data for a zone.
+
+Speaker B: So if I want to know the authoritative answer, I need to inspect the authoritative side rather than only the local recursive cache.
+
+Speaker A: Exactly.
+
+Speaker B: Which gives us another diagnostic question.
+
+Speaker A: Go on.
+
+Speaker B: Does the authoritative server have the value I expect?
+
+Speaker A: Good.
+
+Speaker B: If yes, and my resolver gives me an older value, caching becomes a stronger explanation.
+
+Speaker A: Exactly.
+
+Speaker B: What about record types?
+
+Speaker A: Different record types answer different questions.
+
+Speaker B: A maps a name to IPv4 address information.
+
+Speaker A: Yes.
+
+Speaker B: AAAA maps a name to IPv6 address information.
+
+Speaker A: Yes.
+
+Speaker B: CNAME points one name at another canonical name.
+
+Speaker A: Exactly.
+
+Speaker B: So asking for the wrong record type can produce an answer that looks confusing even though DNS is working correctly.
+
+Speaker A: Good.
+
+Speaker B: Another prediction.
+
+Speaker A: A name has both A and AAAA records. One client prefers IPv6 and another uses IPv4. Can the two clients behave differently even when DNS is healthy?
+
+Speaker B: Yes. They may receive or prefer different address families and then take different network paths.
+
+Speaker A: Good.
+
+Speaker B: So DNS answers are inputs to later networking decisions.
+
+Speaker A: Exactly.
+
+Speaker B: Stage five: freshness.
+
+Speaker A: TTL helps determine how long a resolver may retain an answer before it should refresh it.
+
+Speaker B: So TTL is part of the freshness contract.
+
+Speaker A: Exactly.
+
+Speaker B: What about negative answers?
+
+Speaker A: Negative answers such as a name not existing can also be cached according to DNS rules.
+
+Speaker B: Which means I can fix a missing record and still see the old negative result for a while.
+
+Speaker A: Correct.
+
+Speaker B: That is a very good incident trap.
+
+Speaker A: It is.
+
+Speaker B: So DNS diagnosis is not just: run nslookup.
+
+Speaker A: Right. Start with the question.
+
+Speaker B: Which name? Which record type? Which resolver? What does it return? What does the authoritative server say? What freshness rules apply?
+
+Speaker A: Exactly.
+
+Speaker B: Let us make an incident.
+
+Speaker A: You changed `api.example.com` from one IPv4 address to another.
+
+Speaker B: My laptop still gets the old address.
+
+Speaker A: What is your first test?
+
+Speaker B: Query the resolver my laptop is actually using and inspect the TTL on the answer.
+
+Speaker A: Good.
+
+Speaker B: Then ask an authoritative server for the same record.
+
+Speaker A: Good.
+
+Speaker B: If the authoritative answer is new but the recursive resolver answer is old, I have strong evidence of caching.
+
+Speaker A: Exactly.
+
+Speaker B: If both are old, I investigate the authoritative data or whether the change reached the intended DNS zone.
+
+Speaker A: Good.
+
+Speaker B: That is much better than waiting and hoping.
+
+Speaker A: Evidence first.
+
+Speaker B: Controlled experiment?
+
+Speaker A: Use a disposable local DNS environment or a test domain you control.
+
+Speaker B: Query the current record.
+
+Speaker A: Good.
+
+Speaker B: Change the test record.
+
+Speaker A: Good.
+
+Speaker B: Query through the resolver and record the answer plus TTL.
+
+Speaker A: Good.
+
+Speaker B: Query authoritative data where available.
+
+Speaker A: Good.
+
+Speaker B: Restore the original record.
+
+Speaker A: Good.
+
+Speaker B: Then verify the final state after the relevant cache window or with a deliberately isolated test environment.
+
+Speaker A: Exactly. The point is to observe freshness behavior safely, not to change a production domain and hope everyone notices.
+
+Speaker B: Good.
+
+Speaker A: What about `dig`?
+
+Speaker B: It lets me ask DNS focused questions and see the server response, record type, answer and timing information.
+
+Speaker A: Yes.
+
+Speaker B: So I can make the query itself explicit.
+
+Speaker A: Exactly.
+
+Speaker B: `dig example.com A`.
+
+Speaker A: Good.
+
+Speaker B: `dig example.com AAAA`.
+
+Speaker A: Good.
+
+Speaker B: `dig example.com CNAME`.
+
+Speaker A: Good.
+
+Speaker B: And I can ask a specific resolver by specifying the server.
+
+Speaker A: Exactly. That is useful when two clients appear to disagree.
+
+Speaker B: Prediction pause.
+
+Speaker A: The authoritative server shows the new A record. Resolver one still shows the old address. Resolver two shows the new one. What does that suggest?
+
+Speaker B: Different cache state or refresh timing between the two resolvers.
+
+Speaker A: Good.
+
+Speaker B: Another one.
+
+Speaker A: A query for a missing name returns a negative answer on one resolver even after the record was created. What do you investigate?
+
+Speaker B: Negative caching, resolver identity and the freshness period before changing anything else.
 
 Speaker A: Exactly.
 
 Speaker B: Mac lab?
 
-Speaker A: Run a tiny frontend, API, and database stack. Break the database hostname. Then restore it and break the published port. Compare the evidence. Finally remove the database container while keeping the volume and verify what survives.
+Speaker A: Ask for A, AAAA and CNAME records with dig.
 
-Speaker B: So the lab makes the abstractions collide with reality.
+Speaker B: Record which resolver answered.
 
-Speaker A: That's the idea. Otherwise Docker remains a vocabulary lesson.
+Speaker A: Good.
+
+Speaker B: Record the TTL.
+
+Speaker A: Good.
+
+Speaker B: Ask a specific resolver and compare the answer.
+
+Speaker A: Good.
+
+Speaker B: Where practical, compare with authoritative data.
+
+Speaker A: Good.
+
+Speaker B: Then create one safe change in a disposable DNS environment.
+
+Speaker A: Good.
+
+Speaker B: Predict the cache behavior before you query again.
+
+Speaker A: Exactly.
+
+Speaker B: Then restore the original value and prove the expected final answer.
+
+Speaker A: Good.
+
+Speaker B: What should success look like?
+
+Speaker A: You can explain why a resolver answered the way it did without saying simply, 'DNS is slow.'
+
+Speaker B: I should be able to name the resolver, record type, authoritative answer, cache state and TTL.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: What is DNS?
+
+Speaker B: A distributed naming system that maps names to information through resolvers, authoritative servers and cached answers.
+
+Speaker A: What does a recursive resolver do?
+
+Speaker B: It answers client queries, often from cache, or performs the work needed to get the answer from authoritative DNS servers.
+
+Speaker A: What does an authoritative server provide?
+
+Speaker B: The authoritative DNS data for its zone.
+
+Speaker A: What is TTL?
+
+Speaker B: A freshness control that helps determine how long a resolver may retain an answer before refreshing it.
+
+Speaker A: Why can two clients see different answers?
+
+Speaker B: They may use different resolvers or have different cache state, and the answers may still be within their freshness rules.
+
+Speaker A: Why can a fixed NXDOMAIN or other negative result persist?
+
+Speaker B: Negative answers can also be cached.
+
+Speaker A: Final challenge.
+
+Speaker B: I changed a DNS record. My laptop still gets the old address.
+
+Speaker A: Your model?
+
+Speaker B: Name -> Resolver -> Cache -> Authority -> Freshness. I identify the resolver, inspect the record type and TTL, compare the cached answer with authoritative data, and then decide whether cache freshness explains the difference.
+
+Speaker A: Good.
+
+Speaker B: So DNS problems are often answer-path problems.
+
+Speaker A: Exactly.
+
+Speaker B: Run the lab, compare resolvers, and explain why the answer is what the client sees.
+
+EPISODE D2.3 — HTTP
+
+Speaker A: We now know how names resolve and how transport reaches a service.
+
+Speaker B: Now we need the application conversation itself.
+
+Speaker A: HTTP.
+
+Speaker B: The picture is:
+
+Speaker A: Request -> Headers -> Route -> Response -> Evidence.
+
+Speaker B: So HTTP is not the network.
+
+Speaker A: Correct. HTTP is an application protocol carried over lower layers such as transport, and often TLS.
+
+Speaker B: Make a prediction.
+
+Speaker A: A server returns HTTP 404. Did the TCP connection fail?
+
+Speaker B: No. The client received an HTTP response. The application layer is telling us the requested resource was not found in that application's current routing/data context.
+
+Speaker A: Good. The exact meaning depends on the application, but the key point is that you have application-layer evidence.
+
+Speaker B: Stage one: request.
+
+Speaker A: An HTTP request has a method, a target path and headers, and may have a body.
+
+Speaker B: GET, POST, PUT, DELETE and others.
+
+Speaker A: Yes. The method expresses the kind of operation the client is asking for.
+
+Speaker B: And the path identifies what resource or route the client wants.
+
+Speaker A: Good.
+
+Speaker B: Stage two: headers.
+
+Speaker A: Headers carry metadata around the request and response.
+
+Speaker B: Content type.
+
+Speaker A: Yes.
+
+Speaker B: Authorization context.
+
+Speaker A: Yes.
+
+Speaker B: Cache directives.
+
+Speaker A: Yes.
+
+Speaker B: Redirect information.
+
+Speaker A: Exactly.
+
+Speaker B: So headers are part of the protocol behavior, not just decoration.
+
+Speaker A: Correct.
+
+Speaker B: Another prediction.
+
+Speaker A: An API route is correct, but the request sends the wrong Content-Type. Can the application still return an error even though TCP and TLS are working?
+
+Speaker B: Yes. The lower layers can work while the application rejects the request shape.
+
+Speaker A: Exactly.
+
+Speaker B: Stage three: route.
+
+Speaker A: The server or application selects a handler for the request's host, method and path.
+
+Speaker B: This is application routing, not IP routing.
+
+Speaker A: Very important. Same word, different layer.
+
+Speaker B: So if `/orders/123` returns 404, I can investigate the application route before blaming the network.
+
+Speaker A: Exactly.
+
+Speaker B: Stage four: response.
+
+Speaker A: The server returns a status code, response headers and, when appropriate, a body.
+
+Speaker B: Status code becomes evidence.
+
+Speaker A: Yes. 2xx means success according to the application protocol contract. 3xx describes redirection. 4xx usually describes a problem with the request or its authorization context. 5xx usually indicates server-side failure.
+
+Speaker B: Usually.
+
+Speaker A: Yes. Different systems can use specific codes in different ways, so learn the standard meaning and then inspect the actual application's contract.
+
+Speaker B: That is more accurate than memorizing '404 means the server is broken.'
+
+Speaker A: Much more accurate.
+
+Speaker B: 404 and 500 are both HTTP responses.
+
+Speaker A: Exactly.
+
+Speaker B: A TCP timeout is not.
+
+Speaker A: Correct.
+
+Speaker B: A DNS failure is not.
+
+Speaker A: Correct.
+
+Speaker B: A TLS certificate error is not an HTTP response either.
+
+Speaker A: Exactly. That layer separation is one of the most useful habits in debugging.
+
+Speaker B: Prediction.
+
+Speaker A: curl receives 301. Did the server fail?
+
+Speaker B: Not necessarily. A 301 is an HTTP response telling the client that the resource has moved to another location.
+
+Speaker A: Good.
+
+Speaker B: If curl follows redirects, it can make another HTTP request.
+
+Speaker A: Exactly.
+
+Speaker B: What about 401 and 403?
+
+Speaker A: They are different application-layer signals. A 401 usually means the request lacks valid authentication credentials for the resource. A 403 says the server understood the request but is refusing access.
+
+Speaker B: So the actual authorization model still matters.
+
+Speaker A: Yes. Read the application's behavior and headers rather than turning codes into slogans.
+
+Speaker B: What about JSON?
+
+Speaker A: JSON is one possible representation carried in the HTTP message body. Content-Type helps tell the client how to interpret it.
+
+Speaker B: So `application/json` is protocol metadata.
+
+Speaker A: Exactly.
+
+Speaker B: Now make an incident.
+
+Speaker A: Users say the order page is broken.
+
+Speaker B: First question?
+
+Speaker A: What did the user actually receive?
+
+Speaker B: Browser status? API status? Response body? Timing?
+
+Speaker A: Good.
+
+Speaker B: Suppose curl gets 404 immediately.
+
+Speaker A: What does that change?
+
+Speaker B: I already know transport worked well enough to receive an HTTP response. I focus on the request path, host, method, application route and data.
+
+Speaker A: Good.
+
+Speaker B: Now change it: curl times out.
+
+Speaker A: Different path.
+
+Speaker B: I move down to route, transport and lower-layer evidence.
+
+Speaker A: Exactly.
+
+Speaker B: Now 500.
+
+Speaker A: What do you inspect?
+
+Speaker B: Application logs, request identifiers, server-side errors and the request itself.
+
+Speaker A: Good.
+
+Speaker B: So the same user sentence produces three completely different diagnostic paths.
+
+Speaker A: That is why HTTP status is valuable evidence.
+
+Speaker B: Controlled failure?
+
+Speaker A: Use a local HTTP service you control.
+
+Speaker B: Start with a known-good endpoint.
+
+Speaker A: Good.
+
+Speaker B: Change the route so the endpoint returns 404.
+
+Speaker A: Good.
+
+Speaker B: Predict the response before calling it.
+
+Speaker A: Good.
+
+Speaker B: Then restore the route and prove the user path works again.
+
+Speaker A: Exactly.
+
+Speaker B: Another experiment: keep the route correct but send the wrong method.
+
+Speaker A: Good.
+
+Speaker B: Predict a different application response, such as 405 when the server uses that standard signal.
+
+Speaker A: Exactly. The exact code is application-specific, but the experiment teaches method-aware routing.
+
+Speaker B: And headers?
+
+Speaker A: Send an intentionally wrong Content-Type to a local API endpoint and observe how the application reacts.
+
+Speaker B: So the learner sees that headers can change application behavior.
+
+Speaker A: Exactly.
+
+Speaker B: Mac lab?
+
+Speaker A: Use curl.
+
+Speaker B: First inspect status and response headers.
+
+Speaker A: Good.
+
+Speaker B: Follow one redirect.
+
+Speaker A: Good.
+
+Speaker B: Query a JSON endpoint and inspect Content-Type.
+
+Speaker A: Good.
+
+Speaker B: Then introduce one controlled application-level failure.
+
+Speaker A: Good.
+
+Speaker B: Record the request, expected response, actual response and recovery.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: What layer does HTTP belong to?
+
+Speaker B: The application layer.
+
+Speaker A: What is the difference between an HTTP 404 and a TCP timeout?
+
+Speaker B: A 404 is an HTTP response from the application protocol. A timeout means the expected lower-level response did not arrive in time.
+
+Speaker A: What do headers do?
+
+Speaker B: They carry metadata that can affect or describe the request and response, such as content type, authorization context, caching and redirects.
+
+Speaker A: What does 301 tell you?
+
+Speaker B: The resource is being redirected; it is an application-level response, not a network failure.
+
+Speaker A: Why does 500 tell you more than 'the network is broken'?
+
+Speaker B: Because the server reached the HTTP layer and returned a server-side application error.
+
+Speaker A: Final challenge.
+
+Speaker B: Users say the order page is broken.
+
+Speaker A: Your first model?
+
+Speaker B: Request -> Headers -> Route -> Response -> Evidence. I inspect the actual HTTP response first, then move down to DNS, transport or TLS only when the HTTP evidence says the request never reached the application layer.
+
+Speaker A: Good.
+
+Speaker B: So HTTP makes the lower layers visible through an application conversation.
+
+Speaker A: Exactly.
+
+Speaker B: Run the lab, change one application behavior, predict the response, recover it, and explain what the status and headers proved.
+
+EPISODE D2.4 — TLS and HTTPS
+
+Speaker A: We have HTTP. Now we need to protect that application conversation.
+
+Speaker B: TLS.
+
+Speaker A: Right. And HTTPS is HTTP carried inside a TLS-protected connection.
+
+Speaker B: The picture is:
+
+Speaker A: Client -> Certificate -> Handshake -> Secure Session -> Evidence.
+
+Speaker B: So the certificate is not the entire TLS story.
+
+Speaker A: Correct. It is one part of the endpoint identity check.
+
+Speaker B: Make a prediction.
+
+Speaker A: The connection is encrypted, but the certificate hostname does not match the hostname the client requested. Should the client trust the endpoint as intended?
+
+Speaker B: No. Encryption alone does not prove I reached the intended server.
+
+Speaker A: Exactly.
+
+Speaker B: That is the first big idea.
+
+Speaker A: Encryption and authentication are related, but they are not the same claim.
+
+Speaker B: Stage one: client.
+
+Speaker A: The client wants a protected connection to a specific hostname.
+
+Speaker B: So the hostname matters before the handshake is complete.
+
+Speaker A: Yes. The client needs to know who it intended to reach.
+
+Speaker B: Stage two: certificate.
+
+Speaker A: The server presents a certificate chain.
+
+Speaker B: The client checks whether that certificate identifies the requested hostname and whether the chain is trusted.
+
+Speaker A: Exactly.
+
+Speaker B: Dates matter too.
+
+Speaker A: Yes. Validity dates are part of the certificate checks.
+
+Speaker B: And the chain leads to a trusted root.
+
+Speaker A: Correct.
+
+Speaker B: What is the private key doing?
+
+Speaker A: The server proves control of the private key associated with the certificate during the TLS exchange.
+
+Speaker B: So a certificate file alone is not enough.
+
+Speaker A: Correct.
+
+Speaker B: Prediction.
+
+Speaker A: A certificate is mathematically valid, but it is issued for `other.example.com` and the client requested `api.example.com`. What should happen?
+
+Speaker B: The identity check should fail.
+
+Speaker A: Exactly.
+
+Speaker B: Stage three: handshake.
+
+Speaker A: During the TLS handshake, client and server negotiate cryptographic parameters and establish the session keys used to protect application traffic.
+
+Speaker B: So the handshake creates the protected channel.
+
+Speaker A: Yes, while also carrying the peer-authentication process.
+
+Speaker B: The exact handshake details get deep.
+
+Speaker A: They do. At Beginner and early Intermediate level, the key model is enough: validate identity, negotiate the cryptographic session, then carry HTTP inside it.
+
+Speaker B: Stage four: secure session.
+
+Speaker A: Once the handshake succeeds, HTTP can travel through the protected TLS session.
+
+Speaker B: So a 404 now means something different from a certificate failure.
+
+Speaker A: Exactly.
+
+Speaker B: A 404 means TLS already got far enough for an HTTP response.
+
+Speaker A: Correct.
+
+Speaker B: A certificate hostname error means the client rejected the secure endpoint identity before normal HTTP behavior.
+
+Speaker A: Good.
+
+Speaker B: That is the same layer-separation habit again.
+
+Speaker A: Exactly.
+
+Speaker B: Stage five: evidence.
+
+Speaker A: The client can inspect certificate identity, issuer, validity dates and handshake outcome.
+
+Speaker B: And then the HTTP response gives another layer of evidence.
+
+Speaker A: Right.
+
+Speaker B: So I should not stop at the green padlock.
+
+Speaker A: No. Understand what the client actually verified.
+
+Speaker B: Real-life example?
+
+Speaker A: Imagine entering a secure building.
+
+Speaker B: Locked door first.
+
+Speaker A: The lock protects the room.
+
+Speaker B: And a badge helps establish who is allowed at the door.
+
+Speaker A: Exactly. A locked room does not help if you entered the wrong building.
+
+Speaker B: Nice.
+
+Speaker A: Now make the failure cases.
+
+Speaker B: Expired certificate.
+
+Speaker A: The certificate's validity period is no longer acceptable.
+
+Speaker B: Wrong hostname.
+
+Speaker A: The certificate identity does not match the destination name the client requested.
+
+Speaker B: Untrusted issuer.
+
+Speaker A: The client cannot establish the expected trust chain.
+
+Speaker B: Private-key problem.
+
+Speaker A: The server may be unable to prove control of the key needed for the certificate.
+
+Speaker B: Handshake failure.
+
+Speaker A: The TLS negotiation cannot complete.
+
+Speaker B: And HTTP 500 after TLS succeeds.
+
+Speaker A: That is now an application-layer failure, not a certificate failure.
+
+Speaker B: Prediction pause.
+
+Speaker A: `curl` reaches the server, validates TLS, and receives HTTP 401. Is the TLS connection broken?
+
+Speaker B: No. TLS worked well enough to establish the protected session. The application returned an authentication-related HTTP response.
+
+Speaker A: Exactly.
+
+Speaker B: Another prediction.
+
+Speaker A: The browser shows a certificate warning before any HTTP page appears. Should I spend time debugging the API route first?
+
+Speaker B: No. The failure is earlier in the HTTPS trust path.
+
+Speaker A: Good.
+
+Speaker B: Controlled experiment?
+
+Speaker A: Use a disposable local HTTPS service or a local test certificate you control.
+
+Speaker B: First run with a certificate whose hostname matches the test name.
+
+Speaker A: Good.
+
+Speaker B: Verify the HTTPS request works when the client trusts the test setup.
+
+Speaker A: Good.
+
+Speaker B: Then deliberately use a certificate with the wrong hostname or a deliberately untrusted test certificate.
+
+Speaker A: Good.
+
+Speaker B: Predict the trust failure before observing it.
+
+Speaker A: Exactly.
+
+Speaker B: Restore the known-good certificate and prove the HTTPS application request works again.
+
+Speaker A: Good.
+
+Speaker B: So the experiment is not about making TLS fail randomly.
+
+Speaker A: It is about connecting one certificate condition to one visible failure and one recovery path.
+
+Speaker B: Mac lab?
+
+Speaker A: Inspect the certificate chain of a real HTTPS endpoint.
+
+Speaker B: Identify subject or hostname information, issuer and validity dates.
+
+Speaker A: Good.
+
+Speaker B: Then inspect the same endpoint with command-line tooling.
+
+Speaker A: Good.
+
+Speaker B: Finally use a disposable local HTTPS service to create one controlled certificate mismatch.
+
+Speaker A: Good.
+
+Speaker B: Record which check failed and what the client reported.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: What does TLS provide?
+
+Speaker B: A protected cryptographic session and mechanisms for authenticating the peer.
+
+Speaker A: Why is encryption not the same as authentication?
+
+Speaker B: Encrypted traffic can still be connected to the wrong endpoint. Authentication checks whether the endpoint identity matches the expected trust model.
+
+Speaker A: What does a certificate do?
+
+Speaker B: It carries identity and public-key information that the client validates through its trust rules and certificate chain.
+
+Speaker A: Why does hostname matching matter?
+
+Speaker B: Because the client needs evidence that the certificate identifies the hostname it intended to reach.
+
+Speaker A: What does an HTTP 401 after successful TLS tell you?
+
+Speaker B: The protected session worked and the application returned an authentication-related HTTP response.
+
+Speaker A: Final challenge.
+
+Speaker B: A user says the HTTPS site is broken.
+
+Speaker A: Your model?
+
+Speaker B: Client -> Certificate -> Handshake -> Secure Session -> Evidence. I determine whether the failure is certificate identity, certificate validity, handshake, or application behavior after TLS.
+
+Speaker A: Good.
+
+Speaker B: So HTTPS is not a green padlock.
+
+Speaker A: It is a sequence of checks and cryptographic operations that produce evidence about identity and a protected session.
+
+Speaker B: Run the lab, make one safe certificate failure, restore it, and explain exactly which check changed.
+
+EPISODE D2.5 — Why Containers Exist
+
+Speaker A: We have now seen processes, services, networks and HTTPS.
+
+Speaker B: So why add containers?
+
+Speaker A: Because we want a more repeatable execution environment without creating a full virtual machine for every application.
+
+Speaker B: The picture is:
+
+Speaker A: Image -> Container -> Process -> Namespaces -> Host Kernel.
+
+Speaker B: That immediately sounds different from 'tiny virtual machine.'
+
+Speaker A: Good. That difference is the main idea of this lesson.
+
+Speaker B: Stage one: image.
+
+Speaker A: An image packages a filesystem and metadata used to create a container.
+
+Speaker B: So the image is not the running application.
+
+Speaker A: Correct. It is the package used to create the running environment.
+
+Speaker B: It can contain the application files, runtime pieces and startup information.
+
+Speaker A: Exactly.
+
+Speaker B: Stage two: container.
+
+Speaker A: A container is a running instance created from an image.
+
+Speaker B: So the container is the execution environment, while the image is the package.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction.
+
+Speaker A: I build one image and start two containers from it. Do I now have two copies of the image file?
+
+Speaker B: No. The image is the shared source package for both containers. Each container has its own runtime state.
+
+Speaker A: Good.
+
+Speaker B: Stage three: process.
+
+Speaker A: A container runs a process. The main process is central to the container lifecycle.
+
+Speaker B: Which means a container can stop because its main process exits.
+
+Speaker A: Exactly.
+
+Speaker B: So if `docker run` starts a container and it exits immediately, Docker itself may be working correctly.
+
+Speaker A: Yes. First ask what the main process did.
+
+Speaker B: That is different from saying, 'the container crashed.'
+
+Speaker A: Exactly. The process may have finished normally.
+
+Speaker B: Prediction.
+
+Speaker A: I run a container whose command prints one line and exits. What should I expect?
+
+Speaker B: The container should normally stop after the process exits.
+
+Speaker A: Good.
+
+Speaker B: If I expected a long-running service, then my command or startup design is probably wrong.
+
+Speaker A: Exactly.
+
+Speaker B: Stage four: namespaces.
+
+Speaker A: Linux namespaces give processes isolated views of parts of the operating system.
+
+Speaker B: Process view.
+
+Speaker A: Yes.
+
+Speaker B: Network view.
+
+Speaker A: Yes.
+
+Speaker B: Mount or filesystem view.
+
+Speaker A: Yes. The exact isolation depends on the namespaces and runtime configuration in use.
+
+Speaker B: So two containers can have different views of processes and network interfaces even while using the same kernel.
+
+Speaker A: Exactly.
+
+Speaker B: Stage five: host kernel.
+
+Speaker A: Containers share the host kernel.
+
+Speaker B: That is the major difference from a traditional virtual machine.
+
+Speaker A: Correct. A virtual machine normally boots a guest operating system with its own kernel. A container uses the host kernel while isolating the application process environment.
+
+Speaker B: So a container is not a computer inside a computer.
+
+Speaker A: Not in the virtual-machine sense.
+
+Speaker B: Real-life analogy?
+
+Speaker A: Think of a building with separate apartments.
+
+Speaker B: Each apartment has its own space and view.
+
+Speaker A: Yes. But they still share the building's core structure and utilities.
+
+Speaker B: It is not the same as giving each apartment its own building.
+
+Speaker A: Exactly. The analogy is imperfect, but it helps separate isolation from a second operating system.
+
+Speaker B: Why does this help DevOps?
+
+Speaker A: It makes more of the execution environment explicit and repeatable: application files, runtime dependencies, startup command and network configuration can be packaged and recreated.
+
+Speaker B: So 'works on my machine' becomes less useful.
+
+Speaker A: Often. But containers do not remove configuration problems.
+
+Speaker B: Right. A container can still have the wrong environment variable, wrong port, wrong file path or wrong command.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction.
+
+Speaker A: The image builds successfully, but the container exits immediately. Is the image necessarily broken?
+
+Speaker B: No. The main process may be exiting, or the startup command may be wrong for a long-running service.
+
+Speaker A: Good.
+
+Speaker B: Another one.
+
+Speaker A: The process expects `/app/config.json`, but the file is not in the container. What should I inspect?
+
+Speaker B: The image contents, working directory, mounts and configuration path.
+
+Speaker A: Good.
+
+Speaker B: Another.
+
+Speaker A: The process can see its own network interface but not the host's normal process list. Is that surprising?
+
+Speaker B: No. Namespace isolation can give it a different process and network view.
+
+Speaker A: Exactly.
+
+Speaker B: Controlled failure?
+
+Speaker A: Build a tiny container with a known command.
+
+Speaker B: Start it and prove the process is running.
+
+Speaker A: Good.
+
+Speaker B: Then change only the main command so the process exits immediately.
+
+Speaker A: Predict the container state.
+
+Speaker B: Stopped.
+
+Speaker A: Good.
+
+Speaker B: Inspect the logs and process command.
+
+Speaker A: Good.
+
+Speaker B: Restore the original command and prove the container stays running again.
+
+Speaker A: Exactly.
+
+Speaker B: Second experiment: run a container that writes a known file to its own filesystem.
+
+Speaker A: Good.
+
+Speaker B: Remove the container and create a new one from the same image.
+
+Speaker A: What should you expect?
+
+Speaker B: The runtime state from the old container should not automatically appear in the new container unless it was stored in a volume or another persistent storage mechanism.
+
+Speaker A: Good. That prepares you for the next lesson.
+
+Speaker B: Mac lab?
+
+Speaker A: Build a small image.
+
+Speaker B: Run it.
+
+Speaker A: Inspect the image and the running container.
+
+Speaker B: Identify the main process and its command.
+
+Speaker A: Good.
+
+Speaker B: Then deliberately make the process exit.
+
+Speaker A: Observe the container lifecycle.
+
+Speaker B: Restore it.
+
+Speaker A: Prove it runs again.
+
+Speaker B: Then inspect the isolated process or network view with the tools your platform provides.
+
+Speaker A: Exactly. You are learning the relationship among image, container, process, namespaces and host kernel.
+
+Speaker B: Recall.
+
+Speaker A: What is an image?
+
+Speaker B: A package of filesystem content and metadata used to create containers.
+
+Speaker A: What is a container?
+
+Speaker B: A running instance with an isolated process environment created from an image.
+
+Speaker A: Why does a container exit when the main process exits?
+
+Speaker B: The container lifecycle normally follows its main process.
+
+Speaker A: What do namespaces do?
+
+Speaker B: They isolate views such as processes, networking and mounts without creating a second kernel.
+
+Speaker A: What kernel does a normal Linux container use?
+
+Speaker B: The host kernel.
+
+Speaker A: Final challenge.
+
+Speaker B: A container starts and stops immediately.
+
+Speaker A: Your model?
+
+Speaker B: Image -> Container -> Process -> Namespaces -> Host Kernel. I inspect the main command first, then logs and filesystem/configuration state, and I do not assume Docker needs repair just because the container stopped.
+
+Speaker A: Good.
+
+Speaker B: So the container is an operating boundary around a process, not a tiny virtual machine.
+
+Speaker A: Exactly. Build one, break one safely, recover it, and explain what the host kernel is still doing.
+
+EPISODE D2.6 — Docker Networking and Storage
+
+Speaker A: We know what a container is.
+
+Speaker B: Now we need to connect multiple containers and keep important data alive.
+
+Speaker A: Exactly.
+
+Speaker B: The picture is:
+
+Speaker A: Service -> Network -> Name -> Port -> Volume.
+
+Speaker B: Five boxes. Five different questions.
+
+Speaker A: That is the point.
+
+Speaker B: Stage one: service.
+
+Speaker A: Imagine a small application with a frontend, an API and a database.
+
+Speaker B: Each runs as a separate container.
+
+Speaker A: Right. The goal is to let them work together without hard-coding fragile container IP addresses.
+
+Speaker B: Stage two: network.
+
+Speaker A: Docker networks create an internal communication boundary for connected containers.
+
+Speaker B: So the API can talk to the database over the Docker network.
+
+Speaker A: Yes.
+
+Speaker B: Stage three: name.
+
+Speaker A: Docker can provide service discovery so one service can reach another by a stable service name on the intended network.
+
+Speaker B: So the application should not depend on the current container IP.
+
+Speaker A: Exactly. Container IPs are runtime details, not good permanent application configuration.
+
+Speaker B: Prediction.
+
+Speaker A: The database container is healthy. The API says it cannot resolve `db`.
+
+Speaker B: I investigate the network and service name before changing database credentials.
+
+Speaker A: Good.
+
+Speaker B: Now change the symptom.
+
+Speaker A: The API resolves `db`, but the TCP connection to the database port is refused.
+
+Speaker B: Different evidence. Name resolution worked. I now check whether the database process is listening on the expected internal port and whether the network path is correct.
+
+Speaker A: Exactly.
+
+Speaker B: Stage four: port.
+
+Speaker A: Here we need one of the most common Docker distinctions.
+
+Speaker B: Container port versus published host port.
+
+Speaker A: Correct.
+
+Speaker B: Containers on the same Docker network can often talk to the service's internal port directly.
+
+Speaker A: Yes.
+
+Speaker B: Publishing a port exposes a container service through a host-side port.
+
+Speaker A: Exactly.
+
+Speaker B: So host port 8080 mapping to container port 80 is an external access path.
+
+Speaker A: Right. It is not the same thing as one container calling another container on the internal network.
+
+Speaker B: Prediction.
+
+Speaker A: The API and database are on the same Docker network. The database has internal port 5432. Does the API need the host's published port just to reach the database?
+
+Speaker B: Normally no. It can use the internal service name and internal service port on the Docker network.
+
+Speaker A: Good.
+
+Speaker B: So publishing database port 5432 for host access is a separate decision.
+
+Speaker A: Exactly.
+
+Speaker B: That distinction prevents a lot of bad configuration.
+
+Speaker A: Yes.
+
+Speaker B: Stage five: volume.
+
+Speaker A: Now leave networking behind and think about data lifetime.
+
+Speaker B: The database process writes data.
+
+Speaker A: Where should important data live if the container itself is disposable?
+
+Speaker B: In a volume or another storage system whose lifecycle is separate from the container.
+
+Speaker A: Exactly.
+
+Speaker B: So the database container can be replaced while the data survives.
+
+Speaker A: That is the goal.
+
+Speaker B: Prediction.
+
+Speaker A: I delete the database container but keep its volume. Do I expect the database data to disappear just because the container was removed?
+
+Speaker B: No. The volume is separate state. A new database container can use it, assuming the database and schema are compatible.
+
+Speaker A: Good.
+
+Speaker B: That is the storage version of the same boundary idea.
+
+Speaker A: Exactly.
+
+Speaker B: The container is disposable. The important data is not.
+
+Speaker A: Usually. The exact design depends on the application.
+
+Speaker B: Real-life example?
+
+Speaker A: Think of an apartment building.
+
+Speaker B: The tenants can change apartments, but the building's storage room can keep the inventory.
+
+Speaker A: Roughly. The important lesson is that process lifecycle and data lifecycle do not have to be the same.
+
+Speaker B: Now build the full stack.
+
+Speaker A: Frontend.
+
+Speaker B: API.
+
+Speaker A: Database.
+
+Speaker B: Each container has its own process.
+
+Speaker A: The API reaches the database through an internal network and service name.
+
+Speaker B: The user reaches the frontend through a published host port.
+
+Speaker A: And the database stores important data in a volume.
+
+Speaker B: That is a much clearer picture than one giant Docker command.
+
+Speaker A: Exactly.
+
+Speaker B: Now the failure matrix.
+
+Speaker A: Wrong database hostname.
+
+Speaker B: Name resolution or service-discovery failure.
+
+Speaker A: Correct hostname, refused database connection.
+
+Speaker B: The network name works, but the service is not accepting connections on that port or the internal path is wrong.
+
+Speaker A: Correct internal path, but the browser cannot reach the frontend.
+
+Speaker B: Check published host port and host-side access path.
+
+Speaker A: Database comes back empty after container recreation.
+
+Speaker B: Check whether the database used a persistent volume and whether the new container attached the expected volume.
+
+Speaker A: Good.
+
+Speaker B: So four similar user complaints can come from four different boundaries.
+
+Speaker A: Exactly.
+
+Speaker B: Controlled experiment?
+
+Speaker A: Build a tiny three-service stack.
+
+Speaker B: Frontend, API and database.
+
+Speaker A: Good.
+
+Speaker B: First make the known-good stack work.
+
+Speaker A: Good.
+
+Speaker B: Then break only the database hostname.
+
+Speaker A: Predict the API symptom.
+
+Speaker B: Name-resolution failure.
+
+Speaker A: Restore it.
+
+Speaker B: Then break only the published frontend port.
+
+Speaker A: Predict the user symptom.
+
+Speaker B: Host-side connection failure while internal API-to-database communication can still work.
+
+Speaker A: Exactly.
+
+Speaker B: Finally write data to the database, remove the database container but keep the volume, recreate the container and verify the data survives.
+
+Speaker A: Good.
+
+Speaker B: That is one lesson combining network and storage lifecycle.
+
+Speaker A: Yes, because production systems combine them too.
+
+Speaker B: Mac lab?
+
+Speaker A: Run the three-service stack.
+
+Speaker B: Record service names, internal ports, published ports and volume names.
+
+Speaker A: Good.
+
+Speaker B: Verify an internal API-to-database request.
+
+Speaker A: Good.
+
+Speaker B: Verify the external user path through the published port.
+
+Speaker A: Good.
+
+Speaker B: Break the database hostname.
+
+Speaker A: Observe.
+
+Speaker B: Restore.
+
+Speaker A: Then break the published port.
+
+Speaker B: Observe the different evidence.
+
+Speaker A: Finally test volume persistence across container recreation.
+
+Speaker B: Recall.
+
+Speaker A: What is the internal network for?
+
+Speaker B: Container-to-container communication inside the Docker network boundary.
+
+Speaker A: Why use a service name?
+
+Speaker B: To give internal clients a stable discovery name instead of depending on a changing container IP.
+
+Speaker A: What is a published port?
+
+Speaker B: A host-side access path to a container service; it is separate from internal service-to-service traffic.
+
+Speaker A: Why use a volume?
+
+Speaker B: To keep important data beyond one container's lifecycle.
+
+Speaker A: Final challenge.
+
+Speaker B: The database is healthy. The API cannot resolve `db`. Then I fix that and the API reaches `db` but the user still cannot reach the frontend.
+
+Speaker A: Your model?
+
+Speaker B: Service -> Network -> Name -> Port -> Volume. I diagnose internal name resolution first, then internal transport, then the published host port for the user path, and I keep database data lifecycle separate from the container lifecycle.
+
+Speaker A: Good.
+
+Speaker B: So Docker networking and storage are not one feature.
+
+Speaker A: They are separate boundaries that meet in the same system.
+
+Speaker B: Run the stack, break one boundary at a time, and prove recovery.
+
 
 
 EPISODE D2.7 — Break Docker
 
-Speaker A: The fastest way to learn containers is to break them deliberately.
+Speaker A: You now know how containers run, how they communicate, and how their data can persist.
 
-Speaker B: So today the syllabus is failure.
+Speaker B: So now we break them.
 
-Speaker A: Correct. Wrong port. Wrong hostname. Wrong environment variable. Permission failure. Unhealthy dependency. Resource exhaustion.
+Speaker A: Deliberately.
 
-Speaker A: Real-life example: debugging a restaurant that is 'closed' could mean no chef, locked door, missing electricity, broken refrigerator, or a failed payment terminal. The symptom is the same; the cause is not.
+Speaker B: The picture is:
 
-Speaker B: So we need evidence that separates hypotheses.
+Speaker A: Baseline -> Change -> Symptom -> Evidence -> Recovery.
 
-Speaker A: Exactly. Check process, logs, network, configuration, health, and resource state in a deliberate order.
+Speaker B: That sounds less like Docker training and more like incident response.
 
-Speaker A: Lab: introduce one failure at a time and predict the visible symptom before observing it.
+Speaker A: That is the point. Operating systems is not memorizing commands. It is making controlled changes and understanding what the system tells you.
 
-Speaker B: And if my prediction is wrong?
+Speaker B: Rule one?
 
-Speaker A: Excellent. That is where learning begins.
-Speaker B: This is my favorite kind of lesson: break it on purpose.
+Speaker A: Start with a known-good baseline.
 
-Speaker A: Good. The trick is to break one variable at a time.
+Speaker B: Prove it works before the failure.
 
-Speaker B: Wrong port first.
+Speaker A: Exactly.
 
-Speaker A: Then wrong hostname. Then environment variable. Then permissions. Then a dependency that is alive but not ready.
+Speaker B: Rule two?
 
-Speaker B: The important part is predicting the symptom before I touch anything.
+Speaker A: Change one thing.
 
-Speaker A: Yes. Otherwise you're just performing random mutations and calling them experiments.
+Speaker B: Not three.
 
-Speaker B: Real-life example?
+Speaker A: Not five.
 
-Speaker A: A restaurant is “closed.” But is the staff missing? Is the front door locked? Is the kitchen without power? Is the payment terminal down? Is the building open but online ordering broken?
+Speaker B: One.
 
-Speaker B: Same customer symptom. Completely different failure paths.
+Speaker A: Exactly.
 
-Speaker A: That's the entire job.
+Speaker B: Rule three?
 
-Speaker B: Prediction. Wrong hostname.
+Speaker A: Predict the symptom before you break the system.
 
-Speaker A: What do you expect?
+Speaker B: So I am not guessing after the failure.
 
-Speaker B: DNS or service-discovery failure from the client. The database process itself might be perfectly healthy.
+Speaker A: Right.
 
-Speaker A: Good. Wrong port?
+Speaker B: Rule four?
 
-Speaker B: Depends. If nothing is listening there, connection refused. If traffic can't reach the destination, maybe timeout.
+Speaker A: Collect evidence that can separate your hypotheses.
 
-Speaker A: Better. Now add a bad credential.
+Speaker B: And rule five?
 
-Speaker B: The TCP connection can succeed, TLS might succeed if present, and the application then returns an authentication error.
+Speaker A: Restore the known-good state and prove that the original user path works again.
 
-Speaker A: Exactly. That's why layered diagnosis matters.
+Speaker B: So recovery is part of the experiment.
+
+Speaker A: Always.
+
+Speaker B: First failure: wrong hostname.
+
+Speaker A: The API expects database service name `db`, but we change it to `database` while no such service exists.
+
+Speaker B: Prediction?
+
+Speaker A: The API should fail at service-name resolution before it can make a database TCP connection.
+
+Speaker B: Good.
+
+Speaker A: What evidence would you collect?
+
+Speaker B: API error or logs, DNS/service-discovery result inside the container, and the actual network membership of the services.
+
+Speaker A: Good.
+
+Speaker B: What would not be the first move?
+
+Speaker A: Changing the database password.
+
+Speaker B: Or rebuilding the image.
+
+Speaker A: Exactly. The evidence points to the name boundary.
+
+Speaker B: Restore the hostname.
+
+Speaker A: Then prove the API can connect again.
+
+Speaker B: Failure two: wrong published port.
+
+Speaker A: The frontend works inside the Docker network, but the user cannot reach it from the host because the published host port is wrong.
+
+Speaker B: Prediction?
+
+Speaker A: External access should fail while internal container-to-container communication can still work.
+
+Speaker A: Good.
+
+Speaker B: Evidence?
+
+Speaker A: Inspect the published port mapping, then test the host-side port and compare it with the internal service port.
+
+Speaker B: Restore the mapping.
+
+Speaker A: And prove the real browser or curl path works again.
+
+Speaker B: Failure three: bad environment variable.
+
+Speaker A: The container starts, but the application uses the wrong database URL.
+
+Speaker B: Prediction?
+
+Speaker A: The process may stay running while the application fails when it tries to use the dependency.
+
+Speaker B: So this is different from a container that exits immediately.
+
+Speaker A: Exactly.
+
+Speaker B: Evidence?
+
+Speaker A: Inspect the effective environment safely, application logs, and the exact request or startup action that triggers the failure.
+
+Speaker B: Failure four: permission problem.
+
+Speaker A: The process cannot read a mounted file.
+
+Speaker B: Prediction?
+
+Speaker A: The process can be alive while one operation fails with a permission-related error.
+
+Speaker A: Good.
+
+Speaker B: Evidence?
+
+Speaker A: Inspect the process identity, file ownership and permissions, mount path and application logs.
+
+Speaker B: Not just restart the container.
+
+Speaker A: Correct. Restarting does not change the permission model.
+
+Speaker B: Failure five: unhealthy dependency.
+
+Speaker A: The database process is running, but it is not ready to serve the application.
+
+Speaker B: Prediction?
+
+Speaker A: The API may see connection failures or timeouts even though the database container looks 'up'.
+
+Speaker A: Exactly.
+
+Speaker B: So container state and service readiness are not the same thing.
+
+Speaker A: Correct.
+
+Speaker B: That is an important operational lesson.
+
+Speaker A: It is.
+
+Speaker B: Failure six: resource pressure.
+
+Speaker A: The application runs until the container reaches a memory or CPU constraint.
+
+Speaker B: Prediction?
+
+Speaker A: The process may become slow, restart, or fail under load depending on the resource and runtime behavior.
+
+Speaker A: Good.
+
+Speaker B: Evidence?
+
+Speaker A: Resource metrics, container state, process state and logs.
+
+Speaker B: So even here, we follow the same loop.
+
+Speaker A: Baseline.
+
+Speaker B: Change.
+
+Speaker A: Prediction.
+
+Speaker B: Observe.
+
+Speaker A: Diagnose.
+
+Speaker B: Recover.
+
+Speaker A: Prove.
+
+Speaker B: Now the important part: do not create a chaos experiment you cannot safely reverse.
+
+Speaker A: Exactly. Use a disposable local stack or an isolated test environment you control.
+
+Speaker B: Build a small frontend, API and database.
+
+Speaker A: Make the known-good user path work.
+
+Speaker B: Write down the evidence.
+
+Speaker A: Then choose one failure.
+
+Speaker B: Prediction first.
+
+Speaker A: Yes.
+
+Speaker B: Break it.
+
+Speaker A: Observe it.
+
+Speaker B: Record actual evidence.
+
+Speaker A: Restore it.
+
+Speaker B: Prove recovery.
+
+Speaker A: Then repeat with a different failure.
+
+Speaker B: That sounds simple.
+
+Speaker A: It is simple. It is not easy.
+
+Speaker B: Because I have to resist random changes.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction pause.
+
+Speaker A: The database is healthy. The API container is healthy. The API still reports 'cannot resolve db'. What is your first hypothesis?
+
+Speaker B: Service discovery or Docker network membership, not database credentials.
+
+Speaker A: Good.
+
+Speaker B: Another.
+
+Speaker A: The API resolves `db` and connects to the host, but the browser cannot reach the frontend.
+
+Speaker B: I inspect the published host port and external access path before changing the internal Docker network.
+
+Speaker A: Good.
+
+Speaker B: Another.
+
+Speaker A: The database container is recreated and the database is empty.
+
+Speaker B: I inspect volume attachment and persistence before assuming the database application lost its data.
+
+Speaker A: Good.
+
+Speaker B: Final one.
+
+Speaker A: The container keeps restarting.
+
+Speaker B: I inspect the main process command, exit status, logs and health behavior before touching the image or the host.
+
+Speaker A: Exactly.
 
 Speaker B: Mac lab?
 
-Speaker A: Create a tiny stack and keep notes. For every break, write four things: your hypothesis, the predicted observation, the actual observation, and the next test. At the end, erase the notes and repeat from memory.
+Speaker A: Run the known-good stack.
 
-Speaker B: That last part is mean.
+Speaker B: Prove the real user path.
 
-Speaker A: It's called retrieval practice.
+Speaker A: Choose one failure.
 
-Speaker B: Same thing, nicer branding.
+Speaker B: Write the prediction before the change.
 
-Speaker A: Fine. Call it supervised cruelty.
+Speaker A: Good.
 
-Speaker B: And that's apparently our educational philosophy.
+Speaker B: Make the change.
 
-Speaker A: Only on Tuesdays.
+Speaker A: Observe.
 
+Speaker B: Capture evidence.
+
+Speaker A: Restore.
+
+Speaker B: Prove recovery.
+
+Speaker A: Good.
+
+Speaker B: Then choose a different failure and repeat.
+
+Speaker A: Keep the experiment log.
+
+Speaker B: Hypothesis.
+
+Speaker A: Predicted symptom.
+
+Speaker B: Actual symptom.
+
+Speaker A: Evidence.
+
+Speaker B: Root boundary.
+
+Speaker A: Recovery action.
+
+Speaker B: Recovery proof.
+
+Speaker A: Exactly.
+
+Speaker B: Recall.
+
+Speaker A: Why do we start from a baseline?
+
+Speaker B: To know what good looks like before the failure and to prove recovery afterward.
+
+Speaker A: Why change one thing?
+
+Speaker B: So the observed change can be connected to one cause.
+
+Speaker A: Why predict first?
+
+Speaker B: Prediction forces a testable hypothesis instead of random troubleshooting.
+
+Speaker A: What makes the experiment complete?
+
+Speaker B: Evidence explains the failure, the known-good setting is restored, and the real user path works again.
+
+Speaker A: Final challenge.
+
+Speaker B: The Docker stack is 'broken.'
+
+Speaker A: Your response?
+
+Speaker B: Do not mutate randomly. Establish the baseline, choose one boundary, predict the symptom, make one controlled change, collect evidence, restore the state, and prove recovery.
+
+Speaker A: Good.
+
+Speaker B: So breaking Docker is not destruction.
+
+Speaker A: It is a controlled experiment.
+
+Speaker B: And the quality of the lesson is the quality of the evidence.
+
+Speaker A: Exactly. Break one thing. Explain it. Recover it. Prove it.
