@@ -68,6 +68,8 @@ assert.match(provider, /verificationSigningPayload/);
 assert.match(provider, /ensureRuntimeVerificationTarget/);
 assert.match(provider, /providerKeyId/);
 assert.match(localAgent, /signVerificationAttestation/);
+const providerCore = await source("scripts/verification-provider-core.mjs");
+assert.match(providerCore, /providerKeyId/);
 assert.doesNotMatch(localAgent, /send\(res, 200, envelope/);
 assert.match(sshRunner, /signVerificationAttestation/);
 assert.match(sshRunner, /challengeFile/);
