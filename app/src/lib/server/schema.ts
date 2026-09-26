@@ -107,6 +107,62 @@ export const learnerProgressHistory = pgTable(
   })
 );
 
+
+export const learnerVerifiedEvidence = pgTable(
+  "learner_verified_evidence",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => authUsers.id, { onDelete: "cascade" }),
+    itemId: text("item_id").notNull(),
+    kind: text("kind").notNull(),
+    verifierId: text("verifier_id").notNull(),
+    verificationRef: text("verification_ref").notNull(),
+    attestationDigest: text("attestation_digest").notNull(),
+    verifiedAt: timestamp("verified_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => ({
+    userItemVerificationUnique: uniqueIndex(
+      "learner_verified_evidence_user_item_ref_uq"
+    ).on(table.userId, table.itemId, table.verificationRef),
+    userItemIndex: index("learner_verified_evidence_user_item_idx").on(
+      table.userId,
+      table.itemId,
+      table.verifiedAt
+    ),
+    digestCheck: check(
+      "learner_verified_evidence_attestation_digest_ck",
+      sql`char_length(attestation_digest) > 0`
+    )
+  })
+);
+
+export const learnerCompletionEvidence = pgTable(
+  "learner_completion_evidence",
+  {
+    completionId: uuid("completion_id")
+      .notNull()
+      .references(() => learnerProgressHistory.id, { onDelete: "cascade" }),
+    evidenceId: uuid("evidence_id")
+      .notNull()
+      .references(() => learnerVerifiedEvidence.id, { onDelete: "restrict" })
+  },
+  (table) => ({
+    completionEvidenceUnique: uniqueIndex(
+      "learner_completion_evidence_uq"
+    ).on(table.completionId, table.evidenceId),
+    evidenceIndex: index("learner_completion_evidence_evidence_idx").on(
+      table.evidenceId
+    )
+  })
+);
+
 export type AuthUser = typeof authUsers.$inferSelect;
 export type AuthSession = typeof authSessions.$inferSelect;
 export type LearnerProgressHistory =
