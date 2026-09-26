@@ -129,7 +129,6 @@ export default function App({
   return (
     <>
       <AppShell
-        mode="static"
         layout="default"
         padding={{ base: "sm", sm: "md", lg: "lg" }}
         header={{ height: { base: 68, sm: 76 } }}
