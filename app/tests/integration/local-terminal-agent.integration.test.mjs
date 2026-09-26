@@ -211,6 +211,7 @@ describe("local terminal agent", () => {
         challengeId: challenge.id,
         learnerId: challenge.learnerId,
         itemId: challenge.itemId,
+        targetRef: challenge.targetRef,
         evidenceKind: challenge.evidenceKind,
         providerId: challenge.providerId,
         keyId: healthBody.providerKeyId,
