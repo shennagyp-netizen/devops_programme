@@ -17,6 +17,8 @@ const required = [
   ["route is authenticated", route.includes("getCurrentUser")],
   ["route uses the AI Gateway server key", route.includes("AI_GATEWAY_API_KEY")],
   ["route normalizes provider output", route.includes("parseTutorResponse")],
+  ["route atomically reserves tutor user messages", route.includes("reserveTutorUserMessage")],
+  ["tutor reservation uses a transaction lock", read("src/lib/server/tutor.ts").includes("pg_advisory_xact_lock")],
   ["contract locks retry authority", contract.includes("canUnlockRetry: false")],
   ["contract locks certification authority", contract.includes("canCertify: false")],
   ["component labels learner evidence unverified", component.includes("treated as unverified")],
