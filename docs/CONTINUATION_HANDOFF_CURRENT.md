@@ -6,9 +6,9 @@
 
 **Current branch:** `main`
 
-**Latest main architecture/content merge:** PR #53, commit `d1884d9443a7e2c2f8eff85822307604ea5d865d` (D2.6 Docker network/storage script + illustration quality slice).
+**Latest main architecture/content merge:** PR #78, commit `0d0c490b5a7f21f49f6d6ba25c763672cc5cd8ab` (D2.7 controlled Docker failure-loop script + illustration quality slice).
+**Active content-quality branch:** none. PR #78 has merged to `main`.
 
-**Active content-quality branch:** none. PR #53 has merged to `main`.
 
 **Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
 
@@ -1905,41 +1905,44 @@ Merged PR #49:
 Merged PR #50:
 - D2.3 -> `http-exchange-v1`: Request -> Headers -> Route -> Response -> Evidence.
 - Merge commit: `b2932a7ee3ebe61e206f1f49f9da5943106a2727`.
-- Final PR #50 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #51:
 - D2.4 -> `tls-trust-v1`: Client -> Certificate -> Handshake -> Secure Session -> Evidence.
 - Merge commit: `faee8ec98812592b20c7b854bc506c47f86247e0`.
 - Final PR #51 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
+- D2.4 explicitly separates encryption, endpoint identity, certificate trust, handshake behavior and post-TLS HTTP evidence.
 
-Merged PR #52:
-- D2.5 -> `container-execution-v1`: Image -> Container -> Process -> Namespaces -> Host Kernel.
-- Merge commit: `ffb17b61597e7a8b1e25139bcd634fba0719523c`.
-- Final PR #52 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-
-Merged PR #53:
+Merged PR #110:
 - D2.6 -> `docker-network-storage-v1`: Service -> Network -> Name -> Port -> Volume.
-- Merge commit: `d1884d9443a7e2c2f8eff85822307604ea5d865d`.
-- D2.6 separates internal service discovery, internal service ports, published host ports and persistent volumes, then uses controlled failures to distinguish their symptoms.
-- Final PR #53 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
+- Merge commit: `9943a83f502147b477fd4ee839545d4c5924bb24`.
+- D2.6 separates internal service discovery, internal transport, published host ports and persistent data lifecycle.
+- Controlled failures break service naming and published-port access separately, then verify volume persistence across container recreation.
+- Final PR #110 gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
 - Next content boundary: **D2.7 — Break Docker**.
 
-
-Active PR #54 scope:
-- D2.7 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `docker-failure-loop-v1`.
-- Teaching model: Baseline -> Change -> Symptom -> Evidence -> Recovery.
-- The rewritten script turns Docker failure into a controlled experiment across hostname, published port, configuration, permissions, readiness and resource failures.
-- Every experiment requires one change, a prediction, evidence, restoration and recovery proof.
-- TDD/full-programme gate is required before merge.
-
-
-Active PR #53 scope:
+Active PR #111 scope:
 - D2.7 is upgraded to the script+illustration gold-standard using the existing authored `docker-failure-loop-v1` model.
 - Teaching model: Baseline -> Change -> Symptom -> Evidence -> Recovery.
 - The capstone script deliberately distinguishes one controlled boundary at a time: service name, published port, environment, permissions, dependency readiness and resource pressure.
-- The lesson requires prediction before failure, evidence during failure, restoration, and real user-path recovery proof.
-- TDD/full-programme gate is required before merge.
+- Every experiment requires one change, a prediction, evidence, restoration and real user-path recovery proof.
+- TDD/full-programme gate passed on head `45e8e752c98e90d3d7c4f8f4261bbf0d356c3e33`.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
+
+Merged PR #97:
+- D5.7 -> `global-architecture-v1`: Users -> Routing -> Regions -> Dependencies -> Capacity -> Recovery.
+- Merge commit: `03f08276f24428967b46782c5fdb54e04a079118`.
+- D5.7 replaces the short architecture note with a full failure-domain lesson covering regional loss, survivor capacity, data placement, shared dependencies, deployment blast radius and recovery proof.
+- Vercel status for the source commit was **build-rate-limit infrastructure failure**; no green deployment claim is made fr
+Merged PR #100:
+- D3.2 -> `kubernetes-networking-v1`: Service -> Selector -> Endpoint set -> Pod -> Evidence.
+- Merge commit: `f584bce305faa9ba58404122efe21e6f79bf9e9e`.
+- D3.2 replaces the legacy `kubernetes-service-path-v1` lesson identity with the full networking failure/evidence model.
+- Fresh current-main validation caught and corrected a duplicate legacy integration assertion before the final gate.
+- Final PR #100 gate passed **409 tests**, all programme contracts, TypeScript and the Next.js production build.
+- Stale PR #91 was closed unmerged after the clean current-main port landed.
+
+om that status.
+- Next content boundary: **A2.1-A2.3 — dependency failure, retry storms and partial network failure**.
+
