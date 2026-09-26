@@ -235,6 +235,89 @@ describe("verification provider authority", () => {
     expect(returning).toHaveBeenCalledTimes(1);
   });
 
+
+  it("rejects attestations signed by a revoked provider key", async () => {
+    const { publicKey, privateKey } = keyPair();
+    const { challenge, attestation } = buildAttestation(privateKey);
+
+    const attempt = {
+      id: challenge.id,
+      userId: "user_1",
+      itemId: challenge.itemId,
+      targetRef: challenge.targetRef,
+      evidenceKind: challenge.evidenceKind,
+      providerId: challenge.providerId,
+      nonce: challenge.nonce,
+      nonceHash: nonceHash(challenge.nonce),
+      issuedAt: new Date(challenge.issuedAt),
+      expiresAt: new Date(challenge.expiresAt),
+      consumedAt: null
+    };
+
+    const providerKey = {
+      id: "provider-key-1",
+      userId: "user_1",
+      providerId: "local-terminal",
+      keyId: "key-1",
+      algorithm: "ed25519",
+      publicKey: publicKey.export({ type: "spki", format: "pem" }).toString(),
+      createdAt: now,
+      revokedAt: new Date("2026-09-26T12:01:00.000Z")
+    };
+
+    configureTransaction({ attempt, providerKey });
+
+    await expect(
+      acceptVerificationAttestationForUser("user_1", attestation, now)
+    ).rejects.toThrow(/not registered or has been revoked/i);
+
+    expect(updateMock).not.toHaveBeenCalled();
+    expect(insertMock).not.toHaveBeenCalled();
+  });
+
+  it("rejects a valid provider signature when the target reference is substituted", async () => {
+    const { publicKey, privateKey } = keyPair();
+    const { challenge, attestation } = buildAttestation(privateKey);
+    const originalPayload = verificationSigningPayload(challenge, attestation);
+    expect(originalPayload).toContain(challenge.targetRef);
+
+    attestation.targetRef = "runtime-exercise-B1.3";
+
+    const attempt = {
+      id: challenge.id,
+      userId: "user_1",
+      itemId: challenge.itemId,
+      targetRef: challenge.targetRef,
+      evidenceKind: challenge.evidenceKind,
+      providerId: challenge.providerId,
+      nonce: challenge.nonce,
+      nonceHash: nonceHash(challenge.nonce),
+      issuedAt: new Date(challenge.issuedAt),
+      expiresAt: new Date(challenge.expiresAt),
+      consumedAt: null
+    };
+
+    const providerKey = {
+      id: "provider-key-1",
+      userId: "user_1",
+      providerId: "local-terminal",
+      keyId: "key-1",
+      algorithm: "ed25519",
+      publicKey: publicKey.export({ type: "spki", format: "pem" }).toString(),
+      createdAt: now,
+      revokedAt: null
+    };
+
+    configureTransaction({ attempt, providerKey });
+
+    await expect(
+      acceptVerificationAttestationForUser("user_1", attestation, now)
+    ).rejects.toThrow(/TARGET_MISMATCH/i);
+
+    expect(updateMock).not.toHaveBeenCalled();
+    expect(insertMock).not.toHaveBeenCalled();
+  });
+
   it("accepts a correctly signed attestation and atomically consumes the challenge", async () => {
     const { publicKey, privateKey } = keyPair();
     const { challenge, attestation } = buildAttestation(privateKey);
