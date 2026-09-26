@@ -63,10 +63,16 @@ function base64UrlToBuffer(value: string) {
 }
 
 function publicKeyForVerification(publicKey: string) {
-  const key = createPublicKey(publicKey);
+  const normalized = publicKey.trim();
+  if (!normalized.startsWith("-----BEGIN PUBLIC KEY-----") || !normalized.endsWith("-----END PUBLIC KEY-----")) {
+    throw new Error("Trusted provider key must be an Ed25519 public-key PEM.");
+  }
+
+  const key = createPublicKey(normalized);
   if (key.asymmetricKeyType !== "ed25519") {
     throw new Error("Trusted provider key must use Ed25519.");
   }
+
   return key;
 }
 
@@ -265,6 +271,14 @@ export async function acceptVerificationAttestationForUser(
 
     if (!providerKey) {
       throw new Error("Trusted provider key is not registered or has been revoked.");
+    }
+
+    if (providerKey.algorithm !== "ed25519") {
+      throw new Error("Trusted provider key algorithm is invalid.");
+    }
+
+    if (attempt.nonceHash !== `sha256:${sha256(attempt.nonce)}`) {
+      throw new Error("Verification challenge integrity check failed.");
     }
 
     const challenge = challengeFromRow(attempt);
