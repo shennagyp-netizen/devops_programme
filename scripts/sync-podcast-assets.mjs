@@ -58,7 +58,7 @@ await mkdir(targetDir, { recursive: true });
 
 const files = await collectTextFiles(sourceDir);
 const episodes = {};
-const cognitiveLevels = {};
+const explanationLevels = {};
 
 for (const file of files) {
   const source = await readFile(file.absolutePath, "utf8");
@@ -73,8 +73,8 @@ for (const file of files) {
     const match = file.relativePath.match(/(?:^|[/\\])([A-Z0-9]+\.[0-9]+)\.cognitive-([1-4])\.txt$/i);
     if (match) {
       const [, episodeId, level] = match;
-      cognitiveLevels[episodeId] ??= {};
-      cognitiveLevels[episodeId][level] = Object.values(hashes)[0];
+      explanationLevels[episodeId] ??= {};
+      explanationLevels[episodeId][level] = Object.values(hashes)[0];
     }
   } else {
     Object.assign(episodes, hashes);
@@ -85,7 +85,7 @@ const manifest = {
   schemaVersion: 2,
   source: "podcasts/",
   episodes,
-  cognitiveLevels
+  explanationLevels
 };
 
 await writeFile(
