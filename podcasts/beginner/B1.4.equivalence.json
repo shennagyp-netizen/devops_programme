@@ -1,0 +1,121 @@
+{
+  "episodeId": "B1.4",
+  "version": 2,
+  "informationUnits": [
+    {
+      "id": "K01",
+      "title": "Repeatability problem",
+      "mustCover": [
+        "same application code can behave differently because its environment differs",
+        "the environment is part of the system"
+      ]
+    },
+    {
+      "id": "K02",
+      "title": "Environment diagnosis inputs",
+      "mustCover": [
+        "runtime version",
+        "libraries or dependencies",
+        "expected files",
+        "environment variables",
+        "external dependencies"
+      ]
+    },
+    {
+      "id": "K03",
+      "title": "Container analogy boundary",
+      "mustCover": [
+        "same recipe can produce different results in different environments",
+        "the analogy must not be treated as the literal container mechanism"
+      ]
+    },
+    {
+      "id": "K04",
+      "title": "Image container process",
+      "mustCover": [
+        "image is the packaged starting point",
+        "container is a running instance",
+        "process is the actual application work",
+        "they are distinct"
+      ]
+    },
+    {
+      "id": "K05",
+      "title": "Host kernel and isolation",
+      "mustCover": [
+        "container is not a full virtual machine",
+        "container shares the host kernel",
+        "namespaces and cgroups provide important isolation/resource control"
+      ]
+    },
+    {
+      "id": "K06",
+      "title": "Process and host relationship",
+      "mustCover": [
+        "container isolation changes what a process can see",
+        "the host still supplies shared infrastructure",
+        "container boundaries do not remove host behavior"
+      ]
+    },
+    {
+      "id": "K07",
+      "title": "Short-lived command and lifecycle",
+      "mustCover": [
+        "docker run --rm nginx:alpine nginx -t is a valid short-lived example",
+        "the process ending ends the short-lived container",
+        "container lifetime follows the process for such a command"
+      ]
+    },
+    {
+      "id": "K08",
+      "title": "Persistent data",
+      "mustCover": [
+        "ordinary container writable state is disposable with the container",
+        "important data needs a persistent storage mechanism such as a volume",
+        "data lifecycle should be independent from container replacement"
+      ]
+    },
+    {
+      "id": "K09",
+      "title": "Container and host ports",
+      "mustCover": [
+        "a process can listen on a container port",
+        "a host can publish that port differently",
+        "running is not proof of external reachability"
+      ]
+    },
+    {
+      "id": "K10",
+      "title": "Reachability diagnosis",
+      "mustCover": [
+        "check process listening",
+        "check container-side port",
+        "check published host port",
+        "check client network path",
+        "restart is not a diagnosis"
+      ]
+    },
+    {
+      "id": "K11",
+      "title": "Multi-service application",
+      "mustCover": [
+        "frontend, API, and database can be separate services",
+        "API needs a network path to database",
+        "database needs persistent data",
+        "frontend can often be disposable"
+      ]
+    },
+    {
+      "id": "K12",
+      "title": "Evidence and transfer",
+      "mustCover": [
+        "inspect image/process/network/storage",
+        "make one controlled failure",
+        "observe evidence",
+        "repair the smallest broken boundary",
+        "verify recovery",
+        "the same reasoning transfers to Kubernetes and larger systems"
+      ]
+    }
+  ]
+}
