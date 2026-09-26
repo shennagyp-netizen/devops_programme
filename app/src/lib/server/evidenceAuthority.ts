@@ -1,5 +1,5 @@
 import { and, asc, eq, inArray } from "drizzle-orm";
-import { getDb } from "./db";
+import { getDb, type DbTransaction } from "./db";
 import { learnerVerifiedEvidence } from "./schema";
 import { findProgrammeLearningItem } from "./programmeAuthority";
 import type { VerifiedEvidenceRecord } from "../../framework/contracts";
@@ -11,6 +11,9 @@ export type TrustedVerifiedEvidenceInput = {
   verifierId: string;
   verificationRef: string;
   attestationDigest: string;
+  providerKeyId?: string;
+  verificationAttemptId?: string;
+  signature?: string;
 };
 
 function requireNonEmpty(value: string, name: string, maxLength: number) {
@@ -31,37 +34,14 @@ function requireLearnerId(value: string) {
   return requireNonEmpty(value, "learnerId", 200);
 }
 
-function toVerifiedEvidenceRecord(
-  row: typeof learnerVerifiedEvidence.$inferSelect
-): VerifiedEvidenceRecord {
-  return {
-    id: row.id,
-    learnerId: row.userId,
-    itemId: row.itemId,
-    kind: row.kind,
-    verifierId: row.verifierId,
-    verificationRef: row.verificationRef,
-    attestationDigest: row.attestationDigest,
-    verifiedAt: row.verifiedAt.toISOString()
-  };
-}
-
-/**
- * Trusted server/provider boundary only.
- *
- * There is deliberately no browser-facing action for this function.
- * A caller must already have authenticated provider provenance and produced
- * a server-validated attestation digest before inserting evidence here.
- */
-export async function recordTrustedVerifiedEvidence(
-  input: TrustedVerifiedEvidenceInput
-): Promise<VerifiedEvidenceRecord> {
+function validateTrustedInput(input: TrustedVerifiedEvidenceInput) {
   const learnerId = requireLearnerId(input.learnerId);
   const itemId = requireNonEmpty(input.itemId, "itemId", 200);
 
   if (!findProgrammeLearningItem(itemId)) {
     throw new Error("Unknown learning item.");
   }
+
   const kind = requireNonEmpty(input.kind, "kind", 128);
   const verifierId = requireNonEmpty(input.verifierId, "verifierId", 128);
   const verificationRef = requireNonEmpty(
@@ -81,17 +61,70 @@ export async function recordTrustedVerifiedEvidence(
     );
   }
 
-  const db = getDb();
+  if (input.providerKeyId !== undefined) {
+    requireNonEmpty(input.providerKeyId, "providerKeyId", 128);
+  }
 
-  const [row] = await db
+  if (input.verificationAttemptId !== undefined) {
+    requireNonEmpty(input.verificationAttemptId, "verificationAttemptId", 128);
+  }
+
+  if (input.signature !== undefined) {
+    requireNonEmpty(input.signature, "signature", 1024);
+  }
+
+  return {
+    learnerId,
+    itemId,
+    kind,
+    verifierId,
+    verificationRef,
+    attestationDigest,
+    providerKeyId: input.providerKeyId,
+    verificationAttemptId: input.verificationAttemptId,
+    signature: input.signature
+  };
+}
+
+export function toVerifiedEvidenceRecord(
+  row: typeof learnerVerifiedEvidence.$inferSelect
+): VerifiedEvidenceRecord {
+  return {
+    id: row.id,
+    learnerId: row.userId,
+    itemId: row.itemId,
+    kind: row.kind,
+    verifierId: row.verifierId,
+    verificationRef: row.verificationRef,
+    attestationDigest: row.attestationDigest,
+    verifiedAt: row.verifiedAt.toISOString()
+  };
+}
+
+/**
+ * Transaction-safe trusted provider persistence.
+ *
+ * This function is intentionally not a browser-facing action. Callers must
+ * have already authenticated provider provenance and validated the attestation.
+ */
+export async function recordTrustedVerifiedEvidenceWithinTransaction(
+  tx: DbTransaction,
+  input: TrustedVerifiedEvidenceInput
+): Promise<VerifiedEvidenceRecord> {
+  const validated = validateTrustedInput(input);
+
+  const [row] = await tx
     .insert(learnerVerifiedEvidence)
     .values({
-      userId: learnerId,
-      itemId,
-      kind,
-      verifierId,
-      verificationRef,
-      attestationDigest
+      userId: validated.learnerId,
+      itemId: validated.itemId,
+      kind: validated.kind,
+      verifierId: validated.verifierId,
+      verificationRef: validated.verificationRef,
+      attestationDigest: validated.attestationDigest,
+      providerKeyId: validated.providerKeyId ?? null,
+      verificationAttemptId: validated.verificationAttemptId ?? null,
+      signature: validated.signature ?? null
     })
     .onConflictDoNothing({
       target: [
@@ -102,27 +135,39 @@ export async function recordTrustedVerifiedEvidence(
     })
     .returning();
 
-  if (row) {
-    return toVerifiedEvidenceRecord(row);
-  }
-
-  const [existing] = await db
-    .select()
-    .from(learnerVerifiedEvidence)
-    .where(
-      and(
-        eq(learnerVerifiedEvidence.userId, learnerId),
-        eq(learnerVerifiedEvidence.itemId, itemId),
-        eq(learnerVerifiedEvidence.verificationRef, verificationRef)
+  if (!row) {
+    const [existing] = await tx
+      .select()
+      .from(learnerVerifiedEvidence)
+      .where(
+        and(
+          eq(learnerVerifiedEvidence.userId, validated.learnerId),
+          eq(learnerVerifiedEvidence.itemId, validated.itemId),
+          eq(
+            learnerVerifiedEvidence.verificationRef,
+            validated.verificationRef
+          )
+        )
       )
-    )
-    .limit(1);
+      .limit(1);
 
-  if (!existing) {
-    throw new Error("Verified evidence could not be stored.");
+    if (!existing) {
+      throw new Error("Verified evidence could not be stored.");
+    }
+
+    return toVerifiedEvidenceRecord(existing);
   }
 
-  return toVerifiedEvidenceRecord(existing);
+  return toVerifiedEvidenceRecord(row);
+}
+
+export async function recordTrustedVerifiedEvidence(
+  input: TrustedVerifiedEvidenceInput
+): Promise<VerifiedEvidenceRecord> {
+  const db = getDb();
+  return db.transaction((tx) =>
+    recordTrustedVerifiedEvidenceWithinTransaction(tx, input)
+  );
 }
 
 export async function listVerifiedEvidenceForUser(
