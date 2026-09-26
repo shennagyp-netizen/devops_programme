@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS "verification_attempts" (
   "target_ref" text NOT NULL,
   "evidence_kind" text NOT NULL,
   "provider_id" text NOT NULL,
+  "provider_key_id" text,
   "nonce" text NOT NULL,
   "nonce_hash" text NOT NULL,
   "issued_at" timestamptz NOT NULL,
@@ -31,9 +32,6 @@ CREATE TABLE IF NOT EXISTS "verification_attempts" (
   "consumed_at" timestamptz,
   "created_at" timestamptz DEFAULT now() NOT NULL
 );
-
-ALTER TABLE "verification_attempts"
-  ADD COLUMN IF NOT EXISTS "target_ref" text;
 
 CREATE INDEX IF NOT EXISTS "verification_attempts_user_item_idx"
   ON "verification_attempts" ("user_id", "item_id", "created_at");
@@ -55,3 +53,6 @@ ALTER TABLE "learner_verified_evidence"
   FOREIGN KEY ("verification_attempt_id")
   REFERENCES "verification_attempts"("id")
   ON DELETE SET NULL;
+
+ALTER TABLE "verification_attempts"
+  ADD COLUMN IF NOT EXISTS "provider_key_id" text;
