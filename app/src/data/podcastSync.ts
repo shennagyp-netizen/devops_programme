@@ -1,4 +1,11 @@
 export type PodcastExplanationLevel = 1 | 2 | 3 | 4;
+export type PodcastSpeechRate = 1 | 1.25 | 1.5 | 2;
+
+export const PODCAST_SPEECH_RATES = [1, 1.25, 1.5, 2] as const;
+
+export function isPodcastSpeechRate(value: number): value is PodcastSpeechRate {
+  return (PODCAST_SPEECH_RATES as readonly number[]).includes(value);
+}
 
 export type PodcastExplanationLevelId =
   | "very-simple"
