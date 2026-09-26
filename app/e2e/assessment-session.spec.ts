@@ -35,7 +35,9 @@ test.describe("real-user assessment session", () => {
     const answer = await answerCurrentAssessmentItem(page);
 
     await page.getByRole("button", { name: "Mark for review" }).click();
-    await expect(page.getByRole("button", { name: "Marked for review" })).toBeVisible();
+    await expect(
+        page.getByRole("button", { name: "Marked for review", exact: true })
+      ).toBeVisible();
 
     await page.getByRole("button", { name: "Save and next" }).click();
     await expect(page.getByText(/ITEM 2 OF/)).toBeVisible();
