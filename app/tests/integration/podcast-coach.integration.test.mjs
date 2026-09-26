@@ -1,6 +1,6 @@
 import React from "react";
 /** @vitest-environment jsdom */
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { LessonVoiceClockProvider } from "../../src/components/LessonVoiceClock.tsx";
 import { PodcastCoach } from "../../src/components/PodcastCoach.tsx";
@@ -76,6 +76,7 @@ describe("PodcastCoach real component", () => {
   });
 
   afterEach(() => {
+    cleanup();
     vi.unstubAllGlobals();
   });
 
