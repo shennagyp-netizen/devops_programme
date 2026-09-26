@@ -172,6 +172,7 @@ export const verificationAttempts = pgTable(
     itemId: text("item_id").notNull(),
     evidenceKind: text("evidence_kind").notNull(),
     providerId: text("provider_id").notNull(),
+    nonce: text("nonce").notNull(),
     nonceHash: text("nonce_hash").notNull(),
     issuedAt: timestamp("issued_at", { withTimezone: true }).notNull(),
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
