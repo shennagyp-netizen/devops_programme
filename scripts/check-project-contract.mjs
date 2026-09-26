@@ -48,6 +48,20 @@ for (const projectId of projectIds) {
     failed = true;
     console.error(`Project ${projectId} must define change and incident history.`);
   }
+  const phaseCount = (projectBlock.match(new RegExp('id: "' + projectId + '-P\\d+"', 'g')) || []).length;
+  if (!projectBlock.includes("estimatedHours:") || !projectBlock.includes("phases: [") || phaseCount < 4) {
+    failed = true;
+    console.error(`Project ${projectId} must define at least four explicit phases and an estimated workload.`);
+  }
+
+  const hourMatches = [...projectBlock.matchAll(/hours: (\\d+)/g)].map((match) => Number(match[1]));
+  const estimatedMatch = projectBlock.match(/estimatedHours: (\\d+)/);
+  const phaseHours = hourMatches.reduce((sum, hours) => sum + hours, 0);
+  const estimatedHours = estimatedMatch ? Number(estimatedMatch[1]) : 0;
+  if (!estimatedHours || phaseHours !== estimatedHours) {
+    failed = true;
+    console.error(`Project ${projectId} phase hours must add up to estimatedHours.`);
+  }
 }
 
 const intermediateProjectIds = ["I1", "I2", "I3"];
