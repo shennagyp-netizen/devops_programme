@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
   buildPodcastTtsBundle,
   isValidPodcastTtsBundle,
@@ -14,23 +14,21 @@ const versions = {
   "4": "sha-4"
 };
 
-describe("TTS podcast cognitive-level contract", () => {
-  beforeEach(() => vi.restoreAllMocks());
-
-  it("defines exactly four fixed cognitive versions", () => {
+describe("TTS explanation-level contract", () => {
+  it("defines exactly four complete explanations of the same lesson", () => {
     const bundle = buildPodcastTtsBundle("B1.4", versions);
 
     expect(bundle?.speeches).toHaveLength(4);
-    expect(bundle?.speeches.map((speech) => speech.cognitiveLevel)).toEqual([1, 2, 3, 4]);
-    expect(bundle?.speeches.map((speech) => speech.cognitiveLevelId)).toEqual([
-      "foundation",
-      "mechanism",
-      "diagnosis",
-      "design"
+    expect(bundle?.speeches.map((speech) => speech.explanationLevel)).toEqual([1, 2, 3, 4]);
+    expect(bundle?.speeches.map((speech) => speech.explanationLevelId)).toEqual([
+      "very-simple",
+      "simple-technical",
+      "professional",
+      "expert"
     ]);
   });
 
-  it("keeps each cognitive level independently identified", () => {
+  it("keeps every explanation independently versioned", () => {
     const bundle = buildPodcastTtsBundle("B1.4", versions);
 
     expect(bundle?.speeches[0].scriptVersion).toBe("sha-1");
@@ -38,38 +36,38 @@ describe("TTS podcast cognitive-level contract", () => {
     expect(bundle?.speeches[0].scriptVersion).not.toBe(bundle?.speeches[3].scriptVersion);
   });
 
-  it("fails closed when one cognitive script is missing", () => {
+  it("fails closed when one explanation is missing", () => {
     const incomplete = { ...versions };
     delete incomplete["3"];
-
     expect(buildPodcastTtsBundle("B1.4", incomplete)).toBeUndefined();
   });
 
   it("validates the exact four-level identity contract", () => {
     const bundle = buildPodcastTtsBundle("B1.4", versions);
-
     expect(isValidPodcastTtsBundle(bundle, "B1.4")).toBe(true);
 
     const duplicate = {
       ...bundle,
       speeches: bundle.speeches.map((speech, index) =>
-        index === 1 ? { ...speech, cognitiveLevel: 1, cognitiveLevelId: "foundation", label: "Foundation" } : speech
+        index === 1
+          ? { ...speech, explanationLevel: 1, explanationLevelId: "very-simple", label: "Very simple" }
+          : speech
       )
     };
 
     expect(isValidPodcastTtsBundle(duplicate, "B1.4")).toBe(false);
   });
 
-  it("does not define cognitive depth through TTS speed or audio URLs", () => {
+  it("defines explanation depth without embedding speed or audio", () => {
     const bundle = buildPodcastTtsBundle("B1.4", versions);
 
     expect(bundle?.speeches.every((speech) => !("rate" in speech))).toBe(true);
     expect(bundle?.speeches.every((speech) => !("audioUrl" in speech))).toBe(true);
   });
 
-  it("exposes human-readable cognitive labels", () => {
-    expect(podcastLevelId(1)).toBe("foundation");
-    expect(podcastLevelLabel(2)).toBe("Mechanism");
-    expect(podcastLevelDescription(4)).toContain("transfer");
+  it("describes the four explanation levels clearly", () => {
+    expect(podcastLevelId(1)).toBe("very-simple");
+    expect(podcastLevelLabel(2)).toBe("Simple technical");
+    expect(podcastLevelDescription(4)).toContain("complete lesson information");
   });
 });
