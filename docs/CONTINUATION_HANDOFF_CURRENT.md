@@ -1942,7 +1942,7 @@ om that status.
 
 
 ============================================================
-FIXED PODCAST MVP — 2026-09-26
+FIXED PODCAST COGNITIVE-LEVEL MODEL — 2026-09-26
 ============================================================
 
 The podcast/co-teacher remains fixed authored curriculum content. The private LLM tutor is explicitly separate and may not rewrite or regenerate the podcast.
@@ -1950,8 +1950,8 @@ The podcast/co-teacher remains fixed authored curriculum content. The private LL
 MVP implementation:
 - PodcastCoach renders the full authored transcript in the persistent lesson voice panel.
 - The active transcript turn follows the real audio clock when a valid fixed audio manifest is published.
-- Fixed podcast episodes are modeled as ordered speech segments, allowing four fixed speech files to share one episode timeline.
-- Learner playback speed is supported from 1x through 2x for both fixed audio and transcript fallback.
+- Each lesson can expose four complete fixed authored speeches: Foundation, Mechanism, Diagnosis, and Design & Transfer.
+- Cognitive level is a content choice, not an HTML audio playback-rate setting.
 - Prediction/lab/recall cues remain authoritative learner-action boundaries.
 - Invalid, stale or unpublished audio fails closed to the authored transcript.
 - scripts/sync-podcast-assets.mjs now synchronizes fixed audio assets from podcasts/ into app/public/podcasts/.
@@ -1959,11 +1959,11 @@ MVP implementation:
 - Continuous voice integration coverage verifies the fixed player and playback-speed control.
 
 Current publication boundary:
-- The production audio manifest is intentionally empty until the four fixed binary speech assets are published.
-- The MVP player is therefore deploy-safe today: every lesson still has its authored transcript fallback.
-- A local MVP asset package was generated separately for the first four B1.4 speech turns; it is not yet claimed as a published production recording.
+- The production audio manifest is intentionally empty until the four exact B1.4 level recordings are published.
+- The player is deploy-safe because each selected level falls back to its authored transcript when audio is absent or stale.
+- Four local MVP MP3s were generated for B1.4 Cognitive Levels 1–4. They are complete speeches, not first-four-turn clips.
 
 Do not connect the private LLM tutor to podcast generation. Future adaptive tutoring belongs in the separate tutor conversation boundary.
 ============================================================
-END FIXED PODCAST MVP
+END FIXED PODCAST COGNITIVE-LEVEL MODEL
 ============================================================
