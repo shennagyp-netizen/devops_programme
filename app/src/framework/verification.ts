@@ -17,6 +17,9 @@ export type VerificationAttestation = {
   providerId: string;
   verificationRef: string;
   attestationDigest: string;
+  nonce: string;
+  signatureAlgorithm: "ed25519";
+  signature: string;
   issuedAt: string;
   expiresAt: string;
 };
@@ -27,10 +30,12 @@ export type VerificationFailure =
   | "ITEM_MISMATCH"
   | "EVIDENCE_KIND_MISMATCH"
   | "PROVIDER_MISMATCH"
+  | "NONCE_MISMATCH"
   | "ATTESTATION_NOT_WITHIN_CHALLENGE"
   | "ATTESTATION_NOT_YET_VALID"
   | "ATTESTATION_EXPIRED"
-  | "INVALID_ATTESTATION_DIGEST";
+  | "INVALID_ATTESTATION_DIGEST"
+  | "INVALID_SIGNATURE_FORMAT";
 
 export type VerificationResult =
   | { accepted: true }
@@ -44,10 +49,32 @@ function reject(reason: VerificationFailure): VerificationResult {
   return { accepted: false, reason };
 }
 
+function validSignature(value: string) {
+  return /^[A-Za-z0-9_-]{86,}$/u.test(value);
+}
+
+export function verificationSigningPayload(
+  challenge: VerificationChallenge,
+  attestation: VerificationAttestation
+) {
+  return JSON.stringify([
+    challenge.id,
+    challenge.learnerId,
+    challenge.itemId,
+    challenge.evidenceKind,
+    challenge.providerId,
+    challenge.nonce,
+    attestation.verificationRef,
+    attestation.attestationDigest,
+    attestation.issuedAt,
+    attestation.expiresAt
+  ]);
+}
+
 /**
  * Structural and temporal validation only.
  *
- * Cryptographic proof validation, provider authentication, and replay
+ * Cryptographic signature verification, provider authentication, and replay
  * persistence belong to the provider/server adapter boundary.
  */
 export function validateVerificationAttestation(
@@ -73,6 +100,14 @@ export function validateVerificationAttestation(
 
   if (attestation.providerId !== challenge.providerId) {
     return reject("PROVIDER_MISMATCH");
+  }
+
+  if (attestation.nonce !== challenge.nonce) {
+    return reject("NONCE_MISMATCH");
+  }
+
+  if (attestation.signatureAlgorithm !== "ed25519" || !validSignature(attestation.signature)) {
+    return reject("INVALID_SIGNATURE_FORMAT");
   }
 
   if (
