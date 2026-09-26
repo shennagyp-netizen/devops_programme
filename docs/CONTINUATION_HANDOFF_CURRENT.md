@@ -4,38 +4,28 @@
 
 **Repository:** `shennagyp-netizen/devops_programme`
 
-**Current branch:** `v3-mvp-simple-auth` — simple-auth MVP correction.
+**Current branch:** `v3-mvp-restore-terminal-agent` — V3 MVP terminal-agent restoration.
 
-**Latest main:** PR #119 had incorrectly removed authentication. This branch restores the intended minimal first-party authentication while retaining the broader MVP simplifications.
+**Current architecture:** Next.js + React single learner application with simple first-party email/password authentication, scrypt password hashing, HTTP-only session cookie, PostgreSQL/Drizzle progress, and Server Actions. No Clerk/OAuth/JWT learner identity system.
 
-**Current architecture:** Next.js 16.3.6 + React 19.2.8 as one learner application with first-party email/password authentication, scrypt password hashing, an opaque HTTP-only session cookie, PostgreSQL/Drizzle progress, and Next.js Server Actions. No Clerk, OAuth, JWT, API-token identity system, or terminal pairing-token system is required.
+**Local terminal architecture:** The existing browser-to-laptop terminal bridge is preserved. The learner can run `npm run terminal-agent`, obtain the printed random pairing token, paste it into the lesson, and run published `machine-verified` runtime tasks directly on the learner laptop. The agent remains loopback-only and executes catalog-defined commands with `shell: false`.
 
-**Current learner-state rule:** saved completion progress is server-authoritative for the authenticated user. Duplicate completion is idempotent on user + item type + item ID. Hands-on evidence remains structured learner evidence and is not claimed as machine attestation.
+**Trust boundaries:** application session protects the learner account; terminal pairing token protects the localhost execution bridge. They are intentionally separate credentials.
 
-**Authentication:** simple first-party authentication only. The browser never supplies a trusted learner ID; the server resolves the identity from the session.
+**Current runtime path:** manual terminal execution remains available for every hands-on task; published runtime tasks can additionally use the local agent. Remote runtime tooling remains available.
 
-**Persistence:** PostgreSQL + Drizzle for auth/session/progress. No custom progress REST API.
+**Security work in this correction:** restored terminal integration without restoring arbitrary shell access; bounded terminal-agent output while streaming; added terminal-agent red-team coverage; preserved authenticated progress and mastery telemetry.
 
-**Runtime verification:** manual terminal execution plus structured evidence remain sufficient for the MVP learner path. Terminal-agent pairing and remote machine-verification infrastructure are not required for the learner account/progress design.
+**CI truth:** all programme/content contracts, authenticated progress architecture contract, full unit/integration test suite, TypeScript typecheck and Next.js production build are green on this branch.
 
-**Tutor:** same Next.js application; server-derived lesson context, strict input validation, bounded request size, server-held AI credential, and best-effort abuse throttling. No separate tutor token system.
-
-**TDD rule:** authenticated progress architecture tests protect the session/progress boundary. Security tests must reject client-supplied learner IDs, insecure password/session handling, and arbitrary shell execution.
-
-**CI truth:** the V3 authenticated MVP gate must pass content/programme contracts, authenticated progress architecture, unit/integration tests, TypeScript and Next.js production build.
-
-**Authoritative documents:** `docs/MVP_ARCHITECTURE_V3.md` and `docs/architecture/LEARNER_PROGRESS_STORAGE.md`.
-
-AUTHORITATIVE READING ORDER
+**Authoritative reading order**
 1. docs/MVP_ARCHITECTURE_V3.md
 2. docs/architecture/LEARNER_PROGRESS_STORAGE.md
-3. docs/curriculum/COURSE_DESIGN_STANDARDS.md
-4. this document
-5. docs/TESTING_ARCHITECTURE.md
-6. docs/curriculum/COURSE_ARCHITECTURE.md
-7. docs/LEARNING_MODEL.md
-8. docs/assessment/ASSESSMENT_ENGINE_SPEC.md
-9. actual source and tests relevant to the current task.
+3. docs/curriculum/HANDS_ON_RUNTIME_VERIFICATION.md
+4. docs/INTEGRITY_AUDIT.md
+5. this document
+6. docs/TESTING_ARCHITECTURE.md
+7. actual source and tests relevant to the current task.
 
 SOURCE + TESTS + CURRENT DOCS ARE AUTHORITATIVE. Historical assistant messages are not.
 
