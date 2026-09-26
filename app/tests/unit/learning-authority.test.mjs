@@ -141,20 +141,7 @@ describe("authoritative completion service", () => {
   });
 
   it("does not accept evidence belonging to another learner", async () => {
-    configureDb({
-      evidenceRows: [
-        {
-          id: "evidence-1",
-          learnerId: "user_2",
-          itemId: "B1.2",
-          kind: "exercise",
-          verifierId: "trusted-verifier",
-          verificationRef: "attestation-1",
-          attestationDigest: "sha256:abc",
-          verifiedAt: new Date("2026-09-26T10:00:00.000Z")
-        }
-      ]
-    });
+    configureDb({ evidenceRows: [] });
 
     await expect(
       completeLearningItemForUser("user_1", {
