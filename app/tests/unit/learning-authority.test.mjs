@@ -134,7 +134,7 @@ describe("authoritative completion service", () => {
         evidenceRefs: []
       })
     ).rejects.toMatchObject({
-      reason: "EVIDENCE_NOT_VERIFIED"
+      reason: "REQUIRED_EVIDENCE_MISSING"
     });
 
     expect(insertMock).not.toHaveBeenCalled();
@@ -149,7 +149,7 @@ describe("authoritative completion service", () => {
         evidenceRefs: ["evidence-1"]
       })
     ).rejects.toMatchObject({
-      reason: "REQUIRED_EVIDENCE_MISSING"
+      reason: "EVIDENCE_NOT_VERIFIED"
     });
 
     expect(insertMock).not.toHaveBeenCalled();
