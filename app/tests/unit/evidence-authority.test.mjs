@@ -115,7 +115,7 @@ describe("server verified-evidence authority", () => {
     });
   });
 
-  it("does not query the database for an empty evidence reference list", async () => {
+  it("does not query the database for an explicitly empty evidence reference list", async () => {
     getDbMock.mockReturnValue({
       select: selectMock
     });
@@ -123,5 +123,28 @@ describe("server verified-evidence authority", () => {
     await expect(listVerifiedEvidenceForUser("user_1", [])).resolves.toEqual([]);
 
     expect(getDbMock).not.toHaveBeenCalled();
+  });
+
+  it("supports a server-side list-all lookup without accepting an empty client selection as proof", async () => {
+    const row = {
+      id: "evidence-2",
+      userId: "user_1",
+      itemId: "B1.2",
+      kind: "exercise",
+      verifierId: "trusted-verifier",
+      verificationRef: "attestation-2",
+      attestationDigest: digest,
+      verifiedAt: new Date("2026-09-26T10:02:00.000Z")
+    };
+
+    const whereMock = vi.fn().mockResolvedValue([row]);
+    const fromMock = vi.fn().mockReturnValue({ where: whereMock });
+    selectMock.mockReturnValue({ from: fromMock });
+    getDbMock.mockReturnValue({ select: selectMock });
+
+    const result = await listVerifiedEvidenceForUser("user_1");
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({ id: "evidence-2", learnerId: "user_1" });
   });
 });
