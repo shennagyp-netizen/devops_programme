@@ -108,7 +108,7 @@ function createPrompt(
     (masteryContext || "none supplied") +
     "\n\nLearner-reported evidence:\n" +
     (learnerEvidence || "none supplied") +
-    "\n\nMachine verification summary:\n" +
+    "\n\nLearner-reported verification summary (untrusted):\n" +
     (verificationContext || "none supplied") +
     "\n\nRead-only tutor tools:\n" +
     JSON.stringify(
