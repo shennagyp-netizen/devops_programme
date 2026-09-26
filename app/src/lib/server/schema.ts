@@ -107,6 +107,51 @@ export const learnerProgressHistory = pgTable(
   })
 );
 
+
+export const learnerAssessmentAttempts = pgTable(
+  "learner_assessment_attempts",
+  {
+    id: uuid("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => authUsers.id, { onDelete: "cascade" }),
+    formId: text("form_id").notNull(),
+    courseId: text("course_id").notNull(),
+    sectionId: text("section_id").notNull(),
+    family: text("family").notNull(),
+    seed: text("seed").notNull(),
+    startedAt: timestamp("started_at", { withTimezone: true }).notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    submittedAt: timestamp("submitted_at", { withTimezone: true }),
+    status: text("status").notNull(),
+    answeredCount: integer("answered_count").notNull().default(0),
+    autoScoredCount: integer("auto_scored_count").notNull().default(0),
+    correctCount: integer("correct_count").notNull().default(0),
+    autoScorePercent: integer("auto_score_percent"),
+    reviewRequiredCount: integer("review_required_count").notNull().default(0),
+    answersJson: text("answers_json")
+  },
+  (table) => ({
+    userFormIndex: index("learner_assessment_attempts_user_form_idx").on(
+      table.userId,
+      table.formId
+    ),
+    userStartedIndex: index("learner_assessment_attempts_user_started_idx").on(
+      table.userId,
+      table.startedAt
+    ),
+    statusCheck: check(
+      "learner_assessment_attempts_status_ck",
+      sql.raw(
+        "status IN ('in-progress', 'scored', 'submitted-review-required', 'submitted-late')"
+      )
+    )
+  })
+);
+
+export type LearnerAssessmentAttempt =
+  typeof learnerAssessmentAttempts.$inferSelect;
+
 export type AuthUser = typeof authUsers.$inferSelect;
 export type AuthSession = typeof authSessions.$inferSelect;
 export type LearnerProgressHistory =
