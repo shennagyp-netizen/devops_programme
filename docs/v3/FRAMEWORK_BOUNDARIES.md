@@ -1,112 +1,146 @@
+
 # V3 Framework Boundaries
+
+## Canonical boundary
+
+The canonical framework is:
+
+~~~text
+framework/
+~~~
+
+It is a domain-neutral React learning application and reusable learning core.
 
 ## Framework owns
 
-### Curriculum mechanics
-- item identity
-- prerequisites
-- competency relations
-- learning modes
-- progression policies
+### Learning semantics
 
-### Evidence
-- evidence identity
-- evidence lifecycle
-- provenance
-- verification status
-- retention policy
+- programme/course/section/item contracts;
+- learning modes;
+- completion rules;
+- evidence requirements;
+- assessment-pass semantics;
+- learner-state representation;
+- progression derivation.
 
-### Authority
-- transition evaluation
-- completion state
-- mastery state
-- assessment eligibility
-- learner state integrity
+### Experience semantics
 
-### Adaptation
-- diagnostic interpretation contract
-- remediation policy
-- representation selection
-- tutor context contract
+- learner intents;
+- learning session state;
+- control policy;
+- remediation state;
+- reusable React interaction patterns.
 
-### Experience contracts
-- podcast synchronization
-- animation selection
-- interactive content contracts
-- hands-on provider contracts
+### Provider contracts
 
-## DevOps programme owns
+- evidence provider interface;
+- assessment provider interface;
+- content provider interface;
+- tutor provider interface.
 
-- Linux concepts
-- networking concepts
-- containers
-- Kubernetes
-- CI/CD
-- infrastructure
-- observability
-- distributed systems
-- projects
-- DevOps-specific assessments
-- DevOps-specific runtime tasks
-- DevOps-specific scripts and examples
+The framework defines what a provider can do. It does not implement the provider.
 
-## Adapter layer owns
+## Programme owns
 
-- PostgreSQL implementation
-- Next.js request handling
-- authentication/session storage
-- local terminal service
-- SSH transport
-- managed runtime
-- LLM provider
-- browser speech APIs
-- deployment platform
+A consuming programme owns:
 
-## Forbidden dependencies
+- curriculum;
+- domain concepts;
+- domain terminology;
+- domain competency definitions;
+- domain learning activities;
+- domain assessment content;
+- domain provider configuration.
 
-The framework must not directly depend on:
+For the first consumer, that programme is DevOps.
 
-- a specific DevOps lesson ID
-- a DevOps project name
-- a specific AI vendor
-- a specific terminal command
-- Next.js request objects
-- PostgreSQL query objects
-- React components
+## Adapter/application owns
 
-The DevOps programme may depend on framework contracts.
+The consuming application owns:
 
-Adapters may implement framework provider interfaces.
+- authentication;
+- authorization transport;
+- database;
+- server actions/API;
+- deployment;
+- browser-specific integrations;
+- AI vendor integration;
+- audio;
+- terminal/SSH;
+- managed execution;
+- domain persistence.
 
-## Stable v3 identifiers
+## Explicit dependency rule
 
-The framework should eventually distinguish:
+Allowed:
 
-```text
-programmeId
-courseId
-sectionId
-learningItemId
-competencyId
-evidenceId
-assessmentId
-attemptId
-transitionId
-providerId
-```
+~~~text
+programme → framework
+adapter → framework
+application → framework
+~~~
 
-Do not use UI labels as authoritative identifiers.
+Forbidden:
+
+~~~text
+framework → DevOps
+framework → database
+framework → Next.js
+framework → Vercel
+framework → terminal implementation
+framework → AI vendor
+~~~
+
+## React rule
+
+React is part of the framework product.
+
+The framework includes the reusable React application surface.
+
+What is not part of the framework React layer:
+
+- DevOps branding;
+- DevOps lesson text;
+- DevOps tool instructions;
+- DevOps runtime controls;
+- domain-specific assessment UI.
+
+## Transitional code
+
+~~~text
+app/src/framework/
+~~~
+
+is compatibility implementation inside the current DevOps application.
+
+It is not a second framework.
+
+Canonical generic evolution happens only in:
+
+~~~text
+framework/
+~~~
 
 ## Versioning
 
-Framework contracts and programme content should version independently.
+Framework and programme versions evolve independently.
 
 Example:
 
-```text
-frameworkContractVersion = 3
+~~~text
+frameworkContractVersion = 0.1
 programmeVersion = devops-1.x
 contentRevision = lesson-specific
-```
+~~~
 
-A content correction should not require a framework migration unless its contract changes.
+A DevOps content correction should not require a framework change.
+
+A framework contract change should be explicit and versioned.
+
+## Abstraction test
+
+Before adding a feature to framework, ask:
+
+> Does this concept exist independent of the subject being taught?
+
+If not, keep it outside the framework.
