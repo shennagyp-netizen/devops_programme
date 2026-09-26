@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { courseLessons } from "../../../data/courseLessons";
-import { requireCurrentUser } from "../../../lib/server/auth";
 import {
   parseTutorRequest,
   tutorLimits,
@@ -9,17 +8,25 @@ import {
 
 type RateWindow = { startedAt: number; count: number };
 const rateWindows = new Map<string, RateWindow>();
+const PUBLIC_TUTOR_RATE_LIMIT = 10;
+const PUBLIC_TUTOR_WINDOW_MS = 60_000;
+const MAX_BODY_BYTES = 24 * 1024;
 
-function consumeRateLimit(userId: string) {
+function clientKey(request: Request) {
+  const forwarded = request.headers.get("x-forwarded-for");
+  return (forwarded?.split(",")[0] ?? request.headers.get("x-real-ip") ?? "anonymous").trim();
+}
+
+function consumeRateLimit(key: string) {
   const now = Date.now();
-  const current = rateWindows.get(userId);
+  const current = rateWindows.get(key);
 
-  if (!current || now - current.startedAt >= 60_000) {
-    rateWindows.set(userId, { startedAt: now, count: 1 });
+  if (!current || now - current.startedAt >= PUBLIC_TUTOR_WINDOW_MS) {
+    rateWindows.set(key, { startedAt: now, count: 1 });
     return true;
   }
 
-  if (current.count >= tutorLimits.rateLimitPerMinute) return false;
+  if (current.count >= PUBLIC_TUTOR_RATE_LIMIT) return false;
   current.count += 1;
   return true;
 }
@@ -91,18 +98,9 @@ function extractText(payload: unknown) {
 }
 
 export async function POST(request: Request) {
-  let user;
+  const key = clientKey(request);
 
-  try {
-    user = await requireCurrentUser();
-  } catch {
-    return NextResponse.json(
-      { error: "Authentication required." },
-      { status: 401 }
-    );
-  }
-
-  if (!consumeRateLimit(user.id)) {
+  if (!consumeRateLimit(key)) {
     return NextResponse.json(
       { error: "Tutor rate limit reached. Please try again in a minute." },
       { status: 429 }
@@ -112,7 +110,16 @@ export async function POST(request: Request) {
   let raw: unknown;
 
   try {
-    raw = await request.json();
+    const body = await request.text();
+
+    if (new TextEncoder().encode(body).byteLength > MAX_BODY_BYTES) {
+      return NextResponse.json(
+        { error: "Tutor request is too large." },
+        { status: 413 }
+      );
+    }
+
+    raw = JSON.parse(body);
   } catch {
     return NextResponse.json(
       { error: "Request body must be valid JSON." },
@@ -166,10 +173,7 @@ export async function POST(request: Request) {
       role: "system",
       content: systemPrompt(authoritativeContext)
     },
-    ...parsed.messages.map((message: TutorMessage) => ({
-      role: message.role,
-      content: message.content
-    }))
+    ...parsed.messages.filter((message: TutorMessage) => message.role === "user").slice(-8)
   ];
 
   try {
@@ -210,7 +214,9 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ text });
+    return NextResponse.json({ text }, {
+      headers: { "Cache-Control": "no-store" }
+    });
   } catch {
     return NextResponse.json(
       {
