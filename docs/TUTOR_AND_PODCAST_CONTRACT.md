@@ -46,7 +46,7 @@ The server supplies:
 - server-known mastery attempts for the lesson;
 - the learner's bounded evidence text;
 - the current mastery failure summary when remediation is active;
-- a bounded machine-verification summary without automatically exposing raw terminal output;
+- a client-reported verification summary, explicitly marked untrusted; authoritative machine-verification state is never accepted from the browser request;
 - the previous tutor conversation for the current server-owned session.
 
 The browser may retain the session identifier in sessionStorage for continuity, but server ownership is authoritative.
@@ -100,7 +100,7 @@ Adversarial tests cover:
 
 ## Current limitation
 
-This slice is the text-conversation foundation. It does not yet stream tokens, use live voice, or invoke runtime tools from the tutor.
+This slice is the text-conversation foundation. It does not yet stream tokens or use live voice. It already exposes bounded read-only programme tools; runtime access remains descriptive only and cannot execute commands.
 
 The next evolution should expose narrowly scoped read-only programme tools such as:
 - get current project phase;
@@ -136,7 +136,7 @@ The Responses API tool loop is capped at a small number of server-side rounds an
 
 ## Persistence migration
 
-Tutor storage uses a dedicated 0003_tutor.sql migration.
+Tutor storage uses 0003_tutor.sql plus 0004_tutor_rate_limit.sql.
 
 The authentication migration 0001_self_hosted_auth.sql remains historical and is not modified after deployment.
 
@@ -144,9 +144,11 @@ The server-side ensureTutorSchema() remains an idempotent runtime safety net, bu
 
 ## Tutor abuse protection
 
-Tutor POST requests are rate-limited per authenticated learner using persistent tutor-message history.
+Tutor POST requests are rate-limited per authenticated learner using persistent reservation rows.
 
-The current server contract allows at most 20 learner messages in a rolling five-minute window.
+The current server contract allows at most 20 tutor requests in a rolling five-minute window.
+
+Reservations are created atomically under a PostgreSQL transaction advisory lock so concurrent requests from the same learner cannot race past the limit.
 
 This is an application-abuse boundary, not an assessment rule.
 
