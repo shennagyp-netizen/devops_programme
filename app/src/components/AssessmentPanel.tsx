@@ -420,6 +420,7 @@ export function AssessmentPanel({
 
             {current.options?.length ? (
               <Radio.Group
+                role="radiogroup"
                 value={
                   typeof currentAnswer === "number"
                     ? String(currentAnswer)
