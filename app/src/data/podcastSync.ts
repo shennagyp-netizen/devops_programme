@@ -111,6 +111,7 @@ export function isValidPodcastTtsBundle(
     if (!speech || speech.episodeId !== episodeId) return false;
     if (!PODCAST_EXPLANATION_LEVELS.includes(speech.explanationLevel)) return false;
     if (speech.explanationLevelId !== levelIds[speech.explanationLevel]) return false;
+    if ("audioUrl" in speech || "audioManifest" in speech || "recordingUrl" in speech) return false;
     if (speech.label !== levelLabels[speech.explanationLevel]) return false;
     if (speech.description !== levelDescriptions[speech.explanationLevel]) return false;
     if (typeof speech.scriptVersion !== "string" || !speech.scriptVersion) return false;
