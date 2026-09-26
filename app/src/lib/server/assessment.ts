@@ -87,6 +87,25 @@ export async function startAssessment(
   await ensureAssessmentSchema();
 
   const blueprint = assertSelection(courseId, sectionId, family);
+  const [activeAttempt] = await getDb()
+    .select({ id: learnerAssessmentAttempts.id, expiresAt: learnerAssessmentAttempts.expiresAt })
+    .from(learnerAssessmentAttempts)
+    .where(
+      and(
+        eq(learnerAssessmentAttempts.userId, user.id),
+        eq(learnerAssessmentAttempts.courseId, courseId),
+        eq(learnerAssessmentAttempts.sectionId, sectionId),
+        eq(learnerAssessmentAttempts.family, family),
+        eq(learnerAssessmentAttempts.status, "in-progress")
+      )
+    )
+    .orderBy(learnerAssessmentAttempts.startedAt)
+    .limit(1);
+
+  if (activeAttempt && activeAttempt.expiresAt.getTime() > Date.now()) {
+    throw new Error("An assessment attempt is already in progress for this form.");
+  }
+
   const pool = await loadPool(courseId, sectionId);
   const seed = randomUUID();
   const form = generateAssessmentForm(blueprint, pool, seed);
