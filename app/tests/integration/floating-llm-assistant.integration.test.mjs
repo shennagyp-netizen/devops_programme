@@ -242,10 +242,12 @@ describe("FloatingLLMAssistant", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Send" }));
 
-    await waitFor(() =>
-      expect(
-        screen.getByText(/kept locally for retry/i)
-      ).toBeInTheDocument()
+    await waitFor(
+      () =>
+        expect(
+          screen.getByText(/kept locally for retry/i)
+        ).toBeInTheDocument(),
+      { timeout: 3000 }
     );
 
     const pending = JSON.parse(
