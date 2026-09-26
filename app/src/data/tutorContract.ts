@@ -14,6 +14,7 @@ export type TutorRequest = {
   lessonId: string;
   mode: TutorMode;
   message: string;
+  platform?: PlatformId;
   learnerEvidence?: Record<string, string>;
   mastery?: {
     attemptNumber: number;
@@ -184,6 +185,10 @@ export function parseTutorRequest(input: unknown): TutorRequest {
     lessonId,
     mode: mode as TutorMode,
     message,
+    platform:
+      value.platform === "macos" || value.platform === "linux" || value.platform === "windows"
+        ? value.platform
+        : undefined,
     learnerEvidence,
     mastery:
       masteryValue &&
