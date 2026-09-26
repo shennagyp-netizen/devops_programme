@@ -26,7 +26,9 @@ V3 is intentionally additive. Main has not been replaced.
 - Filtered progress reads to authoritative completions only.
 - Gated the UI completion control on server-verified evidence.
 - Added TDD and red-team coverage for the new trust boundary.
-- Full GitHub Actions gate is green for the current branch state.
+- Full GitHub Actions gate is green for the current branch state: 68 test files / 496 tests, typecheck, production build, and framework-security architecture contract all pass.
+- Added the framework attestation contract in `app/src/framework/verification.ts` with TDD coverage for binding, freshness, expiry, and digest validation.
+- Added a dedicated `check:framework-security` CI gate to prevent trust-boundary regressions.
 
 
 ## Important architectural decision
