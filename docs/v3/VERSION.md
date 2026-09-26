@@ -1,6 +1,6 @@
 # Learning Framework V3
 
-- **Framework version:** 3.0-architecture-foundation
+- **Framework version:** 3.1-authoritative-completion
 - **Branch:** `v3/learning-framework`
 - **Baseline:** `main`
 - **Reference programme:** DevOps
@@ -10,16 +10,22 @@
 
 The repository is now explicitly being evolved as a reusable learning framework rather than only a DevOps course application.
 
-The first v3 implementation seam is the server-policy boundary plus the server-side programme metadata boundary represented by:
+The 3.1 implementation establishes an authoritative completion/evidence boundary represented by:
 
 - `app/src/framework/contracts.ts`
 - `app/src/framework/authority.ts`
-- `app/tests/unit/framework-authority.test.mjs`
 - `app/src/framework/authorityRequest.ts`
-- `app/src/lib/server/programmeAuthority.ts`
+- `app/src/data/programmeLearningItems.ts`
+- `app/src/lib/server/evidenceAuthority.ts`
+- `app/src/lib/server/learningAuthority.ts`
+- `app/src/lib/server/schema.ts`
+- `app/tests/unit/learning-authority.test.mjs`
+- `app/tests/unit/evidence-authority.test.mjs`
 - `app/tests/unit/authoritative-completion-boundary.test.mjs`
 
-This version marker does not claim that the full migration is complete.
+The current CI gate is green for tests, typecheck, and production build.
+
+This version marker does not claim that machine attestation, mastery authority, assessment authority, or tutor trust migration is complete.
 
 ## Stability rule
 
@@ -27,8 +33,6 @@ This version marker does not claim that the full migration is complete.
 
 ## Next milestone
 
-**V3.1 — Authoritative learner-state service**
+**V3.2 — Verification-provider attestation boundary**
 
-Current V3.1 work establishes the authenticated command boundary and authoritative programme metadata lookup.
-
-The remaining V3.1 work is to resolve verified evidence from persistent server state and make completion transactional through the pure authority policy.
+Formalize verification-provider challenges, attestations, provenance/freshness/replay protections, and trusted local-agent/SSH integration without allowing browser claims to mint authoritative evidence.
