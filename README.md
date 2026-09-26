@@ -15,6 +15,8 @@ V3 is intentionally simple: one app, one small first-party auth layer, and no ex
 
 The learner gateway requires the simple account session. The public programme website remains public.
 
+The learning app also supports the existing local terminal bridge. Run `npm run terminal-agent`, paste the printed pairing token into the lesson, and execute published runtime tasks directly on the learner's laptop. The terminal pairing token is separate from the account session.
+
 The authoritative security/product boundary is docs/MVP_ARCHITECTURE_V3.md.
 
 ## Learning experience
