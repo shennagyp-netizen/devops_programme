@@ -82,7 +82,12 @@ export default function App({
   function changeCourse(next: CourseLevel) {
     setCourse(next);
     const first = lessonsByCourse[next][0];
-    if (first) setS(first.id);
+
+    if (first) {
+      setS(first.id);
+      setLessonMode("learn");
+    }
+
     closeMobileNav();
   }
 
