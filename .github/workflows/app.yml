@@ -46,7 +46,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: repo/app
-        run: npm ci
+        run: npm install --no-audit --no-fund
 
       - name: Content contract
         working-directory: repo/app
