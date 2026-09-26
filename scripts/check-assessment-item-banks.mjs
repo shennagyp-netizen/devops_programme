@@ -5,6 +5,13 @@ import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
 const itemRoot = path.join(root, "exams", "items");
+const appMirrorRoot = path.join(
+  root,
+  "app",
+  "src",
+  "data",
+  "assessmentBanks"
+);
 
 const required = {
   conceptual: { foundation: 3, applied: 7, difficult: 7, challenge: 3 },
@@ -87,8 +94,25 @@ const globalIds = new Map();
 
 for (const file of files) {
   let data;
+  const sourceText = await readFile(file.abs, "utf8");
+  const mirrorPath = path.join(appMirrorRoot, file.rel);
   try {
-    data = JSON.parse(await readFile(file.abs, "utf8"));
+    const mirrorText = await readFile(mirrorPath, "utf8");
+    if (mirrorText !== sourceText) {
+      failed = true;
+      console.error(
+        `${file.rel}: deployed app assessment bank mirror is not byte-identical to the reviewed source bank`
+      );
+    }
+  } catch (error) {
+    failed = true;
+    console.error(
+      `${file.rel}: missing deployed app assessment bank mirror: ${error.message}`
+    );
+  }
+
+  try {
+    data = JSON.parse(sourceText);
   } catch (error) {
     failed = true;
     console.error(`${file.rel}: invalid JSON: ${error.message}`);
