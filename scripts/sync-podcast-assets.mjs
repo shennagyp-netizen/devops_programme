@@ -7,8 +7,6 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
 const sourceDir = path.join(root, "podcasts");
 const targetDir = path.join(root, "app", "public", "podcasts");
-const sourceAudioManifest = path.join(sourceDir, "audio-manifest.json");
-const targetAudioManifest = path.join(targetDir, "audio-manifest.json");
 
 function sha256(text) {
   return createHash("sha256").update(text, "utf8").digest("hex");
@@ -82,7 +80,6 @@ function episodeHashes(source, relativePath = "") {
 await mkdir(targetDir, { recursive: true });
 
 const files = await collectTextFiles(sourceDir);
-const mediaFiles = await collectMediaFiles(sourceDir);
 const episodes = {};
 const cognitiveLevels = {};
 
@@ -93,7 +90,7 @@ for (const file of files) {
   await mkdir(path.dirname(targetPath), { recursive: true });
   await writeFile(targetPath, source, "utf8");
 
-  const hashes = episodeHashes(source, file.relativePath);
+  const hashes = episodeHashes(source);
 
   if (/\.cognitive-[1-4]\.txt$/i.test(file.relativePath)) {
     const match = file.relativePath.match(/(?:^|[/\\])([A-Z0-9]+\.[0-9]+)\.cognitive-([1-4])\.txt$/i);
@@ -107,33 +104,12 @@ for (const file of files) {
   }
 }
 
-for (const file of mediaFiles) {
-  const targetPath = path.join(targetDir, file.relativePath);
-  await mkdir(path.dirname(targetPath), { recursive: true });
-  await writeFile(targetPath, await readFile(file.absolutePath));
-}
-
-const manifest = {
-  schemaVersion: 2,
-  source: "podcasts/",
-  episodes,
-  cognitiveLevels
-};
-
 await writeFile(
   path.join(targetDir, "manifest.json"),
   JSON.stringify(manifest, null, 2) + "\n",
   "utf8"
 );
 
-try {
-  const audioManifest = await readFile(sourceAudioManifest, "utf8");
-  JSON.parse(audioManifest);
-  await writeFile(targetAudioManifest, audioManifest, "utf8");
-} catch {
-  await writeFile(targetAudioManifest, "{}\n", "utf8");
-}
-
 console.log(
-  `Synchronized ${files.length} podcast text files, ${mediaFiles.length} audio files and ${Object.keys(episodes).length} episode hashes.`
+  `Synchronized ${files.length} podcast text files and ${Object.keys(episodes).length} episode hashes across four cognitive levels.`
 );
