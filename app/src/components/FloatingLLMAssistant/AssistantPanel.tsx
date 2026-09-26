@@ -57,27 +57,31 @@ function recognitionConstructor() {
 }
 
 function speakTutorResponse(text: string) {
-  if (
-    typeof window === "undefined" ||
-    !("speechSynthesis" in window) ||
-    typeof SpeechSynthesisUtterance === "undefined"
-  ) {
+  try {
+    if (
+      typeof window === "undefined" ||
+      !("speechSynthesis" in window) ||
+      typeof SpeechSynthesisUtterance === "undefined"
+    ) {
+      return false;
+    }
+
+    const units = splitTutorSpeech(text);
+    if (!units.length) return false;
+
+    window.speechSynthesis.cancel();
+
+    for (const unit of units) {
+      const utterance = new SpeechSynthesisUtterance(unit);
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    return true;
+  } catch {
     return false;
   }
-
-  const units = splitTutorSpeech(text);
-  if (!units.length) return false;
-
-  window.speechSynthesis.cancel();
-
-  for (const unit of units) {
-    const utterance = new SpeechSynthesisUtterance(unit);
-    utterance.rate = 1;
-    utterance.pitch = 1;
-    window.speechSynthesis.speak(utterance);
-  }
-
-  return true;
 }
 
 function readPendingQueries(): PendingQuery[] {
@@ -247,7 +251,7 @@ export function AssistantPanel({
 
       if (!speakTutorResponse(response)) {
         setStatus(
-          "The tutor response is available as text; audio playback is unavailable in this browser."
+          "The tutor response is available as text; audio playback is unavailable."
         );
       }
     } catch (error) {
@@ -333,7 +337,12 @@ export function AssistantPanel({
     recognitionRef.current = recognition;
     setRecording(true);
     setStatus("Listening…");
-    recognition.start();
+    try {
+      recognition.start();
+    } catch {
+      setRecording(false);
+      setStatus("Voice input could not start. You can type the question instead.");
+    }
   }
 
   const hasSpeech =
@@ -357,6 +366,7 @@ export function AssistantPanel({
         </Group>
 
         <ActionIcon
+          size={44}
           variant="subtle"
           onClick={onClose}
           aria-label="Close tutor"
@@ -407,7 +417,13 @@ export function AssistantPanel({
                   variant="subtle"
                   size="compact-xs"
                   mt="xs"
-                  onClick={() => speakTutorResponse(message.content)}
+                  onClick={() => {
+                    if (!speakTutorResponse(message.content)) {
+                      setStatus(
+                        "The tutor response is available as text; audio playback is unavailable."
+                      );
+                    }
+                  }}
                 >
                   Speak
                 </Button>
@@ -439,6 +455,7 @@ export function AssistantPanel({
             placeholder="Ask about this lesson…"
             minRows={3}
             maxRows={6}
+            maxLength={2000}
             autosize
             aria-label="Question for DevOps tutor"
           />
@@ -449,6 +466,7 @@ export function AssistantPanel({
                 type="button"
                 variant={recording ? "filled" : "light"}
                 color={recording ? "red" : "gray"}
+                style={{ minHeight: 44 }}
                 onClick={startVoiceInput}
                 aria-label={
                   recording
@@ -466,7 +484,11 @@ export function AssistantPanel({
               </Text>
             </Group>
 
-            <Button type="submit" disabled={!query.trim() || busy}>
+            <Button
+              type="submit"
+              disabled={!query.trim() || busy}
+              style={{ minHeight: 44 }}
+            >
               Send
             </Button>
           </Group>
