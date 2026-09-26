@@ -343,7 +343,7 @@ export function LessonPanel({
 
       <MotionIllustration lesson={lesson} />
 
-      <PodcastCoach lesson={lesson} />
+      <PodcastCoach lesson={lesson} remediationPlan={masteryPlan} />
 
       {mode === "learn" ? (
         <>
