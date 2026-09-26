@@ -11,7 +11,7 @@ const MAX_TIMESTAMP_LENGTH = 64;
 export type VerificationChallengeCommand = {
   itemId: string;
   providerId: string;
-  evidenceKind: string;
+  targetRef: string;
 };
 
 export type VerificationAttestationCommand = {
@@ -33,7 +33,7 @@ export type VerificationAttestationCommand = {
 const CHALLENGE_FIELDS = new Set([
   "itemId",
   "providerId",
-  "evidenceKind"
+  "targetRef"
 ]);
 
 const ATTESTATION_FIELDS = new Set([
@@ -96,10 +96,10 @@ export function parseVerificationChallengeCommand(
       "providerId",
       MAX_PROVIDER_ID_LENGTH
     ),
-    evidenceKind: requiredString(
-      source.evidenceKind,
-      "evidenceKind",
-      MAX_EVIDENCE_KIND_LENGTH
+    targetRef: requiredString(
+      source.targetRef,
+      "targetRef",
+      MAX_VERIFICATION_REF_LENGTH
     )
   };
 }
