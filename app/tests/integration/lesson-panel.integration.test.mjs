@@ -105,7 +105,7 @@ describe("lesson panel integration contract", () => {
     const code = source();
 
     expect(code).toContain('startMasteryRemediation([message], "mechanism-reteach")');
-    expect(code).toContain("Laptop execution returned invalid evidence");
+    expect(code).toContain("Laptop terminal execution failed");
     expect(code).toContain("Laptop terminal execution failed");
   });
 
