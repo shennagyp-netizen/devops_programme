@@ -91,7 +91,7 @@ function challengeFromRow(
   };
 }
 
-function ensureItemAcceptsEvidence(itemId: string, evidenceKind: string) {
+function ensureItemAcceptsEvidence(itemId: string) {
   const item = findProgrammeLearningItem(itemId);
   if (!item) {
     throw new Error("Unknown learning item.");
@@ -99,10 +99,6 @@ function ensureItemAcceptsEvidence(itemId: string, evidenceKind: string) {
 
   if (item.completion.mode !== "evidence") {
     throw new Error("This learning item does not use evidence completion.");
-  }
-
-  if (!item.completion.requiredEvidence.includes(evidenceKind)) {
-    throw new Error("Evidence kind is not required for this learning item.");
   }
 
   return item;
@@ -179,7 +175,7 @@ export async function issueVerificationChallengeForUser(
   const itemId = requireString(command.itemId, "itemId", 200);
   const providerId = requireString(command.providerId, "providerId", 128);
   const evidenceKind = requireString(command.evidenceKind, "evidenceKind", 128);
-  const item = ensureItemAcceptsEvidence(itemId, evidenceKind);
+  const item = ensureItemAcceptsEvidence(itemId);
 
   if (!Number.isInteger(ttlMs) || ttlMs < 1 || ttlMs > MAX_CHALLENGE_TTL_MS) {
     throw new Error("Verification challenge TTL is outside the allowed range.");
@@ -323,7 +319,7 @@ export async function acceptVerificationAttestationForUser(
       throw new Error("Verification challenge replay detected.");
     }
 
-    ensureItemAcceptsEvidence(command.itemId, command.evidenceKind);
+    ensureItemAcceptsEvidence(command.itemId);
 
     const [evidenceRow] = await tx
       .insert(learnerVerifiedEvidence)
