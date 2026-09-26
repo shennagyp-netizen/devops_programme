@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npm run sync:podcasts && next dev",
-    "build": "npm run sync:podcasts && npm run check:podcast-equivalence && npm run check:content && npm run check:assessment && npm run check:diagnostics && npm run check:projects && npm run check:platforms && npm run check:hands-on && npm run check:beginner && npm run check:intermediate && npm run check:advanced && npm run check:programme && npm run check:runtime && npm run check:mvp && npm test && tsc -b && next build",
+    "build": "npm run sync:podcasts && npm run check:podcast-equivalence && npm run check:content && npm run check:assessment && npm run check:diagnostics && npm run check:projects && npm run check:platforms && npm run check:hands-on && npm run check:beginner && npm run check:intermediate && npm run check:advanced && npm run check:programme && npm run check:runtime && npm run check:progress && npm test && tsc -b && next build",
     "sync:podcasts": "node ../scripts/sync-podcast-assets.mjs",
     "check:content": "node ../scripts/check-podcast-language.mjs",
     "check:assessment": "node ../scripts/check-assessment-item-banks.mjs",
@@ -26,10 +26,12 @@
     "test": "vitest run",
     "hands-on:remote": "node ../scripts/run-remote-runtime-task.mjs",
     "runtime:remote": "node ../scripts/run-remote-runtime-task.mjs",
+    "db:generate": "drizzle-kit generate --config drizzle.config.ts",
+    "db:migrate": "drizzle-kit migrate --config drizzle.config.ts",
+    "check:progress": "node ../scripts/check-learner-progress-contract.mjs",
     "start": "next start",
     "typecheck": "tsc -b",
-    "check:podcast-equivalence": "node ../scripts/check-podcast-explanation-equivalence.mjs",
-    "check:mvp": "node ../scripts/check-mvp-architecture-contract.mjs"
+    "check:podcast-equivalence": "node ../scripts/check-podcast-explanation-equivalence.mjs"
   },
   "dependencies": {
     "@mantine/core": "9.6.2",
