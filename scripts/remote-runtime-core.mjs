@@ -92,7 +92,8 @@ export function parseRemoteArgs(argv) {
     "platform",
     "identity",
     "known-hosts",
-    "output"
+    "output",
+    "challenge-file"
   ]);
   const flagOptions = new Set(["dry-run", "execute"]);
 
