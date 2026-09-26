@@ -113,6 +113,7 @@ describe("verification server actions", () => {
         challengeId: "challenge-1",
         learnerId: "attacker",
         itemId: "B1.1",
+        targetRef: "runtime-exercise-B1.1",
         evidenceKind: "exercise",
         providerId: "local-terminal",
         keyId: "key-1",
