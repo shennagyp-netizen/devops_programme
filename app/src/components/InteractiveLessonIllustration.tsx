@@ -14,7 +14,7 @@ export function InteractiveLessonIllustration({ bindingId }: { bindingId: string
 
   const voiceCues = useMemo(
     () => (binding ? animationCuesForVoice(binding, undefined) : []),
-    [binding, clock?.manifest]
+    [binding]
   );
   const manualCues: AnimationTimedCueV1[] = completed.flatMap((stepId, index) => {
     const step = binding?.interactionSteps.find((candidate) => candidate.id === stepId);
