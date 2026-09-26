@@ -138,6 +138,68 @@ export const learnerCompletionEvidence = pgTable(
   })
 );
 
+
+export const assessmentInstances = pgTable(
+  "assessment_instances",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id").notNull().references(() => authUsers.id, { onDelete: "cascade" }),
+    courseId: text("course_id").notNull(),
+    sectionId: text("section_id").notNull(),
+    family: text("family").notNull(),
+    formId: text("form_id").notNull(),
+    seed: text("seed").notNull(),
+    itemSnapshotJson: text("item_snapshot_json").notNull(),
+    status: text("status").notNull().default("active"),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    submittedAt: timestamp("submitted_at", { withTimezone: true })
+  },
+  (table) => ({
+    userStatusIndex: index("assessment_instances_user_status_idx").on(
+      table.userId, table.status, table.createdAt
+    ),
+    statusCheck: check(
+      "assessment_instances_status_ck",
+      sql.raw("status IN ('active', 'submitted', 'expired')")
+    ),
+    familyCheck: check(
+      "assessment_instances_family_ck",
+      sql.raw("family IN ('conceptual', 'diagnostic', 'hands-on')")
+    )
+  })
+);
+
+export const assessmentAttempts = pgTable(
+  "assessment_attempts",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    instanceId: uuid("instance_id").notNull().references(() => assessmentInstances.id, { onDelete: "cascade" }),
+    userId: text("user_id").notNull().references(() => authUsers.id, { onDelete: "cascade" }),
+    answersJson: text("answers_json").notNull(),
+    autoScore: integer("auto_score").notNull(),
+    autoScorableCount: integer("auto_scorable_count").notNull(),
+    outcome: text("outcome").notNull(),
+    submittedAt: timestamp("submitted_at", { withTimezone: true }).defaultNow().notNull()
+  },
+  (table) => ({
+    instanceUserUnique: uniqueIndex("assessment_attempts_instance_user_uq").on(
+      table.instanceId, table.userId
+    ),
+    userSubmittedIndex: index("assessment_attempts_user_submitted_idx").on(
+      table.userId, table.submittedAt
+    ),
+    outcomeCheck: check(
+      "assessment_attempts_outcome_ck",
+      sql.raw("outcome IN ('scored', 'pending-review')")
+    ),
+    scoreCheck: check(
+      "assessment_attempts_score_ck",
+      sql.raw("auto_score >= 0 AND auto_scorable_count >= 0 AND auto_score <= auto_scorable_count")
+    )
+  })
+);
+
 export const verificationProviderKeys = pgTable(
   "verification_provider_keys",
   {
