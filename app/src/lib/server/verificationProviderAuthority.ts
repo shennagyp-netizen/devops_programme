@@ -272,6 +272,11 @@ export async function acceptVerificationAttestationForUser(
       throw new Error("Verification challenge has already been consumed.");
     }
 
+    const challengeProviderKeyId = attempt.providerKeyId;
+    if (!challengeProviderKeyId) {
+      throw new Error("Verification challenge has no trusted provider key binding.");
+    }
+
     const [providerKey] = await tx
       .select()
       .from(verificationProviderKeys)
@@ -279,7 +284,7 @@ export async function acceptVerificationAttestationForUser(
         and(
           eq(verificationProviderKeys.userId, safeLearnerId),
           eq(verificationProviderKeys.providerId, attempt.providerId),
-          eq(verificationProviderKeys.keyId, attempt.providerKeyId),
+          eq(verificationProviderKeys.keyId, challengeProviderKeyId),
           eq(verificationProviderKeys.keyId, command.keyId),
           isNull(verificationProviderKeys.revokedAt)
         )
