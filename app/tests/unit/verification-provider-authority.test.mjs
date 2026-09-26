@@ -80,8 +80,8 @@ function buildAttestation(privateKey) {
   const challenge = {
     id: "challenge-1",
     learnerId: "user_1",
-    itemId: "B1.2",
-    targetRef: "runtime-probe-B1.2",
+    itemId: "B1.1",
+    targetRef: "runtime-exercise-B1.1",
     evidenceKind: "exercise",
     providerId: "local-terminal",
     issuedAt: "2026-09-26T12:00:00.000Z",
@@ -189,8 +189,8 @@ describe("verification provider authority", () => {
     const challengeRow = {
       id: "challenge-2",
       userId: "user_1",
-      itemId: "B1.2",
-      targetRef: "runtime-probe-B1.2",
+      itemId: "B1.1",
+      targetRef: "runtime-exercise-B1.1",
       evidenceKind: "exercise",
       providerId: "local-terminal",
       nonce: "nonce-2",
@@ -267,7 +267,7 @@ describe("verification provider authority", () => {
     const evidenceRow = {
       id: "evidence-1",
       userId: "user_1",
-      itemId: "B1.2",
+      itemId: "B1.1",
       kind: "exercise",
       verifierId: "local-terminal",
       providerKeyId: "key-1",
@@ -294,7 +294,7 @@ describe("verification provider authority", () => {
     expect(result).toMatchObject({
       id: "evidence-1",
       learnerId: "user_1",
-      itemId: "B1.2",
+      itemId: "B1.1",
       kind: "exercise",
       verificationRef: "run-1"
     });
@@ -320,8 +320,8 @@ describe("verification provider authority", () => {
     const attempt = {
       id: challenge.id,
       userId: "user_1",
-      itemId: "B1.2",
-      targetRef: "runtime-probe-B1.2",
+      itemId: "B1.1",
+      targetRef: "runtime-exercise-B1.1",
       evidenceKind: "exercise",
       providerId: "local-terminal",
       nonce: "nonce-1",
@@ -358,8 +358,8 @@ describe("verification provider authority", () => {
     const attempt = {
       id: "challenge-1",
       userId: "user_1",
-      itemId: "B1.2",
-      targetRef: "runtime-probe-B1.2",
+      itemId: "B1.1",
+      targetRef: "runtime-exercise-B1.1",
       evidenceKind: "exercise",
       providerId: "local-terminal",
       nonce: "nonce-1",
@@ -397,7 +397,7 @@ describe("verification provider authority", () => {
     const attempt = {
       id: challenge.id,
       userId: "user_1",
-      itemId: "B1.2",
+      itemId: "B1.1",
       evidenceKind: "exercise",
       providerId: "local-terminal",
       nonce: challenge.nonce,
