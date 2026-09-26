@@ -55,8 +55,6 @@ describe("server verified-evidence authority", () => {
   });
 
   it("rejects a missing attestation digest", async () => {
-    expect.assertions(2);
-
     try {
       await recordTrustedVerifiedEvidence({
         learnerId: "user_1",
@@ -68,7 +66,7 @@ describe("server verified-evidence authority", () => {
       });
     } catch (error) {
       expect(error).toBeInstanceOf(Error);
-      expect((error as Error).message).toMatch(/attestationDigest/i);
+      expect(error instanceof Error ? error.message : String(error)).toMatch(/attestationDigest/i);
     }
 
     expect(getDbMock).not.toHaveBeenCalled();
