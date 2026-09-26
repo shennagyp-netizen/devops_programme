@@ -1942,27 +1942,49 @@ om that status.
 
 
 ============================================================
-FIXED PODCAST V2 — FOUR EXPLANATION LEVELS + INDEPENDENT TTS SPEED — 2026-09-26
+FIXED PODCAST V2 — HIGH-LEVEL TTS ARCHITECTURE — 2026-09-26
 ============================================================
 
-One lesson has one podcast with four complete authored explanations of the same information:
-- Explanation 1 — Very simple
-- Explanation 2 — Simple technical
-- Explanation 3 — Professional
-- Explanation 4 — Expert
+Authoritative architecture document:
+docs/curriculum/PODCAST_TTS_ARCHITECTURE_V2.md
 
-The information is the same across all four. Only explanation style, explicitness, terminology, examples, sentence structure, and assumed prior knowledge change.
+Core invariant:
+One lesson has one podcast subject with four complete explanations of the same information.
 
-B1.4 has 12 information units. Every explanation declares the same unit IDs in the same order. The build gate runs scripts/check-podcast-explanation-equivalence.mjs.
+Explanation levels:
+- Very simple
+- Simple technical
+- Professional
+- Expert
 
-Speech speed is independent and supports 1×, 1.5×, and 2×. Speed never changes explanation level or learning content. Changing speed while speaking restarts the current authored turn at the new rate instead of skipping ahead.
+Speech rates are independent presentation controls:
+- 1x
+- 1.25x
+- 1.5x
+- 2x
 
-TTS is the only speech renderer. No human recording, MP3, WAV, audio URL, or recording manifest is required.
+The selected rate never changes, removes, skips or reorders learning information.
 
-Browser TTS runtime events drive current-turn voice state. When TTS is unavailable, the complete selected transcript remains visible.
+Current code ownership:
+- app/src/data/podcastSync.ts = pure explanation/rate domain contract
+- app/src/data/podcastsRaw.ts = authored script extraction and turn parsing
+- app/src/components/PodcastCoach.tsx = browser TTS runtime + learner controls
+- app/src/components/LessonVoiceClock.tsx = runtime voice state contract
+- app/src/components/InteractiveLessonIllustration.tsx = consumes voice state but fails closed on animation timing until a runtime boundary adapter exists
+- scripts/check-podcast-explanation-equivalence.mjs = structural information-equivalence gate
 
-The private LLM tutor remains separate and never rewrites or regenerates the fixed podcast scripts.
+Current B1.4 authoring:
+- four complete explanation scripts
+- 12 information units
+- identical information-unit order in all four scripts
+
+Testing order:
+domain unit tests -> red-team mutations -> runtime integration tests -> curriculum/content contracts -> full programme gate -> browser visual validation.
+
+No human podcast recordings are required. The TTS engine is the speech renderer. The private LLM tutor remains separate from podcast generation.
+
+Latest v2 CI must be rechecked after every code change. Do not infer green from a previous commit.
 
 ============================================================
-END PODCAST V2
+END FIXED PODCAST V2
 ============================================================
