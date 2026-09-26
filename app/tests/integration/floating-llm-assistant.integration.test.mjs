@@ -52,6 +52,15 @@ describe("FloatingLLMAssistant", () => {
 
     window.ResizeObserver = ResizeObserverMock;
 
+    Object.defineProperty(document, "fonts", {
+      configurable: true,
+      value: {
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        ready: Promise.resolve()
+      }
+    });
+
     Object.defineProperty(window, "visualViewport", {
       configurable: true,
       value: {
