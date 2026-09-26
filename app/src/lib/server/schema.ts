@@ -84,7 +84,9 @@ export const learnerProgressHistory = pgTable(
   "learner_progress_history",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    userId: text("user_id").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => authUsers.id, { onDelete: "cascade" }),
     itemType: text("item_type").notNull(),
     itemId: text("item_id").notNull(),
     course: text("course"),
