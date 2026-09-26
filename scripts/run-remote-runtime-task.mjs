@@ -15,6 +15,10 @@ import {
   parseRemoteArgs,
   sshArguments
 } from "./remote-runtime-core.mjs";
+import {
+  loadOrCreateEd25519ProviderKey,
+  signVerificationAttestation
+} from "./verification-provider-core.mjs";
 
 const execFileAsync = promisify(execFile);
 
@@ -101,6 +105,8 @@ async function runStep({ task, step, options }) {
 async function main() {
   const options = parseRemoteArgs(process.argv);
   const catalog = await loadCatalog();
+  const providerId = process.env.DEVOPS_SSH_PROVIDER_ID ?? "ssh-runner";
+  const providerKeyId = process.env.DEVOPS_SSH_PROVIDER_KEY_ID ?? "ssh-key-v1";
   const task = catalog.runtimeTasks.find((item) => item.lessonId === options.lessonId);
 
   if (!task) {
@@ -120,6 +126,21 @@ async function main() {
   }
 
   const plan = commandPlan(task, options.platform);
+
+  const challenge = options.challengeFile
+    ? JSON.parse(await readFile(options.challengeFile, "utf8"))
+    : null;
+
+  if (challenge) {
+    if (
+      challenge.itemId !== task.lessonId ||
+      challenge.providerId !== providerId ||
+      typeof challenge.nonce !== "string" ||
+      typeof challenge.id !== "string"
+    ) {
+      throw new Error("Verification challenge does not match this SSH provider/task.");
+    }
+  }
 
   if (options.dryRun) {
     console.log(
@@ -210,6 +231,24 @@ async function main() {
     }
   };
 
+  let attestation = null;
+  if (challenge) {
+    const providerKey = await loadOrCreateEd25519ProviderKey({
+      directory:
+        process.env.DEVOPS_SSH_PROVIDER_KEY_DIR ??
+        path.join(process.cwd(), ".devops-ssh-provider")
+    });
+
+    attestation = signVerificationAttestation({
+      challenge,
+      envelope,
+      providerId,
+      keyId: providerKeyId,
+      privateKey: providerKey.privateKey,
+      verificationRef: challenge.id + ":" + envelope.completedAt
+    });
+  }
+
   const outputPath =
     options.output ??
     path.join(
@@ -218,8 +257,12 @@ async function main() {
       task.taskId + "-ssh-" + startedAt.replace(/[:.]/g, "-") + ".json"
     );
 
+  const artifact = attestation
+    ? { envelope, attestation }
+    : envelope;
+
   await mkdir(path.dirname(outputPath), { recursive: true });
-  await writeFile(outputPath, JSON.stringify(envelope, null, 2) + "\n", "utf8");
+  await writeFile(outputPath, JSON.stringify(artifact, null, 2) + "\n", "utf8");
 
   console.log(
     JSON.stringify(
@@ -230,6 +273,9 @@ async function main() {
         verificationSource: "ssh-runner",
         target,
         outputPath,
+        signed: Boolean(attestation),
+        providerId: attestation?.providerId ?? null,
+        providerKeyId: attestation?.keyId ?? null,
         passed: stepResults.every((step) => step.result === "passed"),
         stepResults
       },
