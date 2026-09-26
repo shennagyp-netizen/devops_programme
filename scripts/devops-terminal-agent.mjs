@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { createHash, generateKeyPairSync, randomBytes, sign as signData } from "node:crypto";
-import { readFile } from "node:fs/promises";
 import http from "node:http";
 import os from "node:os";
 import path from "node:path";
