@@ -57,7 +57,7 @@ describe("verification server actions", () => {
       requestVerificationChallengeAction({
         itemId: "B1.1",
         providerId: "local-terminal",
-        evidenceKind: "exercise"
+        targetRef: "runtime-exercise-B1.1"
       })
     ).rejects.toThrow("Authentication required.");
 
@@ -87,6 +87,7 @@ describe("verification server actions", () => {
       challengeId: "challenge-1",
       learnerId: "user_1",
       itemId: "B1.1",
+      targetRef: "runtime-exercise-B1.1",
       evidenceKind: "exercise",
       providerId: "local-terminal",
       keyId: "key-1",
