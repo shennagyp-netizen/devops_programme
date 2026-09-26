@@ -1,4 +1,4 @@
-import { and, desc, eq, gt, sql } from "drizzle-orm";
+import { and, desc, eq, gt, lte, sql } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { courseLessons, type CourseLesson } from "../../data/courseLessons";
 import { projects, type ProjectDefinition } from "../../data/projects";
@@ -7,7 +7,11 @@ import {
   listMasteryHistoryForUser
 } from "./progress";
 import { getDb } from "./db";
-import { tutorMessages, tutorSessions } from "./schema";
+import {
+  tutorMessages,
+  tutorRateLimitReservations,
+  tutorSessions
+} from "./schema";
 
 const globalForTutor = globalThis as unknown as {
   devopsTutorSchemaReady?: boolean;
@@ -148,35 +152,48 @@ export async function verifyTutorSessionForUser(
   return row;
 }
 
-export async function assertTutorRateLimit(
+export async function reserveTutorRequest(
   userId: string,
   maxMessages = 20,
   windowMs = 5 * 60 * 1000
 ) {
   await ensureTutorSchema();
 
-  const cutoff = new Date(Date.now() - windowMs);
-  const rows = await getDb()
-    .select({ id: tutorMessages.id })
-    .from(tutorMessages)
-    .innerJoin(tutorSessions, eq(tutorMessages.sessionId, tutorSessions.id))
-    .where(
-      and(
-        eq(tutorSessions.userId, userId),
-        eq(tutorMessages.role, "user"),
-        gt(tutorMessages.createdAt, cutoff)
-      )
-    )
-    .limit(maxMessages + 1);
+  return getDb().transaction(async (tx) => {
+    // Serialize rate-limit reservations for one learner across all app instances.
+    await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${userId}))`);
 
-  if (rows.length >= maxMessages) {
-    throw new Error("Tutor rate limit reached. Please continue shortly.");
-  }
+    const cutoff = new Date(Date.now() - windowMs);
+    await tx
+      .delete(tutorRateLimitReservations)
+      .where(
+        and(
+          eq(tutorRateLimitReservations.userId, userId),
+          lte(tutorRateLimitReservations.reservedAt, cutoff)
+        )
+      );
 
-  return {
-    allowed: true as const,
-    remaining: Math.max(0, maxMessages - rows.length)
-  };
+    const rows = await tx
+      .select({ id: tutorRateLimitReservations.id })
+      .from(tutorRateLimitReservations)
+      .where(eq(tutorRateLimitReservations.userId, userId))
+      .limit(maxMessages);
+
+    if (rows.length >= maxMessages) {
+      throw new Error("Tutor rate limit reached. Please continue shortly.");
+    }
+
+    const [reservation] = await tx
+      .insert(tutorRateLimitReservations)
+      .values({ userId, reservedAt: new Date() })
+      .returning({ id: tutorRateLimitReservations.id });
+
+    return {
+      allowed: true as const,
+      remaining: Math.max(0, maxMessages - rows.length - 1),
+      reservationId: reservation?.id ?? null
+    };
+  });
 }
 
 export async function listTutorMessagesForUser(
