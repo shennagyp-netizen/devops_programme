@@ -1,196 +1,79 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { loadPodcastAudioManifest } from "../../src/data/podcastSync.ts";
+import {
+  buildPodcastTtsBundle,
+  isValidPodcastTtsBundle
+} from "../../src/data/podcastSync.ts";
 
-const baseSpeech = (level, overrides = {}) => ({
+const speech = (level, overrides = {}) => ({
   episodeId: "B1.4",
   cognitiveLevel: level,
   cognitiveLevelId: ["", "foundation", "mechanism", "diagnosis", "design"][level],
-  label: `Level ${level}`,
-  description: "Test",
-  audioUrl: `/podcasts/audio/B1.4.cognitive-${level}.mp3`,
-  scriptVersion: "v1",
-  durationMs: 5000,
-  turns: [{ turnId: `B1.4.L${level}.T001`, startMs: 0, endMs: 5000 }],
-  cues: [],
+  label: ["", "Foundation", "Mechanism", "Diagnosis", "Design & transfer"][level],
+  description: "Test speech",
+  scriptUrl: `/podcasts/beginner/B1.4.cognitive-${level}.txt`,
+  scriptVersion: `sha-${level}`,
   ...overrides
 });
 
-function bundle(overrides = {}) {
-  return {
-    episodeId: "B1.4",
-    speeches: [baseSpeech(1), baseSpeech(2), baseSpeech(3), baseSpeech(4)],
-    ...overrides
-  };
-}
+const bundle = (overrides = {}) => ({
+  episodeId: "B1.4",
+  speeches: [speech(1), speech(2), speech(3), speech(4)],
+  ...overrides
+});
 
-function installFetch(payload, ok = true) {
-  globalThis.fetch = vi.fn().mockResolvedValue({
-    ok,
-    json: async () => payload
-  });
-}
-
-describe("four-speech podcast red-team validation", () => {
+describe("TTS cognitive podcast red-team contract", () => {
   beforeEach(() => vi.restoreAllMocks());
 
   it.each([
-    ["wrong speech count", { speeches: [baseSpeech(1), baseSpeech(2), baseSpeech(3)] }],
+    ["wrong speech count", { speeches: [speech(1), speech(2), speech(3)] }],
     ["duplicate cognitive levels", {
-      speeches: [baseSpeech(1), baseSpeech(1), baseSpeech(3), baseSpeech(4)]
+      speeches: [speech(1), speech(1), speech(3), speech(4)]
     }],
-    ["missing label", {
-      speeches: [baseSpeech(1), baseSpeech(2, { label: "" }), baseSpeech(3), baseSpeech(4)]
+    ["wrong identity", {
+      speeches: [speech(1), speech(2, { cognitiveLevelId: "foundation" }), speech(3), speech(4)]
     }],
-    ["missing script version", {
-      speeches: [baseSpeech(1, { scriptVersion: "" }), baseSpeech(2), baseSpeech(3), baseSpeech(4)]
+    ["wrong label", {
+      speeches: [speech(1), speech(2, { label: "Foundation" }), speech(3), speech(4)]
     }],
-    ["zero duration", {
-      speeches: [baseSpeech(1, { durationMs: 0 }), baseSpeech(2), baseSpeech(3), baseSpeech(4)]
+    ["unsafe script path", {
+      speeches: [speech(1, { scriptUrl: "javascript:alert(1)" }), speech(2), speech(3), speech(4)]
     }],
-    ["unknown level id", {
-      speeches: [baseSpeech(1, { cognitiveLevelId: "mechanism" }), baseSpeech(2), baseSpeech(3), baseSpeech(4)]
+    ["empty script version", {
+      speeches: [speech(1, { scriptVersion: "" }), speech(2), speech(3), speech(4)]
+    }],
+    ["wrong episode", {
+      speeches: [speech(1, { episodeId: "B1.9" }), speech(2), speech(3), speech(4)]
     }]
-  ])("rejects %s", async (_label, override) => {
-    installFetch({ B1.4: bundle(override) });
-    await expect(loadPodcastAudioManifest()).resolves.toEqual({});
+  ])("rejects %s", (_label, value) => {
+    expect(isValidPodcastTtsBundle({ ...bundle(), ...value }, "B1.4")).toBe(false);
   });
 
-  it("rejects unsafe audio URLs", async () => {
-    for (const audioUrl of [
-      "http://cdn.example.com/audio.mp3",
-      "//cdn.example.com/audio.mp3",
-      "javascript:alert(1)",
-      "data:audio/mpeg;base64,AAAA"
-    ]) {
-      installFetch({
-        B1.4: bundle({
-          speeches: [
-            baseSpeech(1, { audioUrl }),
-            baseSpeech(2),
-            baseSpeech(3),
-            baseSpeech(4)
-          ]
-        })
-      });
-      await expect(loadPodcastAudioManifest()).resolves.toEqual({});
-    }
+  it("accepts only root-relative authored script URLs", () => {
+    const valid = bundle();
+    expect(isValidPodcastTtsBundle(valid, "B1.4")).toBe(true);
+
+    const external = bundle({
+      speeches: [
+        speech(1, { scriptUrl: "https://cdn.example.com/speech.txt" }),
+        speech(2),
+        speech(3),
+        speech(4)
+      ]
+    });
+
+    expect(isValidPodcastTtsBundle(external, "B1.4")).toBe(false);
   });
 
-  it("accepts root-relative and HTTPS audio URLs", async () => {
-    for (const audioUrl of [
-      "/podcasts/audio/B1.4.cognitive-1.mp3",
-      "https://cdn.example.com/audio.mp3"
-    ]) {
-      installFetch({
-        B1.4: bundle({
-          speeches: [
-            baseSpeech(1, { audioUrl }),
-            baseSpeech(2),
-            baseSpeech(3),
-            baseSpeech(4)
-          ]
-        })
-      });
-      const loaded = await loadPodcastAudioManifest();
-      expect(loaded.B1.4.speeches[0].audioUrl).toBe(audioUrl);
-    }
+  it("fails closed when one level is missing from generated metadata", () => {
+    const versions = { "1": "sha-1", "2": "sha-2", "4": "sha-4" };
+    expect(buildPodcastTtsBundle("B1.4", versions)).toBeUndefined();
   });
 
-  it("rejects malformed turn and cue timelines", async () => {
-    installFetch({
-      B1.4: bundle({
-        speeches: [
-          baseSpeech(1, {
-            turns: [
-              { turnId: "one", startMs: 0, endMs: 3000 },
-              { turnId: "two", startMs: 2500, endMs: 4000 }
-            ]
-          }),
-          baseSpeech(2),
-          baseSpeech(3),
-          baseSpeech(4)
-        ]
-      })
+  it("does not permit an invented fifth cognitive level", () => {
+    const invalid = bundle({
+      speeches: [speech(1), speech(2), speech(3), speech(4), speech(4, { cognitiveLevel: 4 })]
     });
-    await expect(loadPodcastAudioManifest()).resolves.toEqual({});
 
-    installFetch({
-      B1.4: bundle({
-        speeches: [
-          baseSpeech(1, {
-            cues: [{
-              id: "bad",
-              turnId: "B1.4.L1.T001",
-              kind: "not-a-kind",
-              startMs: 500
-            }]
-          }),
-          baseSpeech(2),
-          baseSpeech(3),
-          baseSpeech(4)
-        ]
-      })
-    });
-    await expect(loadPodcastAudioManifest()).resolves.toEqual({});
-  });
-
-  it("rejects speech references to a different episode", async () => {
-    installFetch({
-      B1.4: bundle({
-        speeches: [
-          baseSpeech(1, { episodeId: "B1.9" }),
-          baseSpeech(2),
-          baseSpeech(3),
-          baseSpeech(4)
-        ]
-      })
-    });
-    await expect(loadPodcastAudioManifest()).resolves.toEqual({});
-  });
-
-  it("rejects duplicate cue ids and unknown cue turns", async () => {
-    installFetch({
-      B1.4: bundle({
-        speeches: [
-          baseSpeech(1, {
-            cues: [
-              { id: "same", turnId: "B1.4.L1.T001", kind: "prediction", startMs: 100 },
-              { id: "same", turnId: "B1.4.L1.T001", kind: "lab", startMs: 300 }
-            ]
-          }),
-          baseSpeech(2),
-          baseSpeech(3),
-          baseSpeech(4)
-        ]
-      })
-    });
-    await expect(loadPodcastAudioManifest()).resolves.toEqual({});
-
-    installFetch({
-      B1.4: bundle({
-        speeches: [
-          baseSpeech(1, {
-            cues: [
-              { id: "unknown", turnId: "missing", kind: "prediction", startMs: 100 }
-            ]
-          }),
-          baseSpeech(2),
-          baseSpeech(3),
-          baseSpeech(4)
-        ]
-      })
-    });
-    await expect(loadPodcastAudioManifest()).resolves.toEqual({});
-  });
-
-  it("fails closed for HTTP and JSON-shape failures", async () => {
-    installFetch({}, false);
-    await expect(loadPodcastAudioManifest()).resolves.toEqual({});
-
-    globalThis.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => "not an object"
-    });
-    await expect(loadPodcastAudioManifest()).resolves.toEqual({});
+    expect(isValidPodcastTtsBundle(invalid, "B1.4")).toBe(false);
   });
 });
