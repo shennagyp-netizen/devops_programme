@@ -7,8 +7,12 @@ vi.mock("../../src/lib/server/auth.ts", () => ({
   requireCurrentUser: currentUserMock
 }));
 
-vi.mock("../../src/lib/server/progress.ts", () => ({
+vi.mock("../../src/lib/server/learningAuthority.ts", () => ({
   completeLearningItemForUser: completeForUserMock
+}));
+
+vi.mock("../../src/lib/server/progress.ts", () => ({
+  recordMasteryAttemptForUser: vi.fn()
 }));
 
 const { completeLearningItemAction } = await import(
@@ -96,14 +100,13 @@ describe("completeLearningItemAction", () => {
     });
 
     await completeLearningItemAction({
-      itemId: "B1.2"
+      itemId: "B1.2",
+      evidenceRefs: ["evidence-1"]
     });
 
     expect(completeForUserMock).toHaveBeenCalledWith("user_456", {
-      itemType: "lesson",
       itemId: "B1.2",
-      course: "beginner",
-      projectId: "B1"
+      evidenceRefs: ["evidence-1"]
     });
   });
 
