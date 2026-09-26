@@ -1,105 +1,77 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   findActiveCue,
-  findCurrentSegment,
   findCurrentTurnId,
   loadPodcastAudioManifest
 } from "../../src/data/podcastSync.ts";
 
-const validManifest = {
-  episodeId: "B1.2",
-  scriptVersion: "sha-test",
+const speech = (level, overrides = {}) => ({
+  episodeId: "B1.4",
+  cognitiveLevel: level,
+  cognitiveLevelId: ["", "foundation", "mechanism", "diagnosis", "design"][level],
+  label: ["", "Foundation", "Mechanism", "Diagnosis", "Design & transfer"][level],
+  description: "Test speech",
+  audioUrl: `/podcasts/audio/B1.4.cognitive-${level}.mp3`,
+  scriptVersion: `sha-${level}`,
   durationMs: 3000,
-  segments: [
-    {
-      id: "segment-1",
-      turnId: "B1.2.T001",
-      audioUrl: "/audio/B1.2-01.mp3",
-      startMs: 0,
-      endMs: 1400
-    },
-    {
-      id: "segment-2",
-      turnId: "B1.2.T002",
-      audioUrl: "/audio/B1.2-02.mp3",
-      startMs: 1400,
-      endMs: 3000
-    }
-  ],
-  turns: [
-    {
-      turnId: "B1.2.T001",
-      startMs: 0,
-      endMs: 1400
-    },
-    {
-      turnId: "B1.2.T002",
-      startMs: 1400,
-      endMs: 3000
-    }
-  ],
-  cues: [
-    {
-      id: "cue-1",
-      turnId: "B1.2.T001",
-      kind: "prediction",
-      startMs: 400,
-      endMs: 800
-    },
-    {
-      id: "cue-2",
-      turnId: "B1.2.T002",
-      kind: "lab",
-      startMs: 1800
-    }
-  ]
+  turns: [{ turnId: `B1.4.L${level}.T001`, startMs: 0, endMs: 3000 }],
+  cues: [],
+  ...overrides
+});
+
+const validBundle = {
+  episodeId: "B1.4",
+  speeches: [speech(1), speech(2), speech(3), speech(4)]
 };
 
-describe("podcast synchronization contract", () => {
+describe("podcast cognitive speech synchronization contract", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
 
-  it("rejects malformed fixed-segment manifests", async () => {
+  it("accepts exactly four complete cognitive speeches", async () => {
     globalThis.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({
-        "B1.2": {
-          ...validManifest,
-          segments: [
-            {
-              ...validManifest.segments[0],
-              endMs: 300,
-              startMs: 500
-            }
-          ]
-        }
-      })
-    });
-
-    await expect(loadPodcastAudioManifest()).resolves.toEqual({});
-  });
-
-  it("accepts a valid aligned manifest and locates segments, turns and cues", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ "B1.2": validManifest })
+      json: async () => ({ B1.4: validBundle })
     });
 
     const result = await loadPodcastAudioManifest();
 
-    expect(result["B1.2"]).toEqual(validManifest);
-    expect(findCurrentSegment(result["B1.2"], 700)?.id).toBe("segment-1");
-    expect(findCurrentTurnId(result["B1.2"], 700)).toBe("B1.2.T001");
-    expect(findActiveCue(result["B1.2"], 500)?.id).toBe("cue-1");
-    expect(findActiveCue(result["B1.2"], 2000)?.id).toBe("cue-2");
+    expect(result["B1.4"]).toEqual(validBundle);
   });
 
-  it("uses inclusive start and exclusive end boundaries", () => {
-    expect(findCurrentSegment(validManifest, 0)?.id).toBe("segment-1");
-    expect(findCurrentSegment(validManifest, 1399)?.id).toBe("segment-1");
-    expect(findCurrentSegment(validManifest, 1400)?.id).toBe("segment-2");
-    expect(findCurrentTurnId(validManifest, 3000)).toBeUndefined();
+  it("uses the real audio timeline for the selected speech", () => {
+    const selected = validBundle.speeches[2];
+
+    expect(findCurrentTurnId(selected, 0)).toBe("B1.4.L3.T001");
+    expect(findCurrentTurnId(selected, 2999)).toBe("B1.4.L3.T001");
+    expect(findCurrentTurnId(selected, 3000)).toBeUndefined();
+  });
+
+  it("keeps learner cues authored inside an individual speech", async () => {
+    const withCue = {
+      ...speech(2),
+      cues: [{
+        id: "cue-diagnose",
+        turnId: "B1.4.L2.T001",
+        kind: "prediction",
+        startMs: 500,
+        endMs: 900
+      }]
+    };
+
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        B1.4: {
+          ...validBundle,
+          speeches: [speech(1), withCue, speech(3), speech(4)]
+        }
+      })
+    });
+
+    const result = await loadPodcastAudioManifest();
+    expect(findActiveCue(result["B1.4"].speeches[1], 600)?.id).toBe("cue-diagnose");
   });
 
   it("fails closed on network errors", async () => {
