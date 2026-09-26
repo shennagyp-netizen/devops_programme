@@ -34,7 +34,7 @@ describe("completeLearningItemAction", () => {
     expect(completeForUserMock).not.toHaveBeenCalled();
   });
 
-  it("uses the authenticated self-hosted user and ignores browser identity", async () => {
+  it("derives programme metadata server-side instead of trusting browser metadata", async () => {
     currentUserMock.mockResolvedValue({
       id: "user_123",
       email: "alice@example.com"
@@ -46,18 +46,52 @@ describe("completeLearningItemAction", () => {
     });
 
     await completeLearningItemAction({
-      itemType: "lesson",
       itemId: "B1.2",
+      itemType: "project",
+      course: "advanced",
+      projectId: "A3",
+      verificationLevel: "machine-verified",
       learnerId: "attacker-chosen-id"
     });
 
     expect(completeForUserMock).toHaveBeenCalledWith("user_123", {
       itemType: "lesson",
-      itemId: "B1.2"
+      itemId: "B1.2",
+      course: "beginner",
+      projectId: "B1"
     });
   });
 
-  it("forwards only the completion contract to the authenticated service", async () => {
+  it("rejects an unknown item before persistence", async () => {
+    currentUserMock.mockResolvedValue({
+      id: "user_456",
+      email: "bob@example.com"
+    });
+
+    await expect(
+      completeLearningItemAction({ itemId: "attacker-controlled-id" })
+    ).rejects.toThrow(/unknown learning item/i);
+
+    expect(completeForUserMock).not.toHaveBeenCalled();
+  });
+
+  it("rejects browser trust assertions rather than persisting them", async () => {
+    currentUserMock.mockResolvedValue({
+      id: "user_789",
+      email: "carol@example.com"
+    });
+
+    await expect(
+      completeLearningItemAction({
+        itemId: "B1.2",
+        clientAssertions: { completed: true }
+      })
+    ).rejects.toThrow(/unsupported field/i);
+
+    expect(completeForUserMock).not.toHaveBeenCalled();
+  });
+
+  it("forwards only authoritative metadata to the persistence service", async () => {
     currentUserMock.mockResolvedValue({
       id: "user_456",
       email: "bob@example.com"
@@ -69,20 +103,16 @@ describe("completeLearningItemAction", () => {
     });
 
     await completeLearningItemAction({
-      itemType: "assignment",
       itemId: "I1",
-      course: "intermediate",
-      projectId: "I1",
       verificationLevel: "exercise-validated",
       stdout: "secret terminal output"
     });
 
     expect(completeForUserMock).toHaveBeenCalledWith("user_456", {
-      itemType: "assignment",
+      itemType: "project",
       itemId: "I1",
       course: "intermediate",
-      projectId: "I1",
-      verificationLevel: "exercise-validated"
+      projectId: "I1"
     });
   });
 });
