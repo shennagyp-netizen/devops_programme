@@ -7,7 +7,7 @@ function evidenceDecision(rule:Extract<CompletionRule,{kind:"evidence"}>,item:Le
 }
 export function evaluateCompletion(item:LearningItem,state:LearnerState):CompletionDecision{
  if(state.completedItemIds.includes(item.id))return{accepted:false,reason:"ASSESSMENT_REQUIRED"};
- if(item.completion.kind==="assessment"){const passed=state.assessmentPasses.some(p=>p.learnerId.length>0&&p.assessmentId===item.completion.assessmentId);return passed?{accepted:true,evidenceIds:[]}:{accepted:false,reason:"ASSESSMENT_REQUIRED"}}
+ if(item.completion.kind==="assessment"){const assessmentId=item.completion.assessmentId;const passed=state.assessmentPasses.some(p=>p.learnerId.length>0&&p.assessmentId===assessmentId);return passed?{accepted:true,evidenceIds:[]}:{accepted:false,reason:"ASSESSMENT_REQUIRED"}}
  return evidenceDecision(item.completion,item,state);
 }
 export function deriveProgress(programme:{items:LearningItem[]},state:LearnerState){const total=programme.items.length;const completed=programme.items.filter(i=>state.completedItemIds.includes(i.id)).length;return{completed,total,percentage:total===0?0:Math.round(completed/total*100)}}
