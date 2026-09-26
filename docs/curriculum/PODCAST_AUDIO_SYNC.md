@@ -101,6 +101,12 @@ Until aligned audio exists, the application deliberately uses guided transcript 
 
 It must not fake synchronization by estimating timing.
 
+Guided transcript mode may provide an explicitly labelled learner-selected
+**reading pace** from 1x to 2x. This controls only the paced presentation of
+the written turns. It is not presented as audio synchronization, does not
+generate TTS, and is immediately superseded by the real audio clock when a
+matching aligned recording is available.
+
 ## Current status
 
 The synchronization engine and manifest schema are implemented in React. Production audio manifests are not committed yet, so current episodes intentionally use the safe guided-transcript fallback.

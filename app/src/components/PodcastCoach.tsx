@@ -13,6 +13,7 @@ import {
   podcastUrl,
   type Turn
 } from "../data/podcastsRaw";
+import { useLessonVoiceClock } from "./LessonVoiceClock";
 
 type VoicePhase =
   | "ready"
@@ -27,7 +28,11 @@ const cueToPhase: Partial<Record<PodcastCueKind, VoicePhase>> = {
   recall: "learner-action"
 };
 
+const GUIDED_TURN_INTERVAL_MS = 6500;
+
 export function PodcastCoach({ lesson }: { lesson: Lesson }) {
+  const voiceClock = useLessonVoiceClock();
+  const publishVoiceClock = voiceClock?.publishVoiceClock;
   const [phase, setPhase] = useState<VoicePhase>("ready");
   const [turnIndex, setTurnIndex] = useState(0);
   const [prediction, setPrediction] = useState("");
@@ -35,6 +40,8 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   const [episodeSource, setEpisodeSource] = useState("");
   const [audioTimeMs, setAudioTimeMs] = useState(0);
   const [audioPlaying, setAudioPlaying] = useState(false);
+  const [guidedPlaying, setGuidedPlaying] = useState(false);
+  const [guidedSpeed, setGuidedSpeed] = useState<1 | 1.25 | 1.5 | 1.75 | 2>(1);
   const [scriptVersions, setScriptVersions] = useState<Record<string, string>>({});
   const [audioManifests, setAudioManifests] = useState<Record<string, PodcastAudioManifest>>({});
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -66,6 +73,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     setAudioStarted(false);
     setAudioTimeMs(0);
     setAudioPlaying(false);
+    setGuidedPlaying(false);
     lastCueIdRef.current = null;
     lastAudioTimeMsRef.current = 0;
 
@@ -124,6 +132,23 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   const current: Turn | undefined = turns[turnIndex];
 
   useEffect(() => {
+    if (audioManifest || !guidedPlaying || turns.length === 0) return;
+
+    const interval = window.setInterval(() => {
+      setTurnIndex((index) => {
+        if (index >= turns.length - 1) {
+          setGuidedPlaying(false);
+          setPhase("done");
+          return index;
+        }
+        return index + 1;
+      });
+    }, GUIDED_TURN_INTERVAL_MS / guidedSpeed);
+
+    return () => window.clearInterval(interval);
+  }, [audioManifest, guidedPlaying, guidedSpeed, turns.length]);
+
+  useEffect(() => {
     if (!audioManifest || !audioRef.current) return;
 
     const audio = audioRef.current;
@@ -135,6 +160,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
       if (movedBackward) lastCueIdRef.current = null;
       lastAudioTimeMsRef.current = timeMs;
       setAudioTimeMs(timeMs);
+      publishVoiceClock?.({ timeMs, manifest: audioManifest });
 
       const currentTurnId = findCurrentTurnId(audioManifest, timeMs);
       if (currentTurnId) {
@@ -176,13 +202,14 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
       audio.removeEventListener("pause", onPause);
       audio.removeEventListener("ended", onEnded);
     };
-  }, [audioManifest, turns]);
+  }, [audioManifest, turns, publishVoiceClock]);
 
   function startVoice() {
     const audio = audioRef.current;
     if (!audio) {
       setAudioStarted(true);
       setPhase("speaking");
+      setGuidedPlaying(true);
       return;
     }
     setAudioStarted(true);
@@ -190,6 +217,12 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   }
 
   function toggleVoice() {
+    if (!audioRef.current) {
+      setAudioStarted(true);
+      setPhase("speaking");
+      setGuidedPlaying((playing) => !playing);
+      return;
+    }
     if (audioPlaying) audioRef.current?.pause();
     else startVoice();
   }
@@ -210,7 +243,8 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
 
   function resumeVoice() {
     setPhase("speaking");
-    void audioRef.current?.play();
+    if (audioRef.current) void audioRef.current?.play();
+    else setGuidedPlaying(true);
   }
 
   function reset() {
@@ -222,6 +256,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     setAudioStarted(false);
     setAudioTimeMs(0);
     setAudioPlaying(false);
+    setGuidedPlaying(false);
     lastCueIdRef.current = null;
     lastAudioTimeMsRef.current = 0;
   }
@@ -290,7 +325,23 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
               </span>
             </>
           ) : (
-            <button className="primary" onClick={startVoice}>Start co-teacher</button>
+            <>
+              <button className="primary" onClick={toggleVoice}>
+                {guidedPlaying ? "Pause guided text" : audioStarted ? "Resume guided text" : "Start guided text"}
+              </button>
+              <label className="guided-speed-control">
+                <span>Reading pace</span>
+                <select
+                  aria-label="Guided text reading pace"
+                  value={guidedSpeed}
+                  onChange={(event) => setGuidedSpeed(Number(event.target.value) as typeof guidedSpeed)}
+                >
+                  {[1, 1.25, 1.5, 1.75, 2].map((speed) => (
+                    <option key={speed} value={speed}>{speed}x</option>
+                  ))}
+                </select>
+              </label>
+            </>
           )}
         </div>
       </div>

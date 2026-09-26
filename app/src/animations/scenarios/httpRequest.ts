@@ -53,7 +53,11 @@ export const httpRequestAnimation: AnimationDefinitionV1 = {
     { id: "send-gateway-api", action: "send", targetId: "request-gateway-api", targetStateId: "initial" },
     { id: "activate-api", action: "set-status", targetId: "api", targetStateId: "api-active" }
   ],
-  interactions: [],
+  interactions: [
+    { id: "send-browser-gateway", action: "click", targetId: "browser", eventIds: ["send-browser-gateway"] },
+    { id: "send-gateway-api", action: "click", targetId: "gateway", eventIds: ["send-gateway-api"] },
+    { id: "inspect-api", action: "click", targetId: "api", eventIds: ["activate-api"] }
+  ],
   accessibility: {
     title: "HTTP request flow",
     description:
