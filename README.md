@@ -83,7 +83,7 @@ npm run check:projects
 npm run check:platforms
 npm run check:hands-on
 npm run check:programme
-npm run check:mvp
+npm run check:runtime
 ```
 
 ## Documentation
