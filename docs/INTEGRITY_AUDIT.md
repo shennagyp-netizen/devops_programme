@@ -1,74 +1,37 @@
 # Project Integrity Audit
 
 **Audit date:** 2026-09-26
-**Scope:** V3 MVP learner identity, progress, tutor and hands-on boundaries.
 
 ## Current architecture
 
-V3 is a single React/Next.js learning application with simple first-party authentication.
+V3 has two intentionally separate security boundaries.
 
-The application uses:
+### 1. Application account
 
-- email/password;
-- scrypt password hashing;
-- an opaque HTTP-only session cookie;
-- PostgreSQL/Drizzle for users, sessions and progress.
+Simple first-party email/password authentication with scrypt, HTTP-only session cookie, and PostgreSQL progress.
 
-It does not use Clerk, OAuth, JWT or a separate API-token identity system.
+### 2. Local terminal execution
 
-## Important security boundary
+The learner may install a loopback terminal agent. It uses a separate random pairing token for browser-to-local-agent authorization.
 
-The browser cannot choose the learner identity used for saved progress.
+The token is not interchangeable with the account session.
 
-The server obtains the learner from the authenticated session.
+The agent listens only on 127.0.0.1 and resolves execution from the authored runtime task catalog.
 
-Completion writes validate their input and bind the record to that server-derived user.
+## Security requirements
 
-## Complexity deliberately removed
+The application must reject client-supplied learner IDs, insecure password handling, insecure session cookies, unauthenticated learner progress access, and arbitrary browser-supplied shell commands.
 
-- external identity provider;
-- OAuth/social login;
-- JWT access/refresh infrastructure;
-- custom progress REST API;
-- terminal pairing-token authentication;
-- a second auth system for the tutor.
+The local agent must reject missing/incorrect pairing tokens, unknown runtime task IDs, unsupported platform values, platform mismatch, destructive runtime commands, and malformed request bodies.
 
-## Remaining MVP limitations
+Its stdout/stderr are bounded while streaming so a verbose command cannot grow without limit.
 
-- account recovery is not yet a product feature;
-- email verification is not required for the MVP;
-- there is no role/admin system;
-- session management is intentionally small;
-- browser-entered hands-on evidence is not machine attestation.
+## Accepted MVP limitations
 
-These are explicit MVP boundaries.
+Email verification and account recovery are not yet implemented. There is no role/admin system. The local pairing token is intentionally a local execution credential. Browser-entered evidence is not cryptographic attestation.
 
-## Red-team rules
+## Key design rule
 
-The tests must reject:
+Do not conflate application authentication with local terminal authentication.
 
-- client-supplied learner IDs;
-- plaintext password storage;
-- insecure session cookies;
-- cross-user progress access;
-- unauthenticated access to /learn;
-- forged progress records;
-- arbitrary shell execution through the learner UI.
-
-The tutor must also:
-
-- derive lesson context server-side;
-- reject malformed/oversized requests;
-- keep provider credentials server-side.
-
-## Validation expectation
-
-The repository gate must pass:
-
-- content and curriculum contracts;
-- authenticated progress architecture contract;
-- unit/integration tests;
-- TypeScript;
-- Next.js production build.
-
-Authentication is part of the MVP security boundary. Removing it is not a security improvement; it would remove the learner identity required for persistent progress.
+The application session protects the learner account. The terminal pairing token protects the localhost execution bridge.
