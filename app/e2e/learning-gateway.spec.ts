@@ -10,10 +10,10 @@ test.describe("real-user learning gateway journey", () => {
 
     await expect(page.getByRole("heading", { name: "DevOps Engineering", exact: true })).toBeVisible();
 
-    await page.getByRole("radio", { name: "Windows", exact: true }).check();
+    await page.getByText("Windows", { exact: true }).click();
     await expect(page.getByText("Environment: Windows · PowerShell", { exact: true })).toBeVisible();
 
-    await page.getByRole("radio", { name: "DevOps Through Problems", exact: true }).check();
+    await page.getByText("DevOps Through Problems", { exact: true }).click();
     await expect(page.getByRole("heading", { name: "DevOps Through Problems" })).toBeVisible();
     await expect(page.getByText("Environment: Windows · PowerShell", { exact: true })).toBeVisible();
 
@@ -50,8 +50,8 @@ test.describe("real-user learning gateway journey", () => {
     const email = e2eEmail(testInfo.title, testInfo.workerIndex, testInfo.retry);
     await signUp(page, email, "gateway-terminal-verified");
 
-    await page.getByRole("radio", { name: "DevOps Through Problems", exact: true }).check();
-    await page.getByRole("radio", { name: "Linux", exact: true }).check();
+    await page.getByText("DevOps Through Problems", { exact: true }).click();
+    await page.getByText("Linux", { exact: true }).click();
     await expect(page.getByText("Environment: Linux · bash", { exact: true })).toBeVisible();
 
     await page.getByRole("button", { name: "do", exact: true }).click();
