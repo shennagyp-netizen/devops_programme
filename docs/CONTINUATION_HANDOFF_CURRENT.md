@@ -1942,28 +1942,33 @@ om that status.
 
 
 ============================================================
-FIXED PODCAST COGNITIVE-LEVEL MODEL — 2026-09-26
+FIXED PODCAST TTS COGNITIVE MODEL — 2026-09-26
 ============================================================
 
-The podcast/co-teacher remains fixed authored curriculum content. The private LLM tutor is explicitly separate and may not rewrite or regenerate the podcast.
+The podcast/co-teacher is fixed authored curriculum content. One lesson has four complete authored podcast versions:
+- Level 1 — Foundation
+- Level 2 — Mechanism
+- Level 3 — Diagnosis
+- Level 4 — Design & Transfer
 
-MVP implementation:
-- PodcastCoach renders the full authored transcript in the persistent lesson voice panel.
-- The active transcript turn follows the real audio clock when a valid fixed audio manifest is published.
-- Each lesson can expose four complete fixed authored speeches: Foundation, Mechanism, Diagnosis, and Design & Transfer.
-- Cognitive level is a content choice, not an HTML audio playback-rate setting.
-- Prediction/lab/recall cues remain authoritative learner-action boundaries.
-- Invalid, stale or unpublished audio fails closed to the authored transcript.
-- scripts/sync-podcast-assets.mjs now synchronizes fixed audio assets from podcasts/ into app/public/podcasts/.
-- Unit red-team coverage validates four-level identity, URLs, timing, cue integrity and fail-closed behavior.
-- Continuous voice integration coverage verifies cognitive-level selection and real-clock playback.
+These are four different authored explanations of the same lesson. Cognitive level is not implemented by changing TTS playback speed.
 
-Current publication boundary:
-- The production audio manifest is intentionally empty until the four exact B1.4 level recordings are published.
-- The player is deploy-safe because each selected level falls back to its authored transcript when audio is absent or stale.
-- Four local MVP MP3s were generated for B1.4 Cognitive Levels 1–4. They are complete speeches, not first-four-turn clips.
+Runtime speech uses browser TTS. No human recordings, MP3 assets, WAV assets, or audio manifest are required.
 
-Do not connect the private LLM tutor to podcast generation. Future adaptive tutoring belongs in the separate tutor conversation boundary.
+The learner can select one cognitive version, read its complete transcript, and have the selected script spoken with SpeechSynthesisUtterance. Runtime TTS events update the active authored turn and voice state.
+
+When TTS is unavailable, the selected authored transcript remains usable. The application never fabricates millisecond audio timing.
+
+The private LLM tutor is a separate adaptive conversation. It may discuss learner reasoning but never rewrites, regenerates, or controls the fixed podcast scripts.
+
+B1.4 currently has four authored cognitive script files:
+- podcasts/beginner/B1.4.cognitive-1.txt
+- podcasts/beginner/B1.4.cognitive-2.txt
+- podcasts/beginner/B1.4.cognitive-3.txt
+- podcasts/beginner/B1.4.cognitive-4.txt
+
+The production tree contains text scripts only; the obsolete recording/audio-manifest path was removed.
+
 ============================================================
-END FIXED PODCAST COGNITIVE-LEVEL MODEL
+END FIXED PODCAST TTS COGNITIVE MODEL
 ============================================================
