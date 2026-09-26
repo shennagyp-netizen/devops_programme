@@ -29,9 +29,19 @@ describe("DNS resolution animation", () => {
         "resolver-root",
         "root-tld",
         "tld-authoritative",
-        "authoritative-answer"
+        "authoritative-answer",
+        "query-packet",
+        "response-packet"
       ])
     );
+  });
+
+  it("defines idle, query-flow, and resolution-complete states", () => {
+    expect(dnsResolutionAnimation.states.map((state) => state.id)).toEqual([
+      "idle",
+      "query-flow",
+      "resolution-complete"
+    ]);
   });
 
   it("supports the full sequential curriculum binding without voice timing", () => {
