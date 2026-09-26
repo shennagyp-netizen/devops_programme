@@ -29,6 +29,16 @@ describe("authoritative mastery command boundary", () => {
     }
   });
 
+  it("rejects unsupported mastery coaching stages", () => {
+    expect(() =>
+      parseMasteryCommand({
+        itemId: "B1.2",
+        stage: "invented-authority-state",
+        summary: "ok"
+      })
+    ).toThrow(/supported mastery coaching stage/i);
+  });
+
   it("bounds learner-controlled note and evidence-reference size", () => {
     expect(() =>
       parseMasteryCommand({
