@@ -5,7 +5,7 @@ import { resolve } from "node:path";
 const source = (path) =>
   readFileSync(resolve(process.cwd(), path), "utf8");
 
-describe("continuous fixed podcast architecture", () => {
+describe("continuous fixed cognitive podcast architecture", () => {
   it("keeps the co-teacher outside the lesson mode switch", () => {
     const lessonPanel = source("src/components/LessonPanel.tsx");
 
@@ -13,94 +13,77 @@ describe("continuous fixed podcast architecture", () => {
     expect(lessonPanel).toContain(
       'type Mode = "learn" | "do" | "recall" | "design" | "assessment"'
     );
-    expect(lessonPanel).not.toContain('type Mode = "learn" | "listen"');
+    expect(lessonPanel).not.toContain('type Mode = "listen"');
     expect(lessonPanel).not.toContain('item === "listen"');
   });
 
-  it("models the podcast as fixed authored content with a separate private tutor", () => {
+  it("models four fixed authored speeches instead of playback-rate variants", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
 
-    expect(podcastCoach).toContain('CO-TEACHER · FIXED');
-    expect(podcastCoach).toContain("The authored conversation stays the same.");
+    expect(podcastCoach).toContain("Four authored speeches. Four cognitive levels.");
+    expect(podcastCoach).toContain('COGNITIVE_LEVELS');
+    expect(podcastCoach).toContain("Foundation");
+    expect(podcastCoach).toContain("Mechanism");
+    expect(podcastCoach).toContain("Diagnosis");
+    expect(podcastCoach).toContain("Design & transfer");
+    expect(podcastCoach).toContain("The private tutor is separate.");
     expect(podcastCoach).toContain(
-      "The private tutor is a separate learner-specific conversation."
-    );
-    expect(podcastCoach).toContain(
-      "does not rewrite or regenerate this podcast."
+      "does not rewrite or regenerate these speeches."
     );
   });
 
-  it("supports four fixed speech segments on one shared timeline", () => {
+  it("uses one complete audio file for the selected cognitive level", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
 
-    expect(podcastCoach).toContain("audioManifest.segments.map");
-    expect(podcastCoach).toContain("findCurrentSegment(audioManifest, timeMs)");
-    expect(podcastCoach).toContain("handleSegmentEnded");
-    expect(podcastCoach).toContain("const nextIndex = segmentIndex + 1");
+    expect(podcastCoach).toContain("audioManifest.audioUrl");
+    expect(podcastCoach).toContain("audioRef");
+    expect(podcastCoach).toContain("selectCognitiveLevel");
+    expect(podcastCoach).not.toContain("audioManifest.segments");
+    expect(podcastCoach).not.toContain("currentSegmentIndex");
+    expect(podcastCoach).not.toContain("handleSegmentEnded");
   });
 
   it("uses the real audio clock and never estimates timing from text", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
 
-    expect(podcastCoach).toContain("audio.currentTime");
-    expect(podcastCoach).toContain("Math.round(segment.startMs + audio.currentTime * 1000)");
+    expect(podcastCoach).toContain("audioRef.current.currentTime");
+    expect(podcastCoach).toContain(
+      "Math.round(audioRef.current.currentTime * 1000)"
+    );
     expect(podcastCoach).toContain("findCurrentTurnId(audioManifest, timeMs)");
     expect(podcastCoach).toContain("findActiveCue(audioManifest, timeMs)");
-    expect(podcastCoach).not.toMatch(/words?\\.length/);
-    expect(podcastCoach).not.toMatch(/text\\.length/);
+    expect(podcastCoach).not.toMatch(/words?\.length/);
+    expect(podcastCoach).not.toMatch(/text\.length/);
     expect(podcastCoach).not.toContain("wordsPerMinute");
     expect(podcastCoach).not.toContain("averageSpeakingRate");
+    expect(podcastCoach).not.toContain("playbackRate");
   });
 
-  it("offers 1x through 2x playback speed for fixed audio and fallback transcript", () => {
+  it("does not implement cognitive levels as TTS playback speed", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
 
-    expect(podcastCoach).toContain(
-      "const PLAYBACK_SPEEDS = [1, 1.25, 1.5, 1.75, 2]"
-    );
-    expect(podcastCoach).toContain('aria-label="Podcast playback speed"');
-    expect(podcastCoach).toContain("audio.playbackRate = speed");
-    expect(podcastCoach).toContain(
-      "GUIDED_TURN_INTERVAL_MS / playbackSpeed"
-    );
+    expect(podcastCoach).not.toContain("PLAYBACK_SPEEDS");
+    expect(podcastCoach).not.toContain("Podcast playback speed");
+    expect(podcastCoach).toContain("cognitive podcast level");
+    expect(podcastCoach).toContain("changing the explanation itself");
   });
 
-  it("keeps the entire transcript visible and highlights the active turn", () => {
+  it("keeps the entire selected speech transcript visible and highlights its active section", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
 
     expect(podcastCoach).toContain('aria-label="Podcast transcript"');
     expect(podcastCoach).toContain("transcript-list");
     expect(podcastCoach).toContain("transcript-turn");
-    expect(podcastCoach).toContain('className={"transcript-turn" + (index === turnIndex ? " active" : "")}');
-    expect(podcastCoach).toContain('aria-current={index === turnIndex ? "true" : undefined}');
+    expect(podcastCoach).toContain(
+      'className={"transcript-turn" + (index === turnIndex ? " active" : "")}'
+    );
+    expect(podcastCoach).toContain(
+      'aria-current={index === turnIndex ? "true" : undefined}'
+    );
     expect(podcastCoach).toContain("scrollIntoView");
   });
 
-  it("pauses at authored learner-action cues and resumes the same fixed segment", () => {
-    const podcastCoach = source("src/components/PodcastCoach.tsx");
-
-    expect(podcastCoach).toContain('prediction: "coach"');
-    expect(podcastCoach).toContain('lab: "learner-action"');
-    expect(podcastCoach).toContain('recall: "learner-action"');
-    expect(podcastCoach).toContain("pauseAllAudio()");
-    expect(podcastCoach).toContain("function resumeVoice()");
-    expect(podcastCoach).toContain("void audio.play()");
-  });
-
-  it("resets the voice session when the lesson changes", () => {
-    const podcastCoach = source("src/components/PodcastCoach.tsx");
-
-    expect(podcastCoach).toContain('setPhase("ready")');
-    expect(podcastCoach).toContain("setTurnIndex(0)");
-    expect(podcastCoach).toContain('setPrediction("")');
-    expect(podcastCoach).toContain("setAudioStarted(false)");
-    expect(podcastCoach).toContain("setAudioTimeMs(0)");
-    expect(podcastCoach).toContain("setCurrentSegmentIndex(0)");
-    expect(podcastCoach).toContain("audioRefs.current = {}");
-    expect(podcastCoach).toContain("[lesson.id, lesson.podcast]");
-  });
-
-  it("keeps the fixed-audio path fail-closed", () => {
+  it("keeps fixed audio fail-closed and falls back to the authored speech", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
     const sync = source("src/data/podcastSync.ts");
 
@@ -108,8 +91,9 @@ describe("continuous fixed podcast architecture", () => {
     expect(sync).toContain("catch {");
     expect(sync).toContain("return {}");
     expect(podcastCoach).toContain('audioSyncState === "guided"');
+    expect(podcastCoach).toContain("audioSyncState === "media-error"");
     expect(podcastCoach).toContain(
-      "No fixed recording is published for this lesson."
+      "The authored speech remains available."
     );
   });
 
@@ -126,9 +110,10 @@ describe("continuous fixed podcast architecture", () => {
     );
   });
 
-  it("does not create a separate listen mode", () => {
+  it("does not create a separate listen mode or LLM-generated podcast mode", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
     expect(podcastCoach).not.toContain('type VoicePhase = "listen"');
     expect(podcastCoach).not.toContain("listen mode");
+    expect(podcastCoach).toContain("The private tutor is separate.");
   });
 });
