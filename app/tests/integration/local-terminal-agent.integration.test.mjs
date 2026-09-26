@@ -33,31 +33,28 @@ async function startAgent(port, token, extraEnv = {}) {
   return { child, keyDir };
 }
 
-function waitForServer(child) {
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      child.kill("SIGTERM");
-      reject(new Error("terminal agent did not start"));
-    }, 5000);
+async function waitForServer(child, port, timeoutMs = 10000) {
+  const deadline = Date.now() + timeoutMs;
 
-    const handle = (chunk) => {
-      if (chunk.toString().includes("DevOps terminal agent is running.")) {
-        clearTimeout(timeout);
-        child.stdout.off("data", handle);
-        resolve(undefined);
-      }
-    };
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null) {
+      throw new Error(`terminal agent exited before becoming ready: ${child.exitCode}`);
+    }
 
-    child.stdout.on("data", handle);
-    child.on("exit", () => {
-      clearTimeout(timeout);
-    });
-    child.stderr.on("data", (chunk) => {
-      if (chunk.toString()) {
-        // Preserve stderr for actual process failures without failing on normal output.
+    try {
+      const response = await fetch(`http://127.0.0.1:${port}/health`);
+      if (response.ok) {
+        return;
       }
-    });
-  });
+    } catch {
+      // The server may still be binding the loopback listener.
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+
+  child.kill("SIGTERM");
+  throw new Error("terminal agent did not become healthy before timeout");
 }
 
 describe("local terminal agent", () => {
@@ -67,7 +64,7 @@ describe("local terminal agent", () => {
     const { child, keyDir } = await startAgent(port, token);
 
     try {
-      await waitForServer(child);
+      await waitForServer(child, port);
 
       const health = await fetch(`http://127.0.0.1:${port}/health`);
       expect(health.status).toBe(200);
@@ -87,7 +84,7 @@ describe("local terminal agent", () => {
     const { child, keyDir } = await startAgent(port, token);
 
     try {
-      await waitForServer(child);
+      await waitForServer(child, port);
 
       const response = await fetch(`http://127.0.0.1:${port}/execute`, {
         method: "POST",
@@ -112,7 +109,7 @@ describe("local terminal agent", () => {
     const { child, keyDir } = await startAgent(port, token);
 
     try {
-      await waitForServer(child);
+      await waitForServer(child, port);
 
       const response = await fetch(`http://127.0.0.1:${port}/execute`, {
         method: "POST",
@@ -139,7 +136,7 @@ describe("local terminal agent", () => {
     const { child, keyDir } = await startAgent(port, token);
 
     try {
-      await waitForServer(child);
+      await waitForServer(child, port);
 
       const denied = await fetch(`http://127.0.0.1:${port}/health`, {
         headers: { Origin: "https://evil.example" }
@@ -173,7 +170,7 @@ describe("local terminal agent", () => {
     const { child, keyDir } = await startAgent(port, token);
 
     try {
-      await waitForServer(child);
+      await waitForServer(child, port);
 
       const health = await fetch(`http://127.0.0.1:${port}/health`);
       const healthBody = await health.json();
