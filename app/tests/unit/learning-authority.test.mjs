@@ -96,9 +96,12 @@ function configureDb({
 
   completionFromMock().limit = completionLimitMock;
 
+  const updateSetMock = vi.fn().mockReturnThis();
+  const updateWhereMock = vi.fn().mockResolvedValue([]);
+
   updateMock.mockReset().mockReturnValue({
-    set: vi.fn().mockReturnThis(),
-    where: vi.fn().mockResolvedValue([])
+    set: updateSetMock,
+    where: updateWhereMock
   });
 
   transactionMock.mockImplementation(async (callback) =>
@@ -116,7 +119,9 @@ function configureDb({
     completionConflictMock,
     completionReturningMock,
     linkValuesMock,
-    linkConflictMock
+    linkConflictMock,
+    updateSetMock,
+    updateWhereMock
   };
 }
 
@@ -156,7 +161,7 @@ describe("authoritative completion service", () => {
   });
 
   it("rejects evidence that belongs to another learning item", async () => {
-    configureDb({
+    const { updateSetMock } = configureDb({
       evidenceRows: [
         {
           id: "evidence-1",
@@ -272,13 +277,6 @@ describe("authoritative completion service", () => {
   });
 
   it("normalizes legacy completion metadata when evidence makes the transition authoritative", async () => {
-    const updateSetMock = vi.fn().mockReturnThis();
-    const updateWhereMock = vi.fn().mockResolvedValue([]);
-    updateMock.mockReturnValue({
-      set: updateSetMock,
-      where: updateWhereMock
-    });
-
     const legacyRow = {
       id: "completion-legacy",
       itemType: "lesson",
