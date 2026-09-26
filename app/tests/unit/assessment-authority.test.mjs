@@ -13,7 +13,8 @@ vi.mock("../../src/lib/server/db.ts", () => ({
 
 vi.mock("drizzle-orm", () => ({
   and: vi.fn((...parts) => ({ type: "and", parts })),
-  eq: vi.fn((left, right) => ({ type: "eq", left, right }))
+  eq: vi.fn((left, right) => ({ type: "eq", left, right })),
+  gt: vi.fn((left, right) => ({ type: "gt", left, right }))
 }));
 
 vi.mock("../../src/lib/server/schema.ts", () => ({
@@ -185,6 +186,7 @@ describe("assessment authority", () => {
     expect(result.questions[0]).not.toHaveProperty("correctOption");
     expect(result.questions[1]).not.toHaveProperty("expectedElements");
     expect(result.questions[0].options).toEqual(["Wrong", "Right"]);
+    expect(result).not.toHaveProperty("formId");
   });
 
   it("scores only server-owned answer keys", async () => {
@@ -266,6 +268,31 @@ describe("assessment authority", () => {
     });
 
     expect(result.outcome).toBe("pending-review");
+  });
+
+
+  it("uses the database expiry predicate during submission to close the clock race", async () => {
+    configureDb({
+      selectRows: [activeInstance],
+      updateRows: [{ ...activeInstance, status: "submitted" }],
+      insertRows: [{
+        id: "attempt-race",
+        instanceId: "instance-1",
+        userId: "user_1",
+        answersJson: JSON.stringify({ "Q-1": 1 }),
+        autoScore: 1,
+        autoScorableCount: 1,
+        outcome: "scored",
+        submittedAt: new Date("2026-09-26T13:02:00.000Z")
+      }]
+    });
+
+    await submitAssessmentForUser("user_1", {
+      instanceId: "instance-1",
+      answers: { "Q-1": 1 }
+    });
+
+    expect(updateMock).toHaveBeenCalled();
   });
 
   it("rejects replay when the active-instance compare-and-set update returns no row", async () => {
