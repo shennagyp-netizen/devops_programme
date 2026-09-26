@@ -22,6 +22,8 @@ export type ProjectDefinition = {
   failureScenarios: string[];
   evidenceRequirements: string[];
   completionCriteria: string[];
+  deliverables: string[];
+  reviewGates: string[];
   changeHistory: string[];
   incidentHistory: string[];
 };
