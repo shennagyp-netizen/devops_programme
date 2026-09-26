@@ -96,6 +96,11 @@ jobs:
         working-directory: repo/app
         run: npm run check:progress
 
+      - name: Framework security architecture contract
+        working-directory: repo/app
+        run: npm run check:framework-security
+
+
       - name: Full unit and integration tests
         working-directory: repo/app
         run: npm test
