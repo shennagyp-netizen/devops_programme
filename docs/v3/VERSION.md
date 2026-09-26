@@ -1,6 +1,6 @@
 # Learning Framework V3
 
-- **Framework version:** 3.1-authoritative-completion
+- **Framework version:** 3.2-verification-provider-authority
 - **Branch:** `v3/learning-framework`
 - **Baseline:** `main`
 - **Reference programme:** DevOps
@@ -31,8 +31,22 @@ This version marker does not claim that machine attestation, mastery authority, 
 
 `main` remains the stable baseline until the v3 foundation and red-team migration gates are green.
 
+## V3.2 status
+
+The provider-authority slice now contains:
+
+- server-issued, short-lived verification challenges;
+- trusted Ed25519 provider keys provisioned server-side;
+- canonical signed attestation payloads;
+- authenticated learner/provider/item/evidence binding;
+- atomic one-time challenge consumption for replay resistance;
+- persisted signature, provider-key, and verification-attempt provenance;
+- strict browser request parsers and red-team tests.
+
+The existing local-agent and SSH runners still produce the older unsigned runtime envelope. Those adapters cannot mint authoritative evidence until they are migrated to the signed provider protocol.
+
 ## Next milestone
 
-**V3.2 — Verification-provider attestation boundary**
+**V3.2.1 — Signed runtime-provider adapters**
 
-Formalize verification-provider challenges, attestations, provenance/freshness/replay protections, and trusted local-agent/SSH integration without allowing browser claims to mint authoritative evidence.
+Migrate the local terminal agent and SSH runner to consume server challenges and return Ed25519-signed attestations, then connect the Learning Gateway to the server challenge/attestation actions.
