@@ -122,7 +122,7 @@ export async function recordTrustedVerifiedEvidence(
 
 export async function listVerifiedEvidenceForUser(
   learnerId: string,
-  evidenceRefs: string[]
+  evidenceRefs?: string[]
 ): Promise<VerifiedEvidenceRecord[]> {
   const safeLearnerId = requireLearnerId(learnerId);
   const refs = [
@@ -134,17 +134,17 @@ export async function listVerifiedEvidenceForUser(
     )
   ];
 
-  if (!refs.length) return [];
-
   const db = getDb();
   const rows = await db
     .select()
     .from(learnerVerifiedEvidence)
     .where(
-      and(
-        eq(learnerVerifiedEvidence.userId, safeLearnerId),
-        inArray(learnerVerifiedEvidence.id, refs)
-      )
+      refs.length
+        ? and(
+            eq(learnerVerifiedEvidence.userId, safeLearnerId),
+            inArray(learnerVerifiedEvidence.id, refs)
+          )
+        : eq(learnerVerifiedEvidence.userId, safeLearnerId)
     )
     .orderBy(
       asc(learnerVerifiedEvidence.verifiedAt),
