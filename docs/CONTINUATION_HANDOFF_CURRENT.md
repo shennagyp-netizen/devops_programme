@@ -4,41 +4,41 @@
 
 **Repository:** `shennagyp-netizen/devops_programme`
 
-**Current branch:** `main`
+**Current branch:** `v3-mvp-simple-auth` — simple-auth MVP correction.
 
-**Latest main architecture/content merge:** PR #78, commit `0d0c490b5a7f21f49f6d6ba25c763672cc5cd8ab` (D2.7 controlled Docker failure-loop script + illustration quality slice).
-**Active branch:** `v3-mvp-security-simplification` — V3 MVP security simplification. This branch intentionally supersedes the old authenticated learner architecture.
+**Latest main:** PR #119 had incorrectly removed authentication. This branch restores the intended minimal first-party authentication while retaining the broader MVP simplifications.
 
+**Current architecture:** Next.js 16.3.6 + React 19.2.8 as one learner application with first-party email/password authentication, scrypt password hashing, an opaque HTTP-only session cookie, PostgreSQL/Drizzle progress, and Next.js Server Actions. No Clerk, OAuth, JWT, API-token identity system, or terminal pairing-token system is required.
 
-**Current architecture:** Next.js 16.3.6 + React 19.2.8 as one learner application. No account system, learner session, learner ID, pairing token, or database-backed learner progress is part of the V3 MVP.
+**Current learner-state rule:** saved completion progress is server-authoritative for the authenticated user. Duplicate completion is idempotent on user + item type + item ID. Hands-on evidence remains structured learner evidence and is not claimed as machine attestation.
 
-**Current learner-state rule:** progress, structured hands-on evidence and mastery-remediation attempts are browser-local state. Clearing site data resets it. This state is intentionally non-authoritative.
+**Authentication:** simple first-party authentication only. The browser never supplies a trusted learner ID; the server resolves the identity from the session.
 
-**Authentication:** none in the MVP.
+**Persistence:** PostgreSQL + Drizzle for auth/session/progress. No custom progress REST API.
 
-**Persistence:** localStorage only for learner continuity. PostgreSQL/Drizzle code is no longer part of the learner runtime architecture.
+**Runtime verification:** manual terminal execution plus structured evidence remain sufficient for the MVP learner path. Terminal-agent pairing and remote machine-verification infrastructure are not required for the learner account/progress design.
 
-**Runtime verification:** manual terminal execution plus structured evidence only. Local terminal-agent pairing and remote JSON evidence import are disabled in the learner app.
+**Tutor:** same Next.js application; server-derived lesson context, strict input validation, bounded request size, server-held AI credential, and best-effort abuse throttling. No separate tutor token system.
 
-**Tutor:** public curriculum context through the same Next.js app; strict input contract, user-only messages, bounded request size and best-effort anonymous throttling.
+**TDD rule:** authenticated progress architecture tests protect the session/progress boundary. Security tests must reject client-supplied learner IDs, insecure password/session handling, and arbitrary shell execution.
 
-**TDD rule:** architecture tests reject the removed account/session/token layers and verify the public browser-local MVP boundary.
+**CI truth:** the V3 authenticated MVP gate must pass content/programme contracts, authenticated progress architecture, unit/integration tests, TypeScript and Next.js production build.
 
-**CI truth:** GitHub-hosted runners execute the full programme gate. The PR #33 head passed the complete gate before merge: all programme contracts, full unit/integration tests, TypeScript typecheck and Next.js production build succeeded.
-
-**Historical sections:** earlier sections record previous milestones and superseded designs. Sections 30–31 are retained for audit history only; section 32 and the final authenticated architecture are current.
+**Authoritative documents:** `docs/MVP_ARCHITECTURE_V3.md` and `docs/architecture/LEARNER_PROGRESS_STORAGE.md`.
 
 AUTHORITATIVE READING ORDER
 1. docs/MVP_ARCHITECTURE_V3.md
-2. docs/curriculum/COURSE_DESIGN_STANDARDS.md
-3. this document
-3. docs/TESTING_ARCHITECTURE.md
-4. docs/curriculum/COURSE_ARCHITECTURE.md
-5. docs/LEARNING_MODEL.md
-6. docs/assessment/ASSESSMENT_ENGINE_SPEC.md
-7. actual source and tests relevant to the current task.
+2. docs/architecture/LEARNER_PROGRESS_STORAGE.md
+3. docs/curriculum/COURSE_DESIGN_STANDARDS.md
+4. this document
+5. docs/TESTING_ARCHITECTURE.md
+6. docs/curriculum/COURSE_ARCHITECTURE.md
+7. docs/LEARNING_MODEL.md
+8. docs/assessment/ASSESSMENT_ENGINE_SPEC.md
+9. actual source and tests relevant to the current task.
 
 SOURCE + TESTS + CURRENT DOCS ARE AUTHORITATIVE. Historical assistant messages are not.
+
 
 ============================================================
 1. PROGRAMME BASELINE
