@@ -157,7 +157,7 @@ describe("verification provider authority", () => {
       modulusLength: 2048
     });
 
-    expect(
+    await expect(
       registerTrustedProviderKey({
         learnerId: "user_1",
         providerId: "local-terminal",
