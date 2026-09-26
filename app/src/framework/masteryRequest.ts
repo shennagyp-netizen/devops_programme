@@ -1,15 +1,14 @@
-import type { AuthoritativeCompletionCommand } from "./../lib/server/learningAuthority";
-
 const MAX_ITEM_ID_LENGTH = 200;
 const MAX_STAGE_LENGTH = 64;
 const MAX_SUMMARY_LENGTH = 4000;
 const MAX_EVIDENCE_REFS = 32;
 const MAX_EVIDENCE_REF_LENGTH = 200;
 
-export type MasteryCommand = Omit<AuthoritativeCompletionCommand, "itemId"> & {
+export type MasteryCommand = {
   itemId: string;
   stage: string;
   summary: string;
+  evidenceRefs?: string[];
 };
 
 const ALLOWED_FIELDS = new Set([
