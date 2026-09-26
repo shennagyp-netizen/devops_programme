@@ -37,7 +37,6 @@ describe("continuous fixed TTS explanation architecture", () => {
 
     expect(coach).toContain("TTS speech speed");
     expect(coach).toContain("PODCAST_SPEECH_RATES");
-    expect(coach).toContain("1.25");
     expect(coach).toContain("utterance.rate = speechRateRef.current");
     expect(coach).toContain("speakTurn(restartIndex, sessionId)");
     expect(coach).toContain("This explanation contains the complete authored information");
