@@ -22,12 +22,12 @@ import bank20 from "../../../exams/items/advanced/A-A3.json";
 
 import type { AssessmentItem } from "../data/assessment";
 
-type Bank = {
+type RawBank = {
   sectionId: string;
-  items: Omit<AssessmentItem, "sectionId">[];
+  items: unknown[];
 };
 
-export const assessmentBanks: Record<string, Bank> = {
+export const assessmentBanks: Record<string, RawBank> = {
   "B-F1": bank0,
   "B-F2": bank1,
   "B-A1": bank2,
@@ -56,5 +56,8 @@ export function assessmentPool(sectionId: string): AssessmentItem[] {
   if (!bank || bank.sectionId !== sectionId) {
     throw new Error("Assessment bank section mismatch.");
   }
-  return bank.items.map((item) => ({ ...item, sectionId }));
+  return bank.items.map((item) => ({
+    ...(item as Omit<AssessmentItem, "sectionId">),
+    sectionId
+  }));
 }
