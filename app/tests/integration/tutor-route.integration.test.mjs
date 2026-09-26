@@ -1,0 +1,182 @@
+import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
+
+const currentUserMock = vi.fn();
+const appendTutorMessageMock = vi.fn();
+const buildTutorContextMock = vi.fn();
+const createTutorSessionMock = vi.fn();
+const listTutorMessagesMock = vi.fn();
+const verifyTutorSessionMock = vi.fn();
+
+vi.mock("../../src/lib/server/auth.ts", () => ({
+  getCurrentUser: currentUserMock
+}));
+
+vi.mock("../../src/lib/server/tutor.ts", () => ({
+  appendTutorMessage: appendTutorMessageMock,
+  buildTutorContext: buildTutorContextMock,
+  createTutorSessionForUser: createTutorSessionMock,
+  listTutorMessagesForUser: listTutorMessagesMock,
+  verifyTutorSessionForUser: verifyTutorSessionMock
+}));
+
+const { POST } = await import("../../src/app/api/tutor/route.ts");
+
+const contextFixture = {
+  lesson: {
+    id: "B1.4",
+    title: "Why Containers Exist",
+    objective: "Explain the container boundary.",
+    course: "beginner",
+    projectId: "B1",
+    sectionId: "B-F2",
+    humanExample: "A service boundary can be isolated and repeated."
+  },
+  project: {
+    id: "B1",
+    title: "Containerized Application",
+    objective: "Operate a repeatable local service.",
+    environment: "Local container runtime",
+    estimatedHours: 18,
+    phases: [],
+    failureScenarios: ["wrong port"],
+    competencyGates: ["B-F2.core"],
+    evidenceRequirements: ["request evidence"],
+    completionCriteria: ["recovery is verified"],
+    reviewGates: ["container boundary proven"]
+  },
+  learner: {
+    completionCount: 2,
+    recentCompletedItems: ["lesson:B1.1"],
+    masteryAttemptsForLesson: []
+  }
+};
+
+function request(body) {
+  return new Request("http://localhost/api/tutor", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body)
+  });
+}
+
+describe("tutor route", () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    currentUserMock.mockReset();
+    appendTutorMessageMock.mockReset();
+    buildTutorContextMock.mockReset();
+    createTutorSessionMock.mockReset();
+    listTutorMessagesMock.mockReset();
+    verifyTutorSessionMock.mockReset();
+
+    buildTutorContextMock.mockResolvedValue(contextFixture);
+    createTutorSessionMock.mockResolvedValue("00000000-0000-0000-0000-000000000001");
+    listTutorMessagesMock.mockResolvedValue([]);
+    appendTutorMessageMock.mockResolvedValue("message-id");
+    verifyTutorSessionMock.mockResolvedValue({
+      id: "00000000-0000-0000-0000-000000000001"
+    });
+  });
+
+  afterEach(() => {
+    delete process.env.AI_GATEWAY_API_KEY;
+    delete process.env.TUTOR_MODEL;
+  });
+
+  it("fails closed for unauthenticated learners", async () => {
+    currentUserMock.mockResolvedValue(null);
+
+    const response = await POST(
+      request({
+        lessonId: "B1.4",
+        mode: "teaching",
+        message: "Explain the boundary."
+      })
+    );
+
+    expect(response.status).toBe(401);
+    expect(createTutorSessionMock).not.toHaveBeenCalled();
+  });
+
+  it("does not call a provider when the server key is missing", async () => {
+    currentUserMock.mockResolvedValue({
+      id: "user-1",
+      email: "learner@example.com"
+    });
+
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+
+    const response = await POST(
+      request({
+        lessonId: "B1.4",
+        mode: "teaching",
+        message: "Explain the boundary."
+      })
+    );
+
+    expect(response.status).toBe(503);
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(createTutorSessionMock).not.toHaveBeenCalled();
+  });
+
+  it("stores the conversation but returns a non-authoritative tutor result", async () => {
+    currentUserMock.mockResolvedValue({
+      id: "user-1",
+      email: "learner@example.com"
+    });
+    process.env.AI_GATEWAY_API_KEY = "test-key";
+
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          output_text: JSON.stringify({
+            message: "Check which port the process listens on.",
+            mode: "failure-investigation",
+            pedagogicalIntent: "question",
+            nextQuestion: "What does the process listen on?",
+            requestedEvidence: ["listener evidence"],
+            suggestedAction: "Inspect the listening socket."
+          })
+        }),
+        { status: 200, headers: { "content-type": "application/json" } }
+      )
+    );
+
+    const response = await POST(
+      request({
+        lessonId: "B1.4",
+        mode: "failure-investigation",
+        message: "The container is running but the browser cannot reach it."
+      })
+    );
+
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    expect(body.response.authoritativeDecision).toBe("not-authoritative");
+    expect(body.response.canUnlockRetry).toBe(false);
+    expect(body.response.canCertify).toBe(false);
+    expect(body.response.nextQuestion).toContain("What does");
+    expect(appendTutorMessageMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not allow a session from another lesson to be reused", async () => {
+    currentUserMock.mockResolvedValue({
+      id: "user-1",
+      email: "learner@example.com"
+    });
+    process.env.AI_GATEWAY_API_KEY = "test-key";
+    verifyTutorSessionMock.mockResolvedValue(null);
+
+    const response = await POST(
+      request({
+        sessionId: "00000000-0000-0000-0000-000000000001",
+        lessonId: "B1.4",
+        mode: "teaching",
+        message: "Continue."
+      })
+    );
+
+    expect(response.status).toBe(404);
+  });
+});
