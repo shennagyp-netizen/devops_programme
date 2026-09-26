@@ -58,7 +58,7 @@ describe("FloatingLLMAssistant", () => {
         rate = 1;
         pitch = 1;
 
-        constructor(text: string) {
+        constructor(text) {
           this.text = text;
         }
       }
