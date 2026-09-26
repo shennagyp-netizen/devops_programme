@@ -1,183 +1,104 @@
-# V3 UI/UX Control Contract
+
+# Learning Framework UI/UX Control Contract
 
 ## Principle
 
-A control is a projection of policy, not a source of policy.
+A control is a projection of framework policy.
 
-The control tells the learner what is possible, whether it is possible, why it is unavailable, and what happens after activation.
+A control is never the authority itself.
 
-## Control contract
+## MVP control model
 
-```text
-LearningControl
-  id
-  intent
-  label
-  availability: enabled | disabled | busy | locked
-  visibility: visible | hidden | contextual
-  reason
-  confirmation
-  busyLabel
-  ariaDescription
-```
+Current control state categories:
 
-## Rules
+~~~text
+enabled
+locked
+disabled
+~~~
 
-### Client disabled state is UX only
+Keep the model small until more states have real semantics.
 
-A React disabled button is not an authorization boundary. Every authoritative command is validated on the server.
+## Learner clarity
 
-### Never show unconfirmed success
-
-Use:
-
-```text
-unknown → checking → confirmed / rejected
-```
-
-for completion, mastery, assessment and machine verification.
-
-### Preserve learner work
-
-When an async operation fails, keep the learner's draft evidence and show a recoverable error.
-
-### Explain blocked controls
-
-A blocked control should expose:
-
-```text
-Blocked
-Reason
-Next action
-```
-
-Example:
-
-> Complete the required runtime verification before marking this lesson complete.
-
-## Semantic control groups
-
-Navigation: programme, course, project, section, lesson, mode.
-
-Learning action: start, explain, remediate, retry.
-
-Evidence: begin, save draft, validate, submit.
-
-Verification: pair agent, run verification, connect SSH, use managed runtime.
-
-Assessment: start attempt, answer, submit, review.
-
-Coaching: ask tutor, request hint, request another explanation.
-
-Media: play, pause, seek, replay, open animation.
-
-Environment: choose platform, inspect capability, configure runtime.
-
-Account: sign in, sign out, manage session.
-
-## Async state
-
-Authoritative controls must model at least:
-
-```text
-idle
-pending
-success
-failure
-```
-
-Conflict-sensitive operations may additionally expose stale/conflict.
-
-Duplicate activation must be harmless. Use command idempotency where an operation can be retried across the network.
-
-## Learning-mode controls
-
-Learn, Do, Recall, Design and Assessment should share one semantic intent model.
-
-Desktop, tablet and mobile may present the same intent as different controls:
-
-```text
-desktop  → mode rail
-tablet   → segmented control
-mobile   → compact menu
-```
-
-Presentation changes; learning semantics do not.
-
-## Accessibility
-
-Controls expose semantic state through native or ARIA mechanisms:
-
-- selected
-- expanded
-- current
-- disabled
-- busy
-- invalid
-- described-by reason
-
-Important learning state must never depend on color or iconography alone.
-
-## Recommended learner interaction model
-
-Each primary screen should answer these questions visibly:
+Every primary learning surface should make these visible:
 
 1. Where am I?
-2. What am I trying to learn or prove?
-3. What can I do now?
+2. What am I learning?
+3. What can I do?
 4. What is blocked?
 5. Why is it blocked?
-6. What evidence is required?
-7. What will happen next?
 
 ## Completion UX
 
-The completion button is the final step of an authority-backed flow, not the place where completion is decided.
+~~~text
+Evidence missing
+→ locked
 
-```text
-Exercise not verified
-  → Complete = locked
+Evidence satisfied
+→ enabled
 
-Verification running
-  → Complete = busy/locked
+Completed
+→ disabled
+~~~
 
-Evidence verified
-  → Complete = enabled
+The UI does not decide evidence validity.
 
-Completion submitted
-  → Complete = pending
+## Assessment UX
 
-Completion confirmed
-  → status = completed
-```
+The framework may present assessment interaction.
 
-## Error recovery
+It must not embed domain answer keys or domain scoring logic.
 
-Map errors to an actionable recovery:
+An AssessmentProvider owns assessment delivery and scoring.
 
-```text
-AUTHENTICATION_REQUIRED → sign in
-EVIDENCE_REQUIRED        → complete evidence
-EVIDENCE_INVALID         → edit/retry
-VERIFICATION_UNAVAILABLE → choose another provider
-ASSESSMENT_LOCKED        → open prerequisite
-RATE_LIMITED             → explain cooldown
-CONFLICT                 → refresh state
-TEMPORARY_FAILURE        → retry
-```
+## Evidence UX
 
-Raw provider errors and stack traces should not become learner-facing UI.
+The framework owns generic evidence concepts.
 
-## UI implementation rule
+The programme/provider supplies collection instructions and actual verification.
 
-React components should receive:
+## Remediation
 
-```text
-viewModel
-controls
-dispatch(intent)
-```
+Framework:
 
-rather than directly receiving database results plus mutation callbacks.
+- owns remediation session state.
 
-This keeps UI/UX logic testable independently of persistence and deployment infrastructure.
+Programme:
+
+- owns remediation material.
+
+## Responsive behavior
+
+Responsive presentation may vary.
+
+Learning intent semantics do not.
+
+~~~text
+desktop → rail/tabs
+tablet  → segmented control
+mobile  → compact menu
+~~~
+
+## Accessibility
+
+Important state must be expressed through semantic text/native control state.
+
+Do not rely only on:
+
+- color;
+- icons;
+- animation.
+
+## MVP product quality
+
+The framework React app should feel like a real learning product:
+
+- clear hierarchy;
+- obvious current activity;
+- persistent progress;
+- clear blocked/enabled states;
+- responsive navigation;
+- accessible controls.
+
+Domain branding belongs to the consuming programme.
