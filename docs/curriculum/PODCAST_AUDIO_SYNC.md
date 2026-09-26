@@ -1,95 +1,102 @@
-# Podcast TTS and Cognitive-Level Synchronization
+# Podcast TTS and Four Explanation Levels
 
-## Product model
+## Core product contract
 
-The podcast is fixed authored curriculum content.
+One lesson contains one podcast with four complete explanations of the same information.
 
-One lesson has one podcast concept with four authored cognitive versions. Each version is a complete speech about the same lesson:
+The four explanations do not represent four different lessons, four different knowledge scopes, or four different mental models.
 
-| Level | Cognitive purpose |
+They represent four ways of explaining the same information to learners with different prior knowledge.
+
+| Explanation | Style |
 | --- | --- |
-| 1 — Foundation | Build the basic mental model |
-| 2 — Mechanism | Explain how the system works |
-| 3 — Diagnosis | Reason from failures and evidence |
-| 4 — Design & transfer | Apply the model to new system designs |
+| 1 — Very simple | Very explicit everyday language, analogies, little assumed background |
+| 2 — Simple technical | Clear technical language with terminology explained naturally |
+| 3 — Professional | Normal DevOps language and professional compression |
+| 4 — Expert | Compact expert explanation with high assumed prior knowledge |
 
-These are four distinct podcasts in the learner experience.
+The invariant is:
 
-They are not four audio recordings, four audio chunks, four versions made by changing TTS speed, or four LLM-generated conversations.
+Information is the same. Explanation is different.
 
-The podcast scripts are authored curriculum. TTS is the speech renderer.
+Every explanation must cover the same information units in the same order. The automated equivalence gate verifies those coverage markers.
 
 ## TTS contract
 
-The source of truth is the cognitive script.
+The scripts are the curriculum source of truth.
 
-For every published cognitive version:
+TTS is only the speech renderer.
 
-1. the script is fixed and versioned
-2. the cognitive level is explicit
-3. the script is sent to the TTS engine
-4. the TTS engine speaks the script
-5. the transcript remains visible beside the speech
-6. learner controls can pause and resume the TTS session
+The repository stores authored text scripts. It does not require human recordings, MP3 files, WAV files, or a recording manifest.
 
-No MP3, WAV, recording manifest, or pre-recorded speech asset is required.
+For the selected explanation:
 
-The repository therefore stores authored text, not recorded audio.
+1. load the authored script
+2. parse its authored turns
+3. send each turn to the browser TTS engine
+4. keep the complete transcript visible
+5. use runtime TTS events to track the currently spoken turn
+6. pause at authored learner-action boundaries when required
+7. continue with the next complete authored turn
 
-## Cognitive level is not playback speed
+The private LLM tutor is a separate system. It never rewrites or regenerates these podcast scripts.
 
-There is no cognitive-level control that changes speech synthesis rate.
+## Speech speed contract
 
-Level 1 is cognitively simpler because the authored explanation is simpler.
+Speech speed is independent from explanation level.
 
-Level 2 increases mechanism and causal detail.
+The learner may choose 1×, 1.5×, or 2×.
 
-Level 3 asks the learner to reason through failure and evidence.
+Changing speed must never change the selected explanation, remove information, skip a turn, change turn order, change learner-action boundaries, shorten the authored script, or replace the script with a different explanation.
 
-Level 4 requires design, trade-off reasoning and transfer.
+The same selected script must be spoken completely at all three rates.
 
-A learner changing from Level 1 to Level 4 therefore receives a different authored speech, not the same speech spoken faster.
+When the learner changes speed while TTS is speaking, the player restarts the current authored turn at the new rate. This can repeat part of the current turn, but it must never skip forward.
+
+Therefore, 1×, 1.5×, and 2× are presentation-speed choices, not content choices.
+
+## Information-equivalence contract
+
+B1.4 has 12 required information units.
+
+Each of the four explanation scripts declares all 12 units with hidden @knowledge authoring markers.
+
+The build gate verifies:
+- exactly four explanation scripts
+- the same 12 unit IDs in every script
+- no duplicate unit IDs
+- no unknown unit IDs
+- identical unit order across all four scripts
+
+The checker does not claim that machine-readable markers alone prove semantic equivalence. The markers establish the structural contract; instructional review remains responsible for verifying that each marked section communicates the same information.
 
 ## Runtime synchronization
 
-TTS timing is runtime behavior, not a pre-recorded timeline.
+TTS timing is runtime behavior.
 
-The browser speech engine provides runtime events such as onstart, onend, and onboundary when supported by the browser.
+The browser may provide onstart, onend, and onboundary where supported.
 
-The application may use those runtime events to highlight the currently spoken authored turn and to publish the current TTS voice state.
+These events can identify the active authored turn.
 
-The application must not invent exact speech timing from word count, character count, average speaking rate, paragraph length, a guessed duration, or the cognitive level.
+The application must not invent millisecond timing from word count, character count, average speaking speed, paragraph length, or the selected speed.
 
-When a browser does not provide a useful boundary event, the safe synchronization unit is the current authored speech turn. The application must not pretend to have millisecond-accurate recorded-audio timing.
-
-## Learner-action boundaries
-
-Prediction, lab, recall and transition boundaries are authored against the script.
-
-The TTS player can stop after the relevant authored turn, hand control to the learner, and resume from the next turn.
-
-The private tutor is separate from this mechanism.
-
-The tutor may discuss the learner's reasoning but it cannot rewrite the fixed podcast script or become its timing authority.
+The speed value changes TTS speech rate only. It does not become a timing model for the curriculum.
 
 ## Fallback
 
-When browser TTS is unavailable, blocked, or fails:
-
-- the authored cognitive script remains visible
-- the learner can still read the complete speech
+If TTS is unavailable or fails:
+- the complete selected authored explanation remains visible
+- the learner can read the same information
 - the application does not fabricate audio timing
-- no silent recording asset is assumed to exist
+- the application does not silently select a different explanation
 
-## B1.4 cognitive authoring
+## B1.4 authoring
 
-B1.4 now has four authored script files:
+B1.4 currently has:
+- B1.4.cognitive-1.txt — Very simple
+- B1.4.cognitive-2.txt — Simple technical
+- B1.4.cognitive-3.txt — Professional
+- B1.4.cognitive-4.txt — Expert
+- B1.4.equivalence.json — the 12 information-unit contract
 
-- B1.4.cognitive-1.txt
-- B1.4.cognitive-2.txt
-- B1.4.cognitive-3.txt
-- B1.4.cognitive-4.txt
-
-These are four complete explanations of the same lesson at increasing cognitive depth.
-
-The production system should generate their speech through TTS at runtime or through a future TTS caching layer. Such caching is an optimization, not a curriculum dependency.
+The filenames retain the cognitive-N suffix for continuity, but the product terminology is Explanation Level.
