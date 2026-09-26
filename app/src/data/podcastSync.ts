@@ -6,6 +6,14 @@ export type PodcastTurnTiming = {
   endMs: number;
 };
 
+export type PodcastAudioSegment = {
+  id: string;
+  turnId: string;
+  audioUrl: string;
+  startMs: number;
+  endMs: number;
+};
+
 export type PodcastCue = {
   id: string;
   turnId: string;
@@ -17,8 +25,8 @@ export type PodcastCue = {
 export type PodcastAudioManifest = {
   episodeId: string;
   scriptVersion: string;
-  audioUrl: string;
   durationMs: number;
+  segments: PodcastAudioSegment[];
   turns: PodcastTurnTiming[];
   cues: PodcastCue[];
 };
@@ -47,16 +55,13 @@ function isValidManifest(value: unknown): value is PodcastAudioManifest {
   const candidate = value as Partial<PodcastAudioManifest>;
   if (typeof candidate.episodeId !== "string" || !candidate.episodeId) return false;
   if (typeof candidate.scriptVersion !== "string" || !candidate.scriptVersion) return false;
-  if (
-    typeof candidate.audioUrl !== "string" ||
-    !candidate.audioUrl ||
-    !isSafeAudioSource(candidate.audioUrl)
-  ) return false;
   if (!isFiniteNonNegative(candidate.durationMs) || candidate.durationMs === 0) return false;
-  if (!Array.isArray(candidate.turns) || !Array.isArray(candidate.cues)) return false;
+  if (!Array.isArray(candidate.segments) || candidate.segments.length === 0) return false;
+  if (!Array.isArray(candidate.turns) || candidate.turns.length === 0) return false;
+  if (!Array.isArray(candidate.cues)) return false;
 
-  let previousTurnEnd = 0;
   const turnIds = new Set<string>();
+  let previousTurnEnd = 0;
   for (const turn of candidate.turns) {
     if (!turn || typeof turn.turnId !== "string" || !turn.turnId) return false;
     if (turnIds.has(turn.turnId)) return false;
@@ -65,6 +70,20 @@ function isValidManifest(value: unknown): value is PodcastAudioManifest {
     if (turn.endMs <= turn.startMs || turn.endMs > candidate.durationMs) return false;
     if (turn.startMs < previousTurnEnd) return false;
     previousTurnEnd = turn.endMs;
+  }
+
+  const segmentIds = new Set<string>();
+  let previousSegmentEnd = 0;
+  for (const segment of candidate.segments) {
+    if (!segment || typeof segment.id !== "string" || !segment.id) return false;
+    if (segmentIds.has(segment.id)) return false;
+    segmentIds.add(segment.id);
+    if (typeof segment.turnId !== "string" || !turnIds.has(segment.turnId)) return false;
+    if (typeof segment.audioUrl !== "string" || !segment.audioUrl || !isSafeAudioSource(segment.audioUrl)) return false;
+    if (!isFiniteNonNegative(segment.startMs) || !isFiniteNonNegative(segment.endMs)) return false;
+    if (segment.endMs <= segment.startMs || segment.endMs > candidate.durationMs) return false;
+    if (segment.startMs < previousSegmentEnd) return false;
+    previousSegmentEnd = segment.endMs;
   }
 
   const cueIds = new Set<string>();
@@ -78,9 +97,7 @@ function isValidManifest(value: unknown): value is PodcastAudioManifest {
     if (!cueKinds.has(cue.kind)) return false;
     if (!isFiniteNonNegative(cue.startMs) || cue.startMs > candidate.durationMs) return false;
     if (cue.endMs !== undefined) {
-      if (!isFiniteNonNegative(cue.endMs) || cue.endMs <= cue.startMs || cue.endMs > candidate.durationMs) {
-        return false;
-      }
+      if (!isFiniteNonNegative(cue.endMs) || cue.endMs <= cue.startMs || cue.endMs > candidate.durationMs) return false;
     }
     if (cue.startMs < previousCueStart) return false;
     if (cue.startMs < previousCueEnd) return false;
@@ -91,19 +108,7 @@ function isValidManifest(value: unknown): value is PodcastAudioManifest {
   return true;
 }
 
-/*
- * Audio is deliberately optional until generated audio has been aligned.
- *
- * React must never infer exact spoken position from text length, word count,
- * paragraph length, or average speaking rate.
- *
- * Every spoken turn gets a timing range. Exercise cues are a separate layer
- * because a single turn can contain the words that cause React to hand control
- * to the learner.
- */
-export async function loadPodcastAudioManifest(): Promise<
-  Record<string, PodcastAudioManifest>
-> {
+export async function loadPodcastAudioManifest(): Promise<Record<string, PodcastAudioManifest>> {
   try {
     const response = await fetch("/podcasts/audio-manifest.json");
     if (!response.ok) return {};
@@ -122,6 +127,16 @@ export async function loadPodcastAudioManifest(): Promise<
   } catch {
     return {};
   }
+}
+
+export function findCurrentSegment(
+  manifest: PodcastAudioManifest | undefined,
+  timeMs: number
+): PodcastAudioSegment | undefined {
+  if (!manifest) return undefined;
+  return manifest.segments.find(
+    (segment) => timeMs >= segment.startMs && timeMs < segment.endMs
+  );
 }
 
 export function findActiveCue(
