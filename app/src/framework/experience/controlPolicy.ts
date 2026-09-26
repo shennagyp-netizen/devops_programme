@@ -1,25 +1,24 @@
 import type { LearningControl, LearningMode, LearningSessionState } from "./contracts";
 
-const modes: LearningMode[] = [
-  "learn",
-  "do",
-  "recall",
-  "design",
-  "assessment"
-];
+const modes: LearningMode[] = ["learn", "do", "recall", "design", "assessment"];
 
 export function deriveModeControls(state: LearningSessionState): LearningControl[] {
-  return modes.map((mode) => ({
-    id: `mode:${mode}`,
-    intent: { type: "SELECT_MODE", mode },
-    label: mode[0].toUpperCase() + mode.slice(1),
-    availability: mode === "assessment" && !state.assessmentEligible ? "locked" : "enabled",
-    visibility: "visible",
-    ...(mode === "assessment" && !state.assessmentEligible
-      ? { reason: "Complete the required prerequisite before starting the assessment." }
-      : {}),
-    confirmation: "none"
-  }));
+  return modes.map((mode) => {
+    const assessmentLocked = mode === "assessment" && !state.assessmentEligible;
+    return {
+      id: `mode:${mode}`,
+      intent: { type: "SELECT_MODE", mode },
+      label: mode[0].toUpperCase() + mode.slice(1),
+      state: assessmentLocked
+        ? {
+            status: "locked" as const,
+            reasonCode: "PREREQUISITE_REQUIRED" as const,
+          }
+        : { status: "enabled" as const },
+      visibility: "visible" as const,
+      confirmation: "none" as const
+    };
+  });
 }
 
 export function deriveLearningControls(state: LearningSessionState): LearningControl[] {
@@ -27,40 +26,44 @@ export function deriveLearningControls(state: LearningSessionState): LearningCon
     id: "verify",
     intent: { type: "REQUEST_RUNTIME_VERIFICATION", providerId: "best-available" },
     label: "Run verified exercise",
-    availability: state.providerBusy ? "busy" : state.requiredEvidenceVerified ? "disabled" : "enabled",
+    state: state.providerBusy
+      ? { status: "busy", busyLabel: "Verifying…" }
+      : state.requiredEvidenceVerified
+        ? { status: "disabled", reasonCode: "ALREADY_COMPLETED" }
+        : !state.providerAvailable
+          ? { status: "unavailable", reasonCode: "PROVIDER_OFFLINE" }
+          : { status: "enabled" },
     visibility: "visible",
     confirmation: "external",
-    ...(state.providerBusy ? { busyLabel: "Verifying…" } : {}),
-    ...(state.requiredEvidenceVerified ? { reason: "Required evidence is already verified." } : {})
   };
 
   const remediation: LearningControl = {
     id: "remediation",
     intent: { type: "OPEN_REMEDIATION" },
     label: "Open remediation",
-    availability: state.remediationActive ? "disabled" : state.remediationAvailable ? "enabled" : "locked",
+    state: state.remediationActive
+      ? { status: "disabled", reasonCode: "NOT_APPLICABLE" }
+      : state.remediationAvailable
+        ? { status: "enabled" }
+        : { status: "locked", reasonCode: "REMEDIATION_ACTIVE" },
     visibility: state.remediationAvailable ? "contextual" : "hidden",
-    ...(state.remediationAvailable && !state.remediationActive ? {} : { reason: "Remediation is not currently available." }),
-    confirmation: "none"
+    confirmation: "none",
   };
 
   const complete: LearningControl = {
     id: "complete",
     intent: { type: "COMPLETE_ITEM" },
     label: "Mark complete",
-    availability: state.completionBusy
-      ? "busy"
-      : state.completionConfirmed
-        ? "disabled"
-        : state.requiredEvidenceVerified
-          ? "enabled"
-          : "locked",
+    state:
+      state.completionBusy
+        ? { status: "busy", busyLabel: "Saving…" }
+        : state.completionConfirmed
+          ? { status: "disabled", reasonCode: "ALREADY_COMPLETED" }
+          : state.requiredEvidenceVerified
+            ? { status: "enabled" }
+            : { status: "locked", reasonCode: "EVIDENCE_REQUIRED" },
     visibility: "visible",
     confirmation: "none",
-    ...(state.completionBusy ? { busyLabel: "Saving…" } : {}),
-    ...(!state.completionBusy && !state.completionConfirmed && !state.requiredEvidenceVerified
-      ? { reason: "Complete the required exercise verification first." }
-      : {})
   };
 
   return [verification, remediation, complete];
