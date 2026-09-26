@@ -13,7 +13,7 @@ import {
 } from "./schema";
 import { findProgrammeLearningItem } from "./programmeAuthority";
 import {
-  toVerifiedEvidenceRecord
+  recordTrustedVerifiedEvidenceWithinTransaction
 } from "./evidenceAuthority";
 import {
   validateVerificationAttestation,
@@ -321,25 +321,16 @@ export async function acceptVerificationAttestationForUser(
 
     ensureItemAcceptsEvidence(command.itemId);
 
-    const [evidenceRow] = await tx
-      .insert(learnerVerifiedEvidence)
-      .values({
-        userId: safeLearnerId,
-        itemId: command.itemId,
-        kind: command.evidenceKind,
-        verifierId: command.providerId,
-        providerKeyId: command.keyId,
-        verificationAttemptId: attempt.id,
-        verificationRef: command.verificationRef,
-        attestationDigest: command.attestationDigest,
-        signature: command.signature
-      })
-      .returning();
-
-    if (!evidenceRow) {
-      throw new Error("Verified evidence could not be stored.");
-    }
-
-    return toVerifiedEvidenceRecord(evidenceRow);
+    return recordTrustedVerifiedEvidenceWithinTransaction(tx, {
+      learnerId: safeLearnerId,
+      itemId: command.itemId,
+      kind: command.evidenceKind,
+      verifierId: command.providerId,
+      providerKeyId: command.keyId,
+      verificationAttemptId: attempt.id,
+      verificationRef: command.verificationRef,
+      attestationDigest: command.attestationDigest,
+      signature: command.signature
+    });
   });
 }
