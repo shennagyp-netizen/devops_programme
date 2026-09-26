@@ -30,4 +30,4 @@ If an audio manifest is missing, invalid or stale, the application keeps the aut
 
 ## Current MVP
 
-B1.4 has the first fixed-audio demonstration with four speech files. Other lessons continue to use the safe transcript fallback until their fixed recordings are aligned and published.
+B1.4 is the first fixed-audio target. The player, manifest contract and tests are ready for four published speech files. Until the audio assets are published, all lessons intentionally use the safe transcript fallback.
