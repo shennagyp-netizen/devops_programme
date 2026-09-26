@@ -84,7 +84,7 @@ describe("local terminal agent", () => {
   it("rejects terminal execution without the pairing token", async () => {
     const token = "test-token-456";
     const port = 43872;
-    const child = startAgent(port, token);
+    const { child, keyDir } = await startAgent(port, token);
 
     try {
       await waitForServer(child);
@@ -102,6 +102,7 @@ describe("local terminal agent", () => {
       expect((await response.json()).error).toContain("pairing token");
     } finally {
       child.kill("SIGTERM");
+      await rm(keyDir, { recursive: true, force: true });
     }
   });
 
