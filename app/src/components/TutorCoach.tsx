@@ -14,6 +14,7 @@ type TutorCoachProps = {
   course: string;
   projectId: string;
   currentLessonMode: "learn" | "do" | "recall" | "design" | "assessment";
+  platform: "macos" | "linux" | "windows";
   masteryPlan: MasteryPlan | null;
   learnerEvidence: Record<string, string>;
   exerciseRecorded: boolean;
@@ -56,6 +57,7 @@ export function TutorCoach({
   course,
   projectId,
   currentLessonMode,
+  platform,
   masteryPlan,
   learnerEvidence,
   exerciseRecorded,
@@ -127,6 +129,7 @@ export function TutorCoach({
         body: JSON.stringify({
           sessionId,
           lessonId,
+          platform,
           mode: selectedMode,
           message,
           learnerEvidence,
