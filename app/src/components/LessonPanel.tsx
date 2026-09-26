@@ -4,13 +4,20 @@ import type { PlatformId } from "../data/programme";
 import type { DiagnosticRecommendation } from "../data/diagnostics";
 import type { MasteryAttemptRecord } from "../lib/mastery-contract";
 import { diagnosticBySection } from "../data/diagnostics";
-import { addEvidence, recordHandsOnEvidence } from "../data/evidence";
+import { addEvidence, recordHandsOnEvidence, recordMachineVerification } from "../data/evidence";
 import {
   getHandsOnTask,
   validateHandsOnEvidence,
   type HandsOnTask
 } from "../data/handsOn";
 import { commandForPlatform } from "../data/platformAdapters";
+import { runtimeTaskForLesson } from "../data/runtimeVerification";
+import {
+  getLocalTerminalToken,
+  localTerminalAgentStatus,
+  runLocalTerminalTask,
+  setLocalTerminalToken
+} from "../data/localTerminalAgent";
 import { MotionIllustration } from "./MotionIllustration";
 import { LessonContentFeed } from "./LessonContentFeed";
 import { PodcastCoach } from "./PodcastCoach";
@@ -18,6 +25,7 @@ import { LessonVoiceClockProvider } from "./LessonVoiceClock";
 import { AssessmentPanel } from "./AssessmentPanel";
 import { MasteryRemediation } from "./MasteryRemediation";
 import { MasteryPreview } from "./MasteryPreview";
+import { recordMasteryAttemptAction } from "../app/actions/progress";
 import {
   getMasteryPlan,
   masteryStorageKey,
@@ -65,7 +73,23 @@ export function LessonPanel({
   const [masteryReadyForRetry, setMasteryReadyForRetry] = useState(true);
   const [masteryAttempts, setMasteryAttempts] = useState(0);
   const [exerciseCheckpointAnswer, setExerciseCheckpointAnswer] = useState<number | null>(null);
+  const [machineVerificationMessage, setMachineVerificationMessage] = useState("");
+  const [localAgentAvailable, setLocalAgentAvailable] = useState(false);
+  const [localAgentPlatform, setLocalAgentPlatform] = useState<string | null>(null);
+  const [localAgentInfo, setLocalAgentInfo] = useState("Not connected");
+  const [localAgentToken, setLocalAgentTokenState] = useState(getLocalTerminalToken());
+  const [localAgentRunning, setLocalAgentRunning] = useState(false);
+  const [machineResults, setMachineResults] = useState<
+    Array<{
+      stepId: string;
+      stdout: string;
+      stderr: string;
+      exitCode: number;
+      result: string;
+    }>
+  >([]);
   const command = commandForPlatform(lesson, platform);
+  const runtimeTask = runtimeTaskForLesson(lesson.id);
   const handsOnTask: HandsOnTask = getHandsOnTask(lesson);
   const masteryCheckpoint = useMemo(
     () => getMasteryPlan(lesson, handsOnTask, [], 0).checkpoint,
@@ -79,18 +103,24 @@ export function LessonPanel({
       if (!stored) {
         setHandsOnEvidence({});
         setExerciseRecorded(false);
+        setMachineResults([]);
+        setMachineVerificationMessage("");
         return;
       }
 
       const parsed = JSON.parse(stored) as {
         evidence?: Record<string, string>;
         validated?: boolean;
+        verified?: boolean;
       };
       setHandsOnEvidence(parsed.evidence ?? {});
-      setExerciseRecorded(parsed.validated === true);
+      setExerciseRecorded(parsed.validated === true || parsed.verified === true);
+      setMachineResults([]);
     } catch {
       setHandsOnEvidence({});
       setExerciseRecorded(false);
+      setMachineResults([]);
+      setMachineVerificationMessage("");
     }
   }, [evidenceKey]);
 
