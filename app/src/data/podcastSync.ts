@@ -12,7 +12,6 @@ export type PodcastTtsSpeech = {
   cognitiveLevelId: PodcastCognitiveLevelId;
   label: string;
   description: string;
-  scriptUrl: string;
   scriptVersion: string;
 };
 
@@ -76,7 +75,6 @@ export function buildPodcastTtsBundle(
       cognitiveLevelId: levelIds[level],
       label: levelLabels[level],
       description: levelDescriptions[level],
-      scriptUrl: cognitivePodcastUrl(`/podcasts/beginner/${episodeId}.txt`, level),
       scriptVersion
     };
   });
@@ -110,7 +108,6 @@ export function isValidPodcastTtsBundle(
     if (speech.cognitiveLevelId !== levelIds[speech.cognitiveLevel]) return false;
     if (speech.label !== levelLabels[speech.cognitiveLevel]) return false;
     if (speech.description !== levelDescriptions[speech.cognitiveLevel]) return false;
-    if (typeof speech.scriptUrl !== "string" || !speech.scriptUrl.startsWith("/")) return false;
     if (typeof speech.scriptVersion !== "string" || !speech.scriptVersion) return false;
 
     if (levels.has(speech.cognitiveLevel)) return false;
