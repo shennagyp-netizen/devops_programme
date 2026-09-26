@@ -125,21 +125,26 @@ export async function listVerifiedEvidenceForUser(
   evidenceRefs?: string[]
 ): Promise<VerifiedEvidenceRecord[]> {
   const safeLearnerId = requireLearnerId(learnerId);
-  const refs = [
-    ...new Set(
-      evidenceRefs
-        .filter((value): value is string => typeof value === "string")
-        .map((value) => value.trim())
-        .filter(Boolean)
-    )
-  ];
+  const refs =
+    evidenceRefs === undefined
+      ? undefined
+      : [
+          ...new Set(
+            evidenceRefs
+              .filter((value): value is string => typeof value === "string")
+              .map((value) => value.trim())
+              .filter(Boolean)
+          )
+        ];
+
+  if (refs && !refs.length) return [];
 
   const db = getDb();
   const rows = await db
     .select()
     .from(learnerVerifiedEvidence)
     .where(
-      refs.length
+      refs
         ? and(
             eq(learnerVerifiedEvidence.userId, safeLearnerId),
             inArray(learnerVerifiedEvidence.id, refs)
