@@ -4,13 +4,13 @@ import { requireCurrentUser } from "../../lib/server/auth";
 import {
   parseCompleteLearningItemCommand
 } from "../../framework/authorityRequest";
+import { parseMasteryCommand } from "../../framework/masteryRequest";
 import {
   completeLearningItemForUser
 } from "../../lib/server/learningAuthority";
 import {
-  recordMasteryAttemptForUser
-} from "../../lib/server/progress";
-import { parseMasteryAttemptInput } from "../../lib/mastery-contract";
+  recordAuthoritativeMasteryAttemptForUser
+} from "../../lib/server/masteryAuthority";
 
 export async function completeLearningItemAction(rawInput: unknown) {
   const user = await requireCurrentUser();
@@ -20,6 +20,6 @@ export async function completeLearningItemAction(rawInput: unknown) {
 
 export async function recordMasteryAttemptAction(rawInput: unknown) {
   const user = await requireCurrentUser();
-  const parsed = parseMasteryAttemptInput(rawInput);
-  return recordMasteryAttemptForUser(user.id, parsed);
+  const command = parseMasteryCommand(rawInput);
+  return recordAuthoritativeMasteryAttemptForUser(user.id, command);
 }
