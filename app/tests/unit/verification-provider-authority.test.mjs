@@ -189,9 +189,9 @@ describe("verification provider authority", () => {
     const challengeRow = {
       id: "challenge-2",
       userId: "user_1",
-      itemId: "B1.1",
-      targetRef: "runtime-exercise-B1.1",
-      evidenceKind: "exercise",
+      itemId: "B1.2",
+      targetRef: "runtime-probe-B1.2",
+      evidenceKind: "probe",
       providerId: "local-terminal",
       nonce: "nonce-2",
       nonceHash: "sha256:" + "b".repeat(64),
@@ -228,6 +228,7 @@ describe("verification provider authority", () => {
       id: "challenge-2",
       learnerId: "user_1",
       itemId: "B1.2",
+      targetRef: "runtime-probe-B1.2",
       providerId: "local-terminal",
       nonce: "nonce-2"
     });
