@@ -63,6 +63,7 @@ describe("FloatingLLMAssistant", () => {
 
   afterEach(() => {
     window.localStorage.clear();
+    vi.unstubAllGlobals();
   });
 
   it("mounts the real assistant and opens the actual panel", () => {
@@ -114,6 +115,7 @@ describe("FloatingLLMAssistant", () => {
     const body = JSON.parse(String(init.body));
 
     expect(body.lessonId).toBe("B1.4");
+    expect(body.learningMode).toBe("learn");
     expect(body.messages.at(-1)).toEqual({
       role: "user",
       content: "What does the container share with the host?"
