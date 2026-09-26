@@ -60,10 +60,11 @@ describe("TTS podcast cognitive-level contract", () => {
     expect(isValidPodcastTtsBundle(duplicate, "B1.4")).toBe(false);
   });
 
-  it("does not define cognitive depth through TTS speed", () => {
+  it("does not define cognitive depth through TTS speed or audio URLs", () => {
     const bundle = buildPodcastTtsBundle("B1.4", versions);
 
     expect(bundle?.speeches.every((speech) => !("rate" in speech))).toBe(true);
+    expect(bundle?.speeches.every((speech) => !("audioUrl" in speech))).toBe(true);
   });
 
   it("exposes human-readable cognitive labels", () => {
