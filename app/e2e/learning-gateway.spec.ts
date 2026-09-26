@@ -8,7 +8,7 @@ test.describe("real-user learning gateway journey", () => {
     const email = e2eEmail(testInfo.title, testInfo.workerIndex, testInfo.retry);
     await signUp(page, email, "gateway-entry");
 
-    await expect(page.getByText("DevOps Engineering", { exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "DevOps Engineering", exact: true })).toBeVisible();
 
     await page.getByRole("radio", { name: "Windows", exact: true }).check();
     await expect(page.getByText("Environment: Windows · PowerShell", { exact: true })).toBeVisible();
