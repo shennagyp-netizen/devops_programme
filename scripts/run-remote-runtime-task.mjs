@@ -136,6 +136,7 @@ async function main() {
       challenge.itemId !== task.lessonId ||
       challenge.targetRef !== task.taskId ||
       challenge.providerId !== providerId ||
+      challenge.providerKeyId !== providerKeyId ||
       typeof challenge.nonce !== "string" ||
       typeof challenge.id !== "string"
     ) {
