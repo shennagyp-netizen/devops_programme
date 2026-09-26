@@ -8,6 +8,33 @@ The governing rule is:
 
 > Test the architecture as a system, not the latest error as an isolated bug.
 
+## V3 MVP security architecture
+
+The current learner trust model is intentionally browser-local.
+
+Security/integrity tests must therefore reject:
+
+- account/session source files
+- learner IDs
+- local terminal-agent pairing tokens
+- machine-verified learner completion
+- server mastery actions
+- client-forged tutor assistant roles.
+
+The current MVP red-team contract is:
+
+`app/tests/unit/mvp-security.redteam.test.mjs`
+
+The tutor server remains responsible for:
+
+- strict request parsing
+- server-derived curriculum context
+- bounded request size
+- anonymous best-effort throttling
+- keeping the AI Gateway credential server-side.
+
+Local completion and evidence are not authorization boundaries and must not be tested as tamper-resistant.
+
 ## Current authored programme graph
 
 - 3 courses
@@ -101,42 +128,11 @@ Visual/browser validation remains separate from contract correctness. Passing bi
 
 ## Runtime verification
 
-The canonical runtime task source is:
+The runtime catalog remains future infrastructure.
 
-app/src/data/runtimeTasks.json
+The learner UI does not invoke machine verification in V3. Manual terminal execution plus structured evidence is the current learner path.
 
-Runtime types, lookup and validation are:
-
-app/src/data/runtimeVerification.ts
-
-The local runner is:
-
-scripts/run-runtime-task.mjs
-
-The browser must never execute arbitrary learner shell commands.
-
-## Build policy
-
-The build runs, in order:
-
-1. podcast synchronization
-2. content validation
-3. assessment validation
-4. diagnostic validation
-5. project validation
-6. platform validation
-7. hands-on contract validation
-8. Beginner completeness
-9. Intermediate completeness
-10. Advanced completeness
-11. global programme completeness
-12. runtime contract validation
-13. unit tests
-14. integration tests
-15. TypeScript compilation
-16. Next.js production build
-
-A failure in an invariant test blocks the build.
+Contract validation must still fail closed for malformed runtime task definitions and envelopes because those contracts will support future execution adapters.
 
 ## CI interpretation
 
