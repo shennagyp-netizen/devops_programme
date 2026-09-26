@@ -1,3 +1,5 @@
+import type { PlatformId } from "./programme";
+
 export const tutorModes = [
   "teaching",
   "failure-investigation",
