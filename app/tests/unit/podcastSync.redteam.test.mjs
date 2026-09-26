@@ -6,7 +6,7 @@ const speech = (level, overrides = {}) => ({
   explanationLevel: level,
   explanationLevelId: ["", "very-simple", "simple-technical", "professional", "expert"][level],
   label: ["", "Very simple", "Simple technical", "Professional", "Expert"][level],
-  description: "The complete lesson information.",
+  description: ["", "The complete lesson information, explained with very explicit everyday language.", "The complete lesson information, explained with simple technical language.", "The complete lesson information, explained in normal professional technical language.", "The complete lesson information, explained compactly for a highly experienced engineer."][level],
   scriptVersion: `sha-${level}`,
   ...overrides
 });
