@@ -1,19 +1,23 @@
 "use client";
 
-import { logoutAction } from "./app/actions/auth";
+import { AppShell, Badge, Burger, Group, Paper, ScrollArea, SegmentedControl, Stack, Text, Title } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
-import { courses, platformProfiles, type CourseLevel, type PlatformId } from "./data/programme";
-import { lessonsByCourse } from "./data/courseLessons";
+import { logoutAction } from "./app/actions/auth";
+import { completeLearningItemAction } from "./app/actions/progress";
+import { DiagnosticPanel } from "./components/DiagnosticPanel";
+import { FloatingLLMAssistant } from "./components/FloatingLLMAssistant/FloatingLLMAssistant";
 import { LessonPanel } from "./components/LessonPanel";
 import { Progress } from "./components/Progress";
-import { DiagnosticPanel } from "./components/DiagnosticPanel";
-import type { DiagnosticRecommendation } from "./data/diagnostics";
-import { projectsByCourse } from "./data/projects";
 import { ProjectPanel } from "./components/ProjectPanel";
-import { completeLearningItemAction } from "./app/actions/progress";
+import type { DiagnosticRecommendation } from "./data/diagnostics";
 import type { CompletionRecord } from "./lib/progress-contract";
 import type { MasteryAttemptRecord } from "./lib/mastery-contract";
+import { lessonsByCourse } from "./data/courseLessons";
+import { courses, platformProfiles, type CourseLevel, type PlatformId } from "./data/programme";
+import { projectsByCourse } from "./data/projects";
+import type { TutorContext } from "./lib/tutor-contract";
 
 export default function App({
   currentUser,
@@ -37,22 +41,31 @@ export default function App({
   );
   const [progressError, setProgressError] = useState("");
   const [progressBusyId, setProgressBusyId] = useState<string | null>(null);
+  const [mobileNavOpened, { toggle: toggleMobileNav, close: closeMobileNav }] =
+    useDisclosure(false);
 
   const selectedCourse = courses.find((item) => item.id === course) ?? courses[1];
   const selectedPlatform =
     platformProfiles.find((item) => item.id === platform) ?? platformProfiles[0];
   const selectedLessons = lessonsByCourse[course];
 
-  const l = useMemo(
-    () =>
-      selectedLessons.find((item) => item.id === s) ??
-      selectedLessons[0]!,
+  const lesson = useMemo(
+    () => selectedLessons.find((item) => item.id === s) ?? selectedLessons[0]!,
     [selectedLessons, s]
   );
 
   const completedInCourse = selectedLessons.filter((item) =>
     m.includes(item.id)
   ).length;
+
+  const tutorContext: TutorContext = {
+    lessonId: lesson.id,
+    lessonTitle: lesson.title,
+    lessonObjective: lesson.objective,
+    domain: lesson.domain,
+    projectId: lesson.projectId,
+    course: selectedCourse.id
+  };
 
   const recordDiagnosticRecommendation = useCallback(
     (sectionId: string, recommendation: DiagnosticRecommendation) => {
@@ -68,6 +81,12 @@ export default function App({
     setCourse(next);
     const first = lessonsByCourse[next][0];
     if (first) setS(first.id);
+    closeMobileNav();
+  }
+
+  function selectLesson(nextId: string) {
+    setS(nextId);
+    closeMobileNav();
   }
 
   async function completeLesson(id: string) {
@@ -100,162 +119,218 @@ export default function App({
   }
 
   return (
-    <div className="app-shell">
-      <header className="hero">
-        <div>
-          <span className="eyebrow">DEVOPS PROGRAMME</span>
-          <h1>From scattered knowledge to operational mastery.</h1>
-          <p>
-            Hard engineering. Easy English. Human speech. Real failure work.
-          </p>
-        </div>
-        <div className="hero-actions">
-          <div className="gateway-nav">
-            <Link className="gateway-home-link" href="/">
-              Programme home
-            </Link>
-            <span className="gateway-label">LEARNING GATEWAY</span>
-          </div>
-          <Progress total={selectedLessons.length} completed={completedInCourse} />
-          <div className="account-area">
-            <span className="account-email">{currentUser.email}</span>
-            <form action={logoutAction}>
-              <button className="secondary account-logout" type="submit">
-                Sign out
-              </button>
-            </form>
-          </div>
-        </div>
-      </header>
+    <>
+      <AppShell
+        mode="static"
+        layout="default"
+        padding={{ base: "sm", sm: "md", lg: "lg" }}
+        header={{ height: { base: 68, sm: 76 } }}
+        navbar={{
+          width: { sm: 300, lg: 360 },
+          breakpoint: "sm",
+          collapsed: { mobile: !mobileNavOpened, desktop: false }
+        }}
+        aside={{
+          width: 320,
+          breakpoint: "lg",
+          collapsed: { mobile: true, desktop: false }
+        }}
+        withBorder={false}
+      >
+        <AppShell.Header>
+          <Group h="100%" px={{ base: "sm", sm: "md", lg: "xl" }} justify="space-between">
+            <Group gap="sm" wrap="nowrap">
+              <Burger
+                opened={mobileNavOpened}
+                onClick={toggleMobileNav}
+                hiddenFrom="sm"
+                size="sm"
+                aria-label="Open lesson navigation"
+              />
+              <div>
+                <Text size="xs" fw={800} c="blue" tt="uppercase" style={{ letterSpacing: "0.12em" }}>
+                  DevOps Programme
+                </Text>
+                <Title order={3} size="clamp(1.15rem, 2vw, 1.5rem)">
+                  Operational mastery
+                </Title>
+              </div>
+            </Group>
 
-      <section className="content-card">
-        {progressError ? (
-          <p className="range">{progressError}</p>
-        ) : null}
-        <div>
-          <span className="eyebrow">{selectedCourse.id.toUpperCase()}</span>
-          <h3>{selectedCourse.title}</h3>
-          <p>{selectedCourse.purpose}</p>
-        </div>
+            <Group gap="sm" wrap="nowrap">
+              <Link href="/" className="gateway-home-link">
+                Programme home
+              </Link>
+              <Badge variant="light" visibleFrom="sm">
+                {currentUser.email}
+              </Badge>
+              <form action={logoutAction}>
+                <button className="secondary account-logout" type="submit">
+                  Sign out
+                </button>
+              </form>
+            </Group>
+          </Group>
+        </AppShell.Header>
 
-        <div className="mode-tabs">
-          {courses.map((item) => (
-            <button
-              key={item.id}
-              className={course === item.id ? "active" : ""}
-              onClick={() => changeCourse(item.id)}
-            >
-              {item.title}
-            </button>
-          ))}
-        </div>
-
-        <div className="mode-tabs">
-          {platformProfiles.map((item) => (
-            <button
-              key={item.id}
-              className={platform === item.id ? "active" : ""}
-              onClick={() => setPlatform(item.id)}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-
-        <p className="range">
-          Environment: {selectedPlatform.label} · {selectedPlatform.shell}
-        </p>
-
-        <DiagnosticPanel
-          course={course}
-          onRecommendation={recordDiagnosticRecommendation}
-        />
-
-        <ProjectPanel
-          projects={projectsByCourse[course]}
-          refreshToken={evidenceVersion}
-        />
-
-        <div className="content-card course-path">
-          <div className="course-path-head">
+        <AppShell.Navbar p={{ base: "sm", sm: "md" }}>
+          <Stack h="100%" gap="md">
             <div>
-              <h4>Course path</h4>
-              <p>
-                Foundations and application sections stay separate, but they
-                are used together inside the projects.
-              </p>
+              <Text fw={700}>{selectedCourse.title}</Text>
+              <Text size="xs" c="dimmed">
+                {selectedLessons.length} lessons · {selectedCourse.projects.length} projects
+              </Text>
             </div>
-            <span className="coach-phase">
-              {selectedCourse.projects.join(" · ")}
-            </span>
-          </div>
 
-          <ol>
-            {selectedCourse.sections.map((section) => (
-              <li key={section.id}>
-                <strong>{section.id}</strong> — {section.title}
-                <span className="range"> · {section.kind}</span>
-                <div>{section.humanExample}</div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+            <ScrollArea.Autosize type="scroll" offsetScrollbars>
+              <Stack gap="md" pr="xs">
+                {selectedCourse.projects.map((projectId) => {
+                  const projectLessons = selectedLessons.filter(
+                    (item) => item.projectId === projectId
+                  );
 
-      <main className="layout">
-        <aside className="sidebar">
-          <h3>
-            {selectedCourse.title} · {selectedLessons.length} lessons
-          </h3>
+                  if (!projectLessons.length) return null;
 
-          {selectedCourse.projects.map((projectId) => {
-            const projectLessons = selectedLessons.filter(
-              (item) => item.projectId === projectId
-            );
+                  return (
+                    <Stack gap={4} key={projectId}>
+                      <Text size="xs" fw={800} c="dimmed" tt="uppercase">
+                        {projectId}
+                      </Text>
 
-            if (!projectLessons.length) return null;
+                      {projectLessons.map((item) => (
+                        <button
+                          key={item.id}
+                          className={
+                            lesson.id === item.id
+                              ? "lesson-link selected"
+                              : "lesson-link"
+                          }
+                          onClick={() => selectLesson(item.id)}
+                        >
+                          <span>{item.id}</span>
+                          <span>{item.title}</span>
+                          {m.includes(item.id) ? <b aria-label="completed">✓</b> : null}
+                        </button>
+                      ))}
+                    </Stack>
+                  );
+                })}
+              </Stack>
+            </ScrollArea.Autosize>
+          </Stack>
+        </AppShell.Navbar>
 
-            return (
-              <div className="day" key={projectId}>
-                <div className="day-title">{projectId}</div>
-                <div className="range">
-                  {projectLessons.length} lesson
-                  {projectLessons.length === 1 ? "" : "s"}
+        <AppShell.Aside p="md">
+          <Stack gap="md">
+            <Paper withBorder p="md" radius="lg">
+              <Text size="xs" fw={800} c="dimmed" tt="uppercase">
+                Course progress
+              </Text>
+              <Progress total={selectedLessons.length} completed={completedInCourse} />
+            </Paper>
+
+            <Paper withBorder p="md" radius="lg">
+              <Text size="xs" fw={800} c="dimmed" tt="uppercase">
+                Environment
+              </Text>
+              <Text fw={700} mt={4}>{selectedPlatform.label}</Text>
+              <Text size="sm" c="dimmed">{selectedPlatform.shell}</Text>
+            </Paper>
+
+            <Paper withBorder p="md" radius="lg">
+              <Text size="xs" fw={800} c="dimmed" tt="uppercase">
+                Current lesson
+              </Text>
+              <Text fw={700} mt={4}>{lesson.id} · {lesson.title}</Text>
+              <Text size="sm" c="dimmed" mt={4}>
+                {lesson.objective}
+              </Text>
+            </Paper>
+          </Stack>
+        </AppShell.Aside>
+
+        <AppShell.Main>
+          <Stack maw={1700} mx="auto" gap="lg">
+            <Paper withBorder radius="xl" p={{ base: "md", sm: "lg", lg: "xl" }}>
+              {progressError ? <Text c="red" size="sm" mb="sm">{progressError}</Text> : null}
+
+              <Stack gap="md">
+                <div>
+                  <Text size="xs" fw={800} c="blue" tt="uppercase">{selectedCourse.id}</Text>
+                  <Title order={2} mt={4}>{selectedCourse.title}</Title>
+                  <Text c="dimmed">{selectedCourse.purpose}</Text>
                 </div>
 
-                {projectLessons.map((item) => (
-                  <button
-                    key={item.id}
-                    className={
-                      l.id === item.id
-                        ? "lesson-link selected"
-                        : "lesson-link"
-                    }
-                    onClick={() => setS(item.id)}
-                  >
-                    <span>{item.id}</span>
-                    <span>{item.title}</span>
-                    {m.includes(item.id) ? <b>✓</b> : null}
-                  </button>
-                ))}
-              </div>
-            );
-          })}
-        </aside>
+                <SegmentedControl
+                  fullWidth
+                  value={course}
+                  onChange={(value) => changeCourse(value as CourseLevel)}
+                  data={courses.map((item) => ({ value: item.id, label: item.title }))}
+                />
 
-        <LessonPanel
-          lesson={l}
-          platform={platform}
-          mastered={m.includes(l.id)}
-          diagnosticRecommendation={diagnosticRecommendations[l.sectionId]}
-          onSelectLesson={setS}
-          onEvidenceRecorded={() => setEvidenceVersion((value) => value + 1)}
-          progressReady={true}
-          progressSaving={progressBusyId === l.id}
-          initialMasteryHistory={initialMasteryHistory}
-          onMaster={() => void completeLesson(l.id)}
-        />
-      </main>
-    </div>
+                <SegmentedControl
+                  fullWidth
+                  value={platform}
+                  onChange={(value) => setPlatform(value as PlatformId)}
+                  data={platformProfiles.map((item) => ({ value: item.id, label: item.label }))}
+                />
+
+                <Text size="sm" c="dimmed">
+                  Environment: {selectedPlatform.label} · {selectedPlatform.shell}
+                </Text>
+
+                <DiagnosticPanel
+                  course={course}
+                  onRecommendation={recordDiagnosticRecommendation}
+                />
+
+                <ProjectPanel
+                  projects={projectsByCourse[course]}
+                  refreshToken={evidenceVersion}
+                />
+
+                <Paper withBorder radius="lg" p="md">
+                  <Group justify="space-between" align="flex-start" mb="sm">
+                    <div>
+                      <Title order={4}>Course path</Title>
+                      <Text size="sm" c="dimmed">
+                        Foundations and application sections stay separate, but they are used together inside the projects.
+                      </Text>
+                    </div>
+                    <Badge variant="light">{selectedCourse.projects.join(" · ")}</Badge>
+                  </Group>
+
+                  <Stack gap="xs">
+                    {selectedCourse.sections.map((section) => (
+                      <div key={section.id}>
+                        <Text size="sm" fw={700} component="span">{section.id}</Text>
+                        <Text size="sm" component="span"> — {section.title}</Text>
+                        <Text size="xs" c="dimmed" component="span"> · {section.kind}</Text>
+                        <Text size="sm" c="dimmed">{section.humanExample}</Text>
+                      </div>
+                    ))}
+                  </Stack>
+                </Paper>
+              </Stack>
+            </Paper>
+
+            <LessonPanel
+              lesson={lesson}
+              platform={platform}
+              mastered={m.includes(lesson.id)}
+              diagnosticRecommendation={diagnosticRecommendations[lesson.sectionId]}
+              onSelectLesson={selectLesson}
+              onEvidenceRecorded={() => setEvidenceVersion((value) => value + 1)}
+              progressReady={true}
+              progressSaving={progressBusyId === lesson.id}
+              initialMasteryHistory={initialMasteryHistory}
+              onMaster={() => void completeLesson(lesson.id)}
+            />
+          </Stack>
+        </AppShell.Main>
+      </AppShell>
+
+      <FloatingLLMAssistant context={tutorContext} />
+    </>
   );
 }
