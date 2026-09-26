@@ -77,7 +77,7 @@ describe("tutor route", () => {
     createTutorSessionMock.mockResolvedValue("00000000-0000-0000-0000-000000000001");
     listTutorMessagesMock.mockResolvedValue([]);
     appendTutorMessageMock.mockResolvedValue("message-id");
-    reserveTutorUserMessageMock.mockResolvedValue({ allowed: true, remaining: 19 });
+    reserveTutorRequestMock.mockResolvedValue({ allowed: true, remaining: 19 });
     verifyTutorSessionMock.mockResolvedValue({
       id: "00000000-0000-0000-0000-000000000001"
     });
@@ -109,7 +109,8 @@ describe("tutor route", () => {
       email: "learner@example.com"
     });
     process.env.AI_GATEWAY_API_KEY = "test-key";
-    reserveTutorUserMessageMock.mockRejectedValue(
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    reserveTutorRequestMock.mockRejectedValue(
       new Error("Tutor rate limit reached. Please continue shortly.")
     );
 
