@@ -176,9 +176,10 @@ export function AssistantPanel({
       lessonId: context.lessonId,
       learningMode: context.learningMode,
       messages: conversation
-        .slice(-12)
-        .map(({ role, content: message }) => ({
-          role,
+        .filter(({ role }) => role === "user")
+        .slice(-8)
+        .map(({ content: message }) => ({
+          role: "user" as const,
           content: message
         }))
     });
