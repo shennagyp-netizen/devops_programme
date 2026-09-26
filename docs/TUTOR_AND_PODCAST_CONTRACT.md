@@ -136,7 +136,7 @@ The Responses API tool loop is capped at a small number of server-side rounds an
 
 ## Persistence migration
 
-Tutor storage uses a dedicated 0002_tutor.sql migration.
+Tutor storage uses a dedicated 0003_tutor.sql migration.
 
 The authentication migration 0001_self_hosted_auth.sql remains historical and is not modified after deployment.
 
