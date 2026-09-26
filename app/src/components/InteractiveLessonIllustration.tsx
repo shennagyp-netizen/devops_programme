@@ -1,46 +1,137 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Button, Group, Paper, Stack, Text } from "@mantine/core";
 import { AnimationStage, getAnimation, type AnimationTimedCueV1 } from "../animations";
 import { curriculumIllustrationBindings } from "../data/curriculumIllustrationBindings";
 import { animationCuesForVoice } from "../data/lessonVoiceAnimation";
 import { useLessonVoiceClock } from "./LessonVoiceClock";
 
+const PLAYBACK_STEP_MS = 900;
+
 export function InteractiveLessonIllustration({ bindingId }: { bindingId: string }) {
-  const binding = curriculumIllustrationBindings.find((candidate) => candidate.id === bindingId);
-  const definition = binding?.animationId ? getAnimation(binding.animationId) : undefined;
+  const binding = curriculumIllustrationBindings.find(
+    (candidate) => candidate.id === bindingId
+  );
+  const definition = binding?.animationId
+    ? getAnimation(binding.animationId)
+    : undefined;
   const clock = useLessonVoiceClock();
   const [completed, setCompleted] = useState<string[]>([]);
+  const [playing, setPlaying] = useState(false);
+  const [playbackStepIndex, setPlaybackStepIndex] = useState(0);
 
   const voiceCues = useMemo(
     () => (binding ? animationCuesForVoice(binding, undefined) : []),
     [binding]
   );
-  const manualCues: AnimationTimedCueV1[] = completed.flatMap((stepId, index) => {
-    const step = binding?.interactionSteps.find((candidate) => candidate.id === stepId);
-    return step ? [{ voiceCueId: `manual:${step.id}`, startMs: index * 1000, eventIds: step.successEventIds }] : [];
-  });
+
+  const playbackCues: AnimationTimedCueV1[] = useMemo(
+    () =>
+      (binding?.interactionSteps ?? []).map((step, index) => ({
+        voiceCueId: "playback:" + step.id,
+        startMs: index * PLAYBACK_STEP_MS,
+        eventIds: step.successEventIds
+      })),
+    [binding]
+  );
+
+  const playbackTimeMs = Math.min(
+    playbackStepIndex * PLAYBACK_STEP_MS + 800,
+    Math.max(0, (binding?.interactionSteps.length ?? 1) * PLAYBACK_STEP_MS)
+  );
+
+  useEffect(() => {
+    if (!playing || !binding?.interactionSteps.length) return;
+
+    const timer = window.setInterval(() => {
+      setPlaybackStepIndex((current) => {
+        const lastIndex = binding.interactionSteps.length - 1;
+        if (current >= lastIndex) {
+          setPlaying(false);
+          return current;
+        }
+        return current + 1;
+      });
+    }, PLAYBACK_STEP_MS);
+
+    return () => window.clearInterval(timer);
+  }, [binding, playing]);
 
   if (!binding || !definition) {
-    return <p className="range">This interactive illustration is unavailable because its curriculum binding is invalid.</p>;
+    return (
+      <Text c="dimmed">
+        This interactive illustration is unavailable because its curriculum
+        binding is invalid.
+      </Text>
+    );
   }
 
-  const nextStep = binding.interactionSteps.find((step) => !completed.includes(step.id));
-  const allCues = [...voiceCues, ...manualCues];
-  const displayTimeMs = Math.max(clock?.elapsedMs ?? 0, completed.length * 1000 + 800);
+  const nextStep = binding.interactionSteps.find(
+    (step) => !completed.includes(step.id)
+  );
+
+  const allCues = [...voiceCues, ...playbackCues];
 
   return (
-    <div className="interactive-lesson-illustration" data-animation-id={definition.id}>
-      <AnimationStage definition={definition} cues={allCues} currentTimeMs={displayTimeMs} />
+    <Stack gap="sm">
+      <AnimationStage
+        definition={definition}
+        cues={allCues}
+        currentTimeMs={playbackTimeMs}
+      />
+
+      <Paper withBorder p="sm" radius="md">
+        <Group justify="space-between" wrap="wrap">
+          <Text size="sm" fw={700}>
+            Visual playback
+          </Text>
+          <Group gap="xs">
+            <Button
+              size="compact-sm"
+              variant="light"
+              onClick={() => setPlaying((value) => !value)}
+              disabled={playbackStepIndex >= binding.interactionSteps.length - 1}
+            >
+              {playing ? "Pause" : "Play"}
+            </Button>
+            <Button
+              size="compact-sm"
+              variant="subtle"
+              onClick={() => {
+                setPlaying(false);
+                setPlaybackStepIndex(0);
+                setCompleted([]);
+              }}
+            >
+              Reset
+            </Button>
+          </Group>
+        </Group>
+      </Paper>
+
       {nextStep ? (
-        <div className="content-card">
-          <span className="eyebrow">STEP {nextStep.order} OF {binding.interactionSteps.length}</span>
-          <p>{nextStep.prompt}</p>
-          <button className="primary" onClick={() => setCompleted((steps) => [...steps, nextStep.id])}>
+        <Paper withBorder p="md" radius="md">
+          <Text size="xs" fw={800} c="dimmed" tt="uppercase">
+            Step {nextStep.order} of {binding.interactionSteps.length}
+          </Text>
+          <Text mt="xs">{nextStep.prompt}</Text>
+          <Button
+            mt="sm"
+            onClick={() =>
+              setCompleted((steps) =>
+                steps.includes(nextStep.id) ? steps : [...steps, nextStep.id]
+              )
+            }
+          >
             Complete this boundary
-          </button>
-        </div>
-      ) : <p className="range">Request path complete: explain which boundary supplied the evidence.</p>}
-    </div>
+          </Button>
+        </Paper>
+      ) : (
+        <Text size="sm" c="dimmed">
+          Visual path complete. Explain which boundary supplied the evidence.
+        </Text>
+      )}
+    </Stack>
   );
 }
