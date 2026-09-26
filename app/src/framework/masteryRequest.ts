@@ -1,6 +1,14 @@
 const MAX_ITEM_ID_LENGTH = 200;
 const MAX_STAGE_LENGTH = 64;
 const MAX_SUMMARY_LENGTH = 4000;
+
+export const MASTERY_STAGES = [
+  "foundation-reteach",
+  "mechanism-reteach",
+  "guided-practice",
+  "prerequisite-rewind"
+] as const;
+export type MasteryStage = (typeof MASTERY_STAGES)[number];
 const MAX_EVIDENCE_REFS = 32;
 const MAX_EVIDENCE_REF_LENGTH = 200;
 
@@ -49,6 +57,14 @@ export function parseMasteryCommand(value: unknown): MasteryCommand {
     }
   }
 
+  const stage = source.stage;
+  if (
+    typeof stage !== "string" ||
+    !MASTERY_STAGES.includes(stage as MasteryStage)
+  ) {
+    return fail("stage must be a supported mastery coaching stage.");
+  }
+
   const rawRefs = source.evidenceRefs;
   if (rawRefs !== undefined && !Array.isArray(rawRefs)) {
     return fail("evidenceRefs must be an array when provided.");
@@ -66,7 +82,7 @@ export function parseMasteryCommand(value: unknown): MasteryCommand {
 
   return {
     itemId: requiredString(source.itemId, "itemId", MAX_ITEM_ID_LENGTH),
-    stage: requiredString(source.stage, "stage", MAX_STAGE_LENGTH),
+    stage: stage as MasteryStage,
     summary: requiredString(source.summary, "summary", MAX_SUMMARY_LENGTH),
     evidenceRefs: [...new Set(evidenceRefs)]
   };
