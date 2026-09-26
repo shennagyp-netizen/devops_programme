@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   buildPodcastTtsBundle,
   isValidPodcastTtsBundle,
+  isPodcastSpeechRate,
+  PODCAST_SPEECH_RATES,
   podcastLevelDescription,
   podcastLevelId,
   podcastLevelLabel
@@ -69,5 +71,14 @@ describe("TTS explanation-level contract", () => {
     expect(podcastLevelId(1)).toBe("very-simple");
     expect(podcastLevelLabel(2)).toBe("Simple technical");
     expect(podcastLevelDescription(4)).toContain("complete lesson information");
+  });
+
+  it("defines the four supported presentation speeds", () => {
+    expect(PODCAST_SPEECH_RATES).toEqual([1, 1.25, 1.5, 2]);
+    expect(isPodcastSpeechRate(1)).toBe(true);
+    expect(isPodcastSpeechRate(1.25)).toBe(true);
+    expect(isPodcastSpeechRate(1.5)).toBe(true);
+    expect(isPodcastSpeechRate(2)).toBe(true);
+    expect(isPodcastSpeechRate(1.75)).toBe(false);
   });
 });
