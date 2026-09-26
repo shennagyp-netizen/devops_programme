@@ -46,7 +46,7 @@ test.describe("real-user learning gateway journey", () => {
 
     await page.getByRole("button", { name: "do", exact: true }).click();
     await expect(page.getByText("VERIFIED LAPTOP TERMINAL", { exact: true })).toBeVisible();
-    await expect(page.getByText("npm run terminal-agent", { exact: true })).toBeVisible();
+    await expect(page.getByText(/Connected · linux · agent/)).toBeVisible();
 
     await page.getByRole("button", { name: "learn", exact: true }).click();
     await expect(page.getByText("THEORY ADAPTATION", { exact: true })).toBeVisible();
