@@ -1,13 +1,39 @@
-EPISODE B1.4 — Cognitive Level 1: Foundation
+EPISODE B1.4 — Explanation Level 1: Very simple
 
-Containers solve a repeatability problem. An application can work perfectly on one laptop and fail on another because the environment around it is different.
+@knowledge K01
+An application can work on one laptop and fail on another even when the application code is the same. The reason can be the environment around the application: the runtime, libraries, files, settings, network, or other things the application needs. The environment is part of the system, so we want a repeatable environment.
 
-Think about three things: the image, the container, and the process. The image is the packaged starting point. The container is a running instance of that image. The process is the application work happening inside the container.
+@knowledge K02
+Before we blame the application, look at the runtime version, the libraries or other dependencies, the files the application expects, its environment variables, and the outside services it depends on. These checks tell us what the application is actually running with.
 
-The important idea is that the container gives the process a controlled environment. It does not create a completely separate computer. A container still uses the host operating system kernel.
+@knowledge K03
+Here is a simple picture. Two cooks can have the same recipe but different kitchens. One kitchen has the right oven and tools and the other does not. The result can be different. This helps us understand the environment problem, but a container is not literally a little kitchen.
 
-That is why containers are useful for DevOps. We can describe the software environment instead of hoping every machine has the same setup.
+@knowledge K04
+A container gives us three important words. An image is the packaged starting point. It can contain the application, its runtime pieces, files, defaults, and instructions for starting. A container is a running copy made from the image. A process is the application work that is actually running. Image, container, and process are different things.
 
-There are two more boundaries to remember. Important data should have a lifecycle of its own, usually through persistent storage. And a service listening inside a container is not automatically reachable from the outside. The container port and the published host port are different boundaries.
+@knowledge K05
+A container is not a full virtual machine. It does not start another separate Linux kernel. It uses the host kernel. The operating system can use features called namespaces to give a process its own view of processes, networking, and other resources. It can use control groups, often called cgroups, to control and limit resource use.
 
-So the basic mental model is simple: package the environment, run the process inside it, keep important data persistent, and make network access explicit.
+@knowledge K06
+This means the process can feel separated from other processes, but the host still matters. The container does not remove the host. The process still uses shared host infrastructure such as the kernel, hardware, and network path. Isolation hides some details; it does not make those details disappear.
+
+@knowledge K07
+Try a short command:
+docker run --rm nginx:alpine nginx -t
+The image provides the starting environment. The runtime creates a container. The nginx test process runs inside it. The --rm option asks Docker to remove the short-lived container after the process ends. A short command like this finishes when its process finishes.
+
+@knowledge K08
+A container can have writable filesystem state, but normal container writable state belongs to that container's lifetime. If the container is removed, we should not assume important data will still be there. Important data should use a persistent storage mechanism such as a volume. The important data then has a lifecycle separate from replacing the container.
+
+@knowledge K09
+Networking has another boundary. A process can listen on a port inside the container, such as port 80. The host can publish that container port on another host port. So saying "the application uses port 80" is incomplete unless we say where. Also, a container being reported as running does not prove that a client can reach the service.
+
+@knowledge K10
+When a running service cannot be reached, do not restart everything first. Check the process: is it alive and listening? Then check the container-side port. Then check the published host port. Then check the network path from the client to the host. These are different boundaries, so test them one at a time. A restart is not a diagnosis.
+
+@knowledge K11
+Imagine a small system with a frontend, an API, and a database. The API needs a network path to the database. The database needs persistent data. The frontend may be disposable. Each service still has a process, configuration, network behavior, and storage behavior. Containers make those boundaries more explicit, but the system still has to be designed correctly.
+
+@knowledge K12
+A useful lab proves the model. Run the nginx configuration test. Use docker ps and inspection commands to see the image, process settings, network settings, and storage mounts. Then make one controlled failure, predict what should break, observe the evidence, repair the smallest broken boundary, and verify recovery. The useful evidence includes the image, process, network, storage, failure signal, and recovery result. Kubernetes can manage containers later, but it does not remove the need to reason about processes, resources, networking, storage, evidence, and recovery.
