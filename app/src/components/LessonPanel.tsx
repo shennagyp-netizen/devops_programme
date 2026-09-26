@@ -191,12 +191,10 @@ export function LessonPanel({
     setMachineVerificationMessage("Running the verified exercise on this laptop...");
 
     try {
-      const evidenceKind =
-        runtimeTask.scope === "exercise" ? "exercise" : "probe";
       const challenge = await requestVerificationChallengeAction({
         itemId: lesson.id,
         providerId: localAgentProviderId,
-        evidenceKind
+        targetRef: runtimeTask.taskId
       });
 
       const execution = await runLocalTerminalAttestedTask({
