@@ -125,6 +125,60 @@ describe("FloatingLLMAssistant", () => {
     expect(body).not.toHaveProperty("domain");
   });
 
+  it("submits recognized voice input through the real assistant", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ text: "Check the DNS answer first." }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" }
+        })
+      )
+    );
+
+    class RecognitionMock {
+      continuous = false;
+      interimResults = false;
+      lang = "";
+      onresult = null;
+      onend = null;
+      onerror = null;
+      start = vi.fn(() => {
+        this.onresult?.({
+          results: [[{ transcript: "Why is the service unreachable?" }]]
+        });
+        this.onend?.();
+      });
+      stop = vi.fn();
+    }
+
+    Object.defineProperty(window, "SpeechRecognition", {
+      configurable: true,
+      writable: true,
+      value: RecognitionMock
+    });
+
+    renderAssistant();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Open DevOps tutor" })
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Start voice input" })
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.getByText("Check the DNS answer first.")
+      ).toBeInTheDocument()
+    );
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(
+      JSON.parse(String((fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body))
+        .messages.at(-1).content
+    ).toBe("Why is the service unreachable?");
+  });
+
   it("keeps the question locally when the tutor is unreachable", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Network down")));
 
