@@ -1,10 +1,10 @@
 "use client";
 
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
-import type { PodcastCognitiveLevel } from "../data/podcastSync";
+import type { PodcastExplanationLevel } from "../data/podcastSync";
 
 export type VoiceClock = {
-  cognitiveLevel: PodcastCognitiveLevel;
+  explanationLevel: PodcastExplanationLevel;
   turnId?: string;
   elapsedMs: number;
   state: "idle" | "speaking" | "paused" | "done";
@@ -15,7 +15,7 @@ type VoiceClockContextValue = VoiceClock & {
 };
 
 const initialClock: VoiceClock = {
-  cognitiveLevel: 1,
+  explanationLevel: 1,
   elapsedMs: 0,
   state: "idle"
 };
