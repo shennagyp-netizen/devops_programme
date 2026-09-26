@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
-import {
-  validateAnimationDefinition,
-  validateAnimationLessonBinding
-} from "../../../src/animations/contracts.ts";
+import { validateAnimationDefinition } from "../../../src/animations/contracts.ts";
 import { dnsResolutionAnimation } from "../../../src/animations/scenarios/dnsResolution.ts";
+import {
+  validateCurriculumIllustrationBinding
+} from "../../../src/data/illustrationBindings.ts";
+import { curriculumIllustrationBindings } from "../../../src/data/curriculumIllustrationBindings.ts";
 
 describe("DNS resolution animation", () => {
   it("satisfies the canonical animation contract", () => {
@@ -44,34 +45,24 @@ describe("DNS resolution animation", () => {
     ]);
   });
 
-  it("supports the full sequential curriculum binding without voice timing", () => {
-    const binding = {
-      version: 1,
-      id: "D2.2:d2-2-dns",
-      lessonId: "D2.2",
-      contentBlockId: "d2-2-dns",
-      contentIndex: 1,
-      presentation: "animated",
-      visualCapabilityId: "animation-stage-v1",
-      animationId: "dns-resolution",
-      voiceCueBindings: [],
-      interactionMode: "sequential",
-      interactionSteps: [
-        { id: "query", order: 1, interactionId: "query", prompt: "Start with the client.", successEventIds: ["query"] },
-        { id: "resolver", order: 2, interactionId: "resolver", prompt: "Show the recursive resolver.", successEventIds: ["resolver"] },
-        { id: "root", order: 3, interactionId: "root", prompt: "Show the root server.", successEventIds: ["root"] },
-        { id: "tld", order: 4, interactionId: "tld", prompt: "Show the TLD server.", successEventIds: ["tld"] },
-        { id: "authoritative", order: 5, interactionId: "authoritative", prompt: "Show the authoritative server.", successEventIds: ["authoritative"] },
-        { id: "answer", order: 6, interactionId: "answer", prompt: "Show the answer returning.", successEventIds: ["answer"] }
-      ],
-      completion: {
-        requiredStepIds: ["query", "resolver", "root", "tld", "authoritative", "answer"]
-      }
-    };
+  it("validates the authored D2.2 curriculum binding against the animation", () => {
+    const binding = curriculumIllustrationBindings.find(
+      (candidate) => candidate.id === "D2.2:d2-2-dns"
+    );
+    expect(binding).toBeDefined();
 
-    const result = validateAnimationLessonBinding(
+    const result = validateCurriculumIllustrationBinding(
       binding,
-      dnsResolutionAnimation
+      {
+        id: "d2-2-dns",
+        type: "interactive-illustration",
+        bindingId: "D2.2:d2-2-dns"
+      },
+      {
+        animationDefinitions: [dnsResolutionAnimation],
+        expectedLessonId: "D2.2",
+        expectedContentIndex: 1
+      }
     );
 
     expect(result.valid).toBe(true);
