@@ -15,7 +15,7 @@ import type { DiagnosticRecommendation } from "./data/diagnostics";
 import type { CompletionRecord } from "./lib/progress-contract";
 import type { MasteryAttemptRecord } from "./lib/mastery-contract";
 import type { VerifiedEvidenceRecord } from "./framework/contracts";
-import { findProgrammeLearningItem } from "./lib/server/programmeAuthority";
+import { findProgrammeLearningItem } from "./data/programmeLearningItems";
 import { lessonsByCourse } from "./data/courseLessons";
 import { courses, platformProfiles, type CourseLevel, type PlatformId } from "./data/programme";
 import { projectsByCourse } from "./data/projects";
