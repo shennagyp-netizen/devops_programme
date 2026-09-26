@@ -79,11 +79,8 @@ function configureDb({
 
   selectMock
     .mockReset()
-    .mockImplementationOnce(() => ({
-      from: evidenceFrom
-    }))
-    .mockImplementation(() => ({
-      from: latestFrom
+    .mockImplementation((projection) => ({
+      from: projection ? latestFrom : evidenceFrom
     }));
 
   const returning = vi
@@ -204,8 +201,13 @@ describe("authoritative mastery service", () => {
 
     selectMock
       .mockReset()
-      .mockImplementationOnce(() => ({ from: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue([]) }) }))
-      .mockImplementation(() => ({ from: latestFrom }));
+      .mockImplementation((projection) => ({
+        from: projection
+          ? latestFrom
+          : vi.fn().mockReturnValue({
+              where: vi.fn().mockResolvedValue([])
+            })
+      }));
 
     insertMock.mockReturnValue({
       values,
