@@ -45,6 +45,7 @@ describe("v3 learning authority", () => {
               kind: "runtime-b1-2",
               verifierId: "local-agent-v1",
               verificationRef: "attestation:1",
+              attestationDigest: "sha256:" + "a".repeat(64),
               verifiedAt: "2026-09-26T10:00:00.000Z"
             }
           ]
@@ -80,7 +81,6 @@ describe("v3 learning authority", () => {
         ])
       },
       {
-        learnerId: "user_1",
         itemId: "B1.2",
         evidenceRefs: ["evidence-1"]
       }
