@@ -68,7 +68,7 @@ assert.match(provider, /ensureRuntimeVerificationTarget/);
 assert.match(localAgent, /signVerificationAttestation/);
 assert.doesNotMatch(localAgent, /send\(res, 200, envelope/);
 assert.match(sshRunner, /signVerificationAttestation/);
-assert.match(sshRunner, /challenge-file/);
+assert.match(sshRunner, /challengeFile/);
 assert.doesNotMatch(verificationAction, /registerTrustedProviderKey/);
 assert.match(verificationAction, /requestVerificationChallengeAction/);
 assert.match(verificationAction, /submitVerificationAttestationAction/);
