@@ -44,4 +44,28 @@ test.describe("real-user learning gateway journey", () => {
     await expect(page.getByText("THEORY ADAPTATION", { exact: true })).toBeVisible();
     await expect(page.getByText("Mental model", { exact: true })).toBeVisible();
   });
+  test("learner can pair the browser with the local terminal agent and receive machine verification", async ({
+    page
+  }, testInfo) => {
+    const email = e2eEmail(testInfo.title, testInfo.workerIndex, testInfo.retry);
+    await signUp(page, email, "gateway-terminal-verified");
+
+    await page.getByRole("radio", { name: "DevOps Through Problems", exact: true }).check();
+    await page.getByRole("radio", { name: "Linux", exact: true }).check();
+    await expect(page.getByText("Environment: Linux · bash", { exact: true })).toBeVisible();
+
+    await page.getByRole("button", { name: "do", exact: true }).click();
+    await expect(page.getByText("VERIFIED LAPTOP TERMINAL", { exact: true })).toBeVisible();
+    await expect(page.getByText("Connected to local terminal agent", { exact: true })).toBeVisible();
+
+    await page.getByLabel("Pair this browser with the local agent").fill("e2e-terminal-token");
+    await page.getByRole("button", { name: "Run verified exercise on this laptop" }).click();
+
+    await expect(
+      page.getByText("Machine verification recorded.", { exact: true })
+    ).toBeVisible();
+    await expect(page.getByText("LAPTOP TERMINAL RESULTS", { exact: true })).toBeVisible();
+    await expect(page.getByText(/processes · passed · exit 0/)).toBeVisible();
+  });
+
 });
