@@ -3,44 +3,31 @@
 import { AppShell, Badge, Burger, Group, Paper, ScrollArea, SegmentedControl, Stack, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
-import { useCallback, useMemo, useState } from "react";
-import { logoutAction } from "./app/actions/auth";
-import { completeLearningItemAction } from "./app/actions/progress";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  completeLocalLearningItem,
+  readLocalCompletionHistory
+} from "./data/localProgress";
 import { DiagnosticPanel } from "./components/DiagnosticPanel";
 import { FloatingLLMAssistant } from "./components/FloatingLLMAssistant/FloatingLLMAssistant";
 import { LessonPanel } from "./components/LessonPanel";
 import { Progress } from "./components/Progress";
 import { ProjectPanel } from "./components/ProjectPanel";
 import type { DiagnosticRecommendation } from "./data/diagnostics";
-import type { CompletionRecord } from "./lib/progress-contract";
-import type { MasteryAttemptRecord } from "./lib/mastery-contract";
 import { lessonsByCourse } from "./data/courseLessons";
 import { courses, platformProfiles, type CourseLevel, type PlatformId } from "./data/programme";
 import { projectsByCourse } from "./data/projects";
 import type { TutorContext } from "./lib/tutor-contract";
 
-export default function App({
-  currentUser,
-  initialCompletionHistory,
-  initialMasteryHistory
-}: {
-  currentUser: { email: string };
-  initialCompletionHistory: CompletionRecord[];
-  initialMasteryHistory: MasteryAttemptRecord[];
-}) {
+export default function App() {
   const [course, setCourse] = useState<CourseLevel>("intermediate");
   const [platform, setPlatform] = useState<PlatformId>("macos");
   const [s, setS] = useState("D1.1");
   const [diagnosticRecommendations, setDiagnosticRecommendations] =
     useState<Record<string, DiagnosticRecommendation>>({});
   const [evidenceVersion, setEvidenceVersion] = useState(0);
-  const [m, setM] = useState<string[]>(() =>
-    initialCompletionHistory
-      .filter((item) => item.itemType === "lesson")
-      .map((item) => item.itemId)
-  );
-  const [progressError, setProgressError] = useState("");
-  const [progressBusyId, setProgressBusyId] = useState<string | null>(null);
+  const [m, setM] = useState<string[]>([]);
+  const [progressReady, setProgressReady] = useState(false);
   const [lessonMode, setLessonMode] = useState<"learn" | "do" | "recall" | "design" | "assessment">("learn");
   const [mobileNavOpened, { toggle: toggleMobileNav, close: closeMobileNav }] =
     useDisclosure(false);
@@ -58,6 +45,14 @@ export default function App({
   const completedInCourse = selectedLessons.filter((item) =>
     m.includes(item.id)
   ).length;
+
+  useEffect(() => {
+    const saved = readLocalCompletionHistory()
+      .filter((item) => item.itemType === "lesson")
+      .map((item) => item.itemId);
+    setM(saved);
+    setProgressReady(true);
+  }, []);
 
   const tutorContext: TutorContext = {
     lessonId: lesson.id,
@@ -97,33 +92,18 @@ export default function App({
     closeMobileNav();
   }
 
-  async function completeLesson(id: string) {
-    if (progressBusyId === id || m.includes(id)) return;
+  function completeLesson(id: string) {
+    if (!progressReady || m.includes(id)) return;
 
-    setProgressBusyId(id);
-    setProgressError("");
+    const selected = selectedLessons.find((item) => item.id === id);
+    if (!selected) return;
 
-    try {
-      const selected = selectedLessons.find((item) => item.id === id);
-      if (!selected) throw new Error("Selected lesson no longer exists.");
-
-      await completeLearningItemAction({
-        itemType: "lesson",
-        itemId: id,
-        course: selected.course,
-        projectId: selected.projectId,
-        verificationLevel: "exercise-validated"
-      });
-      setM((current) => (current.includes(id) ? current : [...current, id]));
-    } catch (error) {
-      setProgressError(
-        error instanceof Error
-          ? "Progress was not saved: " + error.message
-          : "Progress was not saved."
-      );
-    } finally {
-      setProgressBusyId(null);
-    }
+    completeLocalLearningItem({
+      itemId: id,
+      course: selected.course,
+      projectId: selected.projectId
+    });
+    setM((current) => (current.includes(id) ? current : [...current, id]));
   }
 
   return (
@@ -168,14 +148,7 @@ export default function App({
               <Link href="/" className="gateway-home-link">
                 Programme home
               </Link>
-              <Badge variant="light" visibleFrom="sm">
-                {currentUser.email}
-              </Badge>
-              <form action={logoutAction}>
-                <button className="secondary account-logout" type="submit">
-                  Sign out
-                </button>
-              </form>
+              <Badge variant="light" visibleFrom="sm">MVP · browser-local progress</Badge>
             </Group>
           </Group>
         </AppShell.Header>
@@ -259,8 +232,6 @@ export default function App({
         <AppShell.Main>
           <Stack maw={1700} mx="auto" gap="lg">
             <Paper withBorder radius="xl" p={{ base: "md", sm: "lg", lg: "xl" }}>
-              {progressError ? <Text c="red" size="sm" mb="sm">{progressError}</Text> : null}
-
               <Stack gap="md">
                 <div>
                   <Text size="xs" fw={800} c="blue" tt="uppercase">{selectedCourse.id}</Text>
@@ -329,10 +300,9 @@ export default function App({
               onSelectLesson={selectLesson}
               onEvidenceRecorded={() => setEvidenceVersion((value) => value + 1)}
               onModeChange={setLessonMode}
-              progressReady={true}
-              progressSaving={progressBusyId === lesson.id}
-              initialMasteryHistory={initialMasteryHistory}
-              onMaster={() => void completeLesson(lesson.id)}
+              progressReady={progressReady}
+              progressSaving={false}
+              onMaster={() => completeLesson(lesson.id)}
             />
           </Stack>
         </AppShell.Main>

@@ -1,5 +1,11 @@
 # Mastery and Remediation Contract
 
+> **V3 MVP security boundary:** mastery is an instructional, browser-local state, not a trusted credential.
+
+The remediation system follows the same educational contract below, but all attempt counts and evidence are stored locally in the learner's browser.
+
+
+
 ## Product standard
 
 The programme is not considered premium instructional content because it contains many lessons or hours of audio. A learner must be able to reach understanding through more than one representation and must receive a different teaching strategy after failure.
@@ -65,21 +71,19 @@ A successful mastery attempt is also recorded.
 
 ## Persistence
 
-Mastery attempts are persisted for the authenticated learner in PostgreSQL:
+Mastery attempts are stored in browser `localStorage`.
 
-learner_mastery_attempts
+The browser is allowed to decide its own instructional state because V3 does not claim:
 
-Each row records:
-- learner identity
-- lesson
-- task
-- attempt number
-- outcome
-- remediation stage
-- failure/mastery summary
-- timestamp.
+- certification
+- secure transcripts
+- paid entitlement
+- cross-device continuity
+- tamper-resistant mastery records.
 
-Browser-local state is used only as a resilience fallback for the current client session.
+A learner who edits local storage can alter local mastery state. This is an accepted MVP limitation, not a hidden trust boundary.
+
+The server does not receive a learner mastery result.
 
 ## Assessment philosophy
 
@@ -97,19 +101,18 @@ The learner should not be punished for weak English comprehension.
 
 ## $2,000-level quality gate
 
-The programme should not be described as a premium $2,000 learning product merely because it contains approximately seven hours of spoken material.
+The programme should not be described as a premium certification product merely because it contains many lessons or hours of audio.
 
-The premium proposition must come from:
+The premium learning proposition must come from:
+
 - multiple representations of the same mechanism
 - failure-triggered alternative teaching paths
 - controlled failure and recovery labs
 - progressive remediation
-- durable learner history
-- machine verification as coverage expands
 - project-level transfer
-- evidence of mastery rather than content consumption.
+- evidence-oriented learning.
 
-Seven hours of audio can be a component of the product. It is not the value model by itself.
+For V3 MVP, learner state is intentionally local and non-authoritative.
 
 ## Current implementation boundary
 

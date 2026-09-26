@@ -1,34 +1,37 @@
 # Current Continuation Handoff — DevOps Programme
 
-**Status snapshot:** 2026-09-25
+**Status snapshot:** 2026-09-26
 
 **Repository:** `shennagyp-netizen/devops_programme`
 
 **Current branch:** `main`
 
 **Latest main architecture/content merge:** PR #78, commit `0d0c490b5a7f21f49f6d6ba25c763672cc5cd8ab` (D2.7 controlled Docker failure-loop script + illustration quality slice).
-**Active content-quality branch:** none. PR #78 has merged to `main`.
+**Active branch:** `v3-mvp-security-simplification` — V3 MVP security simplification. This branch intentionally supersedes the old authenticated learner architecture.
 
 
-**Current architecture:** Next.js 16.3.6 + React 19.2.8 + first-party self-hosted sessions + Drizzle/PostgreSQL + Next.js Server Actions. The learner experience remains SPA-like, while authentication and persistence are server-authoritative. No external identity provider is used.
+**Current architecture:** Next.js 16.3.6 + React 19.2.8 as one learner application. No account system, learner session, learner ID, pairing token, or database-backed learner progress is part of the V3 MVP.
 
-**Current learner-state rule:** one authenticated user + item type + item ID = one append-only completion row.
+**Current learner-state rule:** progress, structured hands-on evidence and mastery-remediation attempts are browser-local state. Clearing site data resets it. This state is intentionally non-authoritative.
 
-**Authentication:** First-party application auth is the identity authority. The browser never creates or submits a trusted learner ID. Passwords and sessions are owned by the application and stored through PostgreSQL-backed auth state.
+**Authentication:** none in the MVP.
 
-**Persistence:** PostgreSQL + Drizzle. Completion history is order-independent and keyed by authenticated user + item type + item ID. Duplicate completion is idempotent. There is no uncomplete operation.
+**Persistence:** localStorage only for learner continuity. PostgreSQL/Drizzle code is no longer part of the learner runtime architecture.
 
-**API rule:** no custom progress REST API. Browser completion writes use one Server Action.
+**Runtime verification:** manual terminal execution plus structured evidence only. Local terminal-agent pairing and remote JSON evidence import are disabled in the learner app.
 
-**TDD rule:** unit tests define the completion input contract; integration tests define the authentication/Server Action boundary; repository contract tests reject the obsolete Vite/API/anonymous-progress architecture.
+**Tutor:** public curriculum context through the same Next.js app; strict input contract, user-only messages, bounded request size and best-effort anonymous throttling.
+
+**TDD rule:** architecture tests reject the removed account/session/token layers and verify the public browser-local MVP boundary.
 
 **CI truth:** GitHub-hosted runners execute the full programme gate. The PR #33 head passed the complete gate before merge: all programme contracts, full unit/integration tests, TypeScript typecheck and Next.js production build succeeded.
 
 **Historical sections:** earlier sections record previous milestones and superseded designs. Sections 30–31 are retained for audit history only; section 32 and the final authenticated architecture are current.
 
 AUTHORITATIVE READING ORDER
-1. docs/curriculum/COURSE_DESIGN_STANDARDS.md
-2. this document
+1. docs/MVP_ARCHITECTURE_V3.md
+2. docs/curriculum/COURSE_DESIGN_STANDARDS.md
+3. this document
 3. docs/TESTING_ARCHITECTURE.md
 4. docs/curriculum/COURSE_ARCHITECTURE.md
 5. docs/LEARNING_MODEL.md
@@ -1264,7 +1267,7 @@ Those sections are retained as historical audit evidence only.
 The current learner-progress architecture is defined below.
 
 ============================================================
-32. CURRENT AUTHENTICATED SPA ARCHITECTURE — 2026-09-24
+32. HISTORICAL AUTHENTICATED SPA ARCHITECTURE — 2026-09-24
 ============================================================
 
 The application architecture is now intentionally single-path.
@@ -1369,7 +1372,7 @@ Next engineering work should continue from this architecture rather than reintro
 
 
 ============================================================
-33. AUTHENTICATED NEXT.JS ARCHITECTURE MERGED — 2026-09-24
+33. HISTORICAL AUTHENTICATED NEXT.JS ARCHITECTURE — 2026-09-24
 ============================================================
 
 The previous anonymous browser-UUID + Vite + progress-REST design has been removed.
@@ -2036,3 +2039,24 @@ Next work:
 ============================================================
 END 2026-09-26 KIRO → PODCAST V2 MERGE
 ============================================================
+
+
+============================================================
+34. V3 MVP SECURITY ARCHITECTURE — 2026-09-26
+============================================================
+
+The V3 MVP is intentionally single-app and accountless.
+
+Authoritative rules:
+- `/learn` is public.
+- learner progress is browser-local and non-authoritative;
+- structured evidence is the only learner-facing verification level;
+- machine verification is disabled in the UI;
+- local terminal-agent pairing tokens are removed;
+- remote verification JSON import is removed;
+- the AI tutor is a public curriculum service, not a private authenticated service;
+- the tutor accepts only user-role messages and reconstructs lesson context server-side;
+- authentication/database persistence should not be reintroduced unless a new product requirement requires it.
+
+The authoritative security document is `docs/MVP_ARCHITECTURE_V3.md`.
+Historical authenticated sections of this handoff remain only as migration evidence.

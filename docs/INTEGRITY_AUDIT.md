@@ -1,70 +1,86 @@
 # Project Integrity Audit
 
-**Audit date:** 2026-09-26
-**Scope:** repository documents, curriculum data, application contracts, delivery
-configuration and executable validation.
+**Audit date:** 2026-09-26  
+**Scope:** V3 MVP repository documents, application contracts, learner-state boundary, tutor boundary and executable validation.
 
-## System understood
+## Current architecture
 
-This repository is a three-course DevOps learning programme. The authored graph
-contains 53 lessons in 21 competency sections, connected to nine continuous
-projects, prerequisite diagnostics, 21 assessment banks and spoken lesson
-assets. The Next.js application is the learner delivery surface. It uses
-first-party sessions, PostgreSQL/Drizzle persistence and Server Actions; the
-browser is not trusted to choose a learner identity.
+V3 is a single React/Next.js learner application.
 
-Programme integrity is primarily protected by source-level contracts. The
-validators check curriculum identity and coverage, assessment-bank structure,
-diagnostics, project links, Windows command adapters, hands-on evidence and the
-runtime-verification envelope. Unit and integration tests then exercise those
-contracts and the authentication/progress boundary.
+The public learning gateway does not require an account.
 
-## Findings resolved by this audit
+Learner completion, hands-on evidence and mastery-remediation attempts are browser-local state. They are intentionally non-authoritative.
 
-1. **The dependency graph was not reproducible.** `app/package.json` had no
-   committed lockfile and CI used `npm install`, allowing its graph to drift.
-   The application now has `app/package-lock.json`; CI uses `npm ci` against
-   that lockfile.
-2. **The test runner dependency was incomplete.** Vitest declares Vite as a
-   peer dependency, but Vite was not declared by this application. A clean
-   install could therefore fail before tests ran. Vite is now an explicit
-   development dependency.
-3. **The advertised Node support did not match the installed test runner.**
-   Vitest 5 requires Node 22.12 or later, whereas the project advertised Node
-   20.9. CI now installs Node 22.12 and the package engine expresses that
-   actual minimum.
-4. **Published podcast assets were incomplete and stale.** The app public
-   directory held only the legacy five-day subset although the source library
-   contains 27 files. The complete synchronization output, including the
-   hash/audio manifests, is now committed.
-5. **Repository hygiene and documentation had regressions.** The local-env
-   ignore pattern was literal text rather than a pattern, and the testing guide
-   still named the retired Vite production build. Both are corrected.
+The application does not use learner sessions, learner IDs or terminal-agent pairing tokens.
 
-## Validation evidence
+The AI tutor is a same-application server relay over public curriculum data. It uses strict request parsing, user-only message roles, bounded request size and best-effort anonymous rate limiting.
 
-All programme contract commands passed during this audit. The complete test
-suite passed: 52 test files and 438 tests. TypeScript compilation passed. The
-audit environment runs Node 20.20.2, below the corrected Node engine, so the
-Node 22 production-build gate must be confirmed by CI or a Node 22 runtime.
+## Security boundary
 
-## Open delivery gaps (not hidden by the green contracts)
+The MVP makes a deliberate distinction between:
 
-The current documents accurately identify these product boundaries:
+**Learning state**
+- browser-controlled
+- useful for continuity during local use
+- resettable by clearing site storage
+- not suitable as a certificate, transcript or entitlement record.
 
-- Only one hands-on task has machine-verification runtime coverage; the other
-  lessons use structured learner evidence and manual execution.
-- Production audio timing manifests and published recordings are incomplete;
-  the spoken scripts remain available as the fallback.
-- Assessment banks are pilot pools, not empirically calibrated operational
-  pools, and fully automatic remediation routing remains future work.
-- Windows has authored command coverage and a manual path, but remote runtime
-  execution is presently Linux/macOS only.
-- Browser visual validation and externally observable hosted-CI success remain
-  separate evidence needs; contract tests alone do not prove either.
+**Execution evidence**
+- manual learner execution
+- structured browser validation
+- no machine-verification claim.
 
-These are deliberate, documented capability limits rather than structural
-catalogue omissions. They should be prioritized as release-readiness work,
-with machine-verification breadth and production audio first because they are
-the largest remaining gaps between authored curriculum and demonstrated learner
-outcomes.
+**Authored curriculum**
+- repository-controlled
+- server-resolved by lesson ID for tutor context
+- not mutated by the tutor.
+
+## Vulnerabilities removed
+
+1. **Self-hosted account/session authority removed.** The previous password/session/database learner identity path is no longer reachable from the application and its source layer has been removed.
+2. **Forged server mastery removed.** There is no Server Action accepting learner-supplied `mastered` results.
+3. **Forged machine-verification completion removed.** The learner app stores only `structured` completion evidence.
+4. **Local terminal pairing-token authority removed.** The browser no longer stores or submits a terminal-agent token.
+5. **Remote machine evidence import removed.** JSON evidence cannot be promoted to learner completion through the UI.
+6. **Client-forged tutor assistant roles rejected.** The tutor contract accepts only user messages.
+7. **Tutor request size is bounded and anonymous rate limiting is applied.** The limiter is intentionally best-effort because the MVP has no authenticated identity.
+8. **Tutor context is server-derived from authored lesson data.** Client-provided lesson title, objective or domain are not trusted.
+9. **Completion is explicitly local/non-authoritative.** This removes the false security promise of a server-backed progress transcript from the MVP.
+
+## Accepted MVP limitations
+
+- Browser local storage can be modified by the learner.
+- Progress does not synchronize between devices.
+- The public tutor can be abused by distributed clients; deployment/provider spending limits remain necessary.
+- The tutor is not a private personal-data service.
+- Assessment item pools remain pilot content and are not a certification delivery system.
+- Machine verification is deferred.
+
+These are product boundaries, not hidden security assumptions.
+
+## Validation expectation
+
+The authoritative gate for this branch must confirm:
+
+- curriculum/content contracts
+- assessment/diagnostic/project contracts
+- local MVP architecture contract
+- tutor red-team contracts
+- unit/integration tests
+- TypeScript
+- Next.js production build.
+
+A green test suite must not be interpreted as secure certification infrastructure.
+
+## Future architecture trigger
+
+Introduce authenticated durable state only when at least one of these becomes a real requirement:
+
+- paid entitlement
+- cross-device history
+- certification
+- secure learner transcript
+- instructor/admin access
+- trusted machine attestation.
+
+That future change requires a new threat model rather than restoring the removed V3 account code.

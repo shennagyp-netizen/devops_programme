@@ -1,4 +1,4 @@
-export type TutorRole = "user" | "assistant";
+export type TutorRole = "user";
 
 export type TutorLearningMode =
   | "learn"
@@ -79,7 +79,7 @@ export function parseTutorRequest(value: unknown): TutorRequest | null {
     const content = cleanString(message.content);
 
     if (
-      (role !== "user" && role !== "assistant") ||
+      role !== "user" ||
       !content ||
       content.length > MAX_MESSAGE_CHARS
     ) {

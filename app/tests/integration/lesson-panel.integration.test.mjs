@@ -40,13 +40,14 @@ describe("lesson panel integration contract", () => {
     expect(code).not.toContain('"listen"');
   });
 
-  it("keeps completion gated by the required exercise", () => {
+  it("keeps completion gated by the required structured evidence", () => {
     const code = source();
 
     expect(code).toContain("!exerciseRecorded && !mastered");
     expect(code).toContain("Complete the required exercise first");
     expect(code).toContain("Validate and record evidence");
     expect(code).toContain("setExerciseRecorded(true)");
+    expect(code).toContain("browser-local evidence");
   });
 
   it("scopes local evidence by lesson identity", () => {
@@ -65,7 +66,6 @@ describe("lesson panel integration contract", () => {
     expect(code).toContain("catch {");
     expect(code).toContain("setHandsOnEvidence({})");
     expect(code).toContain("setExerciseRecorded(false)");
-    expect(code).toContain("setMachineResults([])");
   });
 
   it("does not let diagnostic adaptation remove the required hands-on exercise", () => {
@@ -79,17 +79,16 @@ describe("lesson panel integration contract", () => {
     expect(code).toContain("handsOnTask.steps.map");
   });
 
-  it("keeps machine verification advisory until the declared exercise scope is satisfied", () => {
+  it("does not expose machine verification or pairing-token execution in the MVP", () => {
     const code = source();
 
-    expect(code).toContain('runtimeTask.scope === "exercise"');
-    expect(code).toContain(
-      "Complete the required hands-on exercise below to unlock the lesson."
-    );
-    expect(code).toContain(
-      "This task is structurally validated. It is not yet machine-verified"
-    );
+    expect(code).toContain("MVP VERIFICATION");
+    expect(code).toContain("Machine execution and remote evidence import are intentionally\n              disabled in this MVP.");
+    expect(code).not.toContain("runtimeTask");
+    expect(code).not.toContain("pairing token");
+    expect(code).not.toContain("localTerminalAgent");
   });
+
   it("requires a conceptual proof check before accepting hands-on evidence", () => {
     const code = source();
 
@@ -100,20 +99,12 @@ describe("lesson panel integration contract", () => {
     expect(code).toContain("startMasteryRemediation");
   });
 
-  it("routes machine-verification failure into the same remediation loop", () => {
+  it("uses browser-local mastery state instead of authenticated history", () => {
     const code = source();
 
-    expect(code).toContain("startMasteryRemediation(result.failures, \"mechanism-reteach\")");
-    expect(code).toContain("Laptop execution returned invalid evidence");
-    expect(code).toContain("Laptop terminal execution failed");
+    expect(code).toContain("readMasteryAttempts(lesson.id)");
+    expect(code).not.toContain("initialMasteryHistory");
+    expect(code).not.toContain("serverAttemptsForLesson");
+    expect(code).not.toContain("recordMasteryAttemptAction");
   });
-
-  it("keeps authenticated mastery history visible to the lesson model", () => {
-    const code = source();
-
-    expect(code).toContain("initialMasteryHistory");
-    expect(code).toContain("serverAttemptsForLesson");
-    expect(code).toContain("Math.max(readMasteryAttempts(lesson.id), serverAttemptsForLesson)");
-  });
-
 });
