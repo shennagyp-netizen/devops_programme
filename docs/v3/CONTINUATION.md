@@ -30,6 +30,9 @@ V3 is intentionally additive. Main has not been replaced.
 - Added the framework attestation contract in `app/src/framework/verification.ts` with TDD coverage for binding, freshness, expiry, and digest validation.
 - Added exact provider-key binding to the challenge lifecycle and red-team coverage for key substitution/revocation.
 - Added authoritative mastery recording with server-derived outcome and attempt number.
+- Added authoritative assessment instances, safe question projections, server-side selected-response scoring, pending-review states, replay protection, and expiry enforcement.
+- Mirrored all reviewed assessment banks inside the app deployment tree with CI drift detection.
+- Renumbered trust-critical migrations to an unambiguous 0004/0005/0006 sequence.
 - Restricted mastery commands to the published coaching stage set and added server-action boundary coverage.
 - Added a dedicated `check:framework-security` CI gate to prevent trust-boundary regressions.
 - Migrated the local terminal agent and SSH runner to signed challenge-bound provider attestations.
@@ -44,7 +47,7 @@ First create the authoritative policy boundary, then migrate current persistence
 
 ## Latest TDD and red-team work
 
-The completion and signed-provider boundaries are complete for these slices. The current open trust boundary is **assessment authority**, followed by tutor trust/rate-limit hardening.
+The completion and signed-provider boundaries are complete for these slices. Assessment authority is now complete for the current pilot delivery path. The current open trust boundary is **tutor history/rate limiting**, followed by remaining assessment calibration/manual-review controls.
 
 ### Immediate next work
 
@@ -110,11 +113,11 @@ Implemented in V3.3. Keep browser remediation UX non-authoritative.
 
 ### D. Assessment migration
 
-Next: issue server-owned assessment instances and score them against server-owned keys/rubrics.
+Implemented in V3.4 for the current pilot delivery path. Keep certification/standard-setting claims out of the runtime until calibration and review workflows exist.
 
 ### E. Tutor migration
 
-Reconstruct trusted assistant history server-side and add shared distributed rate limiting.
+Next: reconstruct trusted assistant history server-side and add shared distributed rate limiting.
 
 ### F. Quality hardening
 
