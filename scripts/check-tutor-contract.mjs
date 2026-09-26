@@ -9,12 +9,14 @@ const route = read("src/app/api/tutor/route.ts");
 const contract = read("src/data/tutorContract.ts");
 const component = read("src/components/TutorCoach.tsx");
 const env = read(".env.example");
+const contract = read("src/data/tutorContract.ts");
 
 const required = [
   ["route is authenticated", route.includes("getCurrentUser")],
   ["route uses the AI Gateway server key", route.includes("AI_GATEWAY_API_KEY")],
-  ["route cannot certify", route.includes("canCertify")],
+  ["route normalizes provider output", route.includes("parseTutorResponse")],
   ["contract locks retry authority", contract.includes("canUnlockRetry: false")],
+  ["contract locks certification authority", contract.includes("canCertify: false")],
   ["component labels learner evidence unverified", component.includes("treated as unverified")],
   ["server key is not public", !env.includes("NEXT_PUBLIC_AI_GATEWAY_API_KEY")]
 ];
