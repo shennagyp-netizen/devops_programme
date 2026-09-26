@@ -10,30 +10,29 @@ The governing rule is:
 
 ## V3 MVP security architecture
 
-The current learner trust model is intentionally browser-local.
+The current learner trust model is intentionally simple first-party authentication.
 
-Security/integrity tests must therefore reject:
+Security/integrity tests must reject:
 
-- account/session source files
-- learner IDs
-- local terminal-agent pairing tokens
-- machine-verified learner completion
-- server mastery actions
+- client-supplied learner IDs;
+- plaintext password storage;
+- insecure session cookies;
+- cross-user progress access;
+- unauthenticated access to /learn;
+- terminal pairing-token authentication;
 - client-forged tutor assistant roles.
-
-The current MVP red-team contract is:
-
-`app/tests/unit/mvp-security.redteam.test.mjs`
 
 The tutor server remains responsible for:
 
 - strict request parsing
 - server-derived curriculum context
 - bounded request size
-- anonymous best-effort throttling
+- same-origin protection
+- best-effort anonymous throttling
 - keeping the AI Gateway credential server-side.
 
-Local completion and evidence are not authorization boundaries and must not be tested as tamper-resistant.
+Learner completion is server-authoritative for the authenticated account. Hands-on evidence remains educational evidence and must not be described as machine attestation unless a future verified execution adapter is actually enabled.
+
 
 ## Current authored programme graph
 
