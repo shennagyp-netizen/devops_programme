@@ -1988,3 +1988,47 @@ Latest v2 CI must be rechecked after every code change. Do not infer green from 
 ============================================================
 END FIXED PODCAST V2
 ============================================================
+
+
+============================================================
+2026-09-26 KIRO → PODCAST V2 MERGE — CURRENT AUTHORITATIVE STATE
+============================================================
+
+Merged PR:
+- PR #116 — feat: reconcile Kiro features with Podcast V2
+- merge commit: 29f3b276caea6d6b17d9d8e04d790ebe030d8115
+- merged to main on 2026-09-26.
+
+Final V2 implementation includes:
+- Four authored explanation levels per podcast subject.
+- Browser TTS with independent 1× / 1.25× / 1.5× / 2× speech rates.
+- No human podcast recordings, audio manifests, fixed guided timers, or speed-derived transcript timing.
+- Mantine-based responsive learning shell.
+- Floating authenticated lesson-aware LLM tutor through the server boundary.
+- Browser speech input/output for the tutor with bounded retry and offline pending-question storage only.
+- B1.1/B1.3 non-destructive machine verification.
+- Contract-validated D2.2 DNS animation.
+- Extensive tutor, TTS, animation, curriculum, and red-team coverage.
+
+Final pre-merge GitHub gate:
+- run 36233862079 — PASS.
+- curriculum/programme contracts — PASS.
+- full unit + integration tests — PASS.
+- 459 tests verified in the V2 diagnostic/final-gate sequence.
+- TypeScript typecheck — PASS.
+- Next.js production build — PASS.
+
+Post-merge verification:
+- PR #116 is closed and merged.
+- main contains merge commit 29f3b276caea6d6b17d9d8e04d790ebe030d8115.
+- Do not claim Vercel production deployment for this merge yet.
+- Vercel is currently returning a build-rate-limit account restriction for recent deployments; this is infrastructure/account state, not an application CI failure.
+- Last verified application gate is GitHub Actions run 36234073298, PASS on the merged main head.
+
+Next work:
+- Resolve/await the Vercel build-rate-limit restriction, then visually verify the merged production deployment.
+- After visual verification, resume instructional-content expansion rather than reintroducing the obsolete podcast/audio architecture.
+
+============================================================
+END 2026-09-26 KIRO → PODCAST V2 MERGE
+============================================================
