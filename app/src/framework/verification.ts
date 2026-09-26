@@ -35,6 +35,7 @@ export type VerificationFailure =
   | "EVIDENCE_KIND_MISMATCH"
   | "TARGET_MISMATCH"
   | "PROVIDER_MISMATCH"
+  | "PROVIDER_KEY_MISMATCH"
   | "NONCE_MISMATCH"
   | "ATTESTATION_NOT_WITHIN_CHALLENGE"
   | "ATTESTATION_NOT_YET_VALID"
@@ -115,7 +116,11 @@ export function validateVerificationAttestation(
   }
 
   if (!attestation.keyId.trim()) {
-    return reject("PROVIDER_MISMATCH");
+    return reject("PROVIDER_KEY_MISMATCH");
+  }
+
+  if (attestation.keyId !== challenge.providerKeyId) {
+    return reject("PROVIDER_KEY_MISMATCH");
   }
 
   if (attestation.nonce !== challenge.nonce) {
