@@ -19,7 +19,7 @@ const lessonItems: ProgrammeLearningItem[] = courseLessons.map((lesson) => ({
   projectId: lesson.projectId,
   completion: {
     mode: "evidence",
-    requiredEvidence: []
+    requiredEvidence: ["exercise"]
   }
 }));
 
@@ -32,7 +32,7 @@ const projectItems: ProgrammeLearningItem[] = projects.map((project) => ({
   projectId: project.id,
   completion: {
     mode: "evidence",
-    requiredEvidence: []
+    requiredEvidence: ["exercise", "failure", "recovery"]
   }
 }));
 
