@@ -303,7 +303,15 @@ export function LessonPanel({
     setExerciseRecorded(false);
     setExerciseCheckpointAnswer(null);
 
-
+    void recordMasteryAttemptAction({
+      lessonId: lesson.id,
+      taskId: handsOnTask.id,
+      outcome: "failure",
+      stage: finalPlan.stage,
+      summary: failures.join(" ")
+    }).catch(() => {
+      // Local remediation remains available if server telemetry is temporarily unavailable.
+    });
   }
 
   const remediationTarget =
