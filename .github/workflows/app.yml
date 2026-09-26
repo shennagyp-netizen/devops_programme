@@ -14,6 +14,19 @@ jobs:
   full_programme_gate:
     name: full-programme-gate
     runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: devops_e2e
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d devops_e2e"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
     steps:
       - name: Runner diagnostics
         shell: bash
@@ -47,6 +60,12 @@ jobs:
       - name: Install dependencies
         working-directory: repo/app
         run: npm install --no-audit --no-fund
+
+      - name: Bootstrap PostgreSQL integration database
+        working-directory: repo/app
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/devops_e2e
+        run: npm run db:e2e-bootstrap
 
       - name: Content contract
         working-directory: repo/app
@@ -98,6 +117,8 @@ jobs:
 
       - name: Full unit and integration tests
         working-directory: repo/app
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/devops_e2e
         run: npm test
 
       - name: TypeScript typecheck

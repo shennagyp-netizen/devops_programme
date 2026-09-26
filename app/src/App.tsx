@@ -144,7 +144,7 @@ export default function App({
         }}
         withBorder={false}
       >
-        <AppShell.Header>
+        <AppShell.Header style={{ zIndex: 200 }}>
           <Group h="100%" px={{ base: "sm", sm: "md", lg: "xl" }} justify="space-between">
             <Group gap="sm" wrap="nowrap">
               <Burger
