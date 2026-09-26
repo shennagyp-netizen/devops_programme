@@ -42,7 +42,7 @@ export function ProjectPanel({
             <strong>Target workload:</strong> ~{project.estimatedHours} project hours
           </p>
 
-          <div className="course-path-columns">
+          <div className="project-phase-grid">
             <div>
               <strong>Phased project work</strong>
               <ol>
@@ -102,7 +102,7 @@ export function ProjectPanel({
             </div>
           </div>
 
-          <div className="course-path-columns">
+          <div className="project-phase-grid">
             <div>
               <strong>Professional deliverables</strong>
               <ul>
