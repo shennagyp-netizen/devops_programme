@@ -20,7 +20,9 @@ const required = [
   ["contract locks retry authority", contract.includes("canUnlockRetry: false")],
   ["contract locks certification authority", contract.includes("canCertify: false")],
   ["component labels learner evidence unverified", component.includes("treated as unverified")],
-  ["server key is not public", !env.includes("NEXT_PUBLIC_AI_GATEWAY_API_KEY")]
+  ["server key is not public", !env.includes("NEXT_PUBLIC_AI_GATEWAY_API_KEY")],
+  ["tutor uses a versioned migration", tutorMigration.includes("CREATE TABLE IF NOT EXISTS \"tutor_sessions\"")],
+  ["historical auth migration stays auth-only", !authMigration.includes("\"tutor_sessions\"")]
 ];
 
 const failures = required.filter(([, ok]) => !ok).map(([name]) => name);
