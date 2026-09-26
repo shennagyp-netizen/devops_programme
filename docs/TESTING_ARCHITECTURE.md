@@ -156,3 +156,17 @@ When adding a feature, add:
 4. documentation updates for the affected contract
 
 Do not return to one-error-at-a-time debugging.
+
+
+## Fixed podcast MVP
+
+The podcast path is deterministic authored content. It does not use an LLM to generate or rewrite the podcast. The private tutor is a separate learner-specific conversation.
+
+The MVP contract covers:
+- four fixed speech files for an aligned episode
+- one shared real audio timeline
+- full transcript rendering with active-turn highlighting
+- playback speed from 1x through 2x
+- fail-closed transcript fallback when the fixed audio manifest is missing or stale
+- unit red-team coverage for segment ordering, timing, URLs and cue integrity
+- integration coverage for continuous voice behavior and playback speed
