@@ -376,7 +376,7 @@ export default function App({
               onSelectLesson={selectLesson}
               onEvidenceRecorded={() => setEvidenceVersion((value) => value + 1)}
               onModeChange={setLessonMode}
-              progressReady={authoritativeEvidenceReady || m.includes(lesson.id)}
+              progressReady={true}
               progressSaving={progressBusyId === lesson.id}
               authoritativeEvidenceReady={authoritativeEvidenceReady}
               initialMasteryHistory={initialMasteryHistory}
