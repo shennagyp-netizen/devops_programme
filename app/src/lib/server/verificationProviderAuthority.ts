@@ -79,6 +79,10 @@ function publicKeyForVerification(publicKey: string) {
 function challengeFromRow(
   row: typeof verificationAttempts.$inferSelect
 ): VerificationChallenge {
+  if (!row.providerKeyId) {
+    throw new Error("Verification challenge has no trusted provider key binding.");
+  }
+
   return {
     id: row.id,
     learnerId: row.userId,
