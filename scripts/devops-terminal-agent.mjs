@@ -1,12 +1,18 @@
 #!/usr/bin/env node
 
-import { createHash, generateKeyPairSync, randomBytes, sign as signData } from "node:crypto";
+import { randomBytes } from "node:crypto";
 import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
-import { chmod, mkdir, readFile, writeFile } from "node:fs/promises";
+import { } from "node:fs/promises";
 import { spawn } from "node:child_process";
+import {
+  loadOrCreateEd25519ProviderKey,
+  signVerificationAttestation,
+  digestExecutionEnvelope,
+  sha256Hex
+} from "./verification-provider-core.mjs";
 
 const HOST = "127.0.0.1";
 const PORT = Number(process.env.DEVOPS_TERMINAL_PORT ?? "4317");
@@ -16,8 +22,6 @@ const TOKEN = process.env.DEVOPS_TERMINAL_TOKEN ?? randomBytes(24).toString("bas
 const PROVIDER_ID = process.env.DEVOPS_TERMINAL_PROVIDER_ID ?? "local-terminal";
 const KEY_ID = process.env.DEVOPS_TERMINAL_KEY_ID ?? "local-key-v1";
 const KEY_DIR = process.env.DEVOPS_TERMINAL_KEY_DIR ?? path.join(process.cwd(), ".devops-terminal");
-const PRIVATE_KEY_FILE = path.join(KEY_DIR, "provider-private-key.pem");
-const PUBLIC_KEY_FILE = path.join(KEY_DIR, "provider-public-key.pem");
 const ALLOWED_ORIGINS = new Set(
   (process.env.DEVOPS_TERMINAL_ALLOWED_ORIGINS ?? "http://localhost:3000")
     .split(",")
@@ -26,7 +30,7 @@ const ALLOWED_ORIGINS = new Set(
 );
 
 function hash(value) {
-  return createHash("sha256").update(value).digest("hex");
+  return sha256Hex(value);
 }
 
 function capture(value) {
@@ -77,48 +81,8 @@ function send(res, status, body, origin) {
   res.end(JSON.stringify(body));
 }
 
-function canonicalAttestationPayload(challenge, attestation) {
-  return JSON.stringify([
-    challenge.id,
-    challenge.learnerId,
-    challenge.itemId,
-    challenge.evidenceKind,
-    challenge.providerId,
-    attestation.keyId,
-    challenge.nonce,
-    attestation.verificationRef,
-    attestation.attestationDigest,
-    attestation.issuedAt,
-    attestation.expiresAt
-  ]);
-}
-
-function attestationDigest(envelope) {
-  return "sha256:" + hash(JSON.stringify(envelope));
-}
-
 async function loadOrCreateProviderKey() {
-  await mkdir(KEY_DIR, { recursive: true });
-
-  try {
-    const [privateKey, publicKey] = await Promise.all([
-      readFile(PRIVATE_KEY_FILE, "utf8"),
-      readFile(PUBLIC_KEY_FILE, "utf8")
-    ]);
-    return { privateKey, publicKey };
-  } catch {
-    const pair = generateKeyPairSync("ed25519");
-    const privateKey = pair.privateKey.export({ type: "pkcs8", format: "pem" }).toString();
-    const publicKey = pair.publicKey.export({ type: "spki", format: "pem" }).toString();
-    await writeFile(PRIVATE_KEY_FILE, privateKey, { encoding: "utf8", mode: 0o600 });
-    await writeFile(PUBLIC_KEY_FILE, publicKey, { encoding: "utf8", mode: 0o644 });
-    try {
-      await chmod(PRIVATE_KEY_FILE, 0o600);
-    } catch {
-      // Windows does not use POSIX file modes.
-    }
-    return { privateKey, publicKey };
-  }
+  return loadOrCreateEd25519ProviderKey({ directory: KEY_DIR });
 }
 
 function authorized(req) {
@@ -337,34 +301,19 @@ async function main() {
           }
 
           const executionEnvelope = await executeTask(task, platform);
-          const digest = attestationDigest(executionEnvelope);
-          const signedAt = new Date().toISOString();
-          const expiresAt = challenge.expiresAt;
-          const verificationRef = challenge.id + ":" + executionEnvelope.completedAt;
-          const unsignedAttestation = {
-            challengeId: challenge.id,
-            learnerId: challenge.learnerId,
-            itemId: challenge.itemId,
-            evidenceKind: challenge.evidenceKind,
+          const attestation = signVerificationAttestation({
+            challenge,
+            envelope: executionEnvelope,
             providerId: PROVIDER_ID,
             keyId: KEY_ID,
-            verificationRef,
-            attestationDigest: digest,
-            nonce: challenge.nonce,
-            signatureAlgorithm: "ed25519",
-            signature: "",
-            issuedAt: signedAt,
-            expiresAt
-          };
-          const signature = signData(
-            null,
-            Buffer.from(canonicalAttestationPayload(challenge, unsignedAttestation), "utf8"),
-            providerKey.privateKey
-          ).toString("base64url");
+            privateKey: providerKey.privateKey,
+            verificationRef:
+              challenge.id + ":" + executionEnvelope.completedAt
+          });
 
           send(res, 200, {
             envelope: executionEnvelope,
-            attestation: { ...unsignedAttestation, signature }
+            attestation
           }, origin);
           return;
         }
