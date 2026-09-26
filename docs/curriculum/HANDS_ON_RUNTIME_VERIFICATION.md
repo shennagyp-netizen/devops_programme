@@ -1,52 +1,39 @@
-# Hands-On Runtime Verification — V3 MVP Boundary
+# Hands-On Runtime Verification — V3
 
-## Current MVP
+## Learner paths
 
-The learner application supports **manual execution plus structured evidence**.
+Every hands-on task supports the normal manual path. Published machine-verifiable tasks may additionally use the local terminal agent.
 
-For every hands-on task:
+### Manual path
 
-1. the learner selects the platform;
-2. the app shows the platform-specific command;
-3. the learner runs the command in their own terminal;
-4. the learner records observations, changes, failure and recovery;
-5. the browser validates the evidence structure;
-6. the browser stores that evidence locally.
+1. choose the learner platform;
+2. read the exact command;
+3. run it in the learner terminal;
+4. record observation/change/failure/recovery evidence;
+5. validate the evidence structure in the browser.
 
-The browser does not execute arbitrary learner shell commands.
+### Local terminal-agent path
 
-## Machine verification is deferred
+Run `npm run terminal-agent` from the project root.
 
-The V3 MVP intentionally does not expose:
+The agent listens on `http://127.0.0.1:4317`.
 
-- a local terminal agent
-- pairing tokens
-- browser-to-laptop authenticated execution
-- remote evidence JSON import
-- machine-verified completion.
+The browser detects the agent, asks for the printed pairing token, sends the published taskId and selected platform, receives the structured machine-verification envelope, and validates the envelope against the same runtime task catalog.
 
-The previous local-agent design required a pairing token and introduced a second trust boundary. That complexity is outside the MVP.
+The browser never sends arbitrary shell text.
 
-## Runtime catalog remains future infrastructure
+## Agent execution boundary
 
-`app/src/data/runtimeTasks.json` remains the canonical catalog for future machine-verification work.
+The local agent loads `app/src/data/runtimeTasks.json`, resolves an exact task ID, verifies machine-verification status, rejects destructive steps, uses `shell: false`, enforces per-command timeouts, bounds stdout/stderr while streaming, validates the actual host platform, and produces hashes plus an environment fingerprint.
 
-`app/src/data/runtimeVerification.ts` remains the contract/validator for future execution adapters.
+## Pairing token
 
-These files do not authorize learner completion by themselves.
+The pairing token is a local execution credential. It is separate from the application account/session and must not be reused as an application login secret or sent to the Next.js server.
 
-A runtime envelope validated only for shape must never be described as cryptographic attestation.
+## Remote execution
 
-## Future execution boundary
+The existing remote runtime tooling remains available for VM/SSH scenarios.
 
-When machine verification becomes a product requirement, the execution service must:
+## Important distinction
 
-- resolve an exact task identity;
-- accept only catalog-defined operations;
-- never accept arbitrary shell text;
-- enforce platform, timeout and destructive-operation policy;
-- authenticate execution provenance;
-- verify reset state where required;
-- bind the resulting evidence to the actual learner task attempt.
-
-That future feature is an explicit architecture change, not part of V3.
+A structurally valid machine-verification envelope is contract validation, not cryptographic attestation of physical execution.
