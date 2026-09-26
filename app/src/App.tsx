@@ -3,7 +3,7 @@
 import { AppShell, Badge, Burger, Group, Paper, ScrollArea, SegmentedControl, Stack, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   completeLocalLearningItem,
   readLocalCompletionHistory
@@ -14,8 +14,6 @@ import { LessonPanel } from "./components/LessonPanel";
 import { Progress } from "./components/Progress";
 import { ProjectPanel } from "./components/ProjectPanel";
 import type { DiagnosticRecommendation } from "./data/diagnostics";
-import type { CompletionRecord } from "./lib/progress-contract";
-import { useEffect } from "react";
 import { lessonsByCourse } from "./data/courseLessons";
 import { courses, platformProfiles, type CourseLevel, type PlatformId } from "./data/programme";
 import { projectsByCourse } from "./data/projects";
