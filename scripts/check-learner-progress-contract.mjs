@@ -57,7 +57,7 @@ const packageJson = JSON.parse(content.package);
 assert.equal(packageJson.scripts.dev, "npm run sync:podcasts && next dev");
 assert.equal(packageJson.scripts.start, "next start");
 assert.equal(packageJson.scripts.typecheck, "tsc -b");
-assert.equal(packageJson.engines.node, ">=22.12.0");
+assert.equal(packageJson.engines.node, ">=22.22.2");
 assert.ok(packageJson.dependencies.next);
 assert.equal(packageJson.dependencies["@clerk/nextjs"], undefined);
 assert.equal(packageJson.dependencies.react, "19.2.8");
