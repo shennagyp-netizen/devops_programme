@@ -3,7 +3,7 @@ import type { AssessmentItem } from "./assessment";
 
 type RawBank = {
   sectionId: string;
-  items: unknown[];
+  items: readonly unknown[];
 };
 
 export const assessmentBanks: Record<string, RawBank> =
