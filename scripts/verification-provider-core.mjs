@@ -102,6 +102,10 @@ export function signVerificationAttestation({
   issuedAt = new Date().toISOString(),
   expiresAt = challenge.expiresAt
 }) {
+  if (keyId !== challenge.providerKeyId) {
+    throw new Error("Provider key does not match the challenge.");
+  }
+
   const attestation = {
     challengeId: challenge.id,
     learnerId: challenge.learnerId,
@@ -109,6 +113,7 @@ export function signVerificationAttestation({
     targetRef: challenge.targetRef,
     evidenceKind: challenge.evidenceKind,
     providerId,
+    providerKeyId: challenge.providerKeyId,
     keyId,
     verificationRef,
     attestationDigest: digestExecutionEnvelope(envelope),
