@@ -7,7 +7,6 @@ import {
 import { and, eq, isNull } from "drizzle-orm";
 import { getDb } from "./db";
 import {
-  learnerVerifiedEvidence,
   verificationAttempts,
   verificationProviderKeys
 } from "./schema";
