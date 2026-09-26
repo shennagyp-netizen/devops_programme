@@ -195,3 +195,27 @@ The final framework should make it possible to replace the DevOps programme with
 - provider contracts
 
 Only the programme definitions and their domain-specific providers/content should change.
+
+## Standalone Framework MVP correction
+
+The framework is now an explicit top-level product boundary under `framework/`.
+
+Its dependency direction is:
+
+```
+Programme definition/provider adapters
+                ↓
+      Learning Framework React App
+                ↓
+      Learning Experience Runtime
+                ↓
+        Framework Core Authority
+                ↓
+        Generic Provider APIs
+```
+
+The framework package contains its own React application, tests, TypeScript build, Vite build, and CI workflow.
+
+The existing `app/src/framework` code is treated as the current DevOps application's compatibility implementation. It is not the standalone framework MVP and should not gain additional domain-neutral features. Future DevOps integration will consume the standalone framework; that migration is intentionally deferred so framework MVP work is not blocked by application migration.
+
+This removes the critical architectural coupling: framework source has a boundary test that rejects DevOps, database, and Next.js dependencies.
