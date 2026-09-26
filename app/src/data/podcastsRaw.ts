@@ -7,17 +7,17 @@ export type Turn = {
 
 export function podcastUrl(path: string) {
   if (path.startsWith("/")) return path;
-  return \`/\${path}\`;
+  return `/${path}`;
 }
 
 export function getEpisodeText(source: string, lessonId: string) {
-  const marker = new RegExp(\`(?:^|\\\\n)EPISODE \${lessonId} —[^\\\\n]*\\\\n\`);
+  const marker = new RegExp(`(?:^|\\n)EPISODE ${lessonId} —[^\\n]*\\n`);
   const match = source.match(marker);
   if (!match || match.index === undefined) return "";
 
   const start = match.index + match[0].length;
   const rest = source.slice(start);
-  const next = rest.search(/\\nEPISODE [A-Z0-9]+\\.[0-9]+ —/);
+  const next = rest.search(/\nEPISODE [A-Z0-9]+\.[0-9]+ —/);
 
   return (next >= 0 ? rest.slice(0, next) : rest).trim();
 }
