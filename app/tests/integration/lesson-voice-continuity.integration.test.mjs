@@ -110,7 +110,7 @@ describe("continuous voice architecture", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
 
     expect(podcastCoach).toContain("audioManifest.segments.map");
-    expect(podcastCoach).toContain("preload="auto"");
+    expect(podcastCoach).toContain('preload="auto"');
     expect(podcastCoach).toContain("onTimeUpdate");
     expect(podcastCoach).toContain("onPlay");
     expect(podcastCoach).toContain("onPause");
