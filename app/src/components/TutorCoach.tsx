@@ -258,6 +258,30 @@ export function TutorCoach({
 
       {masteryPlan ? (
         <div className="content-card">
+          <span className="eyebrow">RECOVERY HANDOFF</span>
+          <p>
+            The authored recovery explanation is available above. You can now discuss the same
+            failure with the senior engineer and test your diagnosis.
+          </p>
+          <button
+            className="secondary"
+            disabled={busy}
+            onClick={() => {
+              setSelectedMode("failure-investigation");
+              setInput(
+                "I failed attempt " +
+                  masteryPlan.attemptNumber +
+                  ". Help me investigate the failure from evidence without giving me the answer yet."
+              );
+            }}
+          >
+            Discuss this failure with the tutor
+          </button>
+        </div>
+      ) : null}
+
+      {masteryPlan ? (
+        <div className="content-card">
           <span className="eyebrow">FAILURE CONTEXT LOADED</span>
           <p>
             Attempt {masteryPlan.attemptNumber}, {masteryPlan.stage}. The tutor has the bounded
