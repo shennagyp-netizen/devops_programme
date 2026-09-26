@@ -59,40 +59,6 @@ export async function localTerminalAgentStatus(): Promise<LocalTerminalAgentStat
   }
 }
 
-export async function runLocalTerminalTask(input: {
-  taskId: string;
-  platform: string;
-  token: string;
-}): Promise<MachineVerificationEnvelope> {
-  if (!input.token.trim()) {
-    throw new Error("Enter the local terminal agent pairing token first.");
-  }
-
-  const request = new Request(`${AGENT_URL}/execute`, {
-    method: "POST",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${input.token.trim()}`
-    },
-    body: JSON.stringify({
-      taskId: input.taskId,
-      platform: input.platform
-    }),
-    targetAddressSpace: "loopback"
-  } as RequestInit & { targetAddressSpace: "loopback" });
-
-  const response = await fetch(request);
-  const body = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    throw new Error(String(body.error ?? `Local terminal agent returned HTTP ${response.status}.`));
-  }
-
-  return body as MachineVerificationEnvelope;
-}
-
-
 export type LocalTerminalAttestedExecution = {
   envelope: MachineVerificationEnvelope;
   attestation: VerificationAttestation;
