@@ -13,7 +13,7 @@ export function InteractiveLessonIllustration({ bindingId }: { bindingId: string
   const [completed, setCompleted] = useState<string[]>([]);
 
   const voiceCues = useMemo(
-    () => (binding ? animationCuesForVoice(binding, clock?.manifest) : []),
+    () => (binding ? animationCuesForVoice(binding, clock) : []),
     [binding, clock?.manifest]
   );
   const manualCues: AnimationTimedCueV1[] = completed.flatMap((stepId, index) => {
@@ -27,7 +27,7 @@ export function InteractiveLessonIllustration({ bindingId }: { bindingId: string
 
   const nextStep = binding.interactionSteps.find((step) => !completed.includes(step.id));
   const allCues = [...voiceCues, ...manualCues];
-  const displayTimeMs = Math.max(clock?.timeMs ?? 0, completed.length * 1000 + 800);
+  const displayTimeMs = Math.max(clock?.elapsedMs ?? 0, completed.length * 1000 + 800);
 
   return (
     <div className="interactive-lesson-illustration" data-animation-id={definition.id}>
