@@ -24,10 +24,10 @@ docker run --rm nginx:alpine nginx -t
 Docker uses the image as the starting point, creates a container, and runs the nginx configuration-test process. When the process ends, --rm removes the short-lived container. The container lifetime in this example follows the process lifetime.
 
 @knowledge K08
-The normal writable layer of a container is tied to that container. Replacing or removing the container can remove that writable state. Important data therefore needs a storage mechanism with its own lifecycle, such as a Docker volume. A volume lets database or other important state survive container replacement.
+The normal writable layer of a container is tied to that container. Replacing or removing the container can remove that writable state. Important data so needs a storage mechanism with its own lifecycle, such as a Docker volume. A volume lets database or other important state survive container replacement.
 
 @knowledge K09
-A service can listen on a port inside a container and have that port published to a different port on the host. The internal container port and external host port are separate boundaries. Therefore a running container is not proof of client reachability. We have to distinguish process state, container networking, host publication, and client access.
+A service can listen on a port inside a container and have that port published to a different port on the host. The internal container port and external host port are separate boundaries. so a running container is not proof of client reachability. We have to distinguish process state, container networking, host publication, and client access.
 
 @knowledge K10
 Use a small diagnosis tree for an unreachable service. First verify that the process exists and listens. Second verify the expected container port. Third verify that the container port is published to the host as expected. Fourth verify the network path from the client to the host port. Change one boundary at a time. Restarting everything gives less useful evidence than a controlled diagnosis.
