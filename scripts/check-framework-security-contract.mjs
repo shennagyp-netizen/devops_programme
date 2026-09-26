@@ -23,13 +23,13 @@ const assessmentAction = await source("app/src/app/actions/assessment.ts");
 const assessmentRequest = await source("app/src/framework/assessmentRequest.ts");
 const assessmentAuthority = await source("app/src/lib/server/assessmentAuthority.ts");
 const assessmentSchema = await source("app/src/lib/server/schema.ts");
-const assessmentMigration = await source("app/drizzle/migrations/0005_assessment_authority.sql");
+const assessmentMigration = await source("app/drizzle/migrations/0006_assessment_authority.sql");
 const verificationAction = await source("app/src/app/actions/verification.ts");
 const app = await source("app/src/App.tsx");
 const verification = await source("app/src/framework/verification.ts");
 const schema = await source("app/src/lib/server/schema.ts");
 const migration = await source("app/drizzle/migrations/0003_learning_evidence_authority.sql");
-const verificationMigration = await source("app/drizzle/migrations/0004_verification_provider_authority.sql");
+const verificationMigration = await source("app/drizzle/migrations/0005_verification_provider_authority.sql");
 
 assert.match(action, /parseCompleteLearningItemCommand/);
 assert.match(action, /completeLearningItemForUser/);
