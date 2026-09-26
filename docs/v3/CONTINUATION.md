@@ -33,7 +33,14 @@ Do not immediately rewrite existing progress code.
 
 First create the authoritative policy boundary, then migrate current persistence and UI flows behind it.
 
-## Immediate next work
+## Latest TDD and red-team work
+
+- Added a strict completion command parser that rejects browser identity/trust fields and bounds evidence references.
+- Added an authoritative DevOps programme-item registry so the server derives item metadata instead of trusting the browser.
+- Updated the live completion action and UI to use the minimal command.
+- Added `docs/v3/REDTEAM.md`; the legacy evidence-free completion path remains explicitly open.
+
+### Immediate next work
 
 ### A. Server authority
 
@@ -62,7 +69,7 @@ Keep browser evidence and verified evidence as separate concepts.
 
 Replace the current direct completion action with a v3 transition request.
 
-The request should contain references, not client claims of truth.
+The request should contain references, not client claims of truth. The current live action is only a metadata-boundary step; it must not be considered the final evidence gate.
 
 ### D. Mastery migration
 
