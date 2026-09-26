@@ -277,7 +277,7 @@ describe("verification provider authority", () => {
       revokedAt: new Date("2026-09-26T12:01:00.000Z")
     };
 
-    configureTransaction({ attempt, providerKey });
+    configureTransaction({ attempt, providerKey: null });
 
     await expect(
       acceptVerificationAttestationForUser("user_1", attestation, now)
