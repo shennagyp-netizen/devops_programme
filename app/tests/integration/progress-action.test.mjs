@@ -34,32 +34,23 @@ describe("completeLearningItemAction", () => {
     expect(completeForUserMock).not.toHaveBeenCalled();
   });
 
-  it("derives programme metadata server-side instead of trusting browser metadata", async () => {
+  it("rejects browser-selected metadata before persistence", async () => {
     currentUserMock.mockResolvedValue({
       id: "user_123",
       email: "alice@example.com"
     });
-    completeForUserMock.mockResolvedValue({
-      itemType: "lesson",
-      itemId: "B1.2",
-      completedAt: "2026-09-24T10:00:00.000Z"
-    });
 
-    await completeLearningItemAction({
-      itemId: "B1.2",
-      itemType: "project",
-      course: "advanced",
-      projectId: "A3",
-      verificationLevel: "machine-verified",
-      learnerId: "attacker-chosen-id"
-    });
+    await expect(
+      completeLearningItemAction({
+        itemId: "B1.2",
+        itemType: "project",
+        course: "advanced",
+        projectId: "A3",
+        learnerId: "attacker-chosen-id"
+      })
+    ).rejects.toThrow(/unsupported field/i);
 
-    expect(completeForUserMock).toHaveBeenCalledWith("user_123", {
-      itemType: "lesson",
-      itemId: "B1.2",
-      course: "beginner",
-      projectId: "B1"
-    });
+    expect(completeForUserMock).not.toHaveBeenCalled();
   });
 
   it("rejects an unknown item before persistence", async () => {
@@ -91,28 +82,45 @@ describe("completeLearningItemAction", () => {
     expect(completeForUserMock).not.toHaveBeenCalled();
   });
 
-  it("forwards only authoritative metadata to the persistence service", async () => {
+  it("accepts a minimal command and derives authoritative metadata", async () => {
     currentUserMock.mockResolvedValue({
       id: "user_456",
       email: "bob@example.com"
     });
     completeForUserMock.mockResolvedValue({
-      itemType: "assignment",
-      itemId: "I1",
-      completedAt: "2026-09-24T10:00:00.000Z"
+      itemType: "lesson",
+      itemId: "B1.2",
+      completedAt: "2026-09-24T10:00:00.000Z",
+      course: "beginner",
+      projectId: "B1"
     });
 
     await completeLearningItemAction({
-      itemId: "I1",
-      verificationLevel: "exercise-validated",
-      stdout: "secret terminal output"
+      itemId: "B1.2"
     });
 
     expect(completeForUserMock).toHaveBeenCalledWith("user_456", {
-      itemType: "project",
-      itemId: "I1",
-      course: "intermediate",
-      projectId: "I1"
+      itemType: "lesson",
+      itemId: "B1.2",
+      course: "beginner",
+      projectId: "B1"
     });
   });
+
+  it("rejects a browser-supplied verification level", async () => {
+    currentUserMock.mockResolvedValue({
+      id: "user_789",
+      email: "carol@example.com"
+    });
+
+    await expect(
+      completeLearningItemAction({
+        itemId: "B1.2",
+        verificationLevel: "machine-verified"
+      })
+    ).rejects.toThrow(/unsupported field/i);
+
+    expect(completeForUserMock).not.toHaveBeenCalled();
+  });
+
 });
