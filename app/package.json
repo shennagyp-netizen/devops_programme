@@ -32,7 +32,8 @@
     "check:progress": "node ../scripts/check-learner-progress-contract.mjs",
     "start": "next start",
     "typecheck": "tsc -b",
-    "check:tutor": "node ../scripts/check-tutor-contract.mjs"
+    "check:tutor": "node ../scripts/check-tutor-contract.mjs",
+    "check:migrations": "node ../scripts/check-migration-contract.mjs"
   },
   "dependencies": {
     "react": "19.2.8",
