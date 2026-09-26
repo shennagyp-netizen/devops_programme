@@ -69,6 +69,7 @@ describe("adaptive mastery contract", () => {
       "visual"
     ]);
     expect(plan.checkpoint).toBeDefined();
+    expect(plan.failureSummary).toEqual([]);
   });
 
   it("changes the teaching representation after the first failure", () => {
