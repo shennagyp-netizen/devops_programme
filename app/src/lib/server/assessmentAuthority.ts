@@ -1,4 +1,4 @@
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { getDb } from "./db";
 import { assessmentAttempts, assessmentInstances } from "./schema";
@@ -35,7 +35,6 @@ export type AssessmentInstance = {
   courseId: string;
   sectionId: string;
   family: AssessmentFamily;
-  formId: string;
   expiresAt: string;
   questions: AssessmentSafeQuestion[];
 };
@@ -99,7 +98,6 @@ function toInstance(
     courseId: row.courseId,
     sectionId: row.sectionId,
     family: row.family as AssessmentFamily,
-    formId: row.formId,
     expiresAt: row.expiresAt.toISOString(),
     questions: items.map(safeQuestion)
   };
@@ -233,12 +231,16 @@ export async function submitAssessmentForUser(
         and(
           eq(assessmentInstances.id, instance.id),
           eq(assessmentInstances.userId, learnerId),
-          eq(assessmentInstances.status, "active")
+          eq(assessmentInstances.status, "active"),
+          gt(assessmentInstances.expiresAt, new Date())
         )
       )
       .returning();
 
     if (!consumed) {
+      if (Date.now() > instance.expiresAt.getTime()) {
+        throw new Error("Assessment instance has expired.");
+      }
       throw new Error("Assessment submission replay detected.");
     }
 
