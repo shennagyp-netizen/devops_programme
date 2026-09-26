@@ -92,6 +92,8 @@ A learner will be able to skip introductory theory when diagnostic evidence show
 
 Every course has three major projects.
 
+Each project is a long-running, phased operating environment with a workload target, explicit exit evidence, incident cycles and review gates. Across all nine projects, the authored target is roughly 300 project hours.
+
 A project starts before all theory is known and evolves through the course. The learner repeatedly:
 - makes a change
 - predicts consequences

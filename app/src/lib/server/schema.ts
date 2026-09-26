@@ -80,6 +80,7 @@ export const learnerMasteryAttempts = pgTable(
     )
   })
 );
+
 export const learnerProgressHistory = pgTable(
   "learner_progress_history",
   {
@@ -107,9 +108,93 @@ export const learnerProgressHistory = pgTable(
   })
 );
 
+export const tutorSessions = pgTable(
+  "tutor_sessions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => authUsers.id, { onDelete: "cascade" }),
+    lessonId: text("lesson_id").notNull(),
+    projectId: text("project_id").notNull(),
+    mode: text("mode").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    lastActiveAt: timestamp("last_active_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => ({
+    userLessonIndex: index("tutor_sessions_user_lesson_idx").on(
+      table.userId,
+      table.lessonId,
+      table.lastActiveAt
+    ),
+    modeCheck: check(
+      "tutor_sessions_mode_ck",
+      sql.raw(
+        "mode IN ('teaching', 'failure-investigation', 'assignment-coach', 'incident-review', 'design-defense', 'oral-assessment')"
+      )
+    )
+  })
+);
+
+export const tutorRateLimitReservations = pgTable(
+  "tutor_rate_limit_reservations",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => authUsers.id, { onDelete: "cascade" }),
+    reservedAt: timestamp("reserved_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => ({
+    userReservedAtIndex: index("tutor_rate_limit_reservations_user_reserved_at_idx").on(
+      table.userId,
+      table.reservedAt
+    )
+  })
+);
+
+export const tutorMessages = pgTable(
+  "tutor_messages",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    sessionId: uuid("session_id")
+      .notNull()
+      .references(() => tutorSessions.id, { onDelete: "cascade" }),
+    role: text("role").notNull(),
+    content: text("content").notNull(),
+    turnIndex: integer("turn_index").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => ({
+    sessionIndex: index("tutor_messages_session_idx").on(
+      table.sessionId,
+      table.createdAt,
+      table.id
+    ),
+    roleCheck: check(
+      "tutor_messages_role_ck",
+      sql.raw("role IN ('user', 'assistant')")
+    ),
+    turnIndexCheck: check(
+      "tutor_messages_turn_index_ck",
+      sql.raw("turn_index >= 0")
+    )
+  })
+);
+
 export type AuthUser = typeof authUsers.$inferSelect;
 export type AuthSession = typeof authSessions.$inferSelect;
 export type LearnerProgressHistory =
   typeof learnerProgressHistory.$inferSelect;
 export type NewLearnerProgressHistory =
   typeof learnerProgressHistory.$inferInsert;
+export type TutorSession = typeof tutorSessions.$inferSelect;
+export type TutorMessageRow = typeof tutorMessages.$inferSelect;

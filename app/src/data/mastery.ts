@@ -37,6 +37,7 @@ export type MasteryPlan = {
   attemptNumber: number;
   title: string;
   why: string;
+  failureSummary: string[];
   passes: MasteryPass[];
   checkpoint?: MasteryCheckpoint;
   retryTask: {
@@ -112,6 +113,7 @@ export function getMasteryPlan(
   const attemptNumber = Math.max(1, previousAttempts + 1);
   const stage = stageForAttempt[Math.min(attemptNumber - 1, stageForAttempt.length - 1)];
   const visual = visualBlock(lesson);
+  const failureSummary = failureMessages.map((message) => message.trim()).filter(Boolean).slice(0, 4);
 
   const common = {
     passes: [
@@ -148,9 +150,10 @@ export function getMasteryPlan(
       attemptNumber,
       title: "Let's teach the same idea a different way",
       why:
-        failureMessages.length
+        failureSummary.length
           ? "Your evidence did not yet prove the required contract. We are changing the explanation before asking you to retry."
           : "This is the first guided mastery pass.",
+      failureSummary,
       passes: common.passes,
       checkpoint: checkpointFor(lesson),
       retryTask: {
@@ -181,6 +184,7 @@ export function getMasteryPlan(
       title: "Now we go one layer deeper",
       why:
         "The first explanation was not enough, so we are switching from the simple story to the actual mechanism and evidence chain.",
+      failureSummary,
       passes: [
         {
           id: "mechanism",
@@ -228,6 +232,7 @@ export function getMasteryPlan(
       title: "We will do a smaller version together",
       why:
         "Repeated failure means the problem is not effort. The task needs a smaller intermediate proof before the full assignment.",
+      failureSummary,
       passes: [
         {
           id: "worked-example",
@@ -281,6 +286,7 @@ export function getMasteryPlan(
     title: "Prerequisite rewind",
     why:
       "The learner has had multiple attempts without stable proof. We will rewind one dependency, teach it again from another angle, and then return to the assignment.",
+    failureSummary,
     passes: [
       {
         id: "prerequisite",

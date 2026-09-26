@@ -20,6 +20,7 @@ describe("programme mastery integration", () => {
         lesson.id
       ).toBeGreaterThanOrEqual(3);
       expect(plan.checkpoint || lesson.sectionId, lesson.id).toBeTruthy();
+      expect(Array.isArray(plan.failureSummary), lesson.id).toBe(true);
     }
   });
 

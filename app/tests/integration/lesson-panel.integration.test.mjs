@@ -11,7 +11,7 @@ const source = () =>
 describe("lesson panel integration contract", () => {
   it("keeps the continuous co-teacher outside the mode switch", () => {
     const code = source();
-    const coach = code.indexOf("<PodcastCoach lesson={lesson} />");
+    const coach = code.indexOf("<PodcastCoach");
     const tabs = code.indexOf('className="mode-tabs"');
 
     expect(coach).toBeGreaterThanOrEqual(0);
@@ -25,7 +25,7 @@ describe("lesson panel integration contract", () => {
       "<LessonContentFeed blocks={lesson.content.blocks} />"
     );
     expect(code).toContain('mode === "learn"');
-    expect(code).toContain("<PodcastCoach lesson={lesson} />");
+    expect(code).toContain("<PodcastCoach");
   });
 
   it("exposes exactly the intended lesson modes and no legacy Listen mode", () => {

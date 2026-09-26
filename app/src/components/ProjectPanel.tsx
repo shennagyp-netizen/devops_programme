@@ -38,7 +38,23 @@ export function ProjectPanel({
 
           <p className="range">
             <strong>Environment:</strong> {project.environment}
+            {" · "}
+            <strong>Target workload:</strong> ~{project.estimatedHours} project hours
           </p>
+
+          <div className="project-phase-grid">
+            <div>
+              <strong>Phased project work</strong>
+              <ol>
+                {project.phases.map((phase) => (
+                  <li key={phase.id}>
+                    <strong>{phase.title}</strong> · ~{phase.hours}h — {phase.objective}
+                    <div className="range">Exit evidence: {phase.exitEvidence.join(" · ")}</div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
 
           <div className="difficulty-grid">
             <span>
@@ -82,6 +98,21 @@ export function ProjectPanel({
                 {project.completionCriteria.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="project-phase-grid">
+            <div>
+              <strong>Professional deliverables</strong>
+              <ul>
+                {project.deliverables.map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            </div>
+            <div>
+              <strong>Review gates</strong>
+              <ul>
+                {project.reviewGates.map((item) => <li key={item}>{item}</li>)}
               </ul>
             </div>
           </div>

@@ -21,6 +21,7 @@ import {
 import { MotionIllustration } from "./MotionIllustration";
 import { LessonContentFeed } from "./LessonContentFeed";
 import { PodcastCoach } from "./PodcastCoach";
+import { TutorCoach } from "./TutorCoach";
 import { AssessmentPanel } from "./AssessmentPanel";
 import { MasteryRemediation } from "./MasteryRemediation";
 import { MasteryPreview } from "./MasteryPreview";
@@ -343,7 +344,23 @@ export function LessonPanel({
 
       <MotionIllustration lesson={lesson} />
 
-      <PodcastCoach lesson={lesson} />
+      <PodcastCoach lesson={lesson} remediationPlan={masteryPlan} />
+      <TutorCoach
+        lessonId={lesson.id}
+        lessonTitle={lesson.title}
+        course={lesson.course}
+        projectId={lesson.projectId}
+        currentLessonMode={mode}
+        platform={platform}
+        masteryPlan={masteryPlan}
+        learnerEvidence={handsOnEvidence}
+        exerciseRecorded={exerciseRecorded}
+        machineResults={machineResults.map((item) => ({
+          stepId: item.stepId,
+          result: item.result,
+          exitCode: item.exitCode
+        }))}
+      />
 
       {mode === "learn" ? (
         <>

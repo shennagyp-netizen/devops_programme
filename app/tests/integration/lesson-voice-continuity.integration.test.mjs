@@ -9,7 +9,7 @@ describe("continuous voice architecture", () => {
   it("keeps the co-teacher outside the lesson mode switch", () => {
     const lessonPanel = source("src/components/LessonPanel.tsx");
 
-    expect(lessonPanel).toContain("<PodcastCoach lesson={lesson} />");
+    expect(lessonPanel).toContain("<PodcastCoach");
     expect(lessonPanel).toContain('type Mode = "learn" | "do" | "recall" | "design" | "assessment"');
     expect(lessonPanel).not.toContain('type Mode = "learn" | "listen"');
     expect(lessonPanel).not.toContain('"listen"');
@@ -18,7 +18,7 @@ describe("continuous voice architecture", () => {
 
   it("renders all learner modes without remounting the co-teacher", () => {
     const lessonPanel = source("src/components/LessonPanel.tsx");
-    const coachIndex = lessonPanel.indexOf("<PodcastCoach lesson={lesson} />");
+    const coachIndex = lessonPanel.indexOf("<PodcastCoach");
     const modeTabsIndex = lessonPanel.indexOf('className="mode-tabs"');
     const learnIndex = lessonPanel.indexOf('mode === "learn"');
 
@@ -165,7 +165,7 @@ describe("continuous voice architecture", () => {
     expect(lessonFeed).not.toContain("PodcastCoach");
     expect(lessonFeed).not.toContain("<audio");
     expect(lessonFeed).toContain("<video");
-    expect(lessonPanel).toContain("<PodcastCoach lesson={lesson} />");
+    expect(lessonPanel).toContain("<PodcastCoach");
     expect(lessonPanel).toContain("<LessonContentFeed blocks={lesson.content.blocks} />");
   });
 });

@@ -1939,3 +1939,133 @@ Merged PR #100:
 om that status.
 - Next content boundary: **A2.1-A2.3 — dependency failure, retry storms and partial network failure**.
 
+
+============================================================
+2026-09-26 PREMIUM PRODUCT DEPTH OVERRIDE
+============================================================
+
+The programme must support a complete-programme tuition target of US$2,000 per learner. This is a product target, not a claim of already validated market demand.
+
+Current implementation in this slice:
+- Mastery failures now carry a bounded failure summary into the recovery teaching plan.
+- PodcastCoach receives the active mastery plan and exposes multiple recovery teaching methods after a failed assignment.
+- Recovery methods include the representations already authored by the mastery engine: plain language, analogy, visual mechanism, causal mechanism, worked example, controlled failure and guided retry, depending on remediation stage.
+- Recovery podcast turns are stable and lesson/stage/attempt-specific. The application uses guided transcript mode until a real aligned recording and timing manifest exists; it never invents audio timing.
+- All nine continuous projects now have four explicit phases, estimated workload and phase exit evidence.
+- Project phases target 308 total hours across the nine-project spine.
+- Every project now has at least eight explicit milestones, four professional deliverables and four review gates in addition to its phased workload and exit evidence.
+- The CI project contract isolates the milestone block when counting milestones, so unrelated failure/evidence arrays cannot satisfy the milestone requirement accidentally.
+- ProjectPanel now exposes phase workload, exit evidence, professional deliverables and review gates through a dedicated responsive project grid.
+- The public programme site states the US$2,000 complete-programme tuition target and explains the product depth supporting that target.
+- `scripts/check-project-contract.mjs` now rejects projects that lack the deeper phase contract or whose phase hours do not equal the declared project workload.
+- Red-team/unit coverage includes the recovery podcast teaching-path contract.
+
+Important remaining premium gates:
+- production aligned recovery audio for the authored recovery scripts
+- human review of remediation explanations for every concept
+- broader machine-verified failure/recovery coverage
+- deeper assessment remediation and alternate forms
+- production mastery analytics
+- final browser/visual validation
+
+Do not remove the multi-method recovery loop in favor of replaying the original podcast after failure. The failure itself is the trigger for a different teaching method.
+
+============================================================
+END PREMIUM PRODUCT DEPTH OVERRIDE
+============================================================
+
+============================================================
+2026-09-26 LIVE TUTOR CONVERSATION POC
+============================================================
+
+The podcast/recovery teaching system is now paired with an authenticated live tutor.
+
+Implemented:
+- new TutorCoach UI embedded in LessonPanel;
+- six tutor modes: teaching, failure-investigation, assignment-coach, incident-review, design-defense, oral-assessment;
+- tutor request/response contract with strict bounds;
+- server-side authenticated /api/tutor route;
+- Vercel AI Gateway Responses integration;
+- model routing by conversational complexity with TUTOR_MODEL override;
+- PostgreSQL tutor_sessions and tutor_messages persistence;
+- session ownership checks against the authenticated first-party user;
+- canonical server-side lesson/project context;
+- bounded server-known completion and mastery context;
+- bounded learner evidence context;
+- deterministic non-authority response fields;
+- contract gate and red-team tests for authentication, provider configuration, session ownership, certification attempts and oversized evidence.
+
+Architecture:
+Podcast / recovery podcast = authored multi-method teaching.
+Live tutor = interactive discussion, diagnosis, questioning and design review.
+Mastery engine = deterministic remediation and retry rules.
+Assessment/runtime = deterministic evidence and completion authority.
+
+Important:
+The tutor is a teaching system, not a grading shortcut. It cannot unlock retry, certify mastery or write completion state.
+
+Current limitation:
+- no streaming tutor response yet;
+- no realtime voice tutor yet;
+- no read-only runtime tools attached yet;
+- browser visuals for the new tutor have not yet been validated against a live deployment.
+
+Next implementation gate:
+Connect narrowly scoped read-only programme tools so the tutor can inspect authoritative evidence and project state without acquiring command execution or assessment authority. Then add streaming/voice while preserving the same contract and red-team suite.
+
+============================================================
+END LIVE TUTOR CONVERSATION POC
+============================================================
+
+### Tutor integration continuation
+The live tutor now has a bounded read-only tool layer:
+- get hands-on contract
+- get project phase
+- get runtime verification contract
+- get authoritative learner progress
+
+The learner can restore a saved tutor transcript after refresh. When mastery remediation exists, TutorCoach offers a direct handoff from recovery teaching into failure investigation.
+
+No tutor tool can execute commands, modify project state, unlock retry, certify mastery, or write completion state.
+
+The next AI implementation gate remains:
+1. make the current tutor CI/browser validation green;
+2. verify the deployed UI when Vercel permits a fresh build;
+3. add streaming text;
+4. add realtime voice using the same tutor contract;
+5. connect only additional read-only authoritative evidence sources before considering any controlled action tools.
+### Persistence migration correction
+Tutor persistence is now versioned in `app/drizzle/migrations/0003_tutor.sql`. The historical `0001_self_hosted_auth.sql` migration is restored to its original authentication-only scope. Runtime schema bootstrap remains a safety net, not the canonical migration path.
+### Tutor hardening continuation
+The live tutor now has a persistent per-learner rolling rate limit of 20 learner messages per five minutes.
+
+The tutor prompt explicitly labels prior conversation and the current learner message as untrusted data. This reduces prompt-injection confusion without changing the deterministic authority boundary.
+
+Red-team coverage now includes rate-limit rejection before provider calls.
+
+
+
+============================================================
+2026-09-26 TUTOR RED-TEAM HARDENING — RATE LIMIT + EVIDENCE TRUST
+============================================================
+
+A fresh TDD/red-team pass found two real boundary defects after the previous green gate:
+- the original tutor limiter used a non-atomic read-then-write check, so concurrent requests could race through the five-minute limit;
+- the browser could submit verificationSummary while the tutor prompt labeled it as machine verification, which could mislead the model even though deterministic authority was protected.
+
+Corrections:
+- added persistent tutor_rate_limit_reservations storage;
+- made request reservation atomic with a PostgreSQL transaction and pg_advisory_xact_lock per learner;
+- prune expired reservations before counting;
+- keep the limit at 20 tutor requests per rolling five minutes;
+- perform the reservation before learner context/provider work, so rejected requests do not invoke the model;
+- mark browser verificationSummary explicitly as learner-reported and untrusted;
+- added migration 0004_tutor_rate_limit.sql;
+- updated the runtime schema bootstrap to cover the reservation table;
+- added route red-team coverage for spoofed verification summaries and rate-limit short-circuit behavior;
+- strengthened the tutor contract checker to require the atomic reservation, untrusted verification label and migration.
+
+Current status: GitHub CI still needs to run on this exact hardened head. The next external validation gate is a fresh Vercel deployment when the Hobby deployment window permits it, followed by browser visual verification. Streaming text and realtime voice come only after those gates remain green and reuse the same authority/evidence contract.
+============================================================
+END TUTOR RED-TEAM HARDENING
+============================================================

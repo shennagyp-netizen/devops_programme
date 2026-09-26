@@ -1,5 +1,15 @@
 # Podcast Audio and React Synchronization
 
+## Recovery podcast after assignment failure
+
+A failed hands-on assignment activates a second spoken teaching path instead of replaying the original explanation.
+
+The recovery co-teacher is built from the current MasteryPlan and exposes multiple authored teaching methods. Depending on remediation stage, these may include plain language, analogy, visual mechanism, causal mechanism, worked example, controlled failure and guided retry.
+
+Each recovery method is a separate spoken script path with its own stable turn IDs. The method may use the learner's actual failure summary, the lesson mechanism, the lesson visual, and the retry evidence contract. Recovery content therefore changes because the learner failed; it is not a renamed copy of the original lesson.
+
+The current repository does not claim aligned recovery audio until a real recording and timing manifest exist. Before then, the application uses guided transcript mode and never estimates audio timing. A future aligned recovery recording must use the same `turnId + startMs + endMs` and learner-cue contract as normal episodes.
+
 ## Non-negotiable rule
 
 React must never estimate spoken position from:
@@ -118,3 +128,20 @@ If they differ:
 - the user is never shown a false claim that the voice is synchronized
 
 This is deliberately fail-closed.
+
+## Live tutor handoff
+
+Podcast and tutor are separate teaching contracts.
+
+The podcast is authored and predictable:
+problem -> mechanism -> prediction -> operation -> failure -> recovery
+
+The tutor is interactive:
+learner question -> tutor hypothesis/check -> evidence request -> explanation or challenge -> learner response
+
+After a failed assignment, PodcastCoach can expose a different authored recovery method. TutorCoach can then continue the same recovery as a live discussion using the bounded failure summary and current evidence context.
+
+The tutor must not claim that it verified an operation simply because the learner described it. Runtime verification and completion remain deterministic.
+
+A future realtime voice implementation may let the learner move from the authored recovery podcast into the live tutor without creating a second learner-state or assessment authority.
+

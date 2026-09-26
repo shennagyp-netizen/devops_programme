@@ -89,6 +89,14 @@ jobs:
         working-directory: repo/app
         run: npm run check:progress
 
+      - name: Tutor contract
+        working-directory: repo/app
+        run: npm run check:tutor
+
+      - name: Migration contract
+        working-directory: repo/app
+        run: npm run check:migrations
+
       - name: Full unit and integration tests
         working-directory: repo/app
         run: npm test

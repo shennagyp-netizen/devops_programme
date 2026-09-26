@@ -48,6 +48,22 @@ for (const projectId of projectIds) {
     failed = true;
     console.error(`Project ${projectId} must define change and incident history.`);
   }
+  const phaseCount = (projectBlock.match(new RegExp('id: "' + projectId + '-P\\d+"', 'g')) || []).length;
+  const milestoneBlock = projectBlock.match(/    milestones: \[[\s\S]*?\n    \],/);
+  const milestoneCount = (milestoneBlock?.[0].match(/^      "/gm) || []).length;
+  if (!projectBlock.includes("estimatedHours:") || !projectBlock.includes("phases: [") || !projectBlock.includes("deliverables: [") || !projectBlock.includes("reviewGates: [") || phaseCount < 4 || milestoneCount < 8) {
+    failed = true;
+    console.error(`Project ${projectId} must define four phases, at least eight milestones, deliverables, review gates and an estimated workload.`);
+  }
+
+  const hourMatches = [...projectBlock.matchAll(/hours: (\d+)/g)].map((match) => Number(match[1]));
+  const estimatedMatch = projectBlock.match(/estimatedHours: (\d+)/);
+  const phaseHours = hourMatches.reduce((sum, hours) => sum + hours, 0);
+  const estimatedHours = estimatedMatch ? Number(estimatedMatch[1]) : 0;
+  if (!estimatedHours || phaseHours !== estimatedHours) {
+    failed = true;
+    console.error(`Project ${projectId} phase hours must add up to estimatedHours.`);
+  }
 }
 
 const intermediateProjectIds = ["I1", "I2", "I3"];

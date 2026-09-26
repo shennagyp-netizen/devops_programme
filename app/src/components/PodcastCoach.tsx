@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Lesson } from "../data/curriculum";
+import type { CourseLesson } from "../data/courseLessons";
+import type { MasteryPlan } from "../data/mastery";
+import { buildRecoveryVoiceOptions } from "../data/remediationVoice";
 import {
   findActiveCue,
   findCurrentTurnId,
@@ -27,7 +29,7 @@ const cueToPhase: Partial<Record<PodcastCueKind, VoicePhase>> = {
   recall: "learner-action"
 };
 
-export function PodcastCoach({ lesson }: { lesson: Lesson }) {
+export function PodcastCoach({ lesson, remediationPlan }: { lesson: CourseLesson; remediationPlan?: MasteryPlan | null }) {
   const [phase, setPhase] = useState<VoicePhase>("ready");
   const [turnIndex, setTurnIndex] = useState(0);
   const [prediction, setPrediction] = useState("");
@@ -35,6 +37,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   const [episodeSource, setEpisodeSource] = useState("");
   const [audioTimeMs, setAudioTimeMs] = useState(0);
   const [audioPlaying, setAudioPlaying] = useState(false);
+  const [recoveryMethodIndex, setRecoveryMethodIndex] = useState(0);
   const [scriptVersions, setScriptVersions] = useState<Record<string, string>>({});
   const [audioManifests, setAudioManifests] = useState<Record<string, PodcastAudioManifest>>({});
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -122,6 +125,11 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   );
 
   const current: Turn | undefined = turns[turnIndex];
+  const recoveryOptions = useMemo(
+    () => (remediationPlan ? buildRecoveryVoiceOptions(lesson, remediationPlan) : []),
+    [lesson, remediationPlan]
+  );
+  const activeRecoveryOption = recoveryOptions[recoveryMethodIndex] ?? recoveryOptions[0];
 
   useEffect(() => {
     if (!audioManifest || !audioRef.current) return;
@@ -342,6 +350,50 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
           </p>
           <button className="primary" onClick={resumeVoice}>Continue voice</button>
         </div>
+      ) : null}
+
+      {remediationPlan && activeRecoveryOption ? (
+        <section className="content-card recovery-podcast" aria-label="Recovery podcast">
+          <div className="course-path-head">
+            <div>
+              <span className="eyebrow">RECOVERY PODCAST · ATTEMPT {remediationPlan.attemptNumber}</span>
+              <h4>The co-teacher changes method after failure.</h4>
+              <p>
+                This is not a replay of the same lesson. Pick another explanation method,
+                work through it, then return to the assignment with a smaller proof.
+              </p>
+            </div>
+            <span className="coach-phase">{remediationPlan.stage}</span>
+          </div>
+
+          <div className="difficulty-grid">
+            {recoveryOptions.map((option, index) => (
+              <button
+                key={option.id}
+                className={index === recoveryMethodIndex ? "active" : ""}
+                onClick={() => setRecoveryMethodIndex(index)}
+              >
+                <strong>{option.label}</strong>
+                <span>{option.reason}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="content-card">
+            <span className="eyebrow">CO-TEACHER SCRIPT · AUDIO SLOT READY</span>
+            <p className="range">
+              The current repository has no aligned recovery recording for this episode yet,
+              so the app uses the authored spoken script safely. It does not fake audio timing.
+            </p>
+            <div className="continuous-transcript">
+              {activeRecoveryOption.turns.map((turn) => (
+                <p key={turn.id}>
+                  <strong>Engineer {turn.speaker}:</strong> {turn.text}
+                </p>
+              ))}
+            </div>
+          </div>
+        </section>
       ) : null}
 
       {phase === "done" ? (

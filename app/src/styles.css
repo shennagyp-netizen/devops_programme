@@ -36,6 +36,30 @@ textarea{width:100%;min-height:110px;resize:vertical;border:1px solid #2b385b;bo
 @media(max-width:800px){.course-path-head,.assessment-header{flex-direction:column}.difficulty-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 
+
+.project-phase-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.project-phase-grid > div {
+  min-width: 0;
+}
+
+.project-phase-grid ol,
+.project-phase-grid ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+@media (max-width: 640px) {
+  .project-phase-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .course-path-columns {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
