@@ -1,0 +1,822 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "A-A1",
+  "purpose": "Pilot item bank for Global Traffic and Multi-Region Systems. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "AA1-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-A1.core",
+      "prompt": "Why use multiple regions?",
+      "options": [
+        "To reduce regional failure impact and place work closer to users",
+        "To remove all consistency costs",
+        "To eliminate backups",
+        "To make every request local"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA1-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-A1.core",
+      "prompt": "What does global traffic management decide?",
+      "options": [
+        "Where requests should be directed based on policy and system state",
+        "How a database stores rows",
+        "How containers are built",
+        "How Git branches are merged"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA1-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-A1.core",
+      "prompt": "Why is health-based routing useful?",
+      "options": [
+        "It can steer traffic away from unhealthy endpoints or regions",
+        "It guarantees recovery",
+        "It removes latency",
+        "It replaces capacity planning"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA1-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A1.core",
+      "prompt": "Why does locality matter in global systems?",
+      "options": [
+        "Distance affects latency, cost and data access behavior",
+        "All regions have identical latency",
+        "Locality is only about storage size",
+        "Locality removes consistency"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA1-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A1.core",
+      "prompt": "Why can caching help global scale?",
+      "options": [
+        "It can serve repeated data closer to users and reduce origin load",
+        "It guarantees fresh data",
+        "It removes storage",
+        "It replaces databases"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA1-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A1.core",
+      "prompt": "Why can multi-region writes be difficult?",
+      "options": [
+        "State must be reconciled across distance and failure boundaries",
+        "Writes cannot cross regions",
+        "Caching prevents writes",
+        "DNS blocks databases"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA1-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A1.core",
+      "prompt": "Why should failover capacity be planned?",
+      "options": [
+        "The surviving region may need to carry more traffic after failure",
+        "Traffic always disappears during failover",
+        "Capacity is irrelevant to routing",
+        "Regions share one CPU"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA1-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A1.core",
+      "prompt": "What is a traffic policy?",
+      "options": [
+        "A rule for selecting destinations under normal and failure conditions",
+        "A database schema",
+        "A container image",
+        "A Git workflow"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA1-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A1.core",
+      "prompt": "Why can DNS-based failover be slower than expected?",
+      "options": [
+        "Caching and TTL behavior can delay traffic movement",
+        "DNS always updates instantly",
+        "DNS controls application CPU",
+        "TTL affects database replication"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA1-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A1.core",
+      "prompt": "Why can routing success still produce a user outage?",
+      "options": [
+        "The target can be overloaded, stale, or missing required dependencies",
+        "Routing proves all data is correct",
+        "Health means capacity is unlimited",
+        "Regions never fail"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA1-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-A1.core",
+      "prompt": "A region is healthy but high latency. Should traffic always remain there?",
+      "expectedElements": [
+        "Health alone may not capture latency or capacity policy"
+      ]
+    },
+    {
+      "id": "AA1-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-A1.core",
+      "prompt": "Why can local caches make recovery harder?",
+      "expectedElements": [
+        "stale cached state may survive the origin recovery path"
+      ]
+    },
+    {
+      "id": "AA1-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-A1.core",
+      "prompt": "What evidence is needed before declaring regional failover successful?",
+      "expectedElements": [
+        "routing changed",
+        "surviving region healthy and has capacity",
+        "user path works",
+        "data behavior is acceptable"
+      ]
+    },
+    {
+      "id": "AA1-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-A1.core",
+      "prompt": "Why can moving writes to another region change consistency?",
+      "expectedElements": [
+        "write locality and replication path may change visibility and ordering"
+      ]
+    },
+    {
+      "id": "AA1-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-A1.core",
+      "prompt": "Why should global traffic decisions be reversible?",
+      "expectedElements": [
+        "routing mistakes can amplify impact and recovery needs a controlled path"
+      ]
+    },
+    {
+      "id": "AA1-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "A-A1.core",
+      "prompt": "Design a two-region traffic policy.",
+      "expectedElements": [
+        "health",
+        "latency",
+        "capacity",
+        "data locality",
+        "failover rule"
+      ]
+    },
+    {
+      "id": "AA1-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "A-A1.core",
+      "prompt": "Explain the trade-off between local reads and globally fresh reads.",
+      "expectedElements": [
+        "latency/locality benefit",
+        "freshness/coordination cost"
+      ]
+    },
+    {
+      "id": "AA1-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "A-A1.core",
+      "prompt": "A region is healthy but saturated. Give two hypotheses and tests for the saturation.",
+      "expectedElements": [
+        "traffic shift",
+        "capacity/resource/dependency bottleneck",
+        "regional metrics"
+      ]
+    },
+    {
+      "id": "AA1-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "A-A1.core",
+      "prompt": "Design a global recovery plan after one region fails.",
+      "expectedElements": [
+        "route traffic",
+        "protect survivor",
+        "verify data/read paths",
+        "control recovery"
+      ]
+    },
+    {
+      "id": "AA1-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "A-A1.core",
+      "prompt": "Build a diagnosis tree for 'users in one geography are slow'.",
+      "expectedElements": [
+        "routing",
+        "regional capacity",
+        "dependency/data locality",
+        "client path",
+        "recent changes"
+      ]
+    },
+    {
+      "id": "AA1-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "routing policy",
+        "health/TTL behavior"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "A-A1.diagnostic",
+      "prompt": "DNS/traffic policy still points to a failed region. What should you inspect?",
+      "expectedElements": 2
+    },
+    {
+      "id": "AA1-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "survivor capacity",
+        "dependency pressure",
+        "traffic distribution"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "A-A1.diagnostic",
+      "prompt": "Failover succeeds but survivor latency rises sharply. What should be checked?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AA1-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "regional data path/replication/cache"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-A1.diagnostic",
+      "prompt": "Users in one region see stale data. What area is most relevant?",
+      "expectedElements": 2
+    },
+    {
+      "id": "AA1-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "regional latency",
+        "data locality/dependencies",
+        "traffic distribution"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-A1.diagnostic",
+      "prompt": "Global routing is healthy but one geography is slow. What should you compare?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AA1-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "cache invalidation/TTL",
+        "freshness policy"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-A1.diagnostic",
+      "prompt": "A cache serves old data after origin recovery. What should you inspect?",
+      "expectedElements": 2
+    },
+    {
+      "id": "AA1-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "health check may not represent capacity/latency",
+        "traffic policy lacks load awareness"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-A1.diagnostic",
+      "prompt": "A region is healthy but over capacity. Why might health routing miss the problem?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AA1-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "routing state",
+        "survivor capacity",
+        "data freshness",
+        "user path",
+        "timing"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-A1.diagnostic",
+      "prompt": "Design evidence for a failed regional failover.",
+      "expectedElements": 4
+    },
+    {
+      "id": "AA1-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "divergent state/conflicts"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-A1.diagnostic",
+      "prompt": "Two regions accept writes during a partition. What is the main risk?",
+      "expectedElements": 2
+    },
+    {
+      "id": "AA1-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "cross-region traffic",
+        "cache miss/origin load",
+        "survivor overprovisioning"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-A1.diagnostic",
+      "prompt": "A failover causes a cost spike. Give two causes.",
+      "expectedElements": 4
+    },
+    {
+      "id": "AA1-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "stabilize traffic",
+        "protect writes",
+        "establish state",
+        "verify",
+        "restore gradually"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-A1.diagnostic",
+      "prompt": "Design a safe multi-region incident response with uncertain data freshness.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AA1-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "normal routing",
+        "latency/capacity",
+        "region loss",
+        "recovery path",
+        "verification"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "A-A1.diagnostic",
+      "prompt": "Build a traffic policy review using normal and failure cases.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AA1-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "normal",
+        "regional degradation",
+        "regional failure",
+        "recovery",
+        "measure latency/capacity/data"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "A-A1.diagnostic",
+      "prompt": "Design a global traffic test plan.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AA1-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "A-A1.hands-on",
+      "prompt": "Run a two-region traffic simulation.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "create two endpoints",
+        "route normal traffic",
+        "record latency",
+        "reset"
+      ],
+      "success": [
+        "normal policy",
+        "latency evidence"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA1-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-A1.hands-on",
+      "prompt": "Fail one region and verify routing.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "inject regional failure",
+        "observe routing",
+        "verify survivor capacity/user path",
+        "restore"
+      ],
+      "success": [
+        "failover",
+        "survivor evidence",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA1-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-A1.hands-on",
+      "prompt": "Simulate stale regional cache behavior.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "populate cache",
+        "update origin",
+        "read region",
+        "invalidate",
+        "verify"
+      ],
+      "success": [
+        "stale evidence",
+        "fresh recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA1-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-A1.hands-on",
+      "prompt": "Measure data-locality impact.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "run local and remote reads",
+        "compare latency/cost assumptions",
+        "record"
+      ],
+      "success": [
+        "local/remote comparison"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA1-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-A1.hands-on",
+      "prompt": "Overload a surviving region during failover.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "reduce capacity",
+        "fail over traffic",
+        "observe saturation",
+        "apply control",
+        "verify"
+      ],
+      "success": [
+        "capacity impact",
+        "mitigation",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA1-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-A1.hands-on",
+      "prompt": "Test reversible traffic policy.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "apply routing policy",
+        "simulate bad target",
+        "roll back",
+        "verify"
+      ],
+      "success": [
+        "policy identity",
+        "rollback",
+        "verification"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA1-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-A1.hands-on",
+      "prompt": "Lead an A1 regional incident.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "state impact",
+        "route safely",
+        "protect survivor",
+        "verify data/user path",
+        "timeline"
+      ],
+      "success": [
+        "incident evidence",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA1-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "A-A1.hands-on",
+      "prompt": "Review a global architecture under region loss.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "challenge assumptions",
+        "inject failure",
+        "measure",
+        "redesign",
+        "test"
+      ],
+      "success": [
+        "trade-off review",
+        "test evidence"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    }
+  ]
+}

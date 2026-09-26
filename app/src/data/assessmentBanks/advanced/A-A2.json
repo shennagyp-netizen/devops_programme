@@ -1,0 +1,832 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "A-A2",
+  "purpose": "Pilot item bank for Failure Engineering. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "AA2-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-A2.core",
+      "prompt": "What is fault injection for?",
+      "options": [
+        "Creating controlled failures to learn how the system behaves and recovers",
+        "Making production fail randomly",
+        "Replacing monitoring",
+        "Deleting data without reset"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA2-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-A2.core",
+      "prompt": "Why inject failures in disposable environments first?",
+      "options": [
+        "They allow learning while limiting impact and enabling reset",
+        "Disposable systems are always identical to production",
+        "Production cannot fail",
+        "Reset is unnecessary"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA2-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-A2.core",
+      "prompt": "What is a retry storm?",
+      "options": [
+        "A large increase in repeated requests triggered by failures or timeouts",
+        "A queue drain",
+        "A DNS update",
+        "A database backup"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA2-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A2.core",
+      "prompt": "What is a timeout cascade?",
+      "options": [
+        "Waiting and repeated retries propagate delay and load across dependencies",
+        "A planned deployment",
+        "A storage migration",
+        "A cache hit"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA2-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A2.core",
+      "prompt": "Why test partial network failure?",
+      "options": [
+        "Distributed systems can behave differently when some paths work and others fail",
+        "Networks always fail completely",
+        "It proves hardware quality",
+        "It replaces tracing"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA2-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A2.core",
+      "prompt": "Why is recovery verification part of failure engineering?",
+      "options": [
+        "A system can appear alive while user behavior or state remains broken",
+        "Recovery is only a restart",
+        "Verification slows every system",
+        "Failures are self-proving"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA2-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A2.core",
+      "prompt": "What does blast-radius control mean in fault injection?",
+      "options": [
+        "Limiting how much of the system the experiment can affect",
+        "Increasing the number of failures",
+        "Removing all dependencies",
+        "Disabling logs"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA2-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A2.core",
+      "prompt": "Why can backpressure be tested as a failure-control mechanism?",
+      "options": [
+        "It can protect downstream components when upstream demand exceeds capacity",
+        "It guarantees no queues",
+        "It removes retries automatically",
+        "It replaces load testing"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA2-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A2.core",
+      "prompt": "Why should experiments have abort conditions?",
+      "options": [
+        "To stop the test when observed impact exceeds the safe boundary",
+        "To make experiments harder",
+        "To avoid measurements",
+        "To hide failures"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA2-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-A2.core",
+      "prompt": "Why capture a known-good baseline before injection?",
+      "options": [
+        "You need a comparison state to identify the change and verify recovery",
+        "Baselines prevent failures",
+        "Baselines replace telemetry",
+        "It makes results deterministic"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AA2-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-A2.core",
+      "prompt": "A dependency is slow but not completely down. Why can this be more dangerous?",
+      "expectedElements": [
+        "timeouts and retries can amplify pressure while the system still accepts traffic"
+      ]
+    },
+    {
+      "id": "AA2-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-A2.core",
+      "prompt": "Why can a partial network partition create inconsistent observations?",
+      "expectedElements": [
+        "different components may see different subsets of the system"
+      ]
+    },
+    {
+      "id": "AA2-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-A2.core",
+      "prompt": "What makes a good fault-injection hypothesis?",
+      "expectedElements": [
+        "a specific expected mechanism and observable consequence"
+      ]
+    },
+    {
+      "id": "AA2-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-A2.core",
+      "prompt": "Why should one primary fault be injected at a time during learning?",
+      "expectedElements": [
+        "it makes diagnosis and causal interpretation possible"
+      ]
+    },
+    {
+      "id": "AA2-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-A2.core",
+      "prompt": "Why should experiments record start and stop times?",
+      "expectedElements": [
+        "timing lets operators correlate system behavior and recovery with the injected fault"
+      ]
+    },
+    {
+      "id": "AA2-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "A-A2.core",
+      "prompt": "Design a safe dependency-failure experiment.",
+      "expectedElements": [
+        "scope",
+        "hypothesis",
+        "injection",
+        "abort condition",
+        "telemetry",
+        "recovery"
+      ]
+    },
+    {
+      "id": "AA2-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "A-A2.core",
+      "prompt": "Explain how a retry storm can start from one slow dependency.",
+      "expectedElements": [
+        "timeouts",
+        "retries",
+        "added load",
+        "higher latency",
+        "more retries"
+      ]
+    },
+    {
+      "id": "AA2-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "A-A2.core",
+      "prompt": "A system survives a dependency outage but violates a latency objective. Give two hypotheses and tests.",
+      "expectedElements": [
+        "fallback path slower",
+        "queue/backpressure behavior",
+        "measure latency/dependency"
+      ]
+    },
+    {
+      "id": "AA2-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "A-A2.core",
+      "prompt": "Design a recovery verification checklist after a fault experiment.",
+      "expectedElements": [
+        "health",
+        "user path",
+        "data correctness",
+        "queue/retry normalization",
+        "capacity"
+      ]
+    },
+    {
+      "id": "AA2-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "A-A2.core",
+      "prompt": "Build a diagnosis tree for 'fault injection caused unexpected blast radius'.",
+      "expectedElements": [
+        "shared dependency",
+        "scope control failure",
+        "hidden coupling",
+        "traffic/recovery effects"
+      ]
+    },
+    {
+      "id": "AA2-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "hypothesis",
+        "scope",
+        "success/abort criteria",
+        "reset"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "A-A2.diagnostic",
+      "prompt": "Before fault injection, what must be defined?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AA2-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "retry rate",
+        "dependency latency",
+        "request load"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "A-A2.diagnostic",
+      "prompt": "A slow dependency causes retries to rise. What should you measure?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AA2-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "only local path is healthy",
+        "cross-path behavior still needs testing"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-A2.diagnostic",
+      "prompt": "A partial partition leaves local traffic healthy. What does that prove?",
+      "expectedElements": 2
+    },
+    {
+      "id": "AA2-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "recovery state",
+        "data/queue/retry normalization",
+        "user path"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-A2.diagnostic",
+      "prompt": "Fault injection ends but errors remain. What should you verify?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AA2-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "scope controls",
+        "dependency map",
+        "abort criteria"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-A2.diagnostic",
+      "prompt": "Blast radius is larger than expected. What should change before the next experiment?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AA2-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "fault actually reached the intended path",
+        "telemetry/observability",
+        "hypothesis"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-A2.diagnostic",
+      "prompt": "An experiment produced no visible failure. What should you question?",
+      "expectedElements": 4
+    },
+    {
+      "id": "AA2-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "timeout setting",
+        "retry count/timing",
+        "dependency latency",
+        "request volume"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-A2.diagnostic",
+      "prompt": "Retry storm begins only after timeout threshold changes. Design evidence.",
+      "expectedElements": 4
+    },
+    {
+      "id": "AA2-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "shared dependency/network/identity",
+        "common platform component"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-A2.diagnostic",
+      "prompt": "A fault affects multiple unrelated services. What shared causes should be examined?",
+      "expectedElements": 4
+    },
+    {
+      "id": "AA2-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "isolated cohort",
+        "fault scope",
+        "critical-path protection",
+        "abort",
+        "recovery"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-A2.diagnostic",
+      "prompt": "Design an experiment to test graceful degradation without risking critical traffic.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AA2-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "stop impact",
+        "identify authoritative state",
+        "reconcile",
+        "verify invariants",
+        "resume"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-A2.diagnostic",
+      "prompt": "A failure experiment leaves stale data. Design the recovery sequence.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AA2-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "dependency",
+        "network",
+        "capacity",
+        "recovery",
+        "abort rules",
+        "evidence"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "A-A2.diagnostic",
+      "prompt": "Build a fault-injection campaign for an API platform.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AA2-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "timeline",
+        "dependency graph",
+        "unexpected signals",
+        "blast radius",
+        "design changes"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "A-A2.diagnostic",
+      "prompt": "Design a post-experiment review that finds hidden coupling.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AA2-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "A-A2.hands-on",
+      "prompt": "Run a controlled dependency latency injection.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "baseline",
+        "inject delay",
+        "measure retries/latency",
+        "abort/recover"
+      ],
+      "success": [
+        "hypothesis",
+        "impact",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA2-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-A2.hands-on",
+      "prompt": "Run a retry-storm experiment with an abort limit.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "slow dependency",
+        "measure attempts",
+        "stop at threshold",
+        "apply backoff",
+        "recover"
+      ],
+      "success": [
+        "abort boundary",
+        "amplification",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA2-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-A2.hands-on",
+      "prompt": "Simulate a partial network partition.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "isolate one path",
+        "observe working/failed paths",
+        "restore",
+        "verify"
+      ],
+      "success": [
+        "partial evidence",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA2-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-A2.hands-on",
+      "prompt": "Test graceful degradation.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "disable noncritical dependency",
+        "verify critical path",
+        "restore"
+      ],
+      "success": [
+        "critical service preserved",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA2-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-A2.hands-on",
+      "prompt": "Inject queue overload.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "increase producer rate",
+        "observe queue/backpressure",
+        "apply control",
+        "drain"
+      ],
+      "success": [
+        "overload",
+        "control",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA2-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-A2.hands-on",
+      "prompt": "Run a blast-radius boundary test.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "define cohort",
+        "inject fault",
+        "observe only cohort",
+        "stop/reset"
+      ],
+      "success": [
+        "scope maintained",
+        "reset"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA2-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-A2.hands-on",
+      "prompt": "Lead an A2 fault-injection incident.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "state experiment",
+        "inject",
+        "monitor",
+        "abort/mitigate",
+        "recover",
+        "timeline"
+      ],
+      "success": [
+        "ordered evidence",
+        "safety control",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AA2-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "A-A2.hands-on",
+      "prompt": "Review a failure experiment for hidden coupling.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "compare expected/actual blast radius",
+        "map shared dependencies",
+        "design fix",
+        "test"
+      ],
+      "success": [
+        "coupling finding",
+        "test result"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    }
+  ]
+}

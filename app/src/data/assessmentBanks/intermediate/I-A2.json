@@ -1,0 +1,833 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "I-A2",
+  "purpose": "Pilot item bank for Kubernetes Control Loops. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "IA2-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A2.core",
+      "prompt": "What does a Kubernetes controller try to do?",
+      "options": [
+        "Move observed state toward desired state",
+        "Compile container images",
+        "Replace DNS",
+        "Store Git history"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA2-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A2.core",
+      "prompt": "What is a Deployment describing?",
+      "options": [
+        "A desired way to run replicated Pods and manage rollout",
+        "A physical server",
+        "A Docker image registry",
+        "A database backup"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA2-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "I-A2.core",
+      "prompt": "Why are Pods not usually managed directly for long-lived applications?",
+      "options": [
+        "Controllers provide desired-state management and replacement",
+        "Pods cannot run processes",
+        "Pods have no network",
+        "Controllers only create logs"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA2-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A2.core",
+      "prompt": "What does reconciliation compare?",
+      "options": [
+        "Observed state with desired state",
+        "Git branches with DNS records",
+        "CPU with memory only",
+        "Images with source files"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA2-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A2.core",
+      "prompt": "What does a Service provide in a normal Kubernetes design?",
+      "options": [
+        "A stable way to reach a set of Pods",
+        "A replacement for the scheduler",
+        "A Docker image",
+        "A Terraform state file"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA2-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A2.core",
+      "prompt": "Why can a Pod be replaced without changing the Service address?",
+      "options": [
+        "The Service identity is separate from individual Pod identity",
+        "Pods never change",
+        "Services store the application data",
+        "DNS is disabled"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA2-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A2.core",
+      "prompt": "What is a rollout?",
+      "options": [
+        "A controlled change from one workload version toward another",
+        "A network packet",
+        "A backup restore",
+        "A CPU scheduling event"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA2-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A2.core",
+      "prompt": "What is a readiness probe used for?",
+      "options": [
+        "Deciding whether a Pod should receive normal traffic",
+        "Restarting every Pod",
+        "Building an image",
+        "Changing a namespace"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA2-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A2.core",
+      "prompt": "What does a liveness probe typically influence?",
+      "options": [
+        "Whether Kubernetes should treat a running container as stuck or unhealthy enough to restart",
+        "Whether DNS exists",
+        "Whether storage is durable",
+        "Whether the image can be pulled"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA2-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "I-A2.core",
+      "prompt": "Why do resource requests matter?",
+      "options": [
+        "They give the scheduler a basis for placing workloads and expressing expected resources",
+        "They reserve the entire cluster forever",
+        "They replace limits",
+        "They change application logic"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "IA2-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A2.core",
+      "prompt": "Why can a controller repeatedly recreate a deleted Pod?",
+      "expectedElements": [
+        "The deletion makes observed state differ from desired state, so reconciliation acts again"
+      ]
+    },
+    {
+      "id": "IA2-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A2.core",
+      "prompt": "A Deployment says 3 replicas but only 2 are Ready. What should you separate first?",
+      "expectedElements": [
+        "desired replica count",
+        "actual Pod state",
+        "readiness condition and events"
+      ]
+    },
+    {
+      "id": "IA2-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A2.core",
+      "prompt": "Why can a rollout appear complete while users still see errors?",
+      "expectedElements": [
+        "readiness may be too weak or the real user path has dependencies not covered by the rollout signal"
+      ]
+    },
+    {
+      "id": "IA2-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A2.core",
+      "prompt": "What evidence helps distinguish scheduler failure from application startup failure?",
+      "expectedElements": [
+        "Pod scheduling/events and node capacity",
+        "container state/logs after scheduling"
+      ]
+    },
+    {
+      "id": "IA2-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "I-A2.core",
+      "prompt": "Why can adding replicas fail to improve availability?",
+      "expectedElements": [
+        "replicas may share the same node, zone, dependency or bad configuration"
+      ]
+    },
+    {
+      "id": "IA2-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-A2.core",
+      "prompt": "Explain desired state versus observed state in one Kubernetes incident.",
+      "expectedElements": [
+        "desired specification",
+        "observed cluster state",
+        "controller action to reduce the difference"
+      ]
+    },
+    {
+      "id": "IA2-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "I-A2.core",
+      "prompt": "Design a safe rollout verification for an API.",
+      "expectedElements": [
+        "version identity",
+        "readiness",
+        "user-path request",
+        "error/latency comparison",
+        "rollback condition"
+      ]
+    },
+    {
+      "id": "IA2-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "I-A2.core",
+      "prompt": "A Pod is Ready but requests fail through the Service. Give two hypotheses and tests.",
+      "expectedElements": [
+        "Service selector/endpoints mismatch with endpoint inspection",
+        "application/listener/network behavior with direct Pod test"
+      ]
+    },
+    {
+      "id": "IA2-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "I-A2.core",
+      "prompt": "Design a recovery plan when a Deployment rollout creates unhealthy Pods.",
+      "expectedElements": [
+        "pause/stop promotion",
+        "identify bad revision",
+        "restore known-good revision or fix forward",
+        "verify Ready and user path"
+      ]
+    },
+    {
+      "id": "IA2-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "I-A2.core",
+      "prompt": "Build a diagnosis tree for 'Kubernetes deployment is down'.",
+      "expectedElements": [
+        "desired object",
+        "scheduled Pods",
+        "container startup",
+        "readiness",
+        "Service/endpoints",
+        "user-path verification"
+      ]
+    },
+    {
+      "id": "IA2-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "scheduling/resource issue versus controller/object issue"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "I-A2.diagnostic",
+      "prompt": "Deployment desired replicas are 3 but zero Pods start. What is the first useful distinction?",
+      "expectedElements": 2
+    },
+    {
+      "id": "IA2-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "readiness output",
+        "container logs/events",
+        "dependency state"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "I-A2.diagnostic",
+      "prompt": "Pods exist but none are Ready. What evidence should be compared?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA2-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "old/new ReplicaSets",
+        "Pod states",
+        "readiness or availability conditions"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A2.diagnostic",
+      "prompt": "A Deployment rollout is stuck halfway. What should you inspect?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA2-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "readiness",
+        "Service selector/endpoints",
+        "container listener"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A2.diagnostic",
+      "prompt": "A Pod is Running but not receiving traffic. What should you check?",
+      "expectedElements": 3
+    },
+    {
+      "id": "IA2-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "scheduling constraints/taints",
+        "resource requests",
+        "events"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A2.diagnostic",
+      "prompt": "A node has capacity but Pods remain Pending. What should you inspect?",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA2-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "probe does not cover real user path",
+        "application dependency failure",
+        "version-specific behavior"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "I-A2.diagnostic",
+      "prompt": "A rollout passes readiness but users see 500s. Why can that happen?",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA2-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "failure-domain separation",
+        "placement constraints",
+        "replica concentration"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A2.diagnostic",
+      "prompt": "One node fails and three replicas all disappear. What design assumption was violated?",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA2-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "desired state still requests it",
+        "reconciliation observes the difference"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A2.diagnostic",
+      "prompt": "A controller keeps recreating a manually deleted Pod. Why?",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA2-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "Pod reachability/listener",
+        "network policy/path",
+        "application behavior"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A2.diagnostic",
+      "prompt": "A Service has endpoints but requests time out. Design the next checks.",
+      "expectedElements": 4
+    },
+    {
+      "id": "IA2-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "object/revision state",
+        "Pod events/logs",
+        "readiness/user-path evidence",
+        "recent config/image change"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "I-A2.diagnostic",
+      "prompt": "Design evidence for a failed rollout with two competing causes.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA2-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "application behavior/dependency pressure",
+        "traffic/throughput",
+        "revision comparison"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "I-A2.diagnostic",
+      "prompt": "A new version is Ready on every Pod but queue latency rises. What should you investigate?",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA2-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "establish version and impact",
+        "pause",
+        "collect state",
+        "rollback/repair",
+        "verify recovery"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "I-A2.diagnostic",
+      "prompt": "Write a safe incident decision tree for a Kubernetes rollout.",
+      "expectedElements": 5
+    },
+    {
+      "id": "IA2-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "I-A2.hands-on",
+      "prompt": "Deploy a workload and verify reconciliation.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "apply known-good manifest",
+        "observe Deployment/Pods",
+        "compare desired and observed state",
+        "reset"
+      ],
+      "success": [
+        "desired state recorded",
+        "actual state recorded",
+        "reconciliation understood"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA2-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A2.hands-on",
+      "prompt": "Break readiness and recover.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "record Ready state",
+        "introduce reversible readiness failure",
+        "capture Pod state/events",
+        "repair",
+        "verify Ready"
+      ],
+      "success": [
+        "before/after readiness",
+        "failure evidence",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA2-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A2.hands-on",
+      "prompt": "Create a selector mismatch and diagnose it.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "deploy workload",
+        "change Service selector",
+        "observe endpoints/request",
+        "restore selector",
+        "verify"
+      ],
+      "success": [
+        "endpoint change",
+        "request failure",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA2-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "I-A2.hands-on",
+      "prompt": "Run a controlled rollout and verify the user path.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "deploy v1",
+        "deploy v2",
+        "watch rollout",
+        "test request",
+        "rollback if needed"
+      ],
+      "success": [
+        "version identity",
+        "rollout state",
+        "request verification"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA2-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A2.hands-on",
+      "prompt": "Create a scheduling constraint failure.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "record node resources",
+        "add safe unschedulable constraint",
+        "inspect Pending events",
+        "remove constraint",
+        "verify"
+      ],
+      "success": [
+        "Pending evidence",
+        "scheduler evidence",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA2-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A2.hands-on",
+      "prompt": "Recover from an unhealthy rollout.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "start change",
+        "capture failure",
+        "pause/rollback",
+        "verify Pods and Service",
+        "record timeline"
+      ],
+      "success": [
+        "bad revision",
+        "mitigation",
+        "verified recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA2-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "I-A2.hands-on",
+      "prompt": "Simulate node-level replica concentration.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "place replicas on disposable nodes",
+        "remove one node",
+        "observe impact",
+        "restore capacity",
+        "verify"
+      ],
+      "success": [
+        "failure-domain observation",
+        "impact",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    },
+    {
+      "id": "IA2-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "I-A2.hands-on",
+      "prompt": "Lead an I1 Kubernetes incident drill.",
+      "environment": [
+        "Disposable Intermediate lab environment with reset capability"
+      ],
+      "initialState": "Known-good workload or synthetic infrastructure with documented reset.",
+      "allowedOperations": [
+        "state symptom",
+        "inspect control-plane/object evidence",
+        "test user path",
+        "mitigate",
+        "recover",
+        "record evidence"
+      ],
+      "success": [
+        "ordered diagnosis",
+        "safe action",
+        "recovery evidence"
+      ],
+      "evidence": [
+        "before state",
+        "controlled change",
+        "failure/state signal",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes more than one control without recording it",
+        "claims success without verification"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system path"
+      ],
+      "resetStrategy": "Reset the disposable lab to the documented known-good fixture."
+    }
+  ]
+}

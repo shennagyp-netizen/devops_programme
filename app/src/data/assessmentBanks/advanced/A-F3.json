@@ -1,0 +1,813 @@
+{
+  "schemaVersion": 1,
+  "sectionId": "A-F3",
+  "purpose": "Pilot item bank for Failure Domains. Not yet a certification pool.",
+  "items": [
+    {
+      "id": "AF3-C-001",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-F3.core",
+      "prompt": "What is a failure domain?",
+      "options": [
+        "A group of components likely to fail together because of a shared boundary or dependency",
+        "Any process ID",
+        "A database table",
+        "A DNS record"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF3-C-002",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-F3.core",
+      "prompt": "Why separate replicas across failure domains?",
+      "options": [
+        "To reduce the chance that one failure removes all replicas",
+        "To reduce code size",
+        "To remove network traffic",
+        "To avoid monitoring"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF3-C-003",
+      "family": "conceptual",
+      "difficulty": "foundation",
+      "cognitiveLevel": "mechanism",
+      "itemType": "selected-response",
+      "expectedMinutes": 1,
+      "competencyId": "A-F3.core",
+      "prompt": "Why is a zone different from a region?",
+      "options": [
+        "A region contains multiple failure domains and usually has broader geographic/infrastructure isolation than one zone",
+        "They are always identical",
+        "A zone is always a database",
+        "A region is one process"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF3-C-004",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F3.core",
+      "prompt": "What is blast radius?",
+      "options": [
+        "The scope of components or users affected by a failure or change",
+        "The CPU cost of a process",
+        "The size of a log",
+        "The number of Git commits"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF3-C-005",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F3.core",
+      "prompt": "Why can a shared network control plane be a failure domain?",
+      "options": [
+        "A single shared dependency can affect otherwise separate workloads",
+        "Networks never fail",
+        "It only affects logs",
+        "It cannot cross zones"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF3-C-006",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F3.core",
+      "prompt": "What does graceful degradation aim to do?",
+      "options": [
+        "Preserve critical functions while reducing less important work during failure",
+        "Keep every feature fully available",
+        "Disable all traffic",
+        "Avoid recovery testing"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF3-C-007",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F3.core",
+      "prompt": "Why can an external provider be a failure domain?",
+      "options": [
+        "A provider-side event can affect many dependent resources at once",
+        "Providers cannot fail",
+        "Only local disks matter",
+        "Regions prevent all provider failures"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF3-C-008",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F3.core",
+      "prompt": "Why model network partitions separately from host failures?",
+      "options": [
+        "Components can remain healthy while unable to communicate with each other",
+        "Partitions always kill hosts",
+        "Host failures are only network failures",
+        "They have identical recovery"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF3-C-009",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F3.core",
+      "prompt": "What should failure-domain design consider besides availability?",
+      "options": [
+        "Recovery capacity, data correctness and operational dependencies",
+        "Only CPU speed",
+        "Only latency",
+        "Only image size"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF3-C-010",
+      "family": "conceptual",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "selected-response",
+      "expectedMinutes": 2,
+      "competencyId": "A-F3.core",
+      "prompt": "Why is diversity sometimes useful across failure domains?",
+      "options": [
+        "It reduces correlated failure from sharing the same dependency or implementation",
+        "It always lowers cost",
+        "It removes testing",
+        "It guarantees consistency"
+      ],
+      "correctOption": 0
+    },
+    {
+      "id": "AF3-C-011",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-F3.core",
+      "prompt": "A zone fails and all application replicas disappear. What assumption failed?",
+      "expectedElements": [
+        "replica placement was not actually separated across the relevant failure domain"
+      ]
+    },
+    {
+      "id": "AF3-C-012",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-F3.core",
+      "prompt": "Why can regional failover still fail even when routing works?",
+      "expectedElements": [
+        "the surviving region may lack capacity or required state/dependencies"
+      ]
+    },
+    {
+      "id": "AF3-C-013",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-F3.core",
+      "prompt": "What evidence helps determine whether two services share a failure domain?",
+      "expectedElements": [
+        "placement and infrastructure dependency information",
+        "shared network/storage/control-plane dependencies"
+      ]
+    },
+    {
+      "id": "AF3-C-014",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-F3.core",
+      "prompt": "Why should recovery capacity be included in a failure-domain model?",
+      "expectedElements": [
+        "a design that survives a failure only on paper can overload the surviving domain during recovery"
+      ]
+    },
+    {
+      "id": "AF3-C-015",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "scenario",
+      "expectedMinutes": 3,
+      "competencyId": "A-F3.core",
+      "prompt": "Why can a provider-independent design still have correlated dependencies?",
+      "expectedElements": [
+        "shared libraries, DNS, identity, networks or data paths can create common-mode failure"
+      ]
+    },
+    {
+      "id": "AF3-C-016",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "A-F3.core",
+      "prompt": "Design failure-domain placement for six replicas across three zones.",
+      "expectedElements": [
+        "spread replicas",
+        "avoid single-zone dependency",
+        "state quorum/availability assumptions",
+        "consider capacity"
+      ]
+    },
+    {
+      "id": "AF3-C-017",
+      "family": "conceptual",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "constructed-response",
+      "expectedMinutes": 4,
+      "competencyId": "A-F3.core",
+      "prompt": "Explain blast radius using one host, one zone and one region failure.",
+      "expectedElements": [
+        "host affects subset",
+        "zone broader placement/network/storage",
+        "region broad traffic/data boundary"
+      ]
+    },
+    {
+      "id": "AF3-C-018",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "scenario",
+      "expectedMinutes": 4,
+      "competencyId": "A-F3.core",
+      "prompt": "A multi-region system survives one region loss but violates data correctness. Give two hypotheses and tests.",
+      "expectedElements": [
+        "replica consistency/reconciliation",
+        "routing/session/write handling"
+      ]
+    },
+    {
+      "id": "AF3-C-019",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "A-F3.core",
+      "prompt": "Design a recovery plan for a shared dependency failure.",
+      "expectedElements": [
+        "identify blast radius",
+        "protect critical traffic",
+        "activate alternate path if safe",
+        "verify state"
+      ]
+    },
+    {
+      "id": "AF3-C-020",
+      "family": "conceptual",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "constructed-response",
+      "expectedMinutes": 5,
+      "competencyId": "A-F3.core",
+      "prompt": "Build a diagnosis tree for 'many unrelated services failed together'.",
+      "expectedElements": [
+        "shared provider/network/identity/dependency",
+        "zone/region scope",
+        "common deployment/change"
+      ]
+    },
+    {
+      "id": "AF3-D-001",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "placement topology",
+        "anti-affinity/spread policy"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "A-F3.diagnostic",
+      "prompt": "All replicas disappear after one zone failure. What should you inspect?",
+      "expectedElements": 2
+    },
+    {
+      "id": "AF3-D-002",
+      "family": "diagnostic",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": [
+        "surviving capacity",
+        "traffic control"
+      ],
+      "expectedMinutes": 2,
+      "competencyId": "A-F3.diagnostic",
+      "prompt": "One region fails and the other becomes overloaded. What is the next concern?",
+      "expectedElements": 2
+    },
+    {
+      "id": "AF3-D-003",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "shared failure domain/dependency"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-F3.diagnostic",
+      "prompt": "Many services fail at the same time across teams. What is a strong first clue?",
+      "expectedElements": 2
+    },
+    {
+      "id": "AF3-D-004",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "network partition or shared network failure"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-F3.diagnostic",
+      "prompt": "Network paths fail while hosts remain healthy. What class of failure is this?",
+      "expectedElements": 2
+    },
+    {
+      "id": "AF3-D-005",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "restored traffic/data load can exceed surviving capacity"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-F3.diagnostic",
+      "prompt": "Why can recovery itself create a failure?",
+      "expectedElements": 3
+    },
+    {
+      "id": "AF3-D-006",
+      "family": "diagnostic",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "shared provider failure domain"
+      ],
+      "expectedMinutes": 3,
+      "competencyId": "A-F3.diagnostic",
+      "prompt": "A provider outage affects identity, DNS and compute. What does that show?",
+      "expectedElements": 2
+    },
+    {
+      "id": "AF3-D-007",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "regional scope",
+        "other-region behavior",
+        "shared dependency signals"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-F3.diagnostic",
+      "prompt": "Design evidence to separate region failure from global dependency failure.",
+      "expectedElements": 4
+    },
+    {
+      "id": "AF3-D-008",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "storage/network/identity/control-plane dependencies",
+        "placement"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-F3.diagnostic",
+      "prompt": "A zone outage leaves enough raw compute but applications remain down. What should you inspect?",
+      "expectedElements": 4
+    },
+    {
+      "id": "AF3-D-009",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "control traffic",
+        "establish state assumptions",
+        "protect writes",
+        "verify user/data correctness"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-F3.diagnostic",
+      "prompt": "Design safe regional failover under uncertain data freshness.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AF3-D-010",
+      "family": "diagnostic",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": [
+        "common dependency",
+        "scope/time correlation",
+        "recent shared change",
+        "provider/network evidence"
+      ],
+      "expectedMinutes": 4,
+      "competencyId": "A-F3.diagnostic",
+      "prompt": "Build a correlated-failure investigation for unrelated services.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AF3-D-011",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "normal capacity",
+        "failure capacity",
+        "recovery surge",
+        "headroom",
+        "data recovery"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "A-F3.diagnostic",
+      "prompt": "Design a failure-domain review that includes recovery capacity.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AF3-D-012",
+      "family": "diagnostic",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": [
+        "failure evidence",
+        "blast radius",
+        "available capacity",
+        "recovery correctness"
+      ],
+      "expectedMinutes": 5,
+      "competencyId": "A-F3.diagnostic",
+      "prompt": "Create a decision tree for choosing host, zone, region or provider mitigation.",
+      "expectedElements": 5
+    },
+    {
+      "id": "AF3-H-001",
+      "family": "hands-on",
+      "difficulty": "foundation",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 6,
+      "competencyId": "A-F3.hands-on",
+      "prompt": "Map failure domains for a disposable service.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "record placement/dependencies",
+        "draw domains",
+        "identify shared controls",
+        "reset"
+      ],
+      "success": [
+        "domain map",
+        "shared dependency list"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF3-H-002",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-F3.hands-on",
+      "prompt": "Simulate a host failure.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "spread replicas",
+        "remove one host",
+        "observe",
+        "recover"
+      ],
+      "success": [
+        "placement",
+        "impact",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF3-H-003",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "application",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-F3.hands-on",
+      "prompt": "Simulate a zone failure.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "spread workloads",
+        "disable one zone path",
+        "observe capacity",
+        "rebalance",
+        "verify"
+      ],
+      "success": [
+        "zone boundary",
+        "survivor capacity",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF3-H-004",
+      "family": "hands-on",
+      "difficulty": "applied",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 8,
+      "competencyId": "A-F3.hands-on",
+      "prompt": "Run a regional failover simulation.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "record normal traffic",
+        "fail one region",
+        "route traffic",
+        "verify capacity/data",
+        "restore"
+      ],
+      "success": [
+        "failover evidence",
+        "survivor state",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF3-H-005",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-F3.hands-on",
+      "prompt": "Inject a shared dependency failure.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "choose safe shared dependency",
+        "break it",
+        "observe multiple services",
+        "restore"
+      ],
+      "success": [
+        "correlation",
+        "blast radius",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF3-H-006",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "diagnosis",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-F3.hands-on",
+      "prompt": "Test graceful degradation.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "disable noncritical feature",
+        "verify critical path",
+        "restore feature"
+      ],
+      "success": [
+        "critical path preserved",
+        "degradation evidence"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF3-H-007",
+      "family": "hands-on",
+      "difficulty": "difficult",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 10,
+      "competencyId": "A-F3.hands-on",
+      "prompt": "Lead an A2 failure-domain incident.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "state scope",
+        "identify shared domain",
+        "mitigate",
+        "recover",
+        "record"
+      ],
+      "success": [
+        "evidence chain",
+        "safe action",
+        "recovery"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    },
+    {
+      "id": "AF3-H-008",
+      "family": "hands-on",
+      "difficulty": "challenge",
+      "cognitiveLevel": "design",
+      "itemType": "hands-on",
+      "expectedMinutes": 12,
+      "competencyId": "A-F3.hands-on",
+      "prompt": "Review A1 architecture for correlated failure.",
+      "environment": [
+        "Disposable advanced distributed-system simulation with reset capability"
+      ],
+      "initialState": "Known-good synthetic workload and documented reset state.",
+      "allowedOperations": [
+        "identify common domains",
+        "challenge placement",
+        "design changes",
+        "test one"
+      ],
+      "success": [
+        "review findings",
+        "test result",
+        "redesign"
+      ],
+      "evidence": [
+        "before state",
+        "fault or workload change",
+        "system response",
+        "recovery verification"
+      ],
+      "failureConditions": [
+        "changes beyond scope",
+        "claims recovery without evidence"
+      ],
+      "recoveryRequirements": [
+        "restore known-good state",
+        "verify affected user/system behavior"
+      ],
+      "resetStrategy": "Reset simulation fixtures and restore documented baseline."
+    }
+  ]
+}
