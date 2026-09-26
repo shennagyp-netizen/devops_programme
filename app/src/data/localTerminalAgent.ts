@@ -1,4 +1,5 @@
 import type { MachineVerificationEnvelope } from "./runtimeVerification";
+import type { VerificationAttestation, VerificationChallenge } from "../framework/verification";
 
 export type LocalTerminalAgentStatus =
   | { available: true; version: string; platform: string }
@@ -81,4 +82,54 @@ export async function runLocalTerminalTask(input: {
   }
 
   return body as MachineVerificationEnvelope;
+}
+
+
+export type LocalTerminalAttestedExecution = {
+  envelope: MachineVerificationEnvelope;
+  attestation: VerificationAttestation;
+};
+
+export async function runLocalTerminalAttestedTask(input: {
+  taskId: string;
+  platform: string;
+  token: string;
+  challenge: VerificationChallenge;
+}): Promise<LocalTerminalAttestedExecution> {
+  if (!input.token.trim()) {
+    throw new Error("Enter the local terminal agent pairing token first.");
+  }
+
+  const request = new Request(`${AGENT_URL}/execute`, {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${input.token.trim()}`
+    },
+    body: JSON.stringify({
+      taskId: input.taskId,
+      platform: input.platform,
+      challenge: input.challenge
+    }),
+    targetAddressSpace: "loopback"
+  } as RequestInit & { targetAddressSpace: "loopback" });
+
+  const response = await fetch(request);
+  const body = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(
+      String(
+        body.error ??
+          `Local terminal agent returned HTTP ${response.status}.`
+      )
+    );
+  }
+
+  if (!body || typeof body !== "object" || !body.envelope || !body.attestation) {
+    throw new Error("Local terminal agent did not return a signed attestation.");
+  }
+
+  return body as LocalTerminalAttestedExecution;
 }
