@@ -102,6 +102,21 @@ export function ProjectPanel({
             </div>
           </div>
 
+          <div className="course-path-columns">
+            <div>
+              <strong>Professional deliverables</strong>
+              <ul>
+                {project.deliverables.map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            </div>
+            <div>
+              <strong>Review gates</strong>
+              <ul>
+                {project.reviewGates.map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            </div>
+          </div>
+
           <p className="range">
             Competency gates: {project.competencyGates.join(" · ")}
           </p>
