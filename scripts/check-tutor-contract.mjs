@@ -9,7 +9,6 @@ const route = read("src/app/api/tutor/route.ts");
 const contract = read("src/data/tutorContract.ts");
 const component = read("src/components/TutorCoach.tsx");
 const env = read(".env.example");
-const contract = read("src/data/tutorContract.ts");
 
 const required = [
   ["route is authenticated", route.includes("getCurrentUser")],
