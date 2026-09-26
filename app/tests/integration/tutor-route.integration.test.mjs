@@ -11,8 +11,11 @@ vi.mock("../../src/lib/server/auth.ts", () => ({
   getCurrentUser: currentUserMock
 }));
 
+const assertTutorRateLimitMock = vi.fn();
+
 vi.mock("../../src/lib/server/tutor.ts", () => ({
   appendTutorMessage: appendTutorMessageMock,
+  assertTutorRateLimit: assertTutorRateLimitMock,
   buildTutorContext: buildTutorContextMock,
   createTutorSessionForUser: createTutorSessionMock,
   listTutorMessagesForUser: listTutorMessagesMock,
@@ -64,6 +67,7 @@ describe("tutor route", () => {
     vi.restoreAllMocks();
     currentUserMock.mockReset();
     appendTutorMessageMock.mockReset();
+    assertTutorRateLimitMock.mockReset();
     buildTutorContextMock.mockReset();
     createTutorSessionMock.mockReset();
     listTutorMessagesMock.mockReset();
@@ -73,6 +77,7 @@ describe("tutor route", () => {
     createTutorSessionMock.mockResolvedValue("00000000-0000-0000-0000-000000000001");
     listTutorMessagesMock.mockResolvedValue([]);
     appendTutorMessageMock.mockResolvedValue("message-id");
+    assertTutorRateLimitMock.mockResolvedValue({ allowed: true, remaining: 20 });
     verifyTutorSessionMock.mockResolvedValue({
       id: "00000000-0000-0000-0000-000000000001"
     });
@@ -95,6 +100,28 @@ describe("tutor route", () => {
     );
 
     expect(response.status).toBe(401);
+    expect(createTutorSessionMock).not.toHaveBeenCalled();
+  });
+
+  it("fails closed when the learner exceeds the tutor request rate limit", async () => {
+    currentUserMock.mockResolvedValue({
+      id: "user-1",
+      email: "learner@example.com"
+    });
+    assertTutorRateLimitMock.mockRejectedValue(
+      new Error("Tutor rate limit reached. Please continue shortly.")
+    );
+
+    const response = await POST(
+      request({
+        lessonId: "B1.4",
+        mode: "teaching",
+        message: "Again."
+      })
+    );
+
+    expect(response.status).toBe(429);
+    expect(buildTutorContextMock).not.toHaveBeenCalled();
     expect(createTutorSessionMock).not.toHaveBeenCalled();
   });
 
