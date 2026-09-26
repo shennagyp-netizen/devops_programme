@@ -109,7 +109,7 @@ describe("local terminal agent", () => {
   it("rejects unknown runtime tasks before execution", async () => {
     const token = "test-token-789";
     const port = 43873;
-    const child = startAgent(port, token);
+    const { child, keyDir } = await startAgent(port, token);
 
     try {
       await waitForServer(child);
@@ -130,6 +130,7 @@ describe("local terminal agent", () => {
       expect((await response.json()).error).toBe("Unknown runtime task.");
     } finally {
       child.kill("SIGTERM");
+      await rm(keyDir, { recursive: true, force: true });
     }
   });
   it("denies unapproved origins and permits the explicit development origin", async () => {
