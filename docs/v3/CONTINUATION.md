@@ -1,227 +1,185 @@
+
 # V3 Continuation Handoff
 
-## Current branch
+## Branch
 
-```text
+~~~text
 v3/learning-framework
-```
+~~~
 
-Base:
+## Baseline
 
-```text
+~~~text
 main
-```
+~~~
 
-V3 is intentionally additive. Main has not been replaced.
+main remains stable. No merge is implied by framework MVP completion.
 
-## Completed in this branch
+## Critical direction
 
-- Established the reusable v3 learning-framework framing.
-- Added the framework authority contracts and pure policy.
-- Added a strict completion command boundary with browser trust fields rejected.
-- Added a shared immutable programme registry with explicit evidence completion policies.
-- Added server-owned verified evidence persistence with attestation-digest validation.
-- Added transactional completion authority with proof links and legacy-row normalization.
-- Removed the legacy direct completion writer from the progress service.
-- Filtered progress reads to authoritative completions only.
-- Gated the UI completion control on server-verified evidence.
-- Added TDD and red-team coverage for the new trust boundary.
-- Signed-provider milestone is green: provider challenges, exact provider-key binding, signed local/SSH attestations, authoritative evidence, red-team replay/key-substitution coverage, unit/integration tests, typecheck, and production build pass.
-- Added the framework attestation contract in `app/src/framework/verification.ts` with TDD coverage for binding, freshness, expiry, and digest validation.
-- Added exact provider-key binding to the challenge lifecycle and red-team coverage for key substitution/revocation.
-- Added authoritative mastery recording with server-derived outcome and attempt number.
-- Added authoritative assessment instances, safe question projections, server-side selected-response scoring, pending-review states, replay protection, and expiry enforcement.
-- Mirrored all reviewed assessment banks inside the app deployment tree with CI drift detection.
-- Renumbered trust-critical migrations to an unambiguous 0004/0005/0006 sequence.
-- Restricted mastery commands to the published coaching stage set and added server-action boundary coverage.
-- Added a dedicated `check:framework-security` CI gate to prevent trust-boundary regressions.
-- Migrated the local terminal agent and SSH runner to signed challenge-bound provider attestations.
-- Rejected unsigned machine-evidence imports at the Learning Gateway.
+The Learning Framework is now decoupled from DevOps.
 
+The canonical reusable framework is:
 
-## Important architectural decision
+~~~text
+framework/
+~~~
 
-Do not immediately rewrite existing progress code.
+It is a complete React learning application plus generic learning core, runtime, and provider contracts.
 
-First create the authoritative policy boundary, then migrate current persistence and UI flows behind it.
+The DevOps application is a consumer of the framework, not the framework itself.
 
-## Latest TDD and red-team work
+## Current green framework MVP
 
-The completion and signed-provider boundaries are complete for these slices. Assessment authority is now complete for the current pilot delivery path. The current open trust boundary is **tutor history/rate limiting**, followed by remaining assessment calibration/manual-review controls.
+The standalone framework contains:
 
-### Immediate next work
+- generic learning contracts;
+- completion/evidence semantics;
+- assessment-pass semantics;
+- learner-state representation;
+- progression;
+- learning intents;
+- control policy;
+- in-memory runtime;
+- generic provider interfaces;
+- reusable React application shell;
+- neutral demo programme;
+- framework unit tests;
+- dependency-boundary tests;
+- independent GitHub Actions workflow.
 
-### A. Verification-provider authority
+Latest independent workflow is green for:
 
-Implemented in V3.2:
+- tests;
+- boundary isolation;
+- typecheck;
+- production React build.
 
-- strict verification challenge and attestation contracts;
-- server-side provider-key provisioning boundary;
-- short-lived persisted verification attempts;
-- Ed25519 signature verification;
-- nonce/hash integrity checks;
-- atomic replay-safe challenge consumption;
-- provenance retained on authoritative evidence.
+## Canonical structure
 
-### A.1 Signed runtime-provider adapters
+~~~text
+framework/
+├── src/core/
+├── src/runtime/
+├── src/react/
+├── src/demo/
+├── src/main.tsx
+├── tests/
+├── package.json
+├── vite.config.ts
+└── tsconfig*.json
+~~~
 
-Implemented:
+## Framework owns
 
-1. local terminal agent receives a server-issued challenge and signs the exact execution envelope;
-2. SSH runner consumes a challenge file and produces the same signed attestation shape;
-3. both providers bind the challenge to the exact runtime task and provider key;
-4. the Learning Gateway accepts only server-validated attestation evidence.
+- learning semantics;
+- learner state;
+- progression;
+- evidence semantics;
+- assessment semantics;
+- completion policy;
+- intents;
+- control policy;
+- reusable React learning experience;
+- provider interfaces.
 
-### A.2 Local terminal provider enrollment
+## Framework does NOT own
 
-The local agent now generates a persistent Ed25519 provider keypair and exposes its public key through `/health`.
+- DevOps curriculum;
+- DevOps assessment banks;
+- PostgreSQL/Drizzle;
+- Next.js/Vercel;
+- authentication;
+- terminal/SSH;
+- AI vendors;
+- podcast/audio providers;
+- domain-specific content;
+- domain-specific infrastructure.
 
-The public key is not accepted from the browser. A trusted server/deployment operator must register it with:
+## Transitional DevOps implementation
 
-```text
-DATABASE_URL=... node scripts/register-local-terminal-provider.mjs \
-  --learner-id <authenticated-user-id> \
-  --provider-id <agent-provider-id> \
-  --key-id <agent-key-id> \
-  --public-key-file <path-to-provider-public-key.pem>
-```
+~~~text
+app/src/framework/
+~~~
 
-For a deployed learning gateway, set:
+is now compatibility/transition code inside the existing DevOps application.
 
-```text
-DEVOPS_TERMINAL_ALLOWED_ORIGINS=https://<learning-gateway-origin>
-```
+Do not make it a second generic framework.
 
-The local agent no longer reflects arbitrary browser origins. Preflight requests from unapproved origins are rejected.
-### B. Machine verification migration
+New generic framework work belongs only in:
 
-The signed provider boundary is now the authoritative machine-verification path.
+~~~text
+framework/
+~~~
 
-The server must verify:
+## Next work
 
-- task identity and contract version
-- learner binding
-- challenge/reference identity
-- attestation digest
-- issued-at / expiry / replay protection
-- provider identity
-- execution-mode constraints
+Stay framework-only first.
 
-### C. Mastery migration
+1. make runtime transitions deterministic and fully tested;
+2. stabilize public view-model contracts;
+3. add generic provider registration/selection semantics;
+4. model async/busy/error states;
+5. expand accessibility and responsive tests;
+6. add a second neutral programme fixture;
+7. keep framework CI independently green.
 
-Implemented in V3.3. Keep browser remediation UX non-authoritative.
+After the framework MVP is stable, create the first DevOps consuming vertical slice through explicit adapters.
 
-### D. Assessment migration
+## TDD rule
 
-Implemented in V3.4 for the current pilot delivery path. Keep certification/standard-setting claims out of the runtime until calibration and review workflows exist.
+~~~text
+RED
+→ implementation
+→ GREEN
+→ boundary/red-team review
+→ documentation
+~~~
 
-### E. Tutor migration
+The framework boundary test remains mandatory.
 
-Next: reconstruct trusted assistant history server-side and add shared distributed rate limiting.
+## Red-team focus
 
-### F. Quality hardening
+Attack:
 
-Add a security regression gate that proves:
+- DevOps/domain dependency leakage;
+- database/framework coupling;
+- UI components deciding authority;
+- provider implementations leaking into core;
+- demo-specific assumptions;
+- runtime transitions bypassing policy;
+- domain-specific identifiers becoming framework contracts.
 
-- authoritative completion requires an evidence proof link;
-- browser/localStorage evidence cannot become server-authoritative;
-- old forged metadata is normalized or ignored;
-- new migrations preserve referential integrity.
+DevOps infrastructure vulnerabilities are application concerns unless they cross the framework boundary.
 
-## V3 quality gate
-
-A feature is not complete until:
-
-```text
-TDD
-+
-security red-team
-+
-server-authority test
-+
-integration test
-+
-documentation
-+
-CI green
-```
-
-
-### D. Mastery migration
-
-Move mastery attempt counting and mastery state behind the same authority.
-
-The browser may retain temporary remediation UX state, but authoritative attempt numbering comes from the server.
-
-### E. Assessment migration
-
-Create a server-owned assessment instance and attempt model.
-
-Do not expose authoritative answer keys through client runtime data for operational assessments.
-
-### F. Tutor migration
-
-Reconstruct assistant history server-side or mark client-supplied assistant text as untrusted.
-
-Add shared distributed rate limiting.
-
-### G. Verification providers
-
-Implemented for the current machine providers:
-
-1. structured human evidence remains a future explicit provider;
-2. local terminal agent uses signed challenge-bound attestations;
-3. SSH uses the same signed attestation SPI;
-4. managed runtime remains a future provider.
-
-## V3 quality gate
-
-A feature is not complete until:
-
-```text
-TDD
-+
-security red-team
-+
-server-authority test
-+
-integration test
-+
-documentation
-```
-
-For security-sensitive transitions, browser-only tests are insufficient.
-
-## Deliberate non-goals
+## Non-goals
 
 Do not:
 
-- split repositories
-- introduce microservices
-- publish packages prematurely
-- rewrite all UI components
-- replace working DevOps content
-- treat localStorage as authoritative learner state
+- split repositories;
+- build microservices;
+- add a framework database;
+- publish packages yet;
+- build framework billing/auth;
+- migrate all DevOps UI;
+- import DevOps assessment/terminal implementations into framework core.
 
-## Exit criterion for the current V3.1 slice
+## Acceptance gate
 
-This slice is complete when:
+Framework MVP is complete only when:
 
-- browser completion payloads cannot mint completion;
-- completion requires server-verified evidence;
-- legacy completion metadata is not trusted as authoritative;
-- evidence proof links are transactional;
-- programme metadata is server/registry authoritative;
-- TDD, red-team, typecheck, and production build are green.
+~~~text
+framework TDD
++
+boundary isolation
++
+typecheck
++
+production build
++
+documentation
+=
+GREEN
+~~~
 
-## Exit criterion for the broader V3 foundation
-
-The broader framework is ready for broader migration when:
-
-- completion cannot be forged through a browser payload
-- evidence provenance is server-verifiable
-- assessment state is authoritative
-- mastery state is authoritative
-- tutor requests cannot manufacture authoritative conversation state
-- shared rate limiting protects expensive endpoints
-- existing DevOps content continues to pass its programme gates
+Only then start the first DevOps consuming vertical slice.
