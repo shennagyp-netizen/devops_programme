@@ -172,6 +172,7 @@ export function AssistantPanel({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         lessonId: context.lessonId,
+        learningMode: context.learningMode,
         messages: conversation
           .slice(-12)
           .map(({ role, content: message }) => ({
