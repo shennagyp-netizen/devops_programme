@@ -109,6 +109,15 @@ describe("lesson panel integration contract", () => {
     expect(code).toContain("Laptop terminal execution failed");
   });
 
+
+  it("does not accept unsigned imported machine evidence as trusted proof", () => {
+    const code = source();
+
+    expect(code).toContain("Signed SSH execution was verified by the learning server.");
+    expect(code).toContain("Unsigned machine evidence is not accepted.");
+    expect(code).not.toContain("recordMachineVerification({");
+  });
+
   it("keeps authenticated mastery history visible to the lesson model", () => {
     const code = source();
 
