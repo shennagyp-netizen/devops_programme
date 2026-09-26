@@ -42,7 +42,7 @@ const contextFixture = {
     competencyGates: ["B-F2.core"],
     evidenceRequirements: ["request evidence"],
     completionCriteria: ["recovery is verified"],
-    reviewGates: ["container boundary proven"]
+    reviewGates: ["baseline approved"]
   },
   learner: {
     completionCount: 2,
@@ -158,6 +158,66 @@ describe("tutor route", () => {
     expect(body.response.canCertify).toBe(false);
     expect(body.response.nextQuestion).toContain("What does");
     expect(appendTutorMessageMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("executes only published read-only tools and then asks the model for the final answer", async () => {
+    currentUserMock.mockResolvedValue({
+      id: "user-1",
+      email: "learner@example.com"
+    });
+    process.env.AI_GATEWAY_API_KEY = "test-key";
+
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    fetchSpy
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            output: [
+              {
+                type: "function_call",
+                name: "get_hands_on_contract",
+                arguments: JSON.stringify({ lessonId: "B1.4" }),
+                call_id: "call_001"
+              }
+            ]
+          }),
+          { status: 200, headers: { "content-type": "application/json" } }
+        )
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            output_text: JSON.stringify({
+              message: "Use the published task contract to plan the next observation.",
+              mode: "assignment-coach",
+              pedagogicalIntent: "question",
+              requestedEvidence: ["observation evidence"]
+            }),
+            output: []
+          }),
+          { status: 200, headers: { "content-type": "application/json" } }
+        )
+      );
+
+    const response = await POST(
+      request({
+        lessonId: "B1.4",
+        mode: "assignment-coach",
+        platform: "macos",
+        message: "What exactly is this assignment asking me to prove?"
+      })
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+    const secondBody = JSON.parse(String(fetchSpy.mock.calls[1]?.[1]?.body));
+    expect(
+      secondBody.input.some((item) => item.type === "function_call_output")
+    ).toBe(true);
+    expect(body.toolCallsUsed).toBe(1);
+    expect(body.response.canCertify).toBe(false);
   });
 
   it("does not allow a session from another lesson to be reused", async () => {
