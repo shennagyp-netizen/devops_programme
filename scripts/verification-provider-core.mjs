@@ -106,6 +106,7 @@ export function signVerificationAttestation({
     challengeId: challenge.id,
     learnerId: challenge.learnerId,
     itemId: challenge.itemId,
+    targetRef: challenge.targetRef,
     evidenceKind: challenge.evidenceKind,
     providerId,
     keyId,
