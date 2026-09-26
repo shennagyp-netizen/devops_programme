@@ -141,6 +141,148 @@ export function LessonPanel({
     onModeChange?.("learn");
   }, [lesson.id, onModeChange]);
 
+  useEffect(() => {
+    let active = true;
+
+    async function checkAgent() {
+      const status = await localTerminalAgentStatus();
+      if (!active) return;
+
+      if (status.available) {
+        setLocalAgentAvailable(true);
+        setLocalAgentPlatform(status.platform);
+        setLocalAgentInfo(
+          `Connected · ${status.platform} · agent ${status.version}`
+        );
+      } else {
+        setLocalAgentAvailable(false);
+        setLocalAgentPlatform(null);
+        setLocalAgentInfo(status.reason);
+      }
+    }
+
+    void checkAgent();
+    const interval = window.setInterval(() => {
+      void checkAgent();
+    }, 5000);
+
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+    };
+  }, []);
+
+  async function runOnLaptop() {
+    if (!runtimeTask) return;
+
+    if (!localAgentToken.trim()) {
+      setMachineVerificationMessage(
+        "Start the DevOps terminal agent and enter its pairing token first."
+      );
+      return;
+    }
+
+    setLocalAgentRunning(true);
+    setMachineVerificationMessage(
+      "Running the verified exercise on this laptop..."
+    );
+
+    try {
+      const envelope = await runLocalTerminalTask({
+        taskId: runtimeTask.taskId,
+        platform,
+        token: localAgentToken
+      });
+
+      const result = recordMachineVerification({
+        course: lesson.course,
+        projectId: lesson.projectId,
+        task: runtimeTask,
+        envelope,
+        summary: `Verified laptop execution for ${lesson.id}`
+      });
+
+      if (!result.recorded) {
+        setExerciseRecorded(false);
+        setMachineResults(envelope.stepResults ?? []);
+        setMachineVerificationMessage(
+          `Laptop execution returned invalid evidence: ${result.failures.join(" ")}`
+        );
+        startMasteryRemediation(result.failures, "mechanism-reteach");
+        return;
+      }
+
+      const isFullExerciseVerification = runtimeTask.scope === "exercise";
+      setExerciseRecorded(isFullExerciseVerification);
+      setMachineResults(envelope.stepResults ?? []);
+      setMachineVerificationMessage(
+        runtimeTask.scope === "exercise"
+          ? "Laptop terminal execution verified for this session."
+          : "Laptop probe execution verified for this session. Complete the required hands-on exercise below to unlock the lesson."
+      );
+      onEvidenceRecorded?.();
+    } catch (error) {
+      setExerciseRecorded(false);
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Laptop terminal execution failed.";
+      setMachineVerificationMessage(
+        `Laptop terminal execution failed: ${message}`
+      );
+      startMasteryRemediation([message], "mechanism-reteach");
+    } finally {
+      setLocalAgentRunning(false);
+    }
+  }
+
+  async function importMachineEvidence(file: File | undefined) {
+    if (!file) return;
+
+    if (!runtimeTask) {
+      setMachineVerificationMessage(
+        "No verified execution contract is published for this lesson. Use the manual terminal path."
+      );
+      return;
+    }
+
+    try {
+      const source = await file.text();
+      const envelope = JSON.parse(source);
+      const result = recordMachineVerification({
+        course: lesson.course,
+        projectId: lesson.projectId,
+        task: runtimeTask,
+        envelope,
+        summary: `Verified remote execution for ${lesson.id}`
+      });
+
+      if (!result.recorded) {
+        setExerciseRecorded(false);
+        setMachineVerificationMessage(
+          `Machine evidence rejected: ${result.failures.join(" ")}`
+        );
+        return;
+      }
+
+      const isFullExerciseVerification = runtimeTask.scope === "exercise";
+      setExerciseRecorded(isFullExerciseVerification);
+      setMachineResults(envelope.stepResults ?? []);
+      setMachineVerificationMessage(
+        isFullExerciseVerification
+          ? "Verified execution evidence was accepted for this session."
+          : "Machine probe evidence was accepted. Complete the required hands-on exercise below to unlock the lesson."
+      );
+    } catch (error) {
+      setExerciseRecorded(false);
+      setMachineVerificationMessage(
+        error instanceof Error
+          ? `Could not read machine evidence: ${error.message}`
+          : "Could not read machine evidence."
+      );
+    }
+  }
+
   function startMasteryRemediation(failures: string[], stageOverride?: MasteryPlan["stage"]) {
     const attempt = recordMasteryFailure(lesson.id);
     const plan = getMasteryPlan(
