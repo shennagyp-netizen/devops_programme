@@ -2043,3 +2043,29 @@ The tutor prompt explicitly labels prior conversation and the current learner me
 
 Red-team coverage now includes rate-limit rejection before provider calls.
 
+
+
+============================================================
+2026-09-26 TUTOR RED-TEAM HARDENING — RATE LIMIT + EVIDENCE TRUST
+============================================================
+
+A fresh TDD/red-team pass found two real boundary defects after the previous green gate:
+- the original tutor limiter used a non-atomic read-then-write check, so concurrent requests could race through the five-minute limit;
+- the browser could submit verificationSummary while the tutor prompt labeled it as machine verification, which could mislead the model even though deterministic authority was protected.
+
+Corrections:
+- added persistent tutor_rate_limit_reservations storage;
+- made request reservation atomic with a PostgreSQL transaction and pg_advisory_xact_lock per learner;
+- prune expired reservations before counting;
+- keep the limit at 20 tutor requests per rolling five minutes;
+- perform the reservation before learner context/provider work, so rejected requests do not invoke the model;
+- mark browser verificationSummary explicitly as learner-reported and untrusted;
+- added migration 0004_tutor_rate_limit.sql;
+- updated the runtime schema bootstrap to cover the reservation table;
+- added route red-team coverage for spoofed verification summaries and rate-limit short-circuit behavior;
+- strengthened the tutor contract checker to require the atomic reservation, untrusted verification label and migration.
+
+Current status: GitHub CI still needs to run on this exact hardened head. The next external validation gate is a fresh Vercel deployment when the Hobby deployment window permits it, followed by browser visual verification. Streaming text and realtime voice come only after those gates remain green and reuse the same authority/evidence contract.
+============================================================
+END TUTOR RED-TEAM HARDENING
+============================================================
