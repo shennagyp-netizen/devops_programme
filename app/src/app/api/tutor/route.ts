@@ -9,10 +9,12 @@ const rateWindows = new Map<string, RateWindow>();
 function consumeRateLimit(userId: string) {
   const now = Date.now();
   const current = rateWindows.get(userId);
+
   if (!current || now - current.startedAt >= 60_000) {
     rateWindows.set(userId, { startedAt: now, count: 1 });
     return true;
   }
+
   if (current.count >= tutorLimits.rateLimitPerMinute) return false;
   current.count += 1;
   return true;
@@ -23,25 +25,28 @@ function clean(value: string) {
 }
 
 function lessonContext(lesson: (typeof courseLessons)[number]) {
-  const blocks = lesson.content.blocks.map((block) => {
-    if (block.type === "text") return `${"$"}{block.heading}: ${"$"}{block.body}`;
-    if (block.type === "illustration" || block.type === "interactive-illustration") {
-      return `${"$"}{block.heading}: ${"$"}{block.alt}`;
-    }
-    return "";
-  }).filter(Boolean).join("\n");
+  const blocks = lesson.content.blocks
+    .map((block) => {
+      if (block.type === "text") return block.heading + ": " + block.body;
+      if (block.type === "illustration" || block.type === "interactive-illustration") {
+        return block.heading + ": " + block.alt;
+      }
+      return "";
+    })
+    .filter(Boolean)
+    .join("\n");
 
   return clean([
-    `Lesson ID: ${"$"}{lesson.id}`,
-    `Title: ${"$"}{lesson.title}`,
-    `Course: ${"$"}{lesson.course}`,
-    `Project: ${"$"}{lesson.projectId}`,
-    `Domain: ${"$"}{lesson.domain}`,
-    `Objective: ${"$"}{lesson.objective}`,
-    `Hands-on objective: ${"$"}{lesson.lab.objective}`,
-    `Hands-on challenge: ${"$"}{lesson.lab.challenge}`,
-    `Recall questions: ${"$"}{lesson.recall.join(" | ")}`,
-    `Lesson content:\n${"$"}{blocks}`
+    "Lesson ID: " + lesson.id,
+    "Title: " + lesson.title,
+    "Course: " + lesson.course,
+    "Project: " + lesson.projectId,
+    "Domain: " + lesson.domain,
+    "Objective: " + lesson.objective,
+    "Hands-on objective: " + lesson.lab.objective,
+    "Hands-on challenge: " + lesson.lab.challenge,
+    "Recall questions: " + lesson.recall.join(" | "),
+    "Lesson content:\n" + blocks
   ].join("\n"));
 }
 
@@ -82,7 +87,10 @@ export async function POST(request: Request) {
   }
 
   if (!consumeRateLimit(user.id)) {
-    return NextResponse.json({ error: "Tutor rate limit reached. Please try again in a minute." }, { status: 429 });
+    return NextResponse.json(
+      { error: "Tutor rate limit reached. Please try again in a minute." },
+      { status: 429 }
+    );
   }
 
   let raw: unknown;
@@ -93,10 +101,14 @@ export async function POST(request: Request) {
   }
 
   const parsed = parseTutorRequest(raw);
-  if (!parsed) return NextResponse.json({ error: "Invalid tutor request." }, { status: 400 });
+  if (!parsed) {
+    return NextResponse.json({ error: "Invalid tutor request." }, { status: 400 });
+  }
 
   const lesson = courseLessons.find((candidate) => candidate.id === parsed.lessonId);
-  if (!lesson) return NextResponse.json({ error: "Lesson context is not available." }, { status: 400 });
+  if (!lesson) {
+    return NextResponse.json({ error: "Lesson context is not available." }, { status: 400 });
+  }
 
   const apiKey = process.env.AI_GATEWAY_API_KEY;
   const model = process.env.AI_GATEWAY_MODEL;
@@ -109,14 +121,17 @@ export async function POST(request: Request) {
 
   const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
     { role: "system", content: systemPrompt(lessonContext(lesson)) },
-    ...parsed.messages.map((message: TutorMessage) => ({ role: message.role, content: message.content }))
+    ...parsed.messages.map((message: TutorMessage) => ({
+      role: message.role,
+      content: message.content
+    }))
   ];
 
   try {
     const upstream = await fetch("https://ai-gateway.vercel.sh/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${"$"}{apiKey}`,
+        Authorization: "Bearer " + apiKey,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -130,10 +145,20 @@ export async function POST(request: Request) {
     });
 
     const payload = (await upstream.json()) as unknown;
-    if (!upstream.ok) return NextResponse.json({ error: "The tutor provider rejected the request." }, { status: 502 });
+    if (!upstream.ok) {
+      return NextResponse.json(
+        { error: "The tutor provider rejected the request." },
+        { status: 502 }
+      );
+    }
 
     const text = extractText(payload);
-    if (!text) return NextResponse.json({ error: "The tutor returned no usable text." }, { status: 502 });
+    if (!text) {
+      return NextResponse.json(
+        { error: "The tutor returned no usable text." },
+        { status: 502 }
+      );
+    }
 
     return NextResponse.json({ text });
   } catch {
