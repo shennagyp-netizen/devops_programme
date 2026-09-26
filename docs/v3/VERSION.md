@@ -1,6 +1,6 @@
 # Learning Framework V3
 
-- **Framework version:** 3.2-verification-provider-authority
+- **Framework version:** 3.3-authoritative-mastery
 - **Branch:** `v3/learning-framework`
 - **Baseline:** `main`
 - **Reference programme:** DevOps
@@ -25,7 +25,7 @@ The 3.1 implementation establishes an authoritative completion/evidence boundary
 
 The V3.2 implementation now includes a real signed provider path for both the local terminal agent and SSH runner. Authoritative machine evidence is created only after server-side challenge validation, provider-key verification, signature verification, freshness checks, and one-time challenge consumption.
 
-This version marker does not claim that mastery authority, assessment authority, or tutor trust migration is complete.
+This version marker does not claim that assessment authority or tutor trust migration is complete.
 
 ## Stability rule
 
@@ -48,8 +48,20 @@ The provider-authority slice now contains:
 
 The operational trust boundary is therefore complete for the signed provider path. Provider-key enrollment remains an explicit deployment/provisioning operation rather than a browser action.
 
+## V3.3 status
+
+The mastery boundary is now authoritative for outcome and attempt identity:
+
+- browser requests cannot submit an outcome, lesson identity, task identity, or learner identity as trusted mastery state;
+- the server resolves the lesson and hands-on task from the programme registry;
+- the server resolves evidence only for the authenticated learner;
+- mastery outcome is derived from the same authoritative evidence policy used for completion;
+- attempt numbers are server-generated and collision-safe;
+- coaching stage is restricted to the published mastery stage set;
+- learner summaries remain learner-authored notes, not authoritative outcomes.
+
 ## Next milestone
 
-**V3.3 — Authoritative mastery**
+**V3.4 — Authoritative assessment**
 
-Move mastery outcome semantics behind server-owned evaluation and make the browser a presentation/remediation surface only.
+Move operational assessment instances, scoring, and pass state behind server-owned question/rubric authority.
