@@ -99,24 +99,39 @@ export async function completeLearningItemForUser(
   }
 
   const evidenceRefs = normalizeEvidenceRefs(command.evidenceRefs);
+  const resolveAllServerEvidence = command.evidenceRefs === undefined;
   const db = getDb();
 
   return db.transaction(async (tx) => {
-    const evidenceRows = evidenceRefs.length
+    const evidenceRows = resolveAllServerEvidence
       ? await tx
           .select()
           .from(learnerVerifiedEvidence)
           .where(
             and(
               eq(learnerVerifiedEvidence.userId, learnerId),
-              inArray(learnerVerifiedEvidence.id, evidenceRefs)
+              eq(learnerVerifiedEvidence.itemId, item.id)
             )
           )
-      : [];
+      : evidenceRefs.length
+        ? await tx
+            .select()
+            .from(learnerVerifiedEvidence)
+            .where(
+              and(
+                eq(learnerVerifiedEvidence.userId, learnerId),
+                inArray(learnerVerifiedEvidence.id, evidenceRefs)
+              )
+            )
+        : [];
 
     const evidence = new Map(
       evidenceRows.map((row) => [row.id, toVerifiedEvidenceRecord(row)] as const)
     );
+
+    const resolvedEvidenceRefs = resolveAllServerEvidence
+      ? evidenceRows.map((row) => row.id)
+      : evidenceRefs;
 
     const decision = evaluateLearningTransition(
       {
@@ -126,7 +141,7 @@ export async function completeLearningItemForUser(
       },
       {
         itemId: item.id,
-        evidenceRefs
+        evidenceRefs: resolvedEvidenceRefs
       }
     );
 
