@@ -1,11 +1,39 @@
-EPISODE B1.4 — Cognitive Level 4: Design and Transfer
+EPISODE B1.4 — Explanation Level 4: Expert
 
-At the highest cognitive level, the container is no longer a command-line topic. It becomes a design boundary for a larger system.
+@knowledge K01
+Environment non-repeatability is a system property: identical application code can yield different behavior when runtime, dependencies, filesystem state, configuration, network conditions, or external services differ. The environment is therefore part of the application execution model and must be made reproducible.
 
-Imagine a frontend, an API, and a database. Each service has a process, a configuration, a network identity, and a data lifecycle. The frontend may be disposable. The database cannot treat its writable container layer as durable application data. The API needs an explicit network path to the database. A public client needs a different path to the frontend.
+@knowledge K02
+Diagnose the environment explicitly: runtime version, dependency set, required files, environment variables, and external dependencies. These inputs define the conditions under which the application process executes.
 
-Now ask what should happen when one boundary fails. If the API process stops, the database should not be modified just because the API is unhealthy. If a host port changes, the internal service contract should remain conceptually separate from the external access path. If the database container is replaced, its persistent data should remain available through the storage mechanism that owns that data lifecycle.
+@knowledge K03
+The standard recipe-and-kitchen analogy is useful only for dependency variation. It must not be extended into an architectural claim. A container is neither a miniature kitchen nor a guest virtual machine.
 
-The design principle is to make every important boundary explicit and testable. Package the environment in the image. Treat the process as the unit of work. Give persistent data its own lifecycle. Separate internal service communication from external port publication. Then build diagnosis and verification around those boundaries.
+@knowledge K04
+Use the three Docker layers precisely. The image is the immutable packaged starting point containing application files, runtime components, defaults, and startup instructions. The container is the runtime instance created from that image. The process is the actual operating-system workload. Image, container, and process are distinct objects with different lifecycles and responsibilities.
 
-This model transfers beyond Docker. Kubernetes can schedule containers, but it does not remove the underlying need to reason about processes, resources, networking, storage, evidence, and recovery. The technology changes. The systems model remains.
+@knowledge K05
+Isolation is kernel-mediated, not guest-kernel virtualization. The container shares the host kernel. Linux namespaces provide scoped views of process, network, and filesystem resources; cgroups provide resource accounting and control. The container therefore provides process isolation and resource boundaries without creating an independent operating system.
+
+@knowledge K06
+The host remains an active dependency. Isolation changes visibility and resource access; it does not eliminate kernel, hardware, network, or host-resource effects. Any model that treats a container as a self-contained machine loses important failure modes.
+
+@knowledge K07
+The short-lived probe
+docker run --rm nginx:alpine nginx -t
+makes the lifecycle distinction concrete. The image is the packaged input, the runtime creates the container, nginx -t is the workload process, and process termination ends this short-lived workload; --rm then removes the disposable container.
+
+@knowledge K08
+Container-local writable state follows container lifecycle semantics. Durable application state requires an independent lifecycle, such as a volume. Replacing a database container must not imply replacing its persistent data. Process, container, and data lifecycles are separate system contracts.
+
+@knowledge K09
+A listening container port and a published host port describe different boundaries. The internal listener is part of the service process; host publication defines one external access path. Container runtime state alone therefore cannot establish end-to-end reachability.
+
+@knowledge K10
+For running-but-unreachable failures, isolate the boundary in order: process/listener, container port, host publication, then client network path. Each step produces distinct evidence. Broad restarts are poor diagnosis because they modify multiple variables and can destroy the evidence needed to locate the fault.
+
+@knowledge K11
+For a frontend/API/database system, the same boundary model composes across services: API-to-database communication requires an explicit network path; database state requires persistent storage; frontend compute is often replaceable. Each service remains a process plus configuration plus network and data contracts.
+
+@knowledge K12
+Verification is evidence-based: run the nginx test, inspect image/process/network/mount state, introduce one controlled failure, predict its evidence, repair the smallest broken boundary, and verify the recovered behavior. A successful command alone is insufficient proof. Kubernetes changes the management layer, not the underlying need to reason about processes, resources, networking, storage, evidence, and recovery.
