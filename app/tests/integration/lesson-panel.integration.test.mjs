@@ -83,7 +83,7 @@ describe("lesson panel integration contract", () => {
     const code = source();
 
     expect(code).toContain("MVP VERIFICATION");
-    expect(code).toContain("Machine execution and remote evidence import are intentionally disabled");
+    expect(code).toContain("Machine execution and remote evidence import are intentionally\n              disabled in this MVP.");
     expect(code).not.toContain("runtimeTask");
     expect(code).not.toContain("pairing token");
     expect(code).not.toContain("localTerminalAgent");
