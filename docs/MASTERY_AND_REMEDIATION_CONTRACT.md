@@ -1,6 +1,6 @@
 # Mastery and Remediation Contract
 
-> **V3 MVP security boundary:** mastery is an instructional, browser-local state, not a trusted credential.
+**V3 MVP security boundary:** mastery is instructional state; authenticated account history may record attempts, but it is not a certification authority.
 
 The remediation system follows the same educational contract below, but all attempt counts and evidence are stored locally in the learner's browser.
 
@@ -71,7 +71,7 @@ A successful mastery attempt is also recorded.
 
 ## Persistence
 
-Mastery attempts are stored in browser `localStorage`.
+Mastery remediation may use local browser state for immediate teaching flow, while authenticated attempt history can be persisted through the existing server progress contract.
 
 The browser is allowed to decide its own instructional state because V3 does not claim:
 
@@ -112,7 +112,7 @@ The premium learning proposition must come from:
 - project-level transfer
 - evidence-oriented learning.
 
-For V3 MVP, learner state is intentionally local and non-authoritative.
+For V3 MVP, learner progress is account-backed and server-authoritative for the authenticated account. Mastery itself remains instructional rather than certification-grade.
 
 ## Current implementation boundary
 
