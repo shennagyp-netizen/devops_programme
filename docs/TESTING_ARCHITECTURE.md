@@ -170,3 +170,25 @@ The MVP contract covers:
 - fail-closed transcript fallback when the fixed audio manifest is missing or stale
 - unit red-team coverage for segment ordering, timing, URLs and cue integrity
 - integration coverage for continuous voice behavior and playback speed
+
+
+## Four cognitive podcast speeches — 2026-09-26
+
+The fixed podcast contract is four complete authored speech files per lesson, not four sequential audio segments and not four playback-rate settings.
+
+The four cognitive levels are:
+1. Foundation — mental model and purpose.
+2. Mechanism — internal mechanism and boundaries.
+3. Diagnosis — failure analysis and evidence.
+4. Design & transfer — system design and transfer.
+
+Required tests:
+- reject bundles that do not contain exactly four distinct cognitive levels
+- reject duplicate levels and level/identity mismatches
+- reject unsafe or missing audio URLs
+- reject missing or stale script versions
+- verify the selected speech uses its real audio clock
+- verify transcript position never comes from text length or TTS speed
+- verify level changes reload the corresponding authored speech
+- verify media failure falls back to the selected transcript
+- verify the private tutor remains outside podcast generation
