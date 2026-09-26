@@ -9,8 +9,8 @@ import {
   getSectionAssessments,
   type AssessmentFamily,
   type AssessmentItem,
-  type CourseLevel
 } from "../../data/assessment";
+import type { CourseLevel } from "../../data/programme";
 import { generateAssessmentForm } from "../../assessment/formGenerator";
 import {
   attemptExpiresAt,
