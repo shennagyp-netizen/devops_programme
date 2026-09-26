@@ -45,7 +45,7 @@ describe("verification server actions", () => {
     expect(issueChallengeMock).toHaveBeenCalledWith("user_1", {
       itemId: "B1.1",
       providerId: "local-terminal",
-      evidenceKind: "exercise"
+      targetRef: "runtime-exercise-B1.1"
     });
     expect(result.learnerId).toBe("user_1");
   });
@@ -115,6 +115,7 @@ describe("verification server actions", () => {
         evidenceKind: "exercise",
         providerId: "local-terminal",
         keyId: "key-1",
+        targetRef: "runtime-exercise-B1.1",
         verificationRef: "run-1",
         attestationDigest: "sha256:" + "a".repeat(64),
         nonce: "nonce-1",
