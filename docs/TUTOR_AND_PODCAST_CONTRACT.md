@@ -141,3 +141,14 @@ Tutor storage uses a dedicated 0003_tutor.sql migration.
 The authentication migration 0001_self_hosted_auth.sql remains historical and is not modified after deployment.
 
 The server-side ensureTutorSchema() remains an idempotent runtime safety net, but it is not the canonical migration path.
+
+## Tutor abuse protection
+
+Tutor POST requests are rate-limited per authenticated learner using persistent tutor-message history.
+
+The current server contract allows at most 20 learner messages in a rolling five-minute window.
+
+This is an application-abuse boundary, not an assessment rule.
+
+The prompt also treats prior tutor transcripts and current learner messages as untrusted quoted data. They are context for the tutor, not new system instructions.
+
