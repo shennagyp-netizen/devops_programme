@@ -4,11 +4,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Lesson } from "../data/curriculum";
 import {
   buildPodcastTtsBundle,
-  cognitivePodcastUrl,
+  podcastExplanationUrl,
   podcastLevelDescription,
   podcastLevelId,
   podcastLevelLabel,
-  type PodcastCognitiveLevel,
+  type PodcastExplanationLevel,
   type PodcastTtsBundle
 } from "../data/podcastSync";
 import { getEpisodeText, parseTurns, type Turn } from "../data/podcastsRaw";
@@ -52,7 +52,8 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   const [turnIndex, setTurnIndex] = useState(0);
   const [prediction, setPrediction] = useState("");
   const [episodeSource, setEpisodeSource] = useState("");
-  const [cognitiveLevel, setCognitiveLevel] = useState<PodcastCognitiveLevel>(1);
+  const [explanationLevel, setExplanationLevel] = useState<PodcastExplanationLevel>(1);
+  const [speechRate, setSpeechRate] = useState<1 | 1.5 | 2>(1);
   const [scriptVersions, setScriptVersions] = useState<Record<string, string>>({});
   const [ttsSupported, setTtsSupported] = useState(false);
   const [ttsBundle, setTtsBundle] = useState<PodcastTtsBundle>();
@@ -129,7 +130,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     setEpisodeSource("");
     setTtsStarted(false);
 
-    fetch(cognitivePodcastUrl(lesson.podcast, cognitiveLevel))
+    fetch(podcastExplanationUrl(lesson.podcast, explanationLevel))
       .then((response) => (response.ok ? response.text() : ""))
       .then((text) => {
         if (!cancelled) setEpisodeSource(text);
@@ -141,7 +142,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     return () => {
       cancelled = true;
     };
-  }, [cognitiveLevel, lesson.podcast]);
+  }, [explanationLevel, lesson.podcast]);
 
   const episode = useMemo(
     () => getEpisodeText(episodeSource, lesson.id),
@@ -154,14 +155,14 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   );
 
   const current: Turn | undefined = turns[turnIndex];
-  const selectedLevel = COGNITIVE_LEVELS.find((item) => item.level === cognitiveLevel) ?? COGNITIVE_LEVELS[0];
+  const selectedLevel = COGNITIVE_LEVELS.find((item) => item.level === explanationLevel) ?? COGNITIVE_LEVELS[0];
 
   const selectedSpeech = ttsBundle?.speeches.find(
-    (speech) => speech.cognitiveLevel === cognitiveLevel
+    (speech) => speech.explanationLevel === explanationLevel
   );
 
   const scriptReady =
-    Boolean(scriptVersions[String(cognitiveLevel)]) &&
+    Boolean(scriptVersions[String(explanationLevel)]) &&
     Boolean(selectedSpeech) &&
     turns.length > 0;
 
@@ -176,7 +177,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
 
   function publish(state: "idle" | "speaking" | "paused" | "done", turnId?: string) {
     publishVoiceClock?.({
-      cognitiveLevel,
+      cognitiveLevel: explanationLevel,
       turnId,
       elapsedMs: sessionStartedAtRef.current
         ? Math.max(0, performance.now() - sessionStartedAtRef.current)
@@ -210,7 +211,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     nextTurnIndexRef.current = index;
 
     const utterance = new SpeechSynthesisUtterance(turn.text);
-    utterance.rate = 1;
+    utterance.rate = speechRate;
     utterance.pitch = 1;
     utterance.onstart = () => {
       if (sessionId !== sessionIdRef.current) return;
@@ -318,11 +319,27 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     startVoice(nextIndex);
   }
 
-  function selectCognitiveLevel(level: PodcastCognitiveLevel) {
-    if (level === cognitiveLevel) return;
-
+  function selectExplanationLevel(level: PodcastExplanationLevel) {
+    if (level === explanationLevel) return;
     stopVoice();
-    setCognitiveLevel(level);
+    setExplanationLevel(level);
+  }
+
+  function selectSpeechRate(rate: 1 | 1.5 | 2) {
+    if (rate === speechRate) return;
+    setSpeechRate(rate);
+
+    const synthesis = getSpeechSynthesis();
+    if (!ttsStarted || !synthesis || (!synthesis.speaking && !synthesis.paused)) return;
+
+    const restartIndex = nextTurnIndexRef.current;
+    sessionIdRef.current += 1;
+    const sessionId = sessionIdRef.current;
+    synthesis.cancel();
+    currentUtteranceRef.current = null;
+    setPhase("speaking");
+    setTtsStarted(true);
+    speakTurn(restartIndex, sessionId);
   }
 
   return (
@@ -350,16 +367,16 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
         </div>
       </div>
 
-      <div className="cognitive-level-picker" aria-label="Podcast cognitive level">
+      <div className="cognitive-level-picker" aria-label="Podcast explanation level">
         {COGNITIVE_LEVELS.map((item) => (
           <button
             key={item.level}
             type="button"
             className={item.level === cognitiveLevel ? "active" : ""}
             aria-pressed={item.level === cognitiveLevel}
-            onClick={() => selectCognitiveLevel(item.level)}
+            onClick={() => selectExplanationLevel(item.level)}
           >
-            <strong>Level {item.level}</strong>
+            <strong>Explanation {item.level}</strong>
             <span>{item.label}</span>
             <small>{item.description}</small>
           </button>
@@ -369,7 +386,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
       <div className="continuous-voice-row">
         <div>
           <strong>
-            Level {selectedLevel.level} · {selectedLevel.label}
+            Explanation {selectedLevel.level} · {selectedLevel.label}
           </strong>
           <span className="range">{selectedLevel.description}</span>
           <span className="range">
@@ -380,6 +397,21 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
         </div>
 
         <div className="audio-controls">
+          <label className="tts-rate-control">
+            <span>Speech</span>
+            <select
+              aria-label="TTS speech speed"
+              value={speechRate}
+              onChange={(event) =>
+                selectSpeechRate(Number(event.target.value) as 1 | 1.5 | 2)
+              }
+            >
+              <option value="1">1×</option>
+              <option value="1.5">1.5×</option>
+              <option value="2">2×</option>
+            </select>
+          </label>
+
           {ttsSupported && scriptReady ? (
             <>
               <button className="primary" onClick={toggleVoice}>
@@ -432,8 +464,8 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
         <div className="content-card continuous-prompt">
           <h4>{selectedLevel.label}</h4>
           <p>
-            This is one of four fixed authored versions of the same podcast.
-            The difference is cognitive depth, not speaking speed.
+            This is one of four authored explanations of the same complete information.
+            The explanation style changes; the information does not.
           </p>
           <p>
             The private tutor is separate. It may discuss the learner's
