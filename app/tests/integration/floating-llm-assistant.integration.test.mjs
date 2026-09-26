@@ -112,7 +112,7 @@ describe("FloatingLLMAssistant", () => {
     );
 
     expect(fetch).toHaveBeenCalledTimes(1);
-    const init = (fetch as ReturnType<typeof vi.fn>).mock.calls[0][1] as RequestInit;
+    const init = fetch.mock.calls[0][1];
     const body = JSON.parse(String(init.body));
 
     expect(body.lessonId).toBe("B1.4");
@@ -174,7 +174,7 @@ describe("FloatingLLMAssistant", () => {
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(
-      JSON.parse(String((fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body))
+      JSON.parse(String(fetch.mock.calls[0][1].body))
         .messages.at(-1).content
     ).toBe("Why is the service unreachable?");
   });
