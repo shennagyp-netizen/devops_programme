@@ -104,7 +104,7 @@ describe("podcast raw-script parsing contract", () => {
 
     expect(turns[0]).toMatchObject({
       id: "B1.4.T001",
-      speaker: "A",
+      speaker: "Narrator",
       text: "A paragraph without a speaker label."
     });
     expect(turns[1]).toMatchObject({
@@ -128,3 +128,15 @@ describe("podcast raw-script parsing contract", () => {
     ]);
   });
 });
+
+  it("strips hidden information-unit metadata before TTS", () => {
+    const turns = parseTurns(
+      "@knowledge K01\nThis is the first authored explanation.\n\n@knowledge K02\nThis is the second authored explanation.",
+      "B1.4"
+    );
+
+    expect(turns.map((turn) => turn.text)).toEqual([
+      "This is the first authored explanation.",
+      "This is the second authored explanation."
+    ]);
+  });
