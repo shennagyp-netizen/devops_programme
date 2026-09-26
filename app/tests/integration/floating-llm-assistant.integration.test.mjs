@@ -1,3 +1,4 @@
+import "@testing-library/jest-dom/vitest";
 import React from "react";
 /** @vitest-environment jsdom */
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
