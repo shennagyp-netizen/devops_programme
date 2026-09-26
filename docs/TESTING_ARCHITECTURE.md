@@ -19,8 +19,15 @@ Security/integrity tests must reject:
 - insecure session cookies;
 - cross-user progress access;
 - unauthenticated access to /learn;
-- terminal pairing-token authentication;
 - client-forged tutor assistant roles.
+
+The local terminal-agent red-team contract must verify:
+- loopback-only binding;
+- bearer pairing-token requirement;
+- exact runtime task lookup;
+- no shell execution;
+- destructive-step rejection;
+- bounded command output.
 
 The tutor server remains responsible for:
 
