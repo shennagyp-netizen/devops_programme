@@ -271,6 +271,54 @@ describe("authoritative completion service", () => {
     expect(updateMock).toHaveBeenCalled();
   });
 
+  it("normalizes legacy completion metadata when evidence makes the transition authoritative", async () => {
+    const updateSetMock = vi.fn().mockReturnThis();
+    const updateWhereMock = vi.fn().mockResolvedValue([]);
+    updateMock.mockReturnValue({
+      set: updateSetMock,
+      where: updateWhereMock
+    });
+
+    const legacyRow = {
+      id: "completion-legacy",
+      itemType: "lesson",
+      itemId: "B1.2",
+      course: "attacker-course",
+      projectId: "A3",
+      verificationLevel: "exercise-validated",
+      completedAt: new Date("2026-09-25T10:00:00.000Z")
+    };
+
+    configureDb({
+      evidenceRows: [
+        {
+          id: "evidence-1",
+          userId: "user_1",
+          itemId: "B1.2",
+          kind: "exercise",
+          verifierId: "trusted-verifier",
+          verificationRef: "attestation-1",
+          attestationDigest: "sha256:abc",
+          verifiedAt: new Date("2026-09-26T10:00:00.000Z")
+        }
+      ],
+      progressRow: legacyRow
+    });
+
+    await completeLearningItemForUser("user_1", {
+      itemId: "B1.2",
+      evidenceRefs: ["evidence-1"]
+    });
+
+    expect(updateSetMock).toHaveBeenCalledWith({
+      itemType: "lesson",
+      itemId: "B1.2",
+      course: "beginner",
+      projectId: "B1",
+      verificationLevel: "authoritative-evidence"
+    });
+  });
+
   it("rejects missing authentication before database access", async () => {
     await expect(
       completeLearningItemForUser("", {
