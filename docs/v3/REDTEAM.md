@@ -67,7 +67,7 @@ Covered by:
 
 This finding is **partially mitigated**.
 
-The framework now defines a verification-attestation contract and validates:
+The framework now defines a signed provider-attestation contract and validates:
 
 - challenge identity;
 - learner binding;
@@ -76,9 +76,12 @@ The framework now defines a verification-attestation contract and validates:
 - provider identity;
 - challenge validity window;
 - attestation freshness;
-- canonical SHA-256 digest format.
+- canonical SHA-256 digest format;
+- one-time challenge nonce;
+- Ed25519 signatures against a server-provisioned provider key;
+- atomic challenge consumption to prevent replay.
 
-This remains **open at the provider trust layer** because the current structural validator does not perform cryptographic signature/provider authentication or persistent replay protection.
+This remains **partially mitigated at the adapter layer** because the current local-agent and SSH runners still emit the legacy unsigned runtime envelope. They therefore cannot mint authoritative evidence through the new server acceptance path.
 
 Browser-produced runtime envelopes still cannot mint authoritative evidence.
 
@@ -130,3 +133,15 @@ The broader V3 exit gate remains open until a real verification-provider attesta
 - manufacture assessment passes;
 - bypass expensive-endpoint rate limits through instance splitting;
 - create trusted assistant history from arbitrary client text.
+## V3-RT-08 — unsigned runtime adapters
+
+**Status: Open.**
+
+The server now has a cryptographically authenticated provider boundary, but the existing browser/local-agent/SSH adapters have not yet been migrated to it.
+
+Required closure:
+- server challenge request;
+- provider execution against the exact challenge;
+- signed attestation returned by the provider;
+- server signature verification and one-time consumption;
+- authoritative evidence persisted only after that acceptance path.
