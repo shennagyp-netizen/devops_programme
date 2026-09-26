@@ -19,7 +19,7 @@ vi.mock("../../src/lib/server/tutor.ts", () => ({
   verifyTutorSessionForUser: verifyTutorSessionMock
 }));
 
-const { POST } = await import("../../src/app/api/tutor/route.ts");
+const { GET, POST } = await import("../../src/app/api/tutor/route.ts");
 
 const contextFixture = {
   lesson: {
@@ -220,6 +220,45 @@ describe("tutor route", () => {
     expect(body.response.canCertify).toBe(false);
   });
 
+
+  it("restores the authenticated session transcript on GET", async () => {
+    currentUserMock.mockResolvedValue({
+      id: "user-1",
+      email: "learner@example.com"
+    });
+
+    listTutorMessagesMock.mockResolvedValue([
+      {
+        role: "user",
+        content: "Why is the service unreachable?",
+        createdAt: "2026-09-26T01:00:00.000Z"
+      },
+      {
+        role: "assistant",
+        content: JSON.stringify({
+          message: "Separate process health from network reachability.",
+          mode: "failure-investigation",
+          pedagogicalIntent: "reframe",
+          requestedEvidence: ["listener evidence"]
+        }),
+        createdAt: "2026-09-26T01:00:01.000Z"
+      }
+    ]);
+
+    const response = await GET(
+      new Request(
+        "http://localhost/api/tutor?sessionId=00000000-0000-0000-0000-000000000001&lessonId=B1.4"
+      )
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+
+    expect(body.messages).toHaveLength(2);
+    expect(body.messages[0].role).toBe("learner");
+    expect(body.messages[1].role).toBe("tutor");
+    expect(body.messages[1].response.canCertify).toBe(false);
+  });
   it("does not allow a session from another lesson to be reused", async () => {
     currentUserMock.mockResolvedValue({
       id: "user-1",
