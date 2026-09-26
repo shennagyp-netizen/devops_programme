@@ -28,7 +28,10 @@ V3 is intentionally additive. Main has not been replaced.
 - Added TDD and red-team coverage for the new trust boundary.
 - Full GitHub Actions gate is green for the current branch state: 68 test files / 496 tests, typecheck, production build, and framework-security architecture contract all pass.
 - Added the framework attestation contract in `app/src/framework/verification.ts` with TDD coverage for binding, freshness, expiry, and digest validation.
+- Added exact provider-key binding to the challenge lifecycle and red-team coverage for key substitution/revocation.
 - Added a dedicated `check:framework-security` CI gate to prevent trust-boundary regressions.
+- Migrated the local terminal agent and SSH runner to signed challenge-bound provider attestations.
+- Rejected unsigned machine-evidence imports at the Learning Gateway.
 
 
 ## Important architectural decision
@@ -57,12 +60,12 @@ Implemented in V3.2:
 
 ### A.1 Signed runtime-provider adapters
 
-Next:
+Implemented:
 
-1. migrate the local terminal agent to receive a server challenge;
-2. sign the exact challenge-bound execution result with its Ed25519 provider key;
-3. migrate SSH/managed execution to the same provider SPI;
-4. replace localStorage machine verification as an authority source with the server attestation action.
+1. local terminal agent receives a server-issued challenge and signs the exact execution envelope;
+2. SSH runner consumes a challenge file and produces the same signed attestation shape;
+3. both providers bind the challenge to the exact runtime task and provider key;
+4. the Learning Gateway accepts only server-validated attestation evidence.
 
 ### A.2 Local terminal provider enrollment
 
@@ -87,7 +90,7 @@ DEVOPS_TERMINAL_ALLOWED_ORIGINS=https://<learning-gateway-origin>
 The local agent no longer reflects arbitrary browser origins. Preflight requests from unapproved origins are rejected.
 ### B. Machine verification migration
 
-Move local-agent and SSH execution behind the provider boundary.
+The signed provider boundary is now the authoritative machine-verification path.
 
 The server must verify:
 
