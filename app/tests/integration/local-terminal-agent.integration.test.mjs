@@ -1,7 +1,17 @@
 import { describe, expect, it } from "vitest";
+import { createPublicKey, verify as verifySignature } from "node:crypto";
+import { mkdtemp, rm } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { spawn } from "node:child_process";
+import {
+  canonicalVerificationSigningPayload,
+  digestExecutionEnvelope
+} from "../../scripts/verification-provider-core.mjs";
 
-function startAgent(port, token) {
+async function startAgent(port, token, extraEnv = {}) {
+  const keyDir = await mkdtemp(path.join(os.tmpdir(), "devops-terminal-agent-"));
+
   const child = spawn(
     process.execPath,
     ["scripts/devops-terminal-agent.mjs"],
@@ -11,13 +21,16 @@ function startAgent(port, token) {
       env: {
         ...process.env,
         DEVOPS_TERMINAL_PORT: String(port),
-        DEVOPS_TERMINAL_TOKEN: token
+        DEVOPS_TERMINAL_TOKEN: token,
+        DEVOPS_TERMINAL_KEY_DIR: keyDir,
+        DEVOPS_TERMINAL_ALLOWED_ORIGINS: "http://localhost:3000",
+        ...extraEnv
       },
       stdio: ["ignore", "pipe", "pipe"]
     }
   );
 
-  return child;
+  return { child, keyDir };
 }
 
 function waitForServer(child) {
@@ -51,7 +64,7 @@ describe("local terminal agent", () => {
   it("starts a loopback execution service", async () => {
     const token = "test-token-123";
     const port = 43871;
-    const child = startAgent(port, token);
+    const { child, keyDir } = await startAgent(port, token);
 
     try {
       await waitForServer(child);
@@ -64,6 +77,7 @@ describe("local terminal agent", () => {
       expect(body.authenticatedExecution).toBe(true);
     } finally {
       child.kill("SIGTERM");
+      await rm(keyDir, { recursive: true, force: true });
     }
   });
 
@@ -117,4 +131,112 @@ describe("local terminal agent", () => {
       child.kill("SIGTERM");
     }
   });
+  it("denies unapproved origins and permits the explicit development origin", async () => {
+    const token = "test-token-cors";
+    const port = 43874;
+    const { child, keyDir } = await startAgent(port, token);
+
+    try {
+      await waitForServer(child);
+
+      const denied = await fetch(`http://127.0.0.1:${port}/health`, {
+        headers: { Origin: "https://evil.example" }
+      });
+      expect(denied.status).toBe(200);
+      expect(denied.headers.get("access-control-allow-origin")).toBeNull();
+
+      const preflight = await fetch(`http://127.0.0.1:${port}/execute`, {
+        method: "OPTIONS",
+        headers: {
+          Origin: "https://evil.example",
+          "Access-Control-Request-Method": "POST"
+        }
+      });
+      expect(preflight.status).toBe(403);
+
+      const allowed = await fetch(`http://127.0.0.1:${port}/health`, {
+        headers: { Origin: "http://localhost:3000" }
+      });
+      expect(allowed.status).toBe(200);
+      expect(allowed.headers.get("access-control-allow-origin")).toBe("http://localhost:3000");
+    } finally {
+      child.kill("SIGTERM");
+      await rm(keyDir, { recursive: true, force: true });
+    }
+  });
+
+  it("returns a challenge-bound signed attestation for provider-authorized execution", async () => {
+    const token = "test-token-signed";
+    const port = 43875;
+    const { child, keyDir } = await startAgent(port, token);
+
+    try {
+      await waitForServer(child);
+
+      const health = await fetch(`http://127.0.0.1:${port}/health`);
+      const healthBody = await health.json();
+
+      const challenge = {
+        id: "challenge-agent-1",
+        learnerId: "user_1",
+        itemId: "B1.1",
+        evidenceKind: "exercise",
+        providerId: healthBody.providerId,
+        issuedAt: new Date(Date.now() - 1000).toISOString(),
+        expiresAt: new Date(Date.now() + 120000).toISOString(),
+        nonce: "nonce-agent-1"
+      };
+
+      const response = await fetch(`http://127.0.0.1:${port}/execute`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          Origin: "http://localhost:3000"
+        },
+        body: JSON.stringify({
+          taskId: "runtime-exercise-B1.1",
+          platform: "linux",
+          challenge
+        })
+      });
+
+      expect(response.status).toBe(200);
+      const body = await response.json();
+
+      expect(body.envelope.taskId).toBe("runtime-exercise-B1.1");
+      expect(body.attestation).toMatchObject({
+        challengeId: challenge.id,
+        learnerId: challenge.learnerId,
+        itemId: challenge.itemId,
+        evidenceKind: challenge.evidenceKind,
+        providerId: challenge.providerId,
+        keyId: healthBody.providerKeyId,
+        nonce: challenge.nonce,
+        signatureAlgorithm: "ed25519"
+      });
+
+      expect(body.attestation.attestationDigest).toBe(
+        digestExecutionEnvelope(body.envelope)
+      );
+
+      const publicKey = createPublicKey(healthBody.providerPublicKey);
+      const signingPayload = canonicalVerificationSigningPayload(
+        challenge,
+        body.attestation
+      );
+      expect(
+        verifySignature(
+          null,
+          Buffer.from(signingPayload, "utf8"),
+          publicKey,
+          Buffer.from(body.attestation.signature, "base64url")
+        )
+      ).toBe(true);
+    } finally {
+      child.kill("SIGTERM");
+      await rm(keyDir, { recursive: true, force: true });
+    }
+  });
+
 });
