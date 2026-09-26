@@ -72,6 +72,21 @@ describe("server verified-evidence authority", () => {
     expect(getDbMock).not.toHaveBeenCalled();
   });
 
+  it("rejects evidence for an unknown learning item", async () => {
+    await expect(
+      recordTrustedVerifiedEvidence({
+        learnerId: "user_1",
+        itemId: "not-a-real-item",
+        kind: "exercise",
+        verifierId: "trusted-verifier",
+        verificationRef: "attestation-unknown",
+        attestationDigest: digest
+      })
+    ).rejects.toThrow(/unknown learning item/i);
+
+    expect(getDbMock).not.toHaveBeenCalled();
+  });
+
   it("persists only server-side verified evidence records", async () => {
     const row = {
       id: "evidence-1",
