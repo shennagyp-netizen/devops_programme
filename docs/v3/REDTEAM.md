@@ -19,7 +19,7 @@ Security objective:
 |---|---|---:|---|
 | V3-RT-01 | Completion accepted browser-selected item metadata. | Medium | **Mitigated** |
 | V3-RT-02 | Completion could reach legacy persistence without authoritative evidence resolution. | High | **Mitigated** |
-| V3-RT-03 | Browser-produced machine-verification envelopes are not server-attested. | High | **Partially mitigated** |
+| V3-RT-03 | Browser-produced machine-verification envelopes are not server-attested. | High | **Mitigated for the signed provider path** |
 | V3-RT-04 | Mastery attempt content/outcome remains client-supplied. | Medium | **Open** |
 | V3-RT-05 | Assessment authority remains client-exposed. | Medium | **Open** |
 | V3-RT-06 | Tutor rate limiting remains process-local. | Medium | **Open** |
@@ -81,7 +81,7 @@ The framework now defines a signed provider-attestation contract and validates:
 - Ed25519 signatures against a server-provisioned provider key;
 - atomic challenge consumption to prevent replay.
 
-This remains **partially mitigated at the adapter layer** because the current local-agent and SSH runners still emit the legacy unsigned runtime envelope. They therefore cannot mint authoritative evidence through the new server acceptance path.
+The authoritative acceptance path is now cryptographically bound to a server-issued challenge and exact provider key. The local agent and SSH runner both produce signed attestations for that path. Legacy unsigned artifacts remain non-authoritative and are explicitly rejected by the Learning Gateway.
 
 Browser-produced runtime envelopes still cannot mint authoritative evidence.
 
@@ -126,7 +126,7 @@ The current completion-authority red-team gate is green for browser-payload mani
 - a malicious browser cannot mark a learning item complete without server-verified evidence;
 - legacy completion metadata is not trusted as authoritative state.
 
-The broader V3 exit gate remains open until a real verification-provider attestation path exists, and until mastery, assessment, and tutor authority are migrated:
+The broader V3 exit gate remains open until mastery, assessment, and tutor authority are migrated:
 
 - forge machine verification into authoritative evidence;
 - manufacture mastery outcomes;
@@ -135,13 +135,11 @@ The broader V3 exit gate remains open until a real verification-provider attesta
 - create trusted assistant history from arbitrary client text.
 ## V3-RT-08 — unsigned runtime adapters
 
-**Status: Open.**
+**Status: Mitigated for authoritative completion.**
 
-The server now has a cryptographically authenticated provider boundary, but the existing browser/local-agent/SSH adapters have not yet been migrated to it.
+Both supported machine providers now use the signed challenge protocol:
 
-Required closure:
-- server challenge request;
-- provider execution against the exact challenge;
-- signed attestation returned by the provider;
-- server signature verification and one-time consumption;
-- authoritative evidence persisted only after that acceptance path.
+- local terminal agent;
+- SSH runner.
+
+The UI rejects unsigned machine-evidence imports, and the server will not mint completion from a raw runtime envelope. Direct unsigned CLI artifacts may still exist for diagnostic/manual workflows, but they are not trusted evidence.
