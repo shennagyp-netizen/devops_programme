@@ -78,16 +78,58 @@ export function TutorCoach({
   }, [currentLessonMode]);
 
   useEffect(() => {
+    let cancelled = false;
+
     setMessages([]);
     setError("");
     setInput("");
 
+    let saved: string | undefined;
+
     try {
-      const saved = sessionStorage.getItem(storageKey);
-      setSessionId(saved || undefined);
+      saved = sessionStorage.getItem(storageKey) || undefined;
+      setSessionId(saved);
     } catch {
+      saved = undefined;
       setSessionId(undefined);
     }
+
+    if (saved) {
+      void fetch(
+        "/api/tutor?sessionId=" +
+          encodeURIComponent(saved) +
+          "&lessonId=" +
+          encodeURIComponent(lessonId),
+        { cache: "no-store" }
+      )
+        .then(async (response) => {
+          const payload = (await response.json()) as {
+            messages?: ChatMessage[];
+            error?: string;
+          };
+
+          if (!response.ok) {
+            throw new Error(payload.error || "Saved tutor history could not be loaded.");
+          }
+
+          if (!cancelled) {
+            setMessages(payload.messages ?? []);
+          }
+        })
+        .catch((caught) => {
+          if (!cancelled) {
+            setError(
+              caught instanceof Error
+                ? caught.message
+                : "Saved tutor history could not be loaded."
+            );
+          }
+        });
+    }
+
+    return () => {
+      cancelled = true;
+    };
   }, [lessonId, storageKey]);
 
   const verificationSummary = useMemo(
