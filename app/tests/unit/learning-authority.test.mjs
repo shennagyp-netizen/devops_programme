@@ -287,7 +287,7 @@ describe("authoritative completion service", () => {
       completedAt: new Date("2026-09-25T10:00:00.000Z")
     };
 
-    configureDb({
+    const { updateSetMock } = configureDb({
       evidenceRows: [
         {
           id: "evidence-1",
