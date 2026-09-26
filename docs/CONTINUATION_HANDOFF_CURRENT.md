@@ -4,7 +4,7 @@
 
 **Repository:** `shennagyp-netizen/devops_programme`
 
-**Current branch:** `v3-mvp-restore-terminal-agent` — V3 MVP terminal-agent restoration.
+**Current branch:** `v3-real-user-e2e` — V3 MVP real-user/integration clearance branch.
 
 **Current architecture:** Next.js + React single learner application with simple first-party email/password authentication, scrypt password hashing, HTTP-only session cookie, PostgreSQL/Drizzle progress, and Server Actions. No Clerk/OAuth/JWT learner identity system.
 
@@ -16,9 +16,9 @@
 
 **Security work in this correction:** restored terminal integration without restoring arbitrary shell access; bounded terminal-agent output while streaming; added terminal-agent red-team coverage; preserved authenticated progress and mastery telemetry.
 
-**CI truth:** all programme/content contracts, authenticated progress architecture contract, full unit/integration test suite, TypeScript typecheck and Next.js production build are green on this branch.
+**CI truth:** the current branch has real hosted evidence for PostgreSQL integration, 472 automated unit/integration tests, TypeScript, Next.js production build, and a 9/9 Playwright real-user browser suite that starts the actual localhost terminal agent.
 
-**Current product-completeness findings:** the assessment UI currently exposes the three assessment forms and validated pilot banks but does not yet run a full learner exam/scoring workflow. Final production deployment/screenshot smoke verification is also still an explicit release gate. These are product-completion gaps, not CI failures.
+**Current product-completeness findings:** the learner assessment workflow now runs end-to-end in the browser: start, answer, mark for review, navigate, submit, score/review state, and concurrency/tampering protections are covered by real-user tests. Production deployment/screenshot smoke verification remains a separate release gate.
 
 **Authoritative reading order**
 1. docs/MVP_ARCHITECTURE_V3.md
@@ -2090,3 +2090,42 @@ Current verification:
 This closes the MVP learner-facing operational assessment gap.
 
 It does not claim certification-grade testing. Formal psychometric calibration, standard setting, secure operational item-pool separation, controlled exposure, and formal reviewer workflows remain distinct future maturity work.
+
+
+============================================================
+CURRENT INTEGRATION CLEARANCE — 2026-09-26
+============================================================
+
+Active branch:
+- `v3-real-user-e2e`
+- latest tested commit: `6acc0b9ff3d64ab5be436495de1b406326f07be7`
+
+Real PostgreSQL integration:
+- CI starts PostgreSQL 16 as a disposable service.
+- `npm run db:e2e-bootstrap` prepares the database before the contract/test gate.
+- `app/tests/integration/database-real.integration.test.mjs` verifies real auth/session persistence, progress idempotency and assessment-attempt lifecycle.
+- The full automated test suite is green on the current sequence: 472 tests passed.
+
+Real-user browser E2E:
+- Playwright runs 9 tests with 2 workers.
+- The browser suite passed 9/9.
+- CI starts `npm run terminal-agent` on 127.0.0.1:4317 with a fixed disposable CI pairing token.
+- The browser then exercises the real localhost terminal connection and records machine-verification UI evidence.
+- Assessment E2E covers start, response, mark for review, previous/next navigation, final-item submission, tampering rejection and second-tab active-attempt protection.
+- Auth E2E covers account creation, anonymous access blocking, sign-out and re-login.
+- Gateway E2E covers course/platform changes, learning modes and terminal execution flow.
+
+Important test-design rule:
+- Playwright tests must interact with visible controls and accessible roles/labels.
+- Mantine implementation details such as hidden SegmentedControl inputs must not be targeted directly.
+- Do not add `force:true` merely to make a UI test pass.
+- When a failure occurs, first determine whether the product control is genuinely blocked or the locator is targeting an implementation detail.
+
+Current release gate:
+1. PostgreSQL integration suite green.
+2. Unit/integration total green.
+3. TypeScript green.
+4. Next.js production build green.
+5. Browser E2E 9/9 green.
+6. Only after the above should PR #123 be considered for merge.
+
