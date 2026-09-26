@@ -164,10 +164,55 @@ export async function recordTrustedVerifiedEvidenceWithinTransaction(
 export async function recordTrustedVerifiedEvidence(
   input: TrustedVerifiedEvidenceInput
 ): Promise<VerifiedEvidenceRecord> {
+  const validated = validateTrustedInput(input);
   const db = getDb();
-  return db.transaction((tx) =>
-    recordTrustedVerifiedEvidenceWithinTransaction(tx, input)
-  );
+
+  const [row] = await db
+    .insert(learnerVerifiedEvidence)
+    .values({
+      userId: validated.learnerId,
+      itemId: validated.itemId,
+      kind: validated.kind,
+      verifierId: validated.verifierId,
+      verificationRef: validated.verificationRef,
+      attestationDigest: validated.attestationDigest,
+      providerKeyId: validated.providerKeyId ?? null,
+      verificationAttemptId: validated.verificationAttemptId ?? null,
+      signature: validated.signature ?? null
+    })
+    .onConflictDoNothing({
+      target: [
+        learnerVerifiedEvidence.userId,
+        learnerVerifiedEvidence.itemId,
+        learnerVerifiedEvidence.verificationRef
+      ]
+    })
+    .returning();
+
+  if (row) {
+    return toVerifiedEvidenceRecord(row);
+  }
+
+  const [existing] = await db
+    .select()
+    .from(learnerVerifiedEvidence)
+    .where(
+      and(
+        eq(learnerVerifiedEvidence.userId, validated.learnerId),
+        eq(learnerVerifiedEvidence.itemId, validated.itemId),
+        eq(
+          learnerVerifiedEvidence.verificationRef,
+          validated.verificationRef
+        )
+      )
+    )
+    .limit(1);
+
+  if (!existing) {
+    throw new Error("Verified evidence could not be stored.");
+  }
+
+  return toVerifiedEvidenceRecord(existing);
 }
 
 export async function listVerifiedEvidenceForUser(
