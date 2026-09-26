@@ -29,8 +29,8 @@ type ScriptManifest = {
   cognitiveLevels?: Record<string, Record<string, string>>;
 };
 
-const COGNITIVE_LEVELS: ReadonlyArray<{
-  level: PodcastCognitiveLevel;
+const EXPLANATION_LEVELS: ReadonlyArray<{
+  level: PodcastExplanationLevel;
   label: string;
   description: string;
 }> = [
@@ -62,6 +62,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   const transcriptRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const sessionIdRef = useRef(0);
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const speechRateRef = useRef<1 | 1.5 | 2>(1);
   const sessionStartedAtRef = useRef<number | null>(null);
   const nextTurnIndexRef = useRef(0);
 
@@ -155,7 +156,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   );
 
   const current: Turn | undefined = turns[turnIndex];
-  const selectedLevel = COGNITIVE_LEVELS.find((item) => item.level === explanationLevel) ?? COGNITIVE_LEVELS[0];
+  const selectedLevel = EXPLANATION_LEVELS.find((item) => item.level === explanationLevel) ?? EXPLANATION_LEVELS[0];
 
   const selectedSpeech = ttsBundle?.speeches.find(
     (speech) => speech.explanationLevel === explanationLevel
@@ -211,7 +212,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
     nextTurnIndexRef.current = index;
 
     const utterance = new SpeechSynthesisUtterance(turn.text);
-    utterance.rate = speechRate;
+    utterance.rate = speechRateRef.current;
     utterance.pitch = 1;
     utterance.onstart = () => {
       if (sessionId !== sessionIdRef.current) return;
@@ -328,6 +329,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
   function selectSpeechRate(rate: 1 | 1.5 | 2) {
     if (rate === speechRate) return;
     setSpeechRate(rate);
+    speechRateRef.current = rate;
 
     const synthesis = getSpeechSynthesis();
     if (!ttsStarted || !synthesis || (!synthesis.speaking && !synthesis.paused)) return;
@@ -350,7 +352,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
       <div className="coach-banner">
         <div>
           <span className="eyebrow">CO-TEACHER · FIXED TTS</span>
-          <h3>One podcast. Four cognitive versions.</h3>
+          <h3>One podcast. Four explanation levels.</h3>
         </div>
         <div className="coach-phase">
           {phase === "ready"
