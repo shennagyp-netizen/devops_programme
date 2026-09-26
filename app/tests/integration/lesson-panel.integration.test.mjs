@@ -79,14 +79,16 @@ describe("lesson panel integration contract", () => {
     expect(code).toContain("handsOnTask.steps.map");
   });
 
-  it("does not expose machine verification or pairing-token execution in the MVP", () => {
+  it("keeps the verified laptop terminal path connected to the lesson", () => {
     const code = source();
 
-    expect(code).toContain("MVP VERIFICATION");
-    expect(code).toContain("Machine execution and remote evidence import are intentionally\n              disabled in this MVP.");
-    expect(code).not.toContain("runtimeTask");
-    expect(code).not.toContain("pairing token");
-    expect(code).not.toContain("localTerminalAgent");
+    expect(code).toContain("VERIFIED LAPTOP TERMINAL");
+    expect(code).toContain("runtimeTaskForLesson");
+    expect(code).toContain("localTerminalAgent");
+    expect(code).toContain("runOnLaptop");
+    expect(code).toContain("setLocalTerminalToken");
+    expect(code).toContain("recordMachineVerification");
+    expect(code).toContain("Pair this browser with the local agent");
   });
 
   it("requires a conceptual proof check before accepting hands-on evidence", () => {
@@ -99,12 +101,12 @@ describe("lesson panel integration contract", () => {
     expect(code).toContain("startMasteryRemediation");
   });
 
-  it("keeps optional authenticated mastery history separate from local remediation state", () => {
+  it("keeps authenticated mastery history separate from local remediation state", () => {
     const code = source();
 
     expect(code).toContain("readMasteryAttempts(lesson.id)");
     expect(code).toContain("initialMasteryHistory");
     expect(code).not.toContain("serverAttemptsForLesson");
-    expect(code).not.toContain("recordMasteryAttemptAction");
+    expect(code).toContain("recordMasteryAttemptAction");
   });
 });
