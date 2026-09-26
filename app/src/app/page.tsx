@@ -42,6 +42,7 @@ export default function HomePage() {
           <a href="#courses">Courses</a>
           <a href="#method">How it works</a>
           <a href="#projects">Projects</a>
+          <a href="#premium">Tuition</a>
           <Link href="/sign-in">Sign in</Link>
           <Link href="/sign-up">Create account</Link>
           <Link href="/learn">Learning gateway</Link>
@@ -159,6 +160,49 @@ export default function HomePage() {
             <span className="marketing-number">04</span>
             <h3>Prove recovery</h3>
             <p>Finish with evidence that the system returned to the intended state.</p>
+          </article>
+        </div>
+      </section>
+
+      <section className="marketing-section" id="premium">
+        <div className="marketing-section-head">
+          <div>
+            <span className="eyebrow">COMPLETE PROGRAMME TUITION</span>
+            <h2>US$2,000 per learner.</h2>
+          </div>
+          <p>
+            The tuition target is tied to a deeper learning product: roughly 300
+            hours of structured project work across nine continuous projects,
+            failure-triggered remediation, multi-method co-teaching and evidence
+            of mastery.
+          </p>
+        </div>
+
+        <div className="marketing-method-grid">
+          <article>
+            <span className="marketing-number">01</span>
+            <h3>~300 hours of project work</h3>
+            <p>
+              Each project now has explicit phases, workload, exit evidence,
+              incidents and redesign work instead of ending after a short lab.
+            </p>
+          </article>
+          <article>
+            <span className="marketing-number">02</span>
+            <h3>More than one explanation</h3>
+            <p>
+              A failed assignment changes the teaching path. The co-teacher can
+              switch between plain language, analogy, mechanism, visual,
+              worked-example and guided failure methods.
+            </p>
+          </article>
+          <article>
+            <span className="marketing-number">03</span>
+            <h3>Evidence, not watch time</h3>
+            <p>
+              Completion is attached to exercise evidence, mastery attempts,
+              project incidents and verified recovery where machine coverage exists.
+            </p>
           </article>
         </div>
       </section>
