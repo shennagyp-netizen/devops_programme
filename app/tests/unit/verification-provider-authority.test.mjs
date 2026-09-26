@@ -120,7 +120,12 @@ function configureTransaction({ attempt, providerKey, updateRow, evidenceRow }) 
   let selectCall = 0;
   selectMock.mockImplementation(() => {
     const index = selectCall++;
-    const row = index === 0 ? attempt : providerKey;
+    const row =
+      index === 0
+        ? attempt
+        : providerKey && !providerKey.revokedAt
+          ? providerKey
+          : null;
     return {
       from: vi.fn().mockReturnValue({
         where: vi.fn().mockReturnValue({
