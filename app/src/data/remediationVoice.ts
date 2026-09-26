@@ -39,6 +39,7 @@ function reasonFor(method: RecoveryVoiceMethod) {
     case "worked-example": return "Walk through a solved evidence path before trying again.";
     case "controlled-failure": return "Make one safe failure visible, then restore it.";
     case "guided-retry": return "Do the task in small checkpoints instead of all at once.";
+    default: return "Choose a different explanation path.";
   }
 }
 
