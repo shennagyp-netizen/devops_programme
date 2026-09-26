@@ -2,6 +2,7 @@ export type VerificationChallenge = {
   id: string;
   learnerId: string;
   itemId: string;
+  targetRef: string;
   evidenceKind: string;
   providerId: string;
   issuedAt: string;
@@ -13,6 +14,7 @@ export type VerificationAttestation = {
   challengeId: string;
   learnerId: string;
   itemId: string;
+  targetRef: string;
   evidenceKind: string;
   providerId: string;
   keyId: string;
@@ -30,6 +32,7 @@ export type VerificationFailure =
   | "LEARNER_MISMATCH"
   | "ITEM_MISMATCH"
   | "EVIDENCE_KIND_MISMATCH"
+  | "TARGET_MISMATCH"
   | "PROVIDER_MISMATCH"
   | "NONCE_MISMATCH"
   | "ATTESTATION_NOT_WITHIN_CHALLENGE"
@@ -62,6 +65,7 @@ export function verificationSigningPayload(
     challenge.id,
     challenge.learnerId,
     challenge.itemId,
+    challenge.targetRef,
     challenge.evidenceKind,
     challenge.providerId,
     attestation.keyId,
@@ -98,6 +102,10 @@ export function validateVerificationAttestation(
 
   if (attestation.evidenceKind !== challenge.evidenceKind) {
     return reject("EVIDENCE_KIND_MISMATCH");
+  }
+
+  if (attestation.targetRef !== challenge.targetRef) {
+    return reject("TARGET_MISMATCH");
   }
 
   if (attestation.providerId !== challenge.providerId) {
