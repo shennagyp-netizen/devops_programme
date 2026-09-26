@@ -81,7 +81,7 @@ export async function answerCurrentAssessmentItem(page: Page) {
     }
   }
 
-  const responseField = page.getByLabel(/Response \/ evidence/i);
+  const responseField = page.locator("textarea").first();
   await expect(responseField).toBeVisible();
   await responseField.fill("Evidence recorded during the user journey.");
   return { kind: "text" as const };
