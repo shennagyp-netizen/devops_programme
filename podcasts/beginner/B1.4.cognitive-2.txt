@@ -1,0 +1,13 @@
+EPISODE B1.4 — Cognitive Level 2: Mechanism
+
+Now move from the simple model to the mechanism.
+
+A container image is a filesystem and startup definition that can be reproduced. When a container starts, the runtime creates an isolated process environment from that image. The application itself is still a normal operating-system process.
+
+The isolation comes from operating-system mechanisms. Namespaces control what the process can see, such as processes, networking, and parts of the filesystem. Control groups can limit resource usage. The container therefore feels separated without booting a second kernel.
+
+The writable container layer is normally tied to the container lifecycle. Removing the container can remove that writable state. A persistent volume gives data a separate lifecycle so the database or other important state can survive container replacement.
+
+Networking has another boundary. A process can listen on port eighty inside the container, while the host publishes that service on another port. A running container therefore proves only that a process environment exists. It does not prove that a client can reach the application.
+
+This gives us a precise chain: image creates the starting point, the runtime creates the container, the container hosts the process, storage controls data lifetime, and port publishing controls one part of the path to the client.
