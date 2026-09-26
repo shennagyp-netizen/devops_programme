@@ -448,15 +448,121 @@ export function LessonPanel({
             <code>{command}</code>
           </pre>
 
-          <div className="content-card">
-            <span className="eyebrow">MVP VERIFICATION</span>
-            <h4>Run the command manually</h4>
-            <p>
-              Machine execution and remote evidence import are intentionally
-              disabled in this MVP. Enter the observations and recovery evidence
-              below; this browser stores the structured evidence locally.
-            </p>
-          </div>
+          {runtimeTask ? (
+            <div className="content-card">
+              <span className="eyebrow">VERIFIED LAPTOP TERMINAL</span>
+              <h4>Run this exercise directly from the website</h4>
+              <p>
+                The website can use the DevOps terminal agent installed on this
+                laptop. The browser never receives arbitrary shell access; it
+                sends only this lesson's allowlisted task to the local agent.
+              </p>
+
+              <p className="range">{localAgentInfo}</p>
+              {localAgentAvailable && localAgentPlatform !== platform ? (
+                <p className="range">
+                  Select {localAgentPlatform} as the course environment to run
+                  this lesson directly on this laptop, or use the manual
+                  terminal path.
+                </p>
+              ) : null}
+
+              {!localAgentAvailable ? (
+                <>
+                  <p>Start the local agent once on this laptop:</p>
+                  <pre>
+                    <code>npm run terminal-agent</code>
+                  </pre>
+                </>
+              ) : null}
+
+              <label className="evidence-field">
+                <strong>Pair this browser with the local agent</strong>
+                <input
+                  type="password"
+                  value={localAgentToken}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setLocalAgentTokenState(value);
+                    setLocalTerminalToken(value);
+                  }}
+                  placeholder="Paste the pairing token printed by the agent"
+                />
+              </label>
+
+              <button
+                className="primary"
+                disabled={
+                  !localAgentAvailable ||
+                  !localAgentToken.trim() ||
+                  localAgentRunning ||
+                  localAgentPlatform !== platform
+                }
+                onClick={() => {
+                  void runOnLaptop();
+                }}
+              >
+                {localAgentRunning
+                  ? "Running on this laptop..."
+                  : "Run verified exercise on this laptop"}
+              </button>
+
+              <p className="range">
+                This uses the laptop's real terminal environment. If the agent
+                is not available, use the manual terminal instructions below.
+              </p>
+
+              {machineVerificationMessage ? (
+                <p className="range">{machineVerificationMessage}</p>
+              ) : null}
+
+              {machineResults.length ? (
+                <div className="content-card">
+                  <span className="eyebrow">LAPTOP TERMINAL RESULTS</span>
+                  {machineResults.map((step) => (
+                    <div key={step.stepId}>
+                      <h4>
+                        {step.stepId} · {step.result} · exit {step.exitCode}
+                      </h4>
+                      {step.stdout ? (
+                        <pre>
+                          <code>{step.stdout}</code>
+                        </pre>
+                      ) : null}
+                      {step.stderr ? (
+                        <pre>
+                          <code>{step.stderr}</code>
+                        </pre>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              {platform !== "windows" ? (
+                <details>
+                  <summary>Optional remote machine</summary>
+                  <p>
+                    SSH remote execution remains available for a real VM or
+                    physical machine.
+                  </p>
+                  <pre>
+                    <code>{`npm run hands-on:remote -- --execute --lesson ${runtimeTask.lessonId} --platform ${platform} --host <host> --user <user>`}</code>
+                  </pre>
+                  <label className="evidence-field">
+                    <strong>Import remote verification JSON</strong>
+                    <input
+                      type="file"
+                      accept="application/json,.json"
+                      onChange={(event) => {
+                        void importMachineEvidence(event.target.files?.[0]);
+                      }}
+                    />
+                  </label>
+                </details>
+              ) : null}
+            </div>
+          ) : null}
 
           <h4>Break / fix</h4>
           <p>{lesson.lab.challenge}</p>
