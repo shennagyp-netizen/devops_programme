@@ -5,6 +5,7 @@ export type VerificationChallenge = {
   targetRef: string;
   evidenceKind: string;
   providerId: string;
+  providerKeyId: string;
   issuedAt: string;
   expiresAt: string;
   nonce: string;
@@ -68,6 +69,7 @@ export function verificationSigningPayload(
     challenge.targetRef,
     challenge.evidenceKind,
     challenge.providerId,
+    challenge.providerKeyId,
     attestation.keyId,
     challenge.nonce,
     attestation.verificationRef,
