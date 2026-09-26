@@ -170,6 +170,7 @@ export const verificationAttempts = pgTable(
     id: uuid("id").defaultRandom().primaryKey(),
     userId: text("user_id").notNull().references(() => authUsers.id, { onDelete: "cascade" }),
     itemId: text("item_id").notNull(),
+    targetRef: text("target_ref").notNull(),
     evidenceKind: text("evidence_kind").notNull(),
     providerId: text("provider_id").notNull(),
     nonce: text("nonce").notNull(),
