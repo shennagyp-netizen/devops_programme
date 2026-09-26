@@ -47,7 +47,7 @@ describe("operational assessment red-team", () => {
 
   it("rejects duplicate answers for the same item", () => {
     expect(() =>
-      validateAssessmentAnswers([objectiveItem], [
+      validateAssessmentAnswers([objectiveItem, openItem], [
         { itemId: "objective-1", value: 2 },
         { itemId: "objective-1", value: 1 }
       ])
