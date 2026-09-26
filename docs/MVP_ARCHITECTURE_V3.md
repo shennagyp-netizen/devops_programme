@@ -2,98 +2,60 @@
 
 **Status:** authoritative MVP architecture
 **Date:** 2026-09-26
-**Scope:** learner application, simple authentication, progress, mastery evidence and AI tutor
+**Scope:** learner application, simple authentication, local terminal integration, progress and AI tutor
 
 ## Product boundary
 
-V3 is one React/Next.js application.
+V3 is one React/Next.js application with a deliberately small first-party account layer.
 
-The MVP uses deliberately simple first-party authentication:
+Authentication uses email/password, scrypt password hashing, one opaque HTTP-only session cookie, and PostgreSQL users/sessions/progress.
 
-- email + password;
-- passwords hashed with scrypt;
-- one opaque HTTP-only session cookie;
-- PostgreSQL stores users, sessions and learning progress;
-- no Clerk;
-- no OAuth provider;
-- no JWT;
-- no API authentication tokens;
-- no terminal pairing tokens.
+There is no Clerk, OAuth, JWT or separate learner API-token system.
 
-This is authentication, but not a large identity platform.
+## Local terminal integration
 
-## Learner gateway
+The MVP also supports the existing local-terminal workflow.
 
-The public marketing site is public.
+From the project root run `npm run terminal-agent`.
 
-The /learn gateway requires the simple first-party session.
+The agent listens only on `127.0.0.1`, prints a random pairing token, accepts only catalog-defined runtime task IDs, validates the selected platform against the actual host platform, executes allowlisted commands with `shell: false`, and returns structured machine-verification evidence.
 
-The browser never supplies a trusted learner ID. The server derives the learner identity from the session.
+The browser checks `http://127.0.0.1:4317/health`, lets the learner paste the pairing token, stores that pairing token only in browser local storage, and sends only `taskId`, `platform` and the Bearer pairing token to the loopback agent.
+
+The browser never sends arbitrary shell commands.
+
+The terminal pairing token is a local-machine execution credential, not the learner account/session credential.
 
 ## Progress
 
-Learner progress is server-authoritative per authenticated account.
+Saved course completion remains bound to the authenticated account.
 
-Completion writes use one Server Action.
+The browser never supplies a trusted learner ID. The server derives the learner from the application session and writes progress through the existing Server Action.
 
-The uniqueness boundary is user + item type + item ID.
-
-Repeated completion of the same item is idempotent.
-
-Progress does not expose a custom REST API.
-
-## Mastery
-
-Mastery remediation may use browser-local state for immediate instructional flow, while authenticated mastery-attempt history can be recorded server-side when the application uses the existing progress action contract.
-
-Neither mechanism is a certification authority.
+Completion uniqueness is `user + item type + item ID`; duplicate completion is idempotent.
 
 ## Hands-on verification
 
-The MVP learner flow is intentionally simple:
+The learner has two paths: manual platform-specific terminal execution with structured evidence, or verified local terminal-agent execution for published runtime tasks.
 
-1. show the platform-specific command;
-2. learner runs it manually;
-3. learner enters the structured evidence;
-4. browser validates the learning contract.
+Machine verification is only available for catalog-defined tasks whose runtime contract declares `machine-verified`.
 
-The MVP does not need terminal-agent pairing to support the core learning experience.
+The runtime envelope is structurally validated before evidence is recorded.
 
-Local terminal-agent execution and remote machine-verification infrastructure are outside the authentication design and should not be added merely for MVP progress.
-
-## AI tutor
-
-The tutor is part of the same Next.js application.
-
-Its server route derives lesson context from authored curriculum, treats learner messages as untrusted content, keeps the AI Gateway credential server-side, bounds request size, applies best-effort abuse throttling, and does not require a second authentication/token system.
-
-The authenticated session may identify the learner at the application boundary, but the tutor does not need a separate tutor token.
+Structural validation is not cryptographic attestation.
 
 ## Security model
 
-public marketing -> simple session -> authenticated learning app -> server progress
+`public programme -> simple account session -> learner app -> progress`
 
-The security goals are:
+and separately:
 
-- protect learner accounts and saved progress;
-- never trust client-supplied learner IDs;
-- never store plaintext passwords;
-- keep the session cookie HTTP-only;
-- use same-site cookie protection;
-- avoid unnecessary authentication schemes;
-- prevent arbitrary shell execution;
-- keep provider credentials server-side;
-- validate all Server Action inputs.
+`learner browser -> loopback agent + pairing token -> allowlisted runtime task`
+
+These are two different trust boundaries. Do not replace the local terminal pairing token with the learner account session.
 
 ## Explicit non-goals
 
-Do not add:
+Do not add Clerk, social login, OAuth, JWT access/refresh infrastructure, or a general API-token identity system merely for the MVP.
 
-- Clerk;
-- social login;
-- OAuth infrastructure;
-- JWT access/refresh token systems;
-- API-key-based learner authentication;
-- terminal pairing tokens.
-
-When paid entitlements, instructor roles, certification, admin access or multi-service API clients become real requirements, extend this architecture deliberately rather than adding another parallel auth system.
+Do not allow arbitrary shell commands from the browser.

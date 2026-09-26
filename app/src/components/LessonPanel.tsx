@@ -4,13 +4,20 @@ import type { PlatformId } from "../data/programme";
 import type { DiagnosticRecommendation } from "../data/diagnostics";
 import type { MasteryAttemptRecord } from "../lib/mastery-contract";
 import { diagnosticBySection } from "../data/diagnostics";
-import { addEvidence, recordHandsOnEvidence } from "../data/evidence";
+import { addEvidence, recordHandsOnEvidence, recordMachineVerification } from "../data/evidence";
 import {
   getHandsOnTask,
   validateHandsOnEvidence,
   type HandsOnTask
 } from "../data/handsOn";
 import { commandForPlatform } from "../data/platformAdapters";
+import { runtimeTaskForLesson } from "../data/runtimeVerification";
+import {
+  getLocalTerminalToken,
+  localTerminalAgentStatus,
+  runLocalTerminalTask,
+  setLocalTerminalToken
+} from "../data/localTerminalAgent";
 import { MotionIllustration } from "./MotionIllustration";
 import { LessonContentFeed } from "./LessonContentFeed";
 import { PodcastCoach } from "./PodcastCoach";
@@ -18,6 +25,7 @@ import { LessonVoiceClockProvider } from "./LessonVoiceClock";
 import { AssessmentPanel } from "./AssessmentPanel";
 import { MasteryRemediation } from "./MasteryRemediation";
 import { MasteryPreview } from "./MasteryPreview";
+import { recordMasteryAttemptAction } from "../app/actions/progress";
 import {
   getMasteryPlan,
   masteryStorageKey,
@@ -65,7 +73,23 @@ export function LessonPanel({
   const [masteryReadyForRetry, setMasteryReadyForRetry] = useState(true);
   const [masteryAttempts, setMasteryAttempts] = useState(0);
   const [exerciseCheckpointAnswer, setExerciseCheckpointAnswer] = useState<number | null>(null);
+  const [machineVerificationMessage, setMachineVerificationMessage] = useState("");
+  const [localAgentAvailable, setLocalAgentAvailable] = useState(false);
+  const [localAgentPlatform, setLocalAgentPlatform] = useState<string | null>(null);
+  const [localAgentInfo, setLocalAgentInfo] = useState("Not connected");
+  const [localAgentToken, setLocalAgentTokenState] = useState(getLocalTerminalToken());
+  const [localAgentRunning, setLocalAgentRunning] = useState(false);
+  const [machineResults, setMachineResults] = useState<
+    Array<{
+      stepId: string;
+      stdout: string;
+      stderr: string;
+      exitCode: number;
+      result: string;
+    }>
+  >([]);
   const command = commandForPlatform(lesson, platform);
+  const runtimeTask = runtimeTaskForLesson(lesson.id);
   const handsOnTask: HandsOnTask = getHandsOnTask(lesson);
   const masteryCheckpoint = useMemo(
     () => getMasteryPlan(lesson, handsOnTask, [], 0).checkpoint,
@@ -79,18 +103,24 @@ export function LessonPanel({
       if (!stored) {
         setHandsOnEvidence({});
         setExerciseRecorded(false);
+        setMachineResults([]);
+        setMachineVerificationMessage("");
         return;
       }
 
       const parsed = JSON.parse(stored) as {
         evidence?: Record<string, string>;
         validated?: boolean;
+        verified?: boolean;
       };
       setHandsOnEvidence(parsed.evidence ?? {});
-      setExerciseRecorded(parsed.validated === true);
+      setExerciseRecorded(parsed.validated === true || parsed.verified === true);
+      setMachineResults([]);
     } catch {
       setHandsOnEvidence({});
       setExerciseRecorded(false);
+      setMachineResults([]);
+      setMachineVerificationMessage("");
     }
   }, [evidenceKey]);
 
@@ -110,6 +140,148 @@ export function LessonPanel({
     setMode("learn");
     onModeChange?.("learn");
   }, [lesson.id, onModeChange]);
+
+  useEffect(() => {
+    let active = true;
+
+    async function checkAgent() {
+      const status = await localTerminalAgentStatus();
+      if (!active) return;
+
+      if (status.available) {
+        setLocalAgentAvailable(true);
+        setLocalAgentPlatform(status.platform);
+        setLocalAgentInfo(
+          `Connected · ${status.platform} · agent ${status.version}`
+        );
+      } else {
+        setLocalAgentAvailable(false);
+        setLocalAgentPlatform(null);
+        setLocalAgentInfo(status.reason);
+      }
+    }
+
+    void checkAgent();
+    const interval = window.setInterval(() => {
+      void checkAgent();
+    }, 5000);
+
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+    };
+  }, []);
+
+  async function runOnLaptop() {
+    if (!runtimeTask) return;
+
+    if (!localAgentToken.trim()) {
+      setMachineVerificationMessage(
+        "Start the DevOps terminal agent and enter its pairing token first."
+      );
+      return;
+    }
+
+    setLocalAgentRunning(true);
+    setMachineVerificationMessage(
+      "Running the verified exercise on this laptop..."
+    );
+
+    try {
+      const envelope = await runLocalTerminalTask({
+        taskId: runtimeTask.taskId,
+        platform,
+        token: localAgentToken
+      });
+
+      const result = recordMachineVerification({
+        course: lesson.course,
+        projectId: lesson.projectId,
+        task: runtimeTask,
+        envelope,
+        summary: `Verified laptop execution for ${lesson.id}`
+      });
+
+      if (!result.recorded) {
+        setExerciseRecorded(false);
+        setMachineResults(envelope.stepResults ?? []);
+        setMachineVerificationMessage(
+          `Laptop execution returned invalid evidence: ${result.failures.join(" ")}`
+        );
+        startMasteryRemediation(result.failures, "mechanism-reteach");
+        return;
+      }
+
+      const isFullExerciseVerification = runtimeTask.scope === "exercise";
+      setExerciseRecorded(isFullExerciseVerification);
+      setMachineResults(envelope.stepResults ?? []);
+      setMachineVerificationMessage(
+        runtimeTask.scope === "exercise"
+          ? "Laptop terminal execution verified for this session."
+          : "Laptop probe execution verified for this session. Complete the required hands-on exercise below to unlock the lesson."
+      );
+      onEvidenceRecorded?.();
+    } catch (error) {
+      setExerciseRecorded(false);
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Laptop terminal execution failed.";
+      setMachineVerificationMessage(
+        `Laptop terminal execution failed: ${message}`
+      );
+      startMasteryRemediation([message], "mechanism-reteach");
+    } finally {
+      setLocalAgentRunning(false);
+    }
+  }
+
+  async function importMachineEvidence(file: File | undefined) {
+    if (!file) return;
+
+    if (!runtimeTask) {
+      setMachineVerificationMessage(
+        "No verified execution contract is published for this lesson. Use the manual terminal path."
+      );
+      return;
+    }
+
+    try {
+      const source = await file.text();
+      const envelope = JSON.parse(source);
+      const result = recordMachineVerification({
+        course: lesson.course,
+        projectId: lesson.projectId,
+        task: runtimeTask,
+        envelope,
+        summary: `Verified remote execution for ${lesson.id}`
+      });
+
+      if (!result.recorded) {
+        setExerciseRecorded(false);
+        setMachineVerificationMessage(
+          `Machine evidence rejected: ${result.failures.join(" ")}`
+        );
+        return;
+      }
+
+      const isFullExerciseVerification = runtimeTask.scope === "exercise";
+      setExerciseRecorded(isFullExerciseVerification);
+      setMachineResults(envelope.stepResults ?? []);
+      setMachineVerificationMessage(
+        isFullExerciseVerification
+          ? "Verified execution evidence was accepted for this session."
+          : "Machine probe evidence was accepted. Complete the required hands-on exercise below to unlock the lesson."
+      );
+    } catch (error) {
+      setExerciseRecorded(false);
+      setMachineVerificationMessage(
+        error instanceof Error
+          ? `Could not read machine evidence: ${error.message}`
+          : "Could not read machine evidence."
+      );
+    }
+  }
 
   function startMasteryRemediation(failures: string[], stageOverride?: MasteryPlan["stage"]) {
     const attempt = recordMasteryFailure(lesson.id);
@@ -131,7 +303,15 @@ export function LessonPanel({
     setExerciseRecorded(false);
     setExerciseCheckpointAnswer(null);
 
-
+    void recordMasteryAttemptAction({
+      lessonId: lesson.id,
+      taskId: handsOnTask.id,
+      outcome: "failure",
+      stage: finalPlan.stage,
+      summary: failures.join(" ")
+    }).catch(() => {
+      // Local remediation remains available if server telemetry is temporarily unavailable.
+    });
   }
 
   const remediationTarget =
@@ -268,15 +448,121 @@ export function LessonPanel({
             <code>{command}</code>
           </pre>
 
-          <div className="content-card">
-            <span className="eyebrow">MVP VERIFICATION</span>
-            <h4>Run the command manually</h4>
-            <p>
-              Machine execution and remote evidence import are intentionally
-              disabled in this MVP. Enter the observations and recovery evidence
-              below; this browser stores the structured evidence locally.
-            </p>
-          </div>
+          {runtimeTask ? (
+            <div className="content-card">
+              <span className="eyebrow">VERIFIED LAPTOP TERMINAL</span>
+              <h4>Run this exercise directly from the website</h4>
+              <p>
+                The website can use the DevOps terminal agent installed on this
+                laptop. The browser never receives arbitrary shell access; it
+                sends only this lesson's allowlisted task to the local agent.
+              </p>
+
+              <p className="range">{localAgentInfo}</p>
+              {localAgentAvailable && localAgentPlatform !== platform ? (
+                <p className="range">
+                  Select {localAgentPlatform} as the course environment to run
+                  this lesson directly on this laptop, or use the manual
+                  terminal path.
+                </p>
+              ) : null}
+
+              {!localAgentAvailable ? (
+                <>
+                  <p>Start the local agent once on this laptop:</p>
+                  <pre>
+                    <code>npm run terminal-agent</code>
+                  </pre>
+                </>
+              ) : null}
+
+              <label className="evidence-field">
+                <strong>Pair this browser with the local agent</strong>
+                <input
+                  type="password"
+                  value={localAgentToken}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setLocalAgentTokenState(value);
+                    setLocalTerminalToken(value);
+                  }}
+                  placeholder="Paste the pairing token printed by the agent"
+                />
+              </label>
+
+              <button
+                className="primary"
+                disabled={
+                  !localAgentAvailable ||
+                  !localAgentToken.trim() ||
+                  localAgentRunning ||
+                  localAgentPlatform !== platform
+                }
+                onClick={() => {
+                  void runOnLaptop();
+                }}
+              >
+                {localAgentRunning
+                  ? "Running on this laptop..."
+                  : "Run verified exercise on this laptop"}
+              </button>
+
+              <p className="range">
+                This uses the laptop's real terminal environment. If the agent
+                is not available, use the manual terminal instructions below.
+              </p>
+
+              {machineVerificationMessage ? (
+                <p className="range">{machineVerificationMessage}</p>
+              ) : null}
+
+              {machineResults.length ? (
+                <div className="content-card">
+                  <span className="eyebrow">LAPTOP TERMINAL RESULTS</span>
+                  {machineResults.map((step) => (
+                    <div key={step.stepId}>
+                      <h4>
+                        {step.stepId} · {step.result} · exit {step.exitCode}
+                      </h4>
+                      {step.stdout ? (
+                        <pre>
+                          <code>{step.stdout}</code>
+                        </pre>
+                      ) : null}
+                      {step.stderr ? (
+                        <pre>
+                          <code>{step.stderr}</code>
+                        </pre>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              {platform !== "windows" ? (
+                <details>
+                  <summary>Optional remote machine</summary>
+                  <p>
+                    SSH remote execution remains available for a real VM or
+                    physical machine.
+                  </p>
+                  <pre>
+                    <code>{`npm run hands-on:remote -- --execute --lesson ${runtimeTask.lessonId} --platform ${platform} --host <host> --user <user>`}</code>
+                  </pre>
+                  <label className="evidence-field">
+                    <strong>Import remote verification JSON</strong>
+                    <input
+                      type="file"
+                      accept="application/json,.json"
+                      onChange={(event) => {
+                        void importMachineEvidence(event.target.files?.[0]);
+                      }}
+                    />
+                  </label>
+                </details>
+              ) : null}
+            </div>
+          ) : null}
 
           <h4>Break / fix</h4>
           <p>{lesson.lab.challenge}</p>

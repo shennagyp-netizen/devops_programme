@@ -2,74 +2,40 @@
 
 **Status:** authoritative for the V3 MVP.
 
-## Architecture
+## Application identity
 
-The learner application is one React/Next.js application with a small first-party identity layer.
+The learner application uses simple first-party authentication: email/password registration, scrypt password hashing, opaque HTTP-only session cookie, and PostgreSQL-backed users and sessions.
 
-The progress path is:
+There is no Clerk/OAuth/JWT learner identity system.
 
-```
-Learner UI
-   |
-   v
-Server Action
-   |
-   v
-authenticated session
-   |
-   v
-PostgreSQL / Drizzle
-```
+## Progress
 
-## Authentication
+The learner UI calls one Server Action. The server resolves the authenticated user from the session and stores completion in PostgreSQL.
 
-The MVP uses:
+The browser never supplies a trusted user ID.
 
-- email/password registration;
-- scrypt password hashing;
-- opaque HTTP-only session cookie;
-- PostgreSQL-backed session records.
-
-There is no Clerk, OAuth, JWT, or separate API-token scheme.
-
-The browser never submits a trusted userId.
-
-## Completion state
-
-A completion record contains authenticated user identity, item type, item ID, course, project, verification level and completion time.
-
-The database enforces one completion row per user + item type + item ID.
+The database uniqueness boundary is `user + item type + item ID`.
 
 Duplicate completion is idempotent.
 
+## Local terminal pairing
+
+Terminal execution uses a second, deliberately separate credential: the local terminal-agent pairing token.
+
+This token exists only to authorize the browser to call the learner's loopback terminal service. It is not an application login token.
+
+The agent remains bound to `127.0.0.1` and accepts only runtime task IDs from `runtimeTasks.json`.
+
 ## Evidence
 
-Hands-on evidence can remain locally structured for the immediate exercise experience.
+Manual learner evidence remains useful for instructional flow.
 
-The application must not present browser-entered evidence as cryptographic attestation or certification.
+Machine evidence from the local agent is validated against the runtime task contract before it is recorded.
 
-## API boundary
-
-There is no custom progress REST API.
-
-The browser uses the existing Server Action.
-
-Input is parsed and bounded by progress-contract.ts.
-
-## AI tutor
-
-The tutor is integrated into the same application and does not introduce another learner authentication/token layer.
-
-Its lesson context is resolved server-side from the authored curriculum.
+Neither browser-entered evidence nor a structurally valid runtime envelope should be presented as cryptographic certification.
 
 ## Machine execution
 
-Terminal-agent pairing is intentionally outside the V3 MVP.
+The learner can use the manual terminal path or install/run the local agent and pair the browser with its printed token.
 
-The MVP does not need a second token system just to preserve learner progress.
-
-## Historical note
-
-An earlier V3 simplification pass incorrectly removed authentication entirely. That was superseded.
-
-The current V3 rule is: simple first-party authentication, no complex identity platform.
+The second path is part of V3 and must not be removed merely to simplify application authentication.
