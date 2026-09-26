@@ -4,498 +4,1787 @@ DAY 1 — LINUX + NETWORKING FOUNDATIONS
 
 EPISODE D1.1 — Linux Operating Model
 
+Speaker A: Before we touch DevOps platforms, let's look at the machine underneath them.
 
+Speaker B: Linux.
 
-Speaker A: Before we touch DevOps tools, let's talk about the machine underneath the drama. Your application is ultimately a collection of processes asking an operating system for CPU time, memory, files, and network access.
+Speaker A: Linux. And the goal is not to memorize commands. It is to understand what an application is asking the operating system to do.
 
-Speaker B: So the cloud is just a very expensive machine room with better marketing?
+Speaker B: So what is the first model?
 
-Speaker A: That's a dangerous oversimplification... but a useful starting point.
+Speaker A: Application work becomes one or more processes.
 
-Speaker A: Think about a restaurant. The customer sees the waiter carrying food. Behind that waiter are the kitchen, refrigerators, staff, inventory, electricity, and a manager deciding what gets attention first. A Linux process is one active piece of work. The kernel arbitrates access to shared resources.
+Speaker B: The process needs CPU, memory, files and network access.
 
-Speaker B: And when the restaurant becomes slow, yelling at the waiter is probably not root-cause analysis.
+Speaker A: And the kernel mediates access to those resources.
 
-Speaker A: Exactly. You inspect the kitchen.
+Speaker B: So the picture is Application -> Process -> Kernel -> Resources -> Evidence.
 
-Speaker A: Linux gives processes identifiers, memory, file descriptors, scheduling, signals, filesystem access, and network sockets. The shell is itself a process; it asks the kernel to launch or control other processes.
+Speaker A: Exactly.
 
-Speaker B: File descriptors always sound like something invented by people who hate newcomers.
+Speaker B: Evidence is the last box because operators need a way to observe what happened.
 
-Speaker A: They are just numbered handles to communication channels. Standard input, standard output, and standard error are the famous ones. Pipes connect channels so processes can compose.
+Speaker A: Good. Now make a prediction.
 
-Speaker A: When you run ps, top, lsof, kill, or inspect logs, you are asking the system to reveal state.
+Speaker A: A user says the application is slow. CPU is low. Does that prove the application is healthy?
 
-Speaker B: Real-life version?
+Speaker B: No. The process could be waiting on a database, a lock, storage or a network dependency.
 
-Speaker A: If a clinic says, 'the lab is slow,' the useful questions are: Which machine? Which process? CPU? Memory? Disk? Network? One user or everyone? That is the same diagnostic mindset.
+Speaker A: Good. Now the important word is why.
 
-Speaker A: Mac lab: inspect processes and listening sockets. Pick one harmless process, predict what happens if it stops, then verify.
+Speaker B: Because low CPU only tells me how much CPU work the process was doing. It does not tell me what it was waiting for.
 
+Speaker A: Exactly. A metric becomes useful when you know which claim it supports and which claims it does not.
 
+Speaker B: That sounds like the Beginner course.
 
-Recall: What is a process? What is the kernel responsible for? What is a file descriptor? Why is the shell not the kernel? What evidence do you collect before blaming the machine?
-Speaker B: Let me test the model. If my application is slow, I shouldn't start by restarting it.
+Speaker A: It is the same engineering habit at a deeper level. Intermediate should make the mechanism explicit.
 
-Speaker A: Right. You can restart it. I'm not banning the button. I'm saying you don't get to use the button as a substitute for a question.
+Speaker B: So let's define a process properly.
 
-Speaker B: So first question?
+Speaker A: A program is stored code. A process is a running instance with state, an address space, an identity, open resources and an execution context.
 
-Speaker A: What is actually slow? The process? The machine? The disk? A downstream call? A lock? A network round trip? You want the first observation that separates those possibilities.
+Speaker B: Process ID.
 
-Speaker B: Okay, suppose CPU is at ninety-nine percent.
+Speaker A: Yes. PID.
 
-Speaker A: That's evidence, but it still isn't the whole diagnosis. Which process owns the CPU? Is that process supposed to be busy? Did traffic increase? Did one code path change? Is the process spinning because something else failed?
+Speaker B: And the process can have a parent.
 
-Speaker B: So even a metric can be a symptom, not a cause.
+Speaker A: Yes. A process can be started by a shell, a service manager, a supervisor, a container runtime, or another process.
 
-Speaker A: Exactly. Never fall in love with the first metric that looks dramatic.
+Speaker B: So process ownership matters.
+
+Speaker A: Very much.
+
+Speaker B: What does the kernel do?
+
+Speaker A: It provides controlled access to system resources and coordinates competing work. For our model, think about scheduling CPU time, virtual memory, filesystems, networking, devices, signals and process isolation.
+
+Speaker B: The application does not just reach into the CPU directly.
+
+Speaker A: Correct. It asks the operating system to perform operations on its behalf.
+
+Speaker B: So when I open a file, there is a kernel boundary involved.
+
+Speaker A: Yes.
+
+Speaker B: When I create a network connection, same idea.
+
+Speaker A: Yes.
+
+Speaker B: When a process receives a signal, the operating system is involved again.
+
+Speaker A: Exactly.
+
+Speaker B: This makes the kernel feel less like a mysterious black box.
+
+Speaker A: Good. It is a very large system, but the questions are concrete.
+
+Speaker B: Let's talk about process state.
+
+Speaker A: A process can be running, waiting or sleeping, stopped, or exited. Linux exposes more detailed states, but operationally the question is: what is the process doing right now?
+
+Speaker B: A process can be alive and still not be doing useful work.
+
+Speaker A: Exactly.
+
+Speaker B: Because it can be blocked on something else.
+
+Speaker A: Yes.
+
+Speaker B: So a green process list is weak evidence.
+
+Speaker A: It proves the process exists. It does not prove the user path works.
+
+Speaker B: Another prediction.
+
+Speaker A: A process has been alive for one hour. Its CPU is near zero. Its memory is stable. The service response is slow. What do you inspect next?
+
+Speaker B: I want to know what the process is waiting on.
+
+Speaker A: Good.
+
+Speaker B: Network sockets, files, locks, dependency timing, logs.
+
+Speaker A: Good. Notice that you are moving from the process to its resources and dependencies.
+
+Speaker B: Which is the third and fourth box.
+
+Speaker A: Exactly.
+
+Speaker B: Let's make file descriptors concrete.
+
+Speaker A: A process uses file descriptors as handles for things such as files, sockets and pipes. Standard input, standard output and standard error are the familiar descriptors.
+
+Speaker B: So stdout is not special magic. It is a file descriptor connected to something.
+
+Speaker A: Correct.
+
+Speaker B: And a socket is another kind of descriptor.
+
+Speaker A: Exactly.
+
+Speaker B: A pipe lets one process feed another.
+
+Speaker A: Yes.
+
+Speaker B: That means the shell is itself participating in the process model.
+
+Speaker A: Very much so. The shell is a process that creates and connects other processes. It is not the kernel.
+
+Speaker B: That's a beginner distinction, but still useful here.
+
+Speaker A: The distinction matters more as you debug supervision, pipelines and process ownership.
 
 Speaker B: What about memory?
 
-Speaker A: Same idea. Linux gives processes address spaces and manages memory on their behalf. A process can allocate memory, the kernel can reclaim pages, files can be cached, and a machine can look “full” in one view without meaning what a beginner thinks it means.
+Speaker A: Processes use virtual address spaces. The kernel manages physical memory and virtual-memory mechanisms. For operations, start with the evidence: which process is consuming memory, how that changes over time, and whether the system is under memory pressure.
 
-Speaker B: And file descriptors?
+Speaker B: So a large memory number is not automatically a leak.
 
-Speaker A: Think of them as little handles the process uses to talk to the outside world. A file. A socket. A pipe. Standard input, output, and error are just the famous three.
+Speaker A: Correct.
 
-Speaker B: So when I pipe one command into another, I'm literally connecting process output to process input.
+Speaker B: And a small process can still be the cause of an incident if it holds a critical resource or blocks a dependency.
 
-Speaker A: Exactly. And that is why the shell matters. The shell is not secretly running the whole operating system. It's coordinating processes and asking the kernel to do things.
+Speaker A: Exactly.
 
-Speaker B: Pause. Prediction time. If I start a process, then close the terminal, what should I expect?
+Speaker B: CPU has the same problem.
 
-Speaker A: Good. Don't look it up yet. Predict what happens to the process, and then tell me what observation would prove your prediction.
+Speaker A: Yes. High CPU can be expected work, wasteful work, or a symptom of another failure. Low CPU can be healthy waiting or pathological waiting.
 
-Speaker B: My first instinct is that the process dies because the terminal dies.
+Speaker B: Context before conclusions.
 
-Speaker A: That's a reasonable first guess. But now ask the better question: what relationship does that process have to the terminal, and what signal or session behavior is involved? Linux has more structure there than “terminal closed, process dead.”
+Speaker A: Exactly.
 
-Speaker B: So the goal isn't memorizing that one result. It's learning how to ask what owns the lifecycle.
+Speaker B: Now process control.
 
-Speaker A: Yes. Ownership, state, evidence. You'll hear those three words a lot.
+Speaker A: Linux provides signals as one mechanism for communicating with processes.
 
-Speaker B: Give me a production version.
+Speaker B: So when I ask a process to stop, the operating system does not just erase it.
 
-Speaker A: Imagine a service with three hundred workers. One disappears. A weak investigation says, “The service crashed.” A stronger one asks whether one child process exited, whether the supervisor restarted it, whether traffic was redistributed, and whether the process was killed by a resource limit. Same symptom, very different system states.
+Speaker A: Correct. Different signals have different semantics, and the process may handle some of them.
 
-Speaker B: That sounds like hospital triage again.
+Speaker B: Which means I should not learn process termination as one universal button.
 
-Speaker A: It is. You don't diagnose “the patient” as a single object. You measure the signals and narrow the failing subsystem.
+Speaker A: Right. You need to know what signal you are sending and what the process is expected to do.
 
-Speaker B: Mac lab?
+Speaker B: Prediction pause.
 
-Speaker A: Open a terminal. Find a harmless process. Inspect it. Find what sockets it owns. Look at its parent process. Then predict what changes if you terminate that process. Do the experiment on something disposable, not on the application you happen to be relying on.
+Speaker A: Go ahead.
 
-Speaker B: And what should I say out loud after?
+Speaker B: If I start a long-running process from a terminal and close the terminal, will the process always die?
 
-Speaker A: Explain, in plain language, what the kernel did for the process and what the process had to do itself.
+Speaker A: What is your evidence plan?
 
-Speaker B: That's harder than memorizing ten commands.
+Speaker B: I inspect the process relationship to the terminal session, its parent, and the signals or supervision involved.
 
-Speaker A: Good. The commands are the easy part.
+Speaker A: Good. The exact outcome depends on how the process was started and what controls its lifecycle.
+
+Speaker B: So I should not teach the slogan 'closing the terminal kills the process.'
+
+Speaker A: Correct. Teach the mechanism.
+
+Speaker B: That's one of the big differences between a command course and systems engineering.
+
+Speaker A: Exactly.
+
+Speaker B: Now let's create a production symptom.
+
+Speaker A: A service has three hundred worker processes.
+
+Speaker B: One worker disappears.
+
+Speaker A: What do we need to know?
+
+Speaker B: Did it exit normally? Did a supervisor restart it? Was it killed by a resource limit? Did a signal stop it? Did the application itself terminate?
+
+Speaker A: Excellent.
+
+Speaker B: So saying 'the service crashed' hides the process lifecycle.
+
+Speaker A: Yes.
+
+Speaker B: And the right evidence might be process state, parent relationship, logs, exit status, and resource pressure.
+
+Speaker A: Exactly.
+
+Speaker B: Let's connect that to observability.
+
+Speaker A: Commands such as ps and lsof expose current state. Logs expose recorded events. Service managers expose lifecycle state. Metrics show values over time.
+
+Speaker B: Different windows into the same system.
+
+Speaker A: Exactly.
+
+Speaker B: So no single tool owns the truth.
+
+Speaker A: Correct. The job is to correlate evidence.
+
+Speaker B: That sounds familiar.
+
+Speaker A: It should.
+
+Speaker B: Mac lab.
+
+Speaker A: Choose a harmless process you own.
+
+Speaker B: Inspect it with ps.
+
+Speaker A: Good.
+
+Speaker B: Find its PID, state and useful resource information.
+
+Speaker A: Good.
+
+Speaker B: Inspect one of its open network endpoints or files.
+
+Speaker A: Good.
+
+Speaker B: Inspect its parent or supervisor when available.
+
+Speaker A: Good.
+
+Speaker B: Then predict what changes if I stop that disposable process.
+
+Speaker A: Run the controlled experiment.
+
+Speaker B: Observe which process state, socket, log entry or service state changes.
+
+Speaker A: Good.
+
+Speaker B: Restart or recreate only the disposable component.
+
+Speaker A: Good.
+
+Speaker B: Verify the original path is healthy.
+
+Speaker A: Exactly.
+
+Speaker B: What counts as success?
+
+Speaker A: You should be able to explain the chain without naming a command first.
+
+Speaker B: Application work.
+
+Speaker A: Then?
+
+Speaker B: Process.
+
+Speaker A: Then?
+
+Speaker B: Kernel-managed resources.
+
+Speaker A: Then?
+
+Speaker B: Evidence that tells me what is happening.
+
+Speaker A: Good.
+
+Speaker B: And if something is slow?
+
+Speaker A: Ask which process, which resource, which dependency, and which observation can separate the remaining hypotheses.
+
+Speaker B: Recall.
+
+Speaker A: What is the difference between a program and a process?
+
+Speaker B: A program is stored code. A process is a running instance with state, identity and resources.
+
+Speaker A: What does the kernel do in this model?
+
+Speaker B: It mediates controlled access to CPU, memory, files, networking, signals and other system resources.
+
+Speaker A: Why can a process be alive while the service is unhealthy?
+
+Speaker B: It can be waiting, blocked, misconfigured, or unable to reach a required dependency.
+
+Speaker A: What is a file descriptor?
+
+Speaker B: A handle a process uses for resources such as files, sockets and pipes.
+
+Speaker A: Why is CPU not a complete diagnosis?
+
+Speaker B: High CPU can be normal or pathological, and low CPU can happen while the process waits on another resource or dependency.
+
+Speaker A: Final challenge.
+
+Speaker B: A Linux service is slow.
+
+Speaker A: Your model?
+
+Speaker B: Identify the process. Inspect its state. Inspect resource usage and open endpoints. Identify what it may be waiting on. Then choose evidence that separates the leading causes.
+
+Speaker A: And after a safe change?
+
+Speaker B: Prove the service behavior recovered.
+
+Speaker A: Exactly.
+
+Speaker B: So the Linux operating model is not a list of commands.
+
+Speaker A: It is a way to explain how application work becomes processes, how the kernel mediates resources, and how operators observe the resulting state.
+
+Speaker B: Good.
+
+Speaker A: Now run the lab and explain the machine, not just the command.
 
 
 EPISODE D1.2 — Terminal as an Engineering Tool
 
+Speaker A: The terminal is not a bag of spells.
 
+Speaker B: Good. Because I know commands and still sometimes have no idea what I am doing.
 
-Speaker A: The terminal is not a collection of spells. It is a compositional language for interrogating and manipulating a system.
+Speaker A: Then use a better model.
 
-Speaker B: I know the commands but sometimes type them like a medieval wizard.
+Speaker B: Which is?
 
-Speaker A: Most engineers have done that. The trick is understanding what each command contributes.
+Speaker A: Question -> Producer -> Transform -> Route -> Evidence.
 
-Speaker A: Imagine a detective with a clipboard. ps tells you who is alive. grep filters evidence. tail watches recent events. find searches. A pipe hands output from one investigator to another.
+Speaker B: So the picture is a dataflow.
 
-Speaker B: So ps | grep something is two detectives passing notes.
+Speaker A: Exactly. You start with a system question. Then you choose a program that can produce useful evidence.
 
-Speaker A: Precisely. Except the detectives are processes, and nobody gets paid overtime.
+Speaker B: Then I transform that evidence.
 
-Speaker A: Review pwd, ls, cd, find, grep, cat, less, head, tail, awk, sed, pipes, redirection, environment variables, ssh, curl, and process inspection.
+Speaker A: If necessary.
 
-Speaker A: Real-life example: 'The service is down.' First ask the machine: Is the process alive? Is a port listening? What does the log say? Can the local endpoint answer?
+Speaker B: Then I route it with pipes or redirection.
 
-Speaker B: That is triage.
+Speaker A: And finally I explain what the result proves.
 
-Speaker A: Exactly. The command line becomes a fast triage instrument.
+Speaker B: That is much better than memorizing one hundred commands.
 
-Speaker A: Lab: inspect a harmless process, redirect output, filter a list, then query a closed local port and study the evidence.
-Speaker B: I want to challenge something. You said the terminal is a compositional language. Most people learn it as a bag of commands.
+Speaker A: Exactly.
 
-Speaker A: And then they memorize one hundred commands and still can't debug a server.
+Speaker B: Prediction first?
 
-Speaker B: Guilty.
+Speaker A: Yes. Suppose someone says the local service is down. What is your first command?
 
-Speaker A: Because the power isn't in knowing “grep.” The power is in knowing what information you need, which program can expose it, and how to pass that information to the next program.
+Speaker B: I don't know yet.
 
-Speaker B: So the question is not “Which command do I know?”
+Speaker A: Good.
 
-Speaker A: Right. It's “What evidence do I need next?”
+Speaker B: Because I first need to decide what I need to prove.
 
-Speaker B: Give me a real incident.
+Speaker A: Exactly. Is the process alive? Is a port listening? Can the endpoint answer? Is there an error log? Different questions need different producers.
 
-Speaker A: Someone says, “The local service is down.” I don't know anything else. What do you check?
+Speaker B: So the first command is chosen by the hypothesis.
 
-Speaker B: Is the process alive.
+Speaker A: Yes.
 
-Speaker A: Good. Then?
+Speaker B: Let's build a simple pipeline.
 
-Speaker B: Is the expected port listening.
+Speaker A: Suppose ps produces a long process list.
 
-Speaker A: Then?
+Speaker B: Then grep can filter it.
 
-Speaker B: Can the local endpoint answer.
+Speaker A: Right.
 
-Speaker A: And logs. And configuration. And dependencies. Notice what happened: you built a sequence, not a shopping list of commands.
+Speaker B: ps aux | grep nginx
 
-Speaker B: I like that. A sequence.
+Speaker A: That is a tiny dataflow system.
 
-Speaker A: That's how you get fast. Experts aren't necessarily typing faster. They're asking better questions in a better order.
+Speaker B: ps is the producer. The shell connects its output to grep. grep transforms the output into a smaller evidence set.
 
-Speaker B: And pipes?
+Speaker A: Exactly.
 
-Speaker A: A pipe is a tiny dataflow system. One process writes bytes; another process reads them. That lets you build one-purpose tools into a larger investigation.
+Speaker B: And grep is also a process.
 
-Speaker B: The embarrassing part is that I've definitely used commands I couldn't explain.
+Speaker A: Yes. The shell is coordinating processes, not doing every piece of the work itself.
 
-Speaker A: Everybody does. The cure isn't shame. It's curiosity.
+Speaker B: So the pipeline has more than one execution context.
 
-Speaker B: Okay. Suppose I run ps aux | grep nginx. What should I mentally see?
+Speaker A: Correct.
 
-Speaker A: First, ps produces process information. The shell connects its output to grep. grep filters lines containing your pattern. Then remember the subtle part: the filtering command itself is a process too.
+Speaker B: What about redirection?
 
-Speaker B: So sometimes my “search” shows the search process.
+Speaker A: Redirection changes where a stream goes.
 
-Speaker A: Exactly. The system is happily doing what you asked. You're the one who built the slightly silly query.
+Speaker B: Standard output.
 
-Speaker B: Human systems engineering in one sentence.
+Speaker A: And standard error.
 
-Speaker A: Pretty much.
+Speaker B: So if a command looks empty, the useful message could have gone to stderr.
 
-Speaker B: Prediction pause. I run a command and redirect its output to a file. Where did the output go?
+Speaker A: Exactly.
 
-Speaker A: Don't answer “into the file” too quickly. Ask which process opened the file, which file descriptor was redirected, and whether standard output or standard error was redirected.
+Speaker B: That's one of those tiny details that wastes a lot of time.
 
-Speaker B: Right. The distinction matters when the command “looks empty” because the error went somewhere else.
+Speaker A: Yes. You think the command produced nothing. In reality, the evidence went somewhere else.
 
-Speaker A: Exactly. That's the sort of tiny thing that saves twenty minutes at three in the morning.
+Speaker B: Prediction.
 
-Speaker B: Real-life version?
+Speaker A: Go.
 
-Speaker A: Customer support says, “I sent the report.” Finance says, “We never received it.” Maybe the report wasn't sent. Or it went to a different address. Or it was sent but rejected. Same sentence, four possible states.
+Speaker B: I run a command and redirect its output to a file. What should I inspect if the file exists but looks empty?
 
-Speaker B: So terminal work is evidence routing.
+Speaker A: What does the question become?
 
-Speaker A: Nice phrase. Use it. Then forget the phrase and do the work.
+Speaker B: Which stream was redirected?
+
+Speaker A: Good.
+
+Speaker B: Maybe stdout went to the file while stderr stayed on the terminal.
+
+Speaker A: Exactly.
+
+Speaker B: So I should inspect both streams instead of assuming the program produced no evidence.
+
+Speaker A: Good.
+
+Speaker B: Now filtering.
+
+Speaker A: grep, awk and sed can all transform text, but do not treat them as interchangeable magic.
+
+Speaker B: The point is to expose the evidence I need.
+
+Speaker A: Correct.
+
+Speaker B: So if I need process IDs, I filter for the process. If I need one column, I select or transform that column.
+
+Speaker A: Exactly.
+
+Speaker B: What is the danger of a giant one-line command?
+
+Speaker A: You can lose the meaning of each step.
+
+Speaker B: So if the answer is wrong, I don't know which stage introduced the error.
+
+Speaker A: Correct.
+
+Speaker B: Better to build the pipeline one step at a time.
+
+Speaker A: Yes. Make each step understandable.
+
+Speaker B: That sounds slower.
+
+Speaker A: It often becomes faster because each step has a clear contract.
+
+Speaker B: Give me an incident.
+
+Speaker A: Someone says the local service is down.
+
+Speaker B: I want three questions.
+
+Speaker A: Go.
+
+Speaker B: Is the process alive?
+
+Speaker A: Good.
+
+Speaker B: Is the expected port listening?
+
+Speaker A: Good.
+
+Speaker B: Can the local endpoint answer?
+
+Speaker A: Good.
+
+Speaker B: And logs?
+
+Speaker A: Yes. But only if the question needs them.
+
+Speaker B: So I might choose ps for the first question, a socket inspection command for the second, curl for the third, and a log reader for the fourth.
+
+Speaker A: Exactly.
+
+Speaker B: That is a sequence, not a shopping list.
+
+Speaker A: Right.
+
+Speaker B: Now what makes a command useful?
+
+Speaker A: It should produce evidence that answers the current question.
+
+Speaker B: And I should know what a successful and failed result mean.
+
+Speaker A: Exactly.
+
+Speaker B: That is stronger than knowing syntax.
+
+Speaker A: Much stronger.
+
+Speaker B: Another prediction.
+
+Speaker A: A command returns exit code zero. Does that prove the service is healthy?
+
+Speaker B: No. It proves that command completed successfully according to its own contract.
+
+Speaker A: Good.
+
+Speaker B: The application could still be returning bad data.
+
+Speaker A: Exactly.
+
+Speaker B: So command success is not automatically system success.
+
+Speaker A: Keep that one.
+
+Speaker B: What about ssh?
+
+Speaker A: Treat remote execution as another boundary in your evidence path.
+
+Speaker B: My local environment may not have the same user, environment, filesystem, network path or permissions as the remote machine.
+
+Speaker A: Exactly.
+
+Speaker B: So a command that works locally is not proof of remote behavior.
+
+Speaker A: Correct.
+
+Speaker B: curl is similar.
+
+Speaker A: Yes. It lets you ask a network endpoint a focused question.
+
+Speaker B: So terminal engineering is evidence routing across boundaries.
+
+Speaker A: That's a useful model.
+
+Speaker B: I promise not to put it on a T-shirt.
+
+Speaker A: Thank you.
+
+Speaker B: Let's break the pipeline.
+
+Speaker A: Good.
+
+Speaker B: I filter for the wrong process name.
+
+Speaker A: What happens?
+
+Speaker B: I can conclude the service is missing when the evidence was just filtered incorrectly.
+
+Speaker A: Exactly.
+
+Speaker B: Another failure: I redirect stdout but the error is on stderr.
+
+Speaker A: Your file looks healthy and empty.
+
+Speaker B: Which is misleading.
+
+Speaker A: Yes.
+
+Speaker B: Another: I run a command locally but the real service is remote.
+
+Speaker A: Wrong evidence boundary.
+
+Speaker B: Another: I run a pipeline without understanding each stage.
+
+Speaker A: Then you may get a neat-looking but incorrect answer.
+
+Speaker B: So red-team the pipeline itself.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction pause.
+
+Speaker A: The command pipeline produces no lines. Does that prove no matching process exists?
+
+Speaker B: Not necessarily. The producer may be wrong, the filter may be wrong, permissions may hide information, or the data may have changed.
+
+Speaker A: Good. Empty output is evidence about the pipeline, not automatically proof about the system.
+
+Speaker B: That is a very useful sentence.
+
+Speaker A: Good.
 
 Speaker B: Mac lab?
 
-Speaker A: Inspect processes, filter them, redirect output to a temporary file, deliberately query a closed local port, and save both the normal output and the error. Then explain which evidence came from which file descriptor.
+Speaker A: Start with one system question.
 
-Speaker B: And if I can do that without copying a command from the internet?
+Speaker B: For example: Which process is listening on the local service port?
 
-Speaker A: Now you're actually learning the terminal.
+Speaker A: Good.
+
+Speaker B: Choose the producer.
+
+Speaker A: Good.
+
+Speaker B: Then filter or transform its output.
+
+Speaker A: Good.
+
+Speaker B: Then route the result into another command or a temporary file.
+
+Speaker A: Good.
+
+Speaker B: Keep stdout and stderr visible when useful.
+
+Speaker A: Good.
+
+Speaker B: Then write one sentence: what does the final evidence prove?
+
+Speaker A: Exactly.
+
+Speaker B: Then deliberately break one stage.
+
+Speaker A: Such as querying a closed local port or filtering for a name that does not exist.
+
+Speaker B: Predict what changes.
+
+Speaker A: Observe it.
+
+Speaker B: Fix only that stage.
+
+Speaker A: And verify the original question again.
+
+Speaker B: So the lab teaches the pipeline itself.
+
+Speaker A: Yes.
+
+Speaker B: Recall.
+
+Speaker A: What is the difference between a command list and a terminal dataflow?
+
+Speaker B: A dataflow starts from a question and connects programs so each stage produces or transforms evidence for the next stage.
+
+Speaker A: What does a pipe do?
+
+Speaker B: It connects one process's standard output to another process's standard input.
+
+Speaker A: What is redirection?
+
+Speaker B: Sending a process stream such as stdout or stderr to another destination such as a file.
+
+Speaker A: Why can a command look empty when it is not?
+
+Speaker B: Useful information may be on stderr, or an earlier pipeline stage may have produced the wrong evidence.
+
+Speaker A: What should the final step always explain?
+
+Speaker B: What the evidence proves and what it does not prove.
+
+Speaker A: Final challenge.
+
+Speaker B: Someone says the local service is down.
+
+Speaker A: Your method?
+
+Speaker B: Define the question. Pick the producer. Transform only what helps. Route the streams deliberately. Interpret the evidence. Then verify with a second observation or a safe experiment.
+
+Speaker A: Good.
+
+Speaker B: So terminal skill is not typing faster.
+
+Speaker A: It is asking better questions and building reliable evidence paths.
+
+Speaker B: That's the skill.
+
+Speaker A: Run the lab and explain every stage of your pipeline.
 
 
 EPISODE D1.3 — Processes, Services, Permissions and Logs
 
+Speaker A: Yesterday we looked at processes and the kernel.
 
+Speaker B: Today the same process gets a context.
 
-Speaker A: A production service has a lifecycle. It starts, runs, consumes resources, emits evidence, and eventually stops or restarts.
+Speaker A: Exactly. The picture is Process -> Identity -> Resource -> Service -> Logs.
 
-Speaker B: Like an employee, except the employee can be restarted automatically.
+Speaker B: So the code can be correct and still fail because the context is wrong.
 
-Speaker A: Please do not give management ideas.
+Speaker A: That is one of the most important operational ideas.
 
-Speaker A: Think of a hotel. Guests are requests. Rooms are resources. Staff are processes. The front desk is a service endpoint. The supervisor keeps the system operating when one worker disappears.
+Speaker B: Start with identity.
 
-Speaker A: In Linux, understand process state, signals, users, groups, permissions, environment variables, services and logs.
+Speaker A: A process runs under a user identity and usually one or more groups.
 
-Speaker B: Why can a perfectly healthy application still fail?
+Speaker B: And that identity affects what it can access.
 
-Speaker A: Because it may not be allowed to read a file, bind a socket, access a directory, or obtain a credential.
+Speaker A: Yes. A file can exist, be perfectly healthy, and still be inaccessible to the process.
 
-Speaker A: Real-life example: a lab technician knows the correct file exists but cannot open a locked cabinet. The data exists; authority is missing.
+Speaker B: Because of permissions.
 
-Speaker A: Lab: inspect a service-like process, its environment, files and logs. In a temporary directory, make one permission change and observe the failure.
-Speaker B: This one feels like the point where “the code is correct” stops being enough.
+Speaker A: Or ownership, directory traversal, ACLs, credentials or another access rule.
 
-Speaker A: Exactly. Production systems have another dimension: authority.
+Speaker B: So the first question is not 'does the file exist?'
 
-Speaker B: Meaning permissions.
+Speaker A: Right. Ask two questions: does it exist, and can this process access it?
 
-Speaker A: Permissions, identity, environment, service lifecycle, secrets, filesystem ownership, all of it. An application can be perfectly valid and still be unable to do the thing it needs to do.
+Speaker B: Prediction.
 
-Speaker B: Give me the boring real-life version.
+Speaker A: Go.
 
-Speaker A: A lab technician knows exactly which folder contains a report. The report exists. But the cabinet is locked and they don't have the key.
+Speaker B: A service reads a configuration file successfully from my terminal. I deploy the same application as a managed service and it cannot read the file.
 
-Speaker B: The data is healthy. Authorization isn't.
+Speaker A: What changed?
 
-Speaker A: Right. Now bring that back to Linux. A process has a user identity. Files have ownership and permission bits. Directories have their own access rules. Environment variables can change behavior. A service manager can start a process with a different user, different environment, and different lifecycle than the shell you used during development.
+Speaker B: Maybe the process user changed. Maybe the working directory changed. Maybe PATH changed. Maybe the environment variables changed. Maybe the service has a different filesystem context.
 
-Speaker B: Which explains the classic, “It works from my terminal.”
+Speaker A: Exactly.
 
-Speaker A: Exactly. Your terminal might have a PATH, credentials, working directory, and environment that the service does not have.
+Speaker B: So 'same code' does not mean 'same execution context'.
 
-Speaker B: So the service isn't necessarily broken. My assumptions about its execution context are broken.
+Speaker A: Correct.
 
-Speaker A: Very often.
+Speaker B: That explains the classic sentence: It works from my terminal.
 
-Speaker B: What should I inspect first?
+Speaker A: Exactly.
 
-Speaker A: Start with the process identity and how it was started. Then inspect the files and directories it needs. Then logs. Then environment. You're reconstructing the process's world.
+Speaker B: Stage two: resource.
 
-Speaker B: Prediction pause: if I change a file from readable to unreadable and restart the process, what kind of evidence should I expect?
+Speaker A: The process may need a file, directory, socket, device, port, credential or secret.
 
-Speaker A: Good. Predict the failure in the application log. Then check whether the process itself stays alive. Those are different outcomes.
+Speaker B: Each resource has its own access rules.
 
-Speaker B: So one permission failure might return an application error without killing the service.
+Speaker A: Right.
 
-Speaker A: Exactly. Or it might happen during startup and prevent the service from coming up. Same underlying category, different lifecycle point.
+Speaker B: So a permission failure can happen even when CPU and memory look perfectly normal.
 
-Speaker B: That's subtle.
+Speaker A: Yes.
 
-Speaker A: It's also normal. That's why operational debugging is temporal. You care about what happened, when, and in what state the process was.
+Speaker B: Give me a lab example.
 
-Speaker B: I notice we keep coming back to state.
+Speaker A: Use a temporary directory you own. Create a test file. Let a harmless process read it. Then change the permission so the process can no longer read it.
 
-Speaker A: Because computers are state machines wearing business clothes.
+Speaker B: Observe the exact error.
 
-Speaker B: That's a line.
+Speaker A: Good. Then restore the permission and verify the operation succeeds again.
 
-Speaker A: Fine. You can keep it.
+Speaker B: Controlled failure, known-good state, recovery.
+
+Speaker A: Exactly.
+
+Speaker B: Stage three: service lifecycle.
+
+Speaker A: A service is not just a process you started once.
+
+Speaker B: It may be started by a service manager.
+
+Speaker A: Yes.
+
+Speaker B: It may be restarted automatically.
+
+Speaker A: Yes.
+
+Speaker B: It may run under a different user and environment from my shell.
+
+Speaker A: Exactly.
+
+Speaker B: So service management changes the process context.
+
+Speaker A: It can.
+
+Speaker B: And supervision changes lifecycle behavior.
+
+Speaker A: Right. The operating question becomes: who starts this process, under which context, and what happens when it exits?
+
+Speaker B: Prediction.
+
+Speaker A: A service is working when started manually. The managed service fails during startup. Where do you look first?
+
+Speaker B: Execution context: user, environment, working directory, paths, permissions and required resources.
+
+Speaker A: Good.
+
+Speaker B: Then logs.
+
+Speaker A: Yes. Logs are evidence of what the service recorded about its lifecycle and work.
+
+Speaker B: But logs are not magic.
+
+Speaker A: Correct. You still need the process and resource model.
+
+Speaker B: So the visual ends with Logs because logs describe the behavior, but the earlier boxes explain the mechanism.
+
+Speaker A: Exactly.
+
+Speaker B: What should I look for in logs?
+
+Speaker A: Timestamp, component, severity when available, process or request identity when available, and the first error that changes your next decision.
+
+Speaker B: Not five thousand lines.
+
+Speaker A: Please not five thousand lines.
+
+Speaker B: Another prediction.
+
+Speaker A: The application process stays alive, but one feature returns a permission error.
+
+Speaker B: The process lifecycle is healthy enough to continue. The failure is probably at resource access or application handling.
+
+Speaker A: Good.
+
+Speaker B: So not every permission failure kills the process.
+
+Speaker A: Exactly. The timing and location of the failure matter.
+
+Speaker B: That is why lifecycle state matters.
+
+Speaker A: Yes.
+
+Speaker B: Let's connect user, group and permissions.
+
+Speaker A: A process's identity is one part of an authorization decision. File ownership and permission bits are another. Directory access matters too.
+
+Speaker B: So I need to inspect the whole path, not just the final file.
+
+Speaker A: Correct. A directory can block traversal even when the final file appears readable.
+
+Speaker B: That's a useful trap.
+
+Speaker A: Operational work is full of useful traps.
+
+Speaker B: What about environment variables?
+
+Speaker A: They are part of execution context. A service may have a different PATH, different configuration values, different credentials and a different working directory from the shell where you tested it.
+
+Speaker B: Which means the same binary can behave differently.
+
+Speaker A: Exactly.
+
+Speaker B: So when I debug a service, I am reconstructing its world.
+
+Speaker A: That's the idea.
+
+Speaker B: Pause.
+
+Speaker A: Go ahead.
+
+Speaker B: Make a prediction. I change the PATH in my shell and the command works. The service still says the command is missing.
+
+Speaker A: What is your hypothesis?
+
+Speaker B: The service probably has a different PATH or execution environment.
+
+Speaker A: Good.
+
+Speaker B: I should compare contexts before changing the application.
+
+Speaker A: Exactly.
+
+Speaker B: This feels like a systems version of configuration debugging.
+
+Speaker A: It is.
 
 Speaker B: Mac lab?
 
-Speaker A: Pick a harmless temporary directory. Create a file. Let one process read it. Change the permission. Observe the exact failure. Then restore it. Next, inspect a real process's environment and parent. The objective isn't to break the Mac. It's to feel how identity and lifecycle change what a process can do.
+Speaker A: Pick a harmless temporary directory and a disposable test process.
 
-Speaker B: And logs?
+Speaker B: Inspect the process identity and environment.
 
-Speaker A: Read them as evidence, not as a diary. Look for timestamps, severity, component, request or process identity, and the first useful error. Don't scroll through five thousand lines hoping the answer will become emotionally obvious.
+Speaker A: Good.
 
-Speaker B: I have definitely done that.
+Speaker B: Create a file the process can read.
 
-Speaker A: So have I. It never works.
+Speaker A: Good.
+
+Speaker B: Change the permission so it cannot read it.
+
+Speaker A: Good.
+
+Speaker B: Observe the failure in the process or service log.
+
+Speaker A: Good.
+
+Speaker B: Restore the permission.
+
+Speaker A: Good.
+
+Speaker B: Verify the original operation works again.
+
+Speaker A: Exactly.
+
+Speaker B: Then explain why the code itself did not change.
+
+Speaker A: That explanation is the lesson.
+
+Speaker B: What should success look like?
+
+Speaker A: You can answer: which user is the process, what environment did it receive, which resource failed, what permission blocked it, what lifecycle component started it, and what log evidence proves the failure and recovery.
+
+Speaker B: Stronger than memorizing chmod.
+
+Speaker A: Much stronger.
+
+Speaker B: Recall.
+
+Speaker A: Why can correct application code still fail in production?
+
+Speaker B: Because the execution context can differ: identity, permissions, environment, working directory, credentials, service supervision or resource availability.
+
+Speaker A: Why does identity matter?
+
+Speaker B: Resource access is evaluated in the process's identity context.
+
+Speaker A: Why inspect logs?
+
+Speaker B: They provide time-stamped evidence about lifecycle and failures, but must be interpreted with process and resource state.
+
+Speaker A: What is the difference between a process and a service?
+
+Speaker B: A process is the running work. A service is the operational lifecycle and interface around that work, often including supervision, startup, restart and environment.
+
+Speaker A: What proves recovery?
+
+Speaker B: The original user-facing or process operation succeeds again under the intended service context.
+
+Speaker A: Final challenge.
+
+Speaker B: A service works from my shell but fails when started by the service manager.
+
+Speaker A: Your model?
+
+Speaker B: Compare process identity, groups, permissions, environment, working directory, resource access, service startup configuration and logs.
+
+Speaker A: And what do you change first?
+
+Speaker B: The smallest context or permission boundary supported by the evidence, then I verify the original operation.
+
+Speaker A: Exactly.
+
+Speaker B: So the lesson is not 'permissions are annoying.'
+
+Speaker A: It is 'execution context is part of the system'.
+
+Speaker B: That's the model.
+
+Speaker A: Run the lab, break one context boundary safely, and prove recovery.
 
 
 EPISODE D1.4 — What Is a Network?
 
+Speaker A: Networking gets easier when each layer has a clear question.
 
-
-Speaker A: Now we rebuild networking from the ground up.
-
-Speaker B: I know IP addresses, but the layers around them have always felt like a group project where nobody introduced themselves.
-
-Speaker A: Start at the link layer. Ethernet moves frames. MAC addresses identify interfaces on a local link. Switches move frames inside a LAN. ARP helps map local IP addresses to MAC addresses.
-
-Speaker A: Real-life analogy: an apartment building. The apartment number matters after the building is known. Local delivery needs local addressing.
-
-Speaker A: Then IP gives network-level addressing. Do not confuse MAC, IP, and a TCP port.
-
-Speaker B: So if DNS is broken, the Ethernet cable can still be perfectly healthy.
-
-Speaker A: Correct. Different layer, different failure.
-
-Speaker A: Lab: inspect your Mac's interfaces, addresses, gateway and nearby network information.
-Speaker B: Okay. Networking from first principles. No shortcuts.
-
-Speaker A: Good. Forget the cloud for a minute. Imagine two machines on the same Ethernet network.
-
-Speaker B: They need some way to identify each other.
-
-Speaker A: At the local link, they use hardware-level addressing such as MAC addresses. Ethernet frames move across the local network. Switches learn where devices live and forward frames accordingly.
-
-Speaker B: And IP hasn't happened yet?
-
-Speaker A: Not in the sense that matters for this discussion. Different layers answer different questions. Ethernet is concerned with moving frames on a local link. IP is concerned with addressing and routing between networks.
-
-Speaker B: So if I keep saying “the IP address identifies the machine,” I'm already simplifying too much.
-
-Speaker A: A lot too much. Interfaces have addresses. A machine can have several interfaces. Virtual interfaces exist. Containers have their own network contexts. And the same host can participate in several networks.
-
-Speaker B: This is where ARP comes in?
-
-Speaker A: On IPv4 local networks, ARP helps discover the link-layer address associated with a local IP address. The important thing is the question it answers: “I know the local IP. Which hardware address should receive this frame?”
-
-Speaker B: That's actually clean.
-
-Speaker A: Most networking becomes cleaner when you phrase each protocol as a question.
-
-Speaker B: Real-life analogy.
-
-Speaker A: Apartment building. You might know a person lives in apartment 12. To get the envelope into the building, you still need the building's entrance and a local delivery path. One address doesn't answer every routing question.
-
-Speaker B: Back to the literal model: IP addresses are for network-level delivery. MAC addresses are for local link delivery.
-
-Speaker A: Exactly. And a TCP port is neither of those. A port identifies an application endpoint on a host.
-
-Speaker B: Three different things that beginners mash together.
-
-Speaker A: Constantly.
-
-Speaker B: Prediction. If DNS fails but I already know the server's IP, can I still connect?
-
-Speaker A: Potentially, yes. And that simple thought experiment is powerful. A DNS failure doesn't automatically mean Ethernet, IP routing, or TCP is broken.
-
-Speaker B: So troubleshooting starts by separating layers.
+Speaker B: Instead of one giant thing called the network.
 
 Speaker A: Exactly.
 
+Speaker B: The picture today is Interface -> Link -> IP -> Route -> Evidence.
+
+Speaker A: Good. Start with the interface.
+
+Speaker B: The host can have physical or virtual interfaces.
+
+Speaker A: Correct.
+
+Speaker B: So one machine is not automatically one network identity.
+
+Speaker A: Right. A host can have multiple interfaces and addresses.
+
+Speaker B: Which already makes 'the machine's IP' too simple.
+
+Speaker A: Exactly.
+
+Speaker B: Stage two: Link.
+
+Speaker A: On an Ethernet network, local delivery uses frames and link-layer addressing.
+
+Speaker B: MAC address.
+
+Speaker A: Yes. A MAC address identifies a local-link interface.
+
+Speaker B: And switches move frames inside a local network.
+
+Speaker A: Good.
+
+Speaker B: So if the Ethernet or local-link path is broken, IP routing might be perfectly configured and still not help.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction.
+
+Speaker A: You know the server's IP address, but the local interface is down. Can the host send normal traffic to that server?
+
+Speaker B: No. The lower-level participation is already broken.
+
+Speaker A: Good.
+
+Speaker B: Stage three: IP.
+
+Speaker A: IP provides network-level addressing and allows traffic to move between networks.
+
+Speaker B: So MAC is local-link context, IP is network-level context.
+
+Speaker A: Exactly.
+
+Speaker B: And TCP port comes later.
+
+Speaker A: Correct. Do not collapse MAC, IP and port into one thing.
+
+Speaker B: What about ARP?
+
+Speaker A: On IPv4 local networks, ARP helps answer a specific question: I know the local IP address. Which link-layer address should receive the frame?
+
+Speaker B: So ARP connects an IP-layer fact to a local-link destination.
+
+Speaker A: That's a useful way to remember it.
+
+Speaker B: Prediction.
+
+Speaker A: The host knows the destination IP. DNS is irrelevant because we already have the IP. The host still cannot reach the local next hop. Where do you look?
+
+Speaker B: Local link or neighbor resolution, not DNS.
+
+Speaker A: Exactly.
+
+Speaker B: Stage four: Route.
+
+Speaker A: Once the host has an address, it still needs a route.
+
+Speaker B: The routing table decides where traffic goes.
+
+Speaker A: Right.
+
+Speaker B: If the destination is on the local network, delivery can stay local.
+
+Speaker A: Yes.
+
+Speaker B: If it is remote, traffic may go through a gateway or another next hop.
+
+Speaker A: Exactly.
+
+Speaker B: So the gateway is a route decision, not the destination service.
+
+Speaker A: Correct.
+
+Speaker B: Another prediction.
+
+Speaker A: DNS works. The server IP is correct. The local interface is up. But the routing table sends traffic the wrong way. What should you expect?
+
+Speaker B: The name resolution looks healthy, but packets may still never reach the destination.
+
+Speaker A: Good.
+
+Speaker B: So a DNS success does not prove the network path.
+
+Speaker A: Exactly.
+
+Speaker B: Now the evidence box.
+
+Speaker A: Each layer exposes different evidence.
+
+Speaker B: Interface state.
+
+Speaker A: Good.
+
+Speaker B: IP addresses.
+
+Speaker A: Good.
+
+Speaker B: Neighbor information.
+
+Speaker A: Good.
+
+Speaker B: Routes.
+
+Speaker A: Good.
+
+Speaker B: And later we can inspect transport ports and application protocols.
+
+Speaker A: Exactly.
+
+Speaker B: So network debugging should ask which layer's claim is still unproven.
+
+Speaker A: Yes.
+
+Speaker B: Let's make the analogy.
+
+Speaker A: Think about an apartment building.
+
+Speaker B: Interface is the building entrance.
+
+Speaker A: Reasonable.
+
+Speaker B: Link is the local hallway.
+
+Speaker A: Good.
+
+Speaker B: IP is the building and apartment address.
+
+Speaker A: Good enough as an analogy.
+
+Speaker B: Route is the path to the right building.
+
+Speaker A: Yes.
+
+Speaker B: But the analogy stops there.
+
+Speaker A: Please.
+
+Speaker B: No tiny packets walking down the hallway.
+
+Speaker A: Thank you.
+
+Speaker B: Another question: why is DNS not part of today's picture?
+
+Speaker A: DNS can provide address information, but it is a separate naming system. Today's model assumes we are already reasoning about the network path to an address.
+
+Speaker B: So DNS can fail while Ethernet and routing are healthy.
+
+Speaker A: Exactly.
+
+Speaker B: And Ethernet can fail while DNS still works.
+
+Speaker A: Exactly.
+
+Speaker B: Different failure, different evidence.
+
+Speaker A: That is the lesson.
+
+Speaker B: Let's make a safe failure.
+
+Speaker A: Use your own machine or a disposable network namespace if your lab provides one.
+
+Speaker B: First record the known-good interface state and route.
+
+Speaker A: Good.
+
+Speaker B: Then make one controlled local network change.
+
+Speaker A: Such as temporarily disabling a disposable virtual interface or changing only the test environment's route.
+
+Speaker B: Observe which layer changes first.
+
+Speaker A: Exactly.
+
+Speaker B: Restore the original state.
+
+Speaker A: Then verify the same destination is reachable again.
+
+Speaker B: So the evidence has three states: known good, controlled failure, recovered.
+
+Speaker A: Correct.
+
+Speaker B: What should I not do?
+
+Speaker A: Do not change DNS, routes, firewall rules and application settings at the same time.
+
+Speaker B: Because then we lose causality.
+
+Speaker A: Exactly.
+
+Speaker B: Pause.
+
+Speaker A: Go ahead.
+
+Speaker B: Make a prediction. The cable is fine, the interface is up, and the IP address is correct. The destination is remote. What should I check before blaming the application?
+
+Speaker A: What do you think?
+
+Speaker B: The route.
+
+Speaker A: Good.
+
+Speaker B: If the route is correct, then move toward transport and application evidence.
+
+Speaker A: Exactly.
+
+Speaker B: One more prediction. The route is wrong, but DNS returns the correct IP.
+
+Speaker A: What does DNS prove?
+
+Speaker B: Only that the naming lookup produced that address. It does not prove the packet path is correct.
+
+Speaker A: Excellent.
+
 Speaker B: Mac lab?
 
-Speaker A: Inspect your interfaces. Write down the IP addresses, the interface names, and the default route. Then look at the local network information your Mac exposes. Finally, use a known destination and ask yourself which layer each command is testing.
+Speaker A: Inspect your network interfaces.
 
-Speaker B: And I shouldn't just run ten commands and stare at them.
+Speaker B: Record interface names and addresses.
 
-Speaker A: Right. Before every command, say, “I'm testing this hypothesis.” That's how a terminal becomes an instrument instead of a slot machine.
+Speaker A: Good.
+
+Speaker B: Inspect the default route.
+
+Speaker A: Good.
+
+Speaker B: Inspect nearby network or neighbor information your platform exposes.
+
+Speaker A: Good.
+
+Speaker B: Pick one known destination and say which layer each command is testing.
+
+Speaker A: Good.
+
+Speaker B: Then make one safe failure in a disposable context.
+
+Speaker A: Good.
+
+Speaker B: Observe the failure.
+
+Speaker A: Good.
+
+Speaker B: Restore the known-good state.
+
+Speaker A: And verify recovery.
+
+Speaker B: Recall.
+
+Speaker A: What is a MAC address used for in our simplified model?
+
+Speaker B: Local-link identification for an interface.
+
+Speaker A: What does IP provide?
+
+Speaker B: Network-level addressing and a basis for routing between networks.
+
+Speaker A: What does ARP answer on an IPv4 local network?
+
+Speaker B: Which link-layer address corresponds to a local IP address.
+
+Speaker A: What does a route tell the host?
+
+Speaker B: Where to send traffic for a destination address.
+
+Speaker A: Why do we separate layers during diagnosis?
+
+Speaker B: Because each layer produces different evidence and a failure at one layer does not automatically prove another layer is broken.
+
+Speaker A: Final challenge.
+
+Speaker B: A server name resolves, the interface is up, the IP is correct, but the destination is unreachable.
+
+Speaker A: Your model?
+
+Speaker B: Check the local link and neighbor state when relevant, then the route, then move upward to transport and application evidence.
+
+Speaker A: Good.
+
+Speaker B: So the network is not one thing.
+
+Speaker A: It is a set of layers that cooperate to move data, each with its own mechanism and evidence.
+
+Speaker B: That makes troubleshooting much less mysterious.
+
+Speaker A: Run the lab, name the layer, and explain the evidence.
 
 
 EPISODE D1.5 — IP Addresses, Subnets and CIDR
 
+Speaker A: CIDR stops being mysterious when you treat it as a boundary.
 
+Speaker B: The slash tells me how much of the address belongs to the network.
 
-Speaker A: IP addressing gets easier when you stop treating CIDR as a decorative slash.
+Speaker A: Exactly.
 
-Speaker B: The slash has always looked like a fraction that escaped into networking.
+Speaker B: So the picture is Address -> Prefix -> Boundary -> Range -> Verify.
 
-Speaker A: It is a compact way to state how many leading bits define the network portion.
+Speaker A: Good. For IPv4, there are thirty-two address bits. The prefix length tells us how many leading bits define the network portion.
 
-Speaker A: Imagine a neighborhood. The street identifies a shared area; the house number identifies one home. A subnet is the neighborhood boundary.
+Speaker B: The remaining bits are host space.
 
-Speaker A: We will reason through 192.168.1.0/24, 192.168.1.0/26, and 10.0.0.0/16, calculating boundaries and understanding why segmentation matters.
+Speaker A: Right.
 
-Speaker A: Real-life example: a large hospital does not need every device in one undifferentiated network. Departments and sensitive systems may be separated to control communication.
+Speaker B: Prediction.
 
-Speaker A: Lab: calculate CIDR ranges manually before using a calculator, then compare with the machine.
-Speaker B: CIDR is the part where I usually remember a formula and then immediately forget why it exists.
+Speaker A: A /24 has more addresses in each block than a /26. True?
 
-Speaker A: Then don't start with the formula. Start with boundaries.
+Speaker B: True. /26 uses more bits for the network, leaving fewer host bits.
 
-Speaker B: Neighborhood again?
+Speaker A: Good.
 
-Speaker A: Neighborhood again. Suppose the whole street belongs to one network. You can subdivide it into smaller neighborhoods so traffic and ownership become easier to manage.
+Speaker B: So subnetting is really about changing the boundary.
 
-Speaker B: And /24 tells me how many bits define the network portion.
+Speaker A: Exactly.
 
-Speaker A: Right. For IPv4, there are thirty-two address bits. A /24 leaves eight bits for hosts inside that network. A /26 leaves six. Smaller host space, more specific subdivision.
+Speaker B: Take 192.168.1.0/24.
 
-Speaker B: So the slash is describing the boundary between network bits and host bits.
+Speaker A: Twenty-four network bits. Eight host bits.
 
-Speaker A: Exactly. That sentence is more important than memorizing a table.
+Speaker B: Two to the eight gives 256 addresses in the block.
 
-Speaker B: Let's do one. 192.168.1.0/26.
+Speaker A: Correct.
 
-Speaker A: Good. Sixty-four total addresses in that block. Now ask where the boundaries are.
+Speaker B: Now /26.
 
-Speaker B: Zero through sixty-three for the first block.
+Speaker A: Six host bits.
 
-Speaker A: Correct. Then sixty-four through one hundred twenty-seven, and so on.
+Speaker B: Two to the six gives 64 addresses per block.
 
-Speaker B: The usable-host story depends on context, too.
+Speaker A: Exactly.
 
-Speaker A: Yes. For ordinary IPv4 subnets, the network and broadcast addresses have traditional special meanings. But don't blindly apply old memorized rules to every environment; IPv6 and specialized designs differ.
+Speaker B: So the /24 can be divided into four /26 blocks.
 
-Speaker B: That's a nice warning.
+Speaker A: Good.
 
-Speaker A: Operations is full of them. A rule that was once useful becomes dangerous when it turns into a superstition.
+Speaker B: And the boundaries are .0, .64, .128 and .192.
+
+Speaker A: Exactly.
+
+Speaker B: That means 192.168.1.130/26 belongs to the .128 block.
+
+Speaker A: Correct.
+
+Speaker B: This is easier than memorizing subnet-mask tables.
+
+Speaker A: That is the goal. Derive the answer.
+
+Speaker B: So what is the failure mode?
+
+Speaker A: Picking an arbitrary endpoint that is not aligned with the prefix.
+
+Speaker B: Example: saying a /26 block starts at .64 and ends at .100.
+
+Speaker A: Exactly. The block size says where the next boundary must occur.
+
+Speaker B: So the prefix constrains the possible ranges.
+
+Speaker A: Yes.
+
+Speaker B: What about network and broadcast addresses?
+
+Speaker A: In ordinary IPv4 subnetting, those addresses have traditional special meanings, so the usual host-range calculation excludes them. But do not treat that as a universal law for every addressing design or protocol.
+
+Speaker B: So I keep the model, but I keep the context too.
+
+Speaker A: Exactly.
+
+Speaker B: Now why does segmentation matter to an engineer?
+
+Speaker A: Because a subnet is not only an address bucket. It can help define routing boundaries, security boundaries, fault domains and clearer ownership.
 
 Speaker B: Hospital example?
 
-Speaker A: Picture one hospital network with everything mixed together: reception computers, clinical devices, guest Wi-Fi, lab instruments, cameras. A compromise in one area can have a much larger blast radius. Segmentation creates boundaries where communication can be controlled.
+Speaker A: Put reception systems, clinical devices, guest Wi-Fi and lab equipment in one flat network. A problem in one area can have a much larger blast radius.
 
-Speaker B: So subnetting isn't only about conserving addresses.
+Speaker B: Separate subnets can make the boundaries explicit.
 
-Speaker A: Right. It can support routing design, security boundaries, fault isolation, and operational clarity.
+Speaker A: Yes. Then routing and access rules can control how those segments communicate.
 
-Speaker B: Prediction pause. If I move a machine into a different subnet but leave the gateway configuration inconsistent, what happens?
+Speaker B: Prediction.
 
-Speaker A: Don't answer with “it loses Internet.” Think in terms of which destinations are local, which require a router, and which next hop the host believes is reachable.
+Speaker A: Two machines have addresses 192.168.1.10 and 192.168.1.200. Same subnet under /24?
 
-Speaker B: So the failure might appear as “some addresses work, some don't.”
+Speaker B: Yes.
 
-Speaker A: Exactly. Partial reachability is useful evidence.
+Speaker A: Under /26?
 
-Speaker B: Mac lab?
+Speaker B: No. .10 is in the .0 block; .200 is in the .192 block.
 
-Speaker A: Calculate a few CIDR blocks by hand first. Write the first address and the next boundary. Only then use a calculator or operating-system tool to verify yourself. You want the machine to confirm your reasoning, not replace it.
+Speaker A: Good.
 
-Speaker B: That's uncomfortable.
+Speaker B: Same addresses, different boundary.
 
-Speaker A: Good. Comfort is not the learning objective.
+Speaker A: Exactly.
+
+Speaker B: And that changes which traffic is local versus routed.
+
+Speaker A: Good. That connection matters for the next lesson.
+
+Speaker B: Because D1.6 is routing.
+
+Speaker A: Right.
+
+Speaker B: So CIDR is already affecting route decisions.
+
+Speaker A: Yes.
+
+Speaker B: Let's make the evidence part explicit.
+
+Speaker A: A good subnet calculation should give you the network boundary, block size, address range, and a way to decide whether two addresses share the same subnet.
+
+Speaker B: Then I verify it with a calculator or system tool.
+
+Speaker A: Correct.
+
+Speaker B: But only after doing the reasoning myself.
+
+Speaker A: Exactly. The tool checks the model; it does not replace the model.
+
+Speaker B: Another prediction.
+
+Speaker A: We need four smaller networks from a /24. What should you think about before choosing a prefix?
+
+Speaker B: Required host count, number of segments, routing boundaries and growth headroom.
+
+Speaker A: Good.
+
+Speaker B: So /26 is a design result, not a favorite number.
+
+Speaker A: Exactly.
+
+Speaker B: Safe lab.
+
+Speaker A: Calculate 192.168.1.0/24 by hand.
+
+Speaker B: Then divide it into /26 blocks.
+
+Speaker A: Good.
+
+Speaker B: Pick two addresses and predict whether they share a subnet.
+
+Speaker A: Good.
+
+Speaker B: Verify the prediction with a calculator.
+
+Speaker A: Good.
+
+Speaker B: Deliberately write one wrong block boundary.
+
+Speaker A: Good.
+
+Speaker B: Explain why the prefix makes that boundary impossible.
+
+Speaker A: Good.
+
+Speaker B: Then design a small segmentation for a hospital network and explain the operational reason for each boundary.
+
+Speaker A: Exactly.
+
+Speaker B: That is harder than memorizing /24.
+
+Speaker A: Good.
+
+Speaker B: Recall.
+
+Speaker A: What does the CIDR prefix length tell you?
+
+Speaker B: How many leading bits define the network portion.
+
+Speaker A: How do you derive an IPv4 block size?
+
+Speaker B: From the number of host bits; the block size is two to that power.
+
+Speaker A: Why does /26 have smaller blocks than /24?
+
+Speaker B: Because /26 leaves fewer host bits.
+
+Speaker A: Why do boundaries matter operationally?
+
+Speaker B: They affect which addresses belong together, so they influence routing, segmentation and address allocation.
+
+Speaker A: What should you verify?
+
+Speaker B: Network boundary, range, same-subnet decisions and whether the design fits the routing requirements.
+
+Speaker A: Final challenge.
+
+Speaker B: 192.168.1.130/26.
+
+Speaker A: Which block?
+
+Speaker B: The .128 block.
+
+Speaker A: Why?
+
+Speaker B: /26 has a block size of 64, so the boundaries are .0, .64, .128 and .192.
+
+Speaker A: Exactly.
+
+Speaker B: So the slash is a boundary.
+
+Speaker A: Now run the calculations yourself and prove each result.
 
 
 EPISODE D1.6 — Routing, Gateways and NAT
 
+Speaker A: We know what an interface is, what an IP address is, and what a subnet boundary is.
 
+Speaker B: Now we need to answer the next question.
 
-Speaker A: Routing answers: where should this packet go next?
+Speaker A: Where should this packet go?
 
-Speaker B: Like Google Maps, except the packet is not allowed to ask for coffee.
+Speaker B: Routing.
 
-Speaker A: And it does not appreciate scenic routes.
+Speaker A: Exactly. And the visual for this lesson is:
 
-Speaker A: A route table contains decisions about destinations and next hops. The default gateway handles traffic that does not match a more specific route.
+Speaker B: Destination -> Route -> Next hop -> Boundary -> Evidence.
 
-Speaker A: Think of a courier company. The local driver does not know every street in every city. They know which distribution center receives the package next.
+Speaker A: Keep that sequence in your head. It will stop routing from feeling like a list of commands.
 
-Speaker A: NAT changes addressing at a boundary. Do not confuse NAT with routing or security.
+Speaker B: Make a prediction.
 
-Speaker A: Lab: inspect your Mac's routing information and trace a destination. In a safe environment, change one route and predict the effect.
+Speaker A: A destination is on the local subnet. Should the host normally send the packet to the default gateway?
 
-Speaker B: So the practical rule is: identify the destination, the next hop, and what changes at the boundary.
+Speaker B: No. The host can usually deliver directly on the local link.
 
-Speaker A: Exactly.
-Speaker B: Routing finally feels intuitive to me when I imagine a courier network.
+Speaker A: Good. Why?
 
-Speaker A: That's a good model, as long as we don't forget it is a model.
-
-Speaker B: Local courier knows local streets. If the package is going elsewhere, it goes to a distribution center.
-
-Speaker A: Exactly. A route table is a set of decisions about destinations and the next place to send the packet. More specific routes can override the default route.
-
-Speaker B: And the default gateway is basically, “I don't have a better answer; send it here.”
-
-Speaker A: That's the operational idea.
-
-Speaker B: Where people get confused is NAT.
-
-Speaker A: Right. NAT can modify addresses as traffic crosses a boundary. Routing decides where packets go. NAT can change what addresses appear on the other side. Those are related, but not the same job.
-
-Speaker B: So saying “the NAT routes the packet” is sloppy.
-
-Speaker A: It can be sloppy enough to hide a real bug.
-
-Speaker B: Real-life example?
-
-Speaker A: Imagine a company with one public phone number and hundreds of internal extensions. The outside world sees one boundary address. Inside, calls get mapped to particular people. The analogy is imperfect, but it gives you the idea that one visible address can represent many private identities.
-
-Speaker B: And the packet path has a story.
-
-Speaker A: Yes. Source, destination, route choice, next hop, boundary transformations. Follow that story one step at a time.
-
-Speaker B: Prediction. If a destination is reachable on the local subnet, should the packet use the default gateway?
-
-Speaker A: Normally, no. A directly connected destination can be reached without sending the packet to the default router. That's why the route table matters. It isn't just a list of where the Internet lives.
-
-Speaker B: So route specificity changes behavior.
+Speaker B: Because the destination matches the directly connected network, so a more specific local route wins over the default route.
 
 Speaker A: Exactly.
+
+Speaker B: So the route table is not just a list of Internet destinations.
+
+Speaker A: Right. It is a set of forwarding decisions.
+
+Speaker B: Stage one: destination.
+
+Speaker A: Every routing decision begins with the destination address.
+
+Speaker B: IPv4 or IPv6 address.
+
+Speaker A: Yes. The host asks: which route applies to this destination?
+
+Speaker B: Stage two: route.
+
+Speaker A: The routing table contains destinations, prefixes and often a next hop or interface choice.
+
+Speaker B: So the host compares the destination against those entries.
+
+Speaker A: Exactly.
+
+Speaker B: And if several routes match?
+
+Speaker A: The routing rules prefer the most specific applicable route in normal IP routing behavior.
+
+Speaker B: Which means a narrow route can override a broad default route.
+
+Speaker A: Correct.
+
+Speaker B: Give me a real example.
+
+Speaker A: Suppose the host has a route for `192.168.10.0/24` and a default route through `192.168.10.1`.
+
+Speaker B: A packet for `192.168.10.42` should use the more specific local route.
+
+Speaker A: Right.
+
+Speaker B: A packet for `8.8.8.8` would use the default route if no more specific route exists.
+
+Speaker A: Exactly.
+
+Speaker B: So the routing question is not 'is the Internet working?'
+
+Speaker A: It is 'which route matches this destination?'
+
+Speaker B: That is much more testable.
+
+Speaker A: Good.
+
+Speaker B: Stage three: next hop.
+
+Speaker A: Once the route is chosen, the host needs to know where to send the packet next.
+
+Speaker B: Directly to the destination on the local network.
+
+Speaker A: Or toward a router when the destination is remote.
+
+Speaker B: So the default gateway is a common next hop, not a magic Internet box.
+
+Speaker A: Exactly.
+
+Speaker B: That distinction matters.
+
+Speaker A: It does.
+
+Speaker B: The gateway is useful because the host cannot know every remote network itself.
+
+Speaker A: Right. A router becomes the next decision point.
+
+Speaker B: Human example?
+
+Speaker A: A courier receives a package.
+
+Speaker B: The local driver knows nearby streets.
+
+Speaker A: If the destination is outside the driver's local area, the package goes to a distribution center.
+
+Speaker B: The distribution center is like a next hop.
+
+Speaker A: Roughly. The analogy helps with the idea of forwarding decisions, not every protocol detail.
+
+Speaker B: Stage four: boundary.
+
+Speaker A: Now we meet NAT.
+
+Speaker B: The thing people often mix up with routing.
+
+Speaker A: Exactly. Routing decides where traffic goes. NAT can change address information as traffic crosses a boundary.
+
+Speaker B: So NAT is not the thing choosing the route.
+
+Speaker A: Correct.
+
+Speaker B: In a common home network, a private host may send traffic toward the router, and the router may translate the source address at the Internet boundary.
+
+Speaker A: Good.
+
+Speaker B: The outside service then sees the translated source address rather than the private address.
+
+Speaker A: Exactly.
+
+Speaker B: But that does not mean NAT is a security policy by itself.
+
+Speaker A: Good. NAT can change addressing. Firewalls and security policies decide what traffic is allowed.
+
+Speaker B: Another important distinction.
+
+Speaker A: Many production bugs come from combining three different ideas into one.
+
+Speaker B: Route selection.
+
+Speaker A: Address translation.
+
+Speaker B: Access control.
+
+Speaker A: Exactly.
+
+Speaker B: Make another prediction.
+
+Speaker A: DNS resolves the server name correctly. The destination is unreachable. Does that prove the route is correct?
+
+Speaker B: No. DNS only proves the name resolved to an address. The route still has to send traffic toward that address.
+
+Speaker A: Good.
+
+Speaker B: So naming and routing are separate evidence layers.
+
+Speaker A: Exactly.
+
+Speaker B: Now the failure cases.
+
+Speaker A: First: wrong specific route.
+
+Speaker B: The destination matches a route that sends traffic in the wrong direction.
+
+Speaker A: Right.
+
+Speaker B: The host can reach some networks but not that one.
+
+Speaker A: Partial reachability is valuable evidence.
+
+Speaker B: Second: gateway unreachable.
+
+Speaker A: The route exists, but the selected next hop cannot be reached through the local network.
+
+Speaker B: So I inspect neighbor state and interface context.
+
+Speaker A: Good.
+
+Speaker B: Third: asymmetric path.
+
+Speaker A: The packet can leave, but the response takes a different path or cannot return.
+
+Speaker B: Which is why one-way reachability can be confusing.
+
+Speaker A: Exactly.
+
+Speaker B: Fourth: NAT changes what the remote side sees.
+
+Speaker A: Correct. That can affect logs, allowlists, return paths, and debugging assumptions.
+
+Speaker B: So when I debug, I need the packet story:
+
+Speaker A: Source.
+
+Speaker B: Destination.
+
+Speaker A: Route.
+
+Speaker B: Next hop.
+
+Speaker A: Boundary transformation.
+
+Speaker B: Return path.
+
+Speaker A: Exactly.
+
+Speaker B: Prediction pause.
+
+Speaker A: A destination is local, but the host sends it to the default gateway anyway. What does that suggest?
+
+Speaker B: The route table or interface/network configuration is wrong. I would check the directly connected route and the prefix on the interface.
+
+Speaker A: Good.
+
+Speaker B: Another prediction.
+
+Speaker A: The route is correct, the next hop is reachable, but the application still times out. What now?
+
+Speaker B: Move upward. Routing may be working, so I inspect transport and application evidence instead of changing the route again.
+
+Speaker A: Exactly.
+
+Speaker B: That is the same diagnostic discipline as earlier lessons.
+
+Speaker A: Yes. Each layer gets a chance to answer the question.
 
 Speaker B: Mac lab?
 
-Speaker A: Inspect the route table. Pick one destination on your local network and one remote destination. Predict the next hop for each. Then trace a remote path. Don't treat traceroute output as a perfect map of reality; firewalls and routing policy can make individual hops disappear.
+Speaker A: Inspect the route table.
 
-Speaker B: Another warning against superstition.
+Speaker B: Pick one local destination and one remote destination.
 
-Speaker A: You are going to hear that phrase a lot this week.
+Speaker A: Good.
 
-Speaker B: And the production connection?
+Speaker B: Predict which route matches and what the next hop should be.
 
-Speaker A: In a large service, routing decisions exist everywhere: host routes, container networks, load balancers, cloud subnets, service meshes, and inter-region paths. When something breaks, ask where the packet is supposed to go before asking why the application is unhappy.
+Speaker A: Good.
 
-Speaker B: That's a much better order.
+Speaker B: Verify the route with the operating system.
 
-Speaker A: Exactly. The packet doesn't care about your architecture diagram. It follows the actual state of the system.
+Speaker A: Good.
 
+Speaker B: Then trace one remote destination.
+
+Speaker A: Good, with one warning.
+
+Speaker B: Traceroute is not a perfect map.
+
+Speaker A: Exactly. Firewalls, load balancing, rate limits and routing policy can hide hops or make them look different.
+
+Speaker B: So a missing hop is not automatically a broken route.
+
+Speaker A: Correct.
+
+Speaker B: Controlled failure?
+
+Speaker A: Use a disposable network namespace or similarly isolated environment you control.
+
+Speaker B: Change one route.
+
+Speaker A: Predict the affected destination.
+
+Speaker B: Observe the failure.
+
+Speaker A: Restore the original route.
+
+Speaker B: Verify the original path recovers.
+
+Speaker A: Exactly.
+
+Speaker B: What should I record?
+
+Speaker A: Destination. Matching route. Next hop. Boundary transformation if any. Evidence before the change. Evidence after the change. Recovery proof.
+
+Speaker B: So the command is not the answer.
+
+Speaker A: The packet path is the answer.
+
+Speaker B: Recall.
+
+Speaker A: What does a route table decide?
+
+Speaker B: Which route applies to a destination and where the packet should go next.
+
+Speaker A: What is the default route?
+
+Speaker B: A fallback route used when no more specific route matches.
+
+Speaker A: What is a gateway?
+
+Speaker B: A next hop toward another network; it is not a synonym for routing.
+
+Speaker A: What does NAT do?
+
+Speaker B: It can change address representation at a boundary. It does not replace route selection or access control.
+
+Speaker A: Why does the return path matter?
+
+Speaker B: Because a request can leave successfully but the response can fail to return, creating one-way or asymmetric connectivity.
+
+Speaker A: Final challenge.
+
+Speaker B: A server name resolves. The interface is up. The IP is correct. One remote network is unreachable.
+
+Speaker A: Your first model?
+
+Speaker B: Destination -> Route -> Next hop -> Boundary -> Evidence.
+
+Speaker A: And your evidence sequence?
+
+Speaker B: Check the matching route. Check the next hop and local neighbor state. Check any boundary translation. Then move upward to transport and application evidence only if the packet path is supported.
+
+Speaker A: Good.
+
+Speaker B: So routing is not a command.
+
+Speaker A: It is a decision about where the packet goes next.
+
+Speaker B: And the evidence is the path.
+
+Speaker A: Exactly. Run the lab, change one route safely, and prove recovery.

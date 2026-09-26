@@ -21,6 +21,7 @@ import {
 import { MotionIllustration } from "./MotionIllustration";
 import { LessonContentFeed } from "./LessonContentFeed";
 import { PodcastCoach } from "./PodcastCoach";
+import { LessonVoiceClockProvider } from "./LessonVoiceClock";
 import { AssessmentPanel } from "./AssessmentPanel";
 import { MasteryRemediation } from "./MasteryRemediation";
 import { MasteryPreview } from "./MasteryPreview";
@@ -302,6 +303,7 @@ export function LessonPanel({
     diagnosticBySection[lesson.sectionId]?.remediationLessonIds[0];
 
   return (
+    <LessonVoiceClockProvider>
     <section className="lesson">
       <div className="lesson-head">
         <div>
@@ -795,5 +797,6 @@ export function LessonPanel({
         />
       )}
     </section>
+    </LessonVoiceClockProvider>
   );
 }

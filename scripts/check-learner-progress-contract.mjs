@@ -54,13 +54,15 @@ const packageJson = JSON.parse(content.package);
 assert.equal(packageJson.scripts.dev, "npm run sync:podcasts && next dev");
 assert.equal(packageJson.scripts.start, "next start");
 assert.equal(packageJson.scripts.typecheck, "tsc -b");
-assert.equal(packageJson.engines.node, ">=20.9.0");
+assert.equal(packageJson.engines.node, ">=22.12.0");
 assert.ok(packageJson.dependencies.next);
 assert.equal(packageJson.dependencies["@clerk/nextjs"], undefined);
 assert.equal(packageJson.dependencies.react, "19.2.8");
 assert.equal(packageJson.dependencies["react-dom"], "19.2.8");
 assert.equal(packageJson.dependencies.next, "16.3.6");
-assert.equal(packageJson.devDependencies.vite, undefined);
+// Vite is Vitest's required peer dependency. Its presence must not be confused
+// with the removed Vite application bootstrap, which is guarded below.
+assert.ok(packageJson.devDependencies.vite);
 assert.equal(packageJson.devDependencies["@vitejs/plugin-react"], undefined);
 
 assert.match(content.env, /DATABASE_URL=/);

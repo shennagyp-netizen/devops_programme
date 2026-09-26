@@ -85,6 +85,16 @@ describe("continuous voice architecture", () => {
     expect(podcastCoach).not.toContain("setTimeout");
   });
 
+  it("offers an explicit 1x to 2x guided-text pace when aligned audio is unavailable", () => {
+    const podcastCoach = source("src/components/PodcastCoach.tsx");
+
+    expect(podcastCoach).toContain("GUIDED_TURN_INTERVAL_MS");
+    expect(podcastCoach).toContain("Guided text reading pace");
+    expect(podcastCoach).toContain("[1, 1.25, 1.5, 1.75, 2]");
+    expect(podcastCoach).toContain("Pause guided text");
+    expect(podcastCoach).toContain("Resume guided text");
+  });
+
   it("attaches and cleans up all audio event listeners", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
 

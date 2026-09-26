@@ -308,7 +308,13 @@ PodcastCoach actual audio clock
   -> curriculum illustration binding
   -> animation event
   -> deterministic runtime
-  -> renderer
+-> renderer
+
+The first end-to-end interactive slice is B1.2's request replay. Its ordered
+browser-to-gateway-to-API actions are authored in the curriculum binding. When
+an aligned recording is published, the binding maps its authored cue IDs to the
+same deterministic runtime; until then, the learner can complete the explicit
+manual sequence and the application does not fabricate voice timing.
 
 Preview cue fixtures are not curriculum content, are not learner evidence, and are not a substitute for actual aligned audio.
 

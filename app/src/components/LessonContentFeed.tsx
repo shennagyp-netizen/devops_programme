@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { LessonContentBlock } from "../data/lessonContent";
 import { LessonIllustration } from "./LessonIllustration";
+import { InteractiveLessonIllustration } from "./InteractiveLessonIllustration";
 
 type LessonContentFeedProps = {
   blocks: LessonContentBlock[];
@@ -127,6 +128,7 @@ export function LessonContentFeed({ blocks }: LessonContentFeedProps) {
                   learner actions and completion rules come from the bound
                   illustration contract.
                 </p>
+                <InteractiveLessonIllustration bindingId={block.bindingId} />
                 {block.caption ? <p className="range">{block.caption}</p> : null}
               </div>
             ) : null}

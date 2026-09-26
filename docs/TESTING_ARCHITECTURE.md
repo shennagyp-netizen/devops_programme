@@ -134,7 +134,7 @@ The build runs, in order:
 13. unit tests
 14. integration tests
 15. TypeScript compilation
-16. Vite production build
+16. Next.js production build
 
 A failure in an invariant test blocks the build.
 

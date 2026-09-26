@@ -1,4 +1,5 @@
 node_modules/
+.next/
 dist/
 .DS_Store
 *.aux
@@ -7,4 +8,5 @@ dist/
 *.toc
 *.pdf
 .runtime-evidence/
-.env*.local\n
+.env*.local
+*.tsbuildinfo

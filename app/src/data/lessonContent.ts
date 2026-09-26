@@ -1128,6 +1128,15 @@ const authoredLessonContent: Record<string, LessonContent> = {
         variant: "request-path-v1",
         caption:
           "A request is a chain. Diagnose the smallest layer that can explain the observed failure."
+      },
+      {
+        id: "b1-2-request-replay",
+        type: "interactive-illustration",
+        heading: "Trace one request with evidence",
+        alt: "An interactive request moves from browser to gateway to API while the learner identifies each boundary",
+        bindingId: "B1.2:b1-2-request-replay",
+        caption:
+          "Advance one boundary at a time. The interactive sequence is the same causal path described in the lesson text."
       }
     ]
   },
