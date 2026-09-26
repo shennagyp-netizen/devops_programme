@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS "tutor_sessions" (
   "project_id" text NOT NULL,
   "mode" text NOT NULL,
   "created_at" timestamptz DEFAULT now() NOT NULL,
-  "last_active_at" timestamptz DEFAULT now() NOT NULL
+  "last_active_at" timestamptz DEFAULT now() NOT NULL,
+  CONSTRAINT "tutor_sessions_mode_ck" CHECK ("mode" IN ('teaching', 'failure-investigation', 'assignment-coach', 'incident-review', 'design-defense', 'oral-assessment'))
 );
 
 CREATE INDEX IF NOT EXISTS "tutor_sessions_user_lesson_idx"
