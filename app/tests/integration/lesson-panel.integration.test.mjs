@@ -104,7 +104,7 @@ describe("lesson panel integration contract", () => {
   it("routes machine-verification failure into the same remediation loop", () => {
     const code = source();
 
-    expect(code).toContain("startMasteryRemediation(result.failures, \"mechanism-reteach\")");
+    expect(code).toContain('startMasteryRemediation([message], "mechanism-reteach")');
     expect(code).toContain("Laptop execution returned invalid evidence");
     expect(code).toContain("Laptop terminal execution failed");
   });
