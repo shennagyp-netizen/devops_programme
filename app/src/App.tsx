@@ -38,6 +38,8 @@ export default function App({
   const [diagnosticRecommendations, setDiagnosticRecommendations] =
     useState<Record<string, DiagnosticRecommendation>>({});
   const [evidenceVersion, setEvidenceVersion] = useState(0);
+  const [verifiedEvidence, setVerifiedEvidence] =
+    useState<VerifiedEvidenceRecord[]>(initialVerifiedEvidence);
   const [m, setM] = useState<string[]>(() =>
     initialCompletionHistory
       .filter((item) => item.itemType === "lesson")
@@ -73,7 +75,7 @@ export default function App({
     }
 
     return grouped;
-  }, [initialVerifiedEvidence]);
+  }, [verifiedEvidence]);
 
   const authoritativeEvidenceRefsForItem = useCallback(
     (itemId: string) => {
@@ -374,7 +376,17 @@ export default function App({
               mastered={m.includes(lesson.id)}
               diagnosticRecommendation={diagnosticRecommendations[lesson.sectionId]}
               onSelectLesson={selectLesson}
-              onEvidenceRecorded={() => setEvidenceVersion((value) => value + 1)}
+              onEvidenceRecorded={(evidence) => {
+                if (evidence) {
+                  setVerifiedEvidence((current) => {
+                    if (current.some((item) => item.id === evidence.id)) {
+                      return current;
+                    }
+                    return [...current, evidence];
+                  });
+                }
+                setEvidenceVersion((value) => value + 1);
+              }}
               onModeChange={setLessonMode}
               progressReady={true}
               progressSaving={progressBusyId === lesson.id}
