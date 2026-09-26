@@ -351,6 +351,7 @@ export function LessonPanel({
         course={lesson.course}
         projectId={lesson.projectId}
         currentLessonMode={mode}
+        platform={platform}
         masteryPlan={masteryPlan}
         learnerEvidence={handsOnEvidence}
         exerciseRecorded={exerciseRecorded}
