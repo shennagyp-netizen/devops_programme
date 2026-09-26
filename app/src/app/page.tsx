@@ -181,7 +181,7 @@ export default function HomePage() {
         <div className="marketing-method-grid">
           <article>
             <span className="marketing-number">01</span>
-            <h3>~300 hours of project work</h3>
+            <h3>308 hours of project workload</h3>
             <p>
               Each project now has explicit phases, workload, exit evidence,
               incidents and redesign work instead of ending after a short lab.
@@ -202,6 +202,14 @@ export default function HomePage() {
             <p>
               Completion is attached to exercise evidence, mastery attempts,
               project incidents and verified recovery where machine coverage exists.
+            </p>
+          </article>
+          <article>
+            <span className="marketing-number">04</span>
+            <h3>Talk through the system</h3>
+            <p>
+              A persistent senior-engineer tutor can explain, investigate failures,
+              challenge designs and rehearse oral reasoning without replacing deterministic assessment.
             </p>
           </article>
         </div>
