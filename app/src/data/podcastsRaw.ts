@@ -77,7 +77,7 @@ export function parseTurns(text: string, lessonId = "episode"): Turn[] {
       }
 
       return {
-        id: \`\${lessonId}.T\${String(index + 1).padStart(3, "0")}\`,
+        id: `${lessonId}.T${String(index + 1).padStart(3, "0")}`,
         speaker: match[1] as "A" | "B",
         text: match[2].trim(),
         kind: classifyTurn(match[2])
