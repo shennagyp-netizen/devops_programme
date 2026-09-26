@@ -5,7 +5,7 @@ const binding = { voiceCueBindings: [
   { voiceCueId: "cue.request", offsetMs: 40, eventIds: ["send"] },
   { voiceCueId: "cue.response", eventIds: ["receive"] }
 ] };
-const manifest = { episodeId: "B1.2", scriptVersion: "exact-script", audioUrl: "/audio/b1-2.mp3", durationMs: 9000, turns: [], cues: [
+const manifest = { episodeId: "B1.2", scriptVersion: "exact-script", durationMs: 9000, segments: [{ id: "segment.request", turnId: "B1.2.T001", audioUrl: "/audio/b1-2-1.mp3", startMs: 0, endMs: 9000 }], turns: [{ turnId: "B1.2.T001", startMs: 0, endMs: 9000 }], cues: [
   { id: "cue.request", turnId: "B1.2.T001", kind: "transition", startMs: 1200 }
 ] };
 
