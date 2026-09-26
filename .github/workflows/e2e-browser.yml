@@ -59,8 +59,8 @@ jobs:
       - name: Install application dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Apply database migrations
-        run: npm run db:migrate
+      - name: Bootstrap disposable E2E database
+        run: npm run db:e2e-bootstrap
 
       - name: Build application
         run: npm run build
