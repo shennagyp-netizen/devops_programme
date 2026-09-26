@@ -35,29 +35,6 @@ async function collectTextFiles(directory, relative = "") {
   return files.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
 }
 
-async function collectMediaFiles(directory, relative = "") {
-  const entries = await readdir(directory, { withFileTypes: true });
-  const files = [];
-
-  for (const entry of entries) {
-    if (entry.name.startsWith(".") || entry.name === "README.md") continue;
-
-    const relativePath = path.join(relative, entry.name);
-    const absolutePath = path.join(directory, entry.name);
-
-    if (entry.isDirectory()) {
-      files.push(...(await collectMediaFiles(absolutePath, relativePath)));
-      continue;
-    }
-
-    if (entry.isFile() && /\.(mp3|ogg|wav|m4a)$/i.test(entry.name)) {
-      files.push({ absolutePath, relativePath });
-    }
-  }
-
-  return files.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
-}
-
 function episodeHashes(source, relativePath = "") {
   const hashes = {};
   const matcher = /(?:^|\n)EPISODE ([A-Z0-9]+\.[0-9]+) —[^\n]*\n/g;
@@ -103,6 +80,13 @@ for (const file of files) {
     Object.assign(episodes, hashes);
   }
 }
+
+const manifest = {
+  schemaVersion: 2,
+  source: "podcasts/",
+  episodes,
+  cognitiveLevels
+};
 
 await writeFile(
   path.join(targetDir, "manifest.json"),
