@@ -1,6 +1,5 @@
 import { getHandsOnTask } from "../../data/handsOn";
 import { courseLessons } from "../../data/courseLessons";
-import { projects } from "../../data/projects";
 import { runtimeTaskForLesson } from "../../data/runtimeVerification";
 import type { PlatformId } from "../../data/programme";
 import type { TutorContext } from "./tutor";
