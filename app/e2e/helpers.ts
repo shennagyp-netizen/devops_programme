@@ -59,16 +59,26 @@ export async function signIn(page: Page, email: string, testName = "e2e") {
 export async function openAssessment(page: Page, family = "Conceptual") {
   await page.getByRole("button", { name: "assessment", exact: true }).click();
   await expect(page.getByText("Standardized assessment session", { exact: true })).toBeVisible();
+
+  await page.getByText(family, { exact: true }).click();
+
   await expect(
     page.getByRole("button", { name: new RegExp(`Start ${family} assessment`) })
   ).toBeVisible();
 }
 
 export async function answerCurrentAssessmentItem(page: Page) {
-  const radios = page.getByRole("radio");
-  if (await radios.count()) {
-    await radios.first().check();
-    return { kind: "radio" as const };
+  const responseGroup = page.getByRole("radiogroup", {
+    name: "Assessment response",
+    exact: true
+  });
+
+  if (await responseGroup.count()) {
+    const labels = responseGroup.locator("label");
+    if (await labels.count()) {
+      await labels.first().click();
+      return { kind: "radio" as const };
+    }
   }
 
   const responseField = page.getByLabel(/Response \/ evidence/i);
