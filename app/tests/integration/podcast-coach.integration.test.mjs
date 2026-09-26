@@ -1,3 +1,4 @@
+import React from "react";
 /** @vitest-environment jsdom */
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
@@ -21,9 +22,11 @@ const script = "EPISODE B1.4 — Test\n" +
 
 function renderCoach() {
   return render(
-    <LessonVoiceClockProvider>
-      <PodcastCoach lesson={lesson as never} />
-    </LessonVoiceClockProvider>
+    React.createElement(
+      LessonVoiceClockProvider,
+      null,
+      React.createElement(PodcastCoach, { lesson })
+    )
   );
 }
 
@@ -40,7 +43,7 @@ describe("PodcastCoach real component", () => {
       }),
       speak: vi.fn(function(utterance) {
         this.speaking = true;
-        utterance.onstart?.({} as SpeechSynthesisEvent);
+        utterance.onstart?.({});
       }),
       pause: vi.fn(),
       resume: vi.fn()
