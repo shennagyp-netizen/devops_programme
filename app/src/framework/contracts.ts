@@ -45,11 +45,9 @@ export type AuthorityContext = {
 };
 
 export type LearningTransitionRequest = {
-  learnerId: string;
   itemId: string;
   evidenceRefs?: string[];
   assessmentAttemptId?: string;
-  clientAssertions?: Record<string, unknown>;
 };
 
 export type LearningTransitionFailure =
