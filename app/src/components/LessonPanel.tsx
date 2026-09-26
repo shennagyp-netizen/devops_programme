@@ -5,6 +5,7 @@ import type { DiagnosticRecommendation } from "../data/diagnostics";
 import type { MasteryAttemptRecord } from "../lib/mastery-contract";
 import { diagnosticBySection } from "../data/diagnostics";
 import { addEvidence, recordHandsOnEvidence, recordMachineVerification } from "../data/evidence";
+import type { VerifiedEvidenceRecord } from "../framework/contracts";
 import {
   getHandsOnTask,
   validateHandsOnEvidence,
@@ -15,6 +16,7 @@ import { runtimeTaskForLesson } from "../data/runtimeVerification";
 import {
   getLocalTerminalToken,
   localTerminalAgentStatus,
+  runLocalTerminalAttestedTask,
   runLocalTerminalTask,
   setLocalTerminalToken
 } from "../data/localTerminalAgent";
@@ -26,6 +28,10 @@ import { AssessmentPanel } from "./AssessmentPanel";
 import { MasteryRemediation } from "./MasteryRemediation";
 import { MasteryPreview } from "./MasteryPreview";
 import { recordMasteryAttemptAction } from "../app/actions/progress";
+import {
+  requestVerificationChallengeAction,
+  submitVerificationAttestationAction
+} from "../app/actions/verification";
 import {
   getMasteryPlan,
   masteryStorageKey,
@@ -57,7 +63,7 @@ export function LessonPanel({
   onMaster: () => void;
   diagnosticRecommendation?: DiagnosticRecommendation;
   onSelectLesson?: (lessonId: string) => void;
-  onEvidenceRecorded?: () => void;
+  onEvidenceRecorded?: (evidence?: VerifiedEvidenceRecord) => void;
   progressReady?: boolean;
   progressSaving?: boolean;
   authoritativeEvidenceReady?: boolean;
@@ -77,6 +83,7 @@ export function LessonPanel({
   const [machineVerificationMessage, setMachineVerificationMessage] = useState("");
   const [localAgentAvailable, setLocalAgentAvailable] = useState(false);
   const [localAgentPlatform, setLocalAgentPlatform] = useState<string | null>(null);
+  const [localAgentProviderId, setLocalAgentProviderId] = useState("local-terminal");
   const [localAgentInfo, setLocalAgentInfo] = useState("Not connected");
   const [localAgentToken, setLocalAgentTokenState] = useState(getLocalTerminalToken());
   const [localAgentRunning, setLocalAgentRunning] = useState(false);
@@ -151,6 +158,7 @@ export function LessonPanel({
       if (status.available) {
         setLocalAgentAvailable(true);
         setLocalAgentPlatform(status.platform);
+        setLocalAgentProviderId(status.providerId);
         setLocalAgentInfo(`Connected · ${status.platform} · agent ${status.version}`);
       } else {
         setLocalAgentAvailable(false);
@@ -184,39 +192,33 @@ export function LessonPanel({
     setMachineVerificationMessage("Running the verified exercise on this laptop...");
 
     try {
-      const envelope = await runLocalTerminalTask({
+      const evidenceKind =
+        runtimeTask.scope === "exercise" ? "exercise" : "probe";
+      const challenge = await requestVerificationChallengeAction({
+        itemId: lesson.id,
+        providerId: localAgentProviderId,
+        evidenceKind
+      });
+
+      const execution = await runLocalTerminalAttestedTask({
         taskId: runtimeTask.taskId,
         platform,
-        token: localAgentToken
+        token: localAgentToken,
+        challenge
       });
 
-      const result = recordMachineVerification({
-        course: lesson.course,
-        projectId: lesson.projectId,
-        task: runtimeTask,
-        envelope,
-        summary: `Verified laptop execution for ${lesson.id}`
-      });
-
-      if (!result.recorded) {
-        setExerciseRecorded(false);
-        setMachineResults(envelope.stepResults ?? []);
-        setMachineVerificationMessage(
-          `Laptop execution returned invalid evidence: ${result.failures.join(" ")}`
-        );
-        startMasteryRemediation(result.failures, "mechanism-reteach");
-        return;
-      }
+      const authoritativeEvidence =
+        await submitVerificationAttestationAction(execution.attestation);
 
       const isFullExerciseVerification = runtimeTask.scope === "exercise";
       setExerciseRecorded(isFullExerciseVerification);
-      setMachineResults(envelope.stepResults ?? []);
+      setMachineResults(execution.envelope.stepResults ?? []);
       setMachineVerificationMessage(
         runtimeTask.scope === "exercise"
-          ? "Laptop terminal execution verified for this session."
-          : "Laptop probe execution verified for this session. Complete the required hands-on exercise below to unlock the lesson."
+          ? "Laptop execution was verified by the learning server."
+          : "Laptop probe was verified by the learning server. Complete the required hands-on exercise to unlock the lesson."
       );
-      onEvidenceRecorded?.();
+      onEvidenceRecorded?.(authoritativeEvidence);
     } catch (error) {
       setExerciseRecorded(false);
       const message =
