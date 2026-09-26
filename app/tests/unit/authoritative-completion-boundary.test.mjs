@@ -2,10 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   parseCompleteLearningItemCommand
 } from "../../src/framework/authorityRequest.ts";
-import {
-  findProgrammeLearningItem,
-  type ProgrammeLearningItem
-} from "../../src/lib/server/programmeAuthority.ts";
+import { findProgrammeLearningItem } from "../../src/lib/server/programmeAuthority.ts";
 
 describe("v3 authoritative completion boundary", () => {
   it("accepts only the minimal client command", () => {
@@ -55,7 +52,7 @@ describe("v3 authoritative completion boundary", () => {
   });
 
   it("does not let the browser redefine authoritative programme metadata", () => {
-    const item = findProgrammeLearningItem("B1.2") as ProgrammeLearningItem;
+    const item = findProgrammeLearningItem("B1.2");
     expect(item.course).toBe("beginner");
     expect(item.projectId).toBe("B1");
   });
