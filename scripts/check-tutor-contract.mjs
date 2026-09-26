@@ -9,6 +9,9 @@ const route = read("src/app/api/tutor/route.ts");
 const contract = read("src/data/tutorContract.ts");
 const component = read("src/components/TutorCoach.tsx");
 const env = read(".env.example");
+const authMigration = read("drizzle/migrations/0001_self_hosted_auth.sql");
+const tutorMigration = read("drizzle/migrations/0002_tutor.sql");
+
 
 const required = [
   ["route is authenticated", route.includes("getCurrentUser")],
