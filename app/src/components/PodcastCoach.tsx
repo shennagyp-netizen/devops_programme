@@ -7,8 +7,7 @@ import {
   podcastExplanationUrl,
   podcastLevelDescription,
   podcastLevelId,
-  podcastLevelLabel,
-  type PodcastExplanationLevel,
+    type PodcastExplanationLevel,
   type PodcastTtsBundle
 } from "../data/podcastSync";
 import { getEpisodeText, parseTurns, type Turn } from "../data/podcastsRaw";
@@ -178,7 +177,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
 
   function publish(state: "idle" | "speaking" | "paused" | "done", turnId?: string) {
     publishVoiceClock?.({
-      cognitiveLevel: explanationLevel,
+      explanationLevel: explanationLevel,
       turnId,
       elapsedMs: sessionStartedAtRef.current
         ? Math.max(0, performance.now() - sessionStartedAtRef.current)
@@ -370,12 +369,12 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
       </div>
 
       <div className="cognitive-level-picker" aria-label="Podcast explanation level">
-        {COGNITIVE_LEVELS.map((item) => (
+        {EXPLANATION_LEVELS.map((item) => (
           <button
             key={item.level}
             type="button"
-            className={item.level === cognitiveLevel ? "active" : ""}
-            aria-pressed={item.level === cognitiveLevel}
+            className={item.level === explanationLevel ? "active" : ""}
+            aria-pressed={item.level === explanationLevel}
             onClick={() => selectExplanationLevel(item.level)}
           >
             <strong>Explanation {item.level}</strong>
@@ -436,7 +435,7 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
       <div className="continuous-transcript" role="log" aria-label="Podcast transcript">
         <div className="transcript-header">
           <span className="eyebrow">
-            LEVEL {cognitiveLevel} · {podcastLevelId(cognitiveLevel)}
+            LEVEL {explanationLevel} · {podcastLevelId(explanationLevel)}
           </span>
           <span className="range">
             {scriptReady
