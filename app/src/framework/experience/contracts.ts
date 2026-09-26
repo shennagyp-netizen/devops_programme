@@ -20,21 +20,20 @@ export type LearningIntent =
   | { type: "OPEN_ANIMATION"; animationId: string }
   | { type: "COMPLETE_ITEM" };
 
-export type ControlAvailability =
-  | "enabled"
-  | "disabled"
-  | "busy"
-  | "locked";
+export type ControlState =
+  | { status: "enabled" }
+  | { status: "busy"; operationId?: string; busyLabel?: string }
+  | { status: "disabled"; reasonCode: "ALREADY_COMPLETED" | "NOT_APPLICABLE" }
+  | { status: "locked"; reasonCode: "EVIDENCE_REQUIRED" | "PREREQUISITE_REQUIRED" | "REMEDIATION_ACTIVE"; resolutionIntent?: LearningIntent }
+  | { status: "unavailable"; reasonCode: "CAPABILITY_UNAVAILABLE" | "PROVIDER_OFFLINE" | "NETWORK_REQUIRED"; resolutionIntent?: LearningIntent };
 
 export type LearningControl = {
   id: string;
   intent: LearningIntent;
   label: string;
-  availability: ControlAvailability;
+  state: ControlState;
   visibility: "visible" | "hidden" | "contextual";
-  reason?: string;
   confirmation: "none" | "destructive" | "external";
-  busyLabel?: string;
   ariaDescription?: string;
 };
 
@@ -47,6 +46,7 @@ export type LearningSessionState = {
   remediationAvailable: boolean;
   remediationActive: boolean;
   providerBusy: boolean;
+  providerAvailable: boolean;
   completionBusy: boolean;
 };
 
