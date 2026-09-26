@@ -141,3 +141,26 @@ Still required before claiming complete premium mastery:
 - deeper assessment failure explanations and alternate question forms
 - production analytics for mastery progression
 - final visual/browser validation.
+
+## Live tutor companion
+
+A failed assignment may now activate two different recovery paths:
+
+- the authored recovery podcast changes explanation representation;
+- the live tutor can discuss the same failure interactively.
+
+The tutor receives the bounded MasteryPlan failure summary and can:
+- explain the mechanism another way;
+- ask for the smallest missing evidence;
+- challenge a diagnosis;
+- guide a retry without unlocking it;
+- review the learner's reasoning.
+
+The tutor is never allowed to replace the deterministic mastery state machine.
+
+The authoritative retry transition remains:
+
+failure -> remediation -> micro-check -> guided retry -> attempt
+
+The tutor may recommend that path, but only the programme engine can unlock it.
+
