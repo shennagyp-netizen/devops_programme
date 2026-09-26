@@ -200,4 +200,4 @@ Merged PR #116:
 - TypeScript: PASS
 - Next.js production build: PASS
 
-Vercel status is tracked separately. Recent Vercel failures report an account build-rate-limit condition and must not be interpreted as application test or build failures when GitHub CI is green.
+Vercel status is tracked separately. The current merged-main production deployment reports BUILD_UTILS_SPAWN_1 with "npm run build" exited with 1; the connector session does not expose the underlying Vercel build log. GitHub CI for the same application state is green, including the production build.
