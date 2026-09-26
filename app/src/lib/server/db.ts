@@ -26,3 +26,10 @@ function getPool() {
 export function getDb() {
   return drizzle(getPool(), { schema });
 }
+
+export type Database = ReturnType<typeof getDb>;
+export type DbTransaction = Parameters<Database["transaction"]>[0] extends (
+  tx: infer Transaction
+) => unknown
+  ? Transaction
+  : never;
