@@ -134,3 +134,10 @@ There is intentionally no:
 
 The Responses API tool loop is capped at a small number of server-side rounds and the final result still passes through the non-authoritative tutor response contract.
 
+## Persistence migration
+
+Tutor storage uses a dedicated 0002_tutor.sql migration.
+
+The authentication migration 0001_self_hosted_auth.sql remains historical and is not modified after deployment.
+
+The server-side ensureTutorSchema() remains an idempotent runtime safety net, but it is not the canonical migration path.
