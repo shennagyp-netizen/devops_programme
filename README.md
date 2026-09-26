@@ -1,117 +1,112 @@
-# DevOps Programme - Mobile-First Learning Platform
+# DevOps Programme — Learning Framework V3
 
-A multi-course, multi-modal DevOps learning system with AI-powered mobile-first experience.
+The DevOps Programme is the first reference programme implemented on a reusable, evidence-driven learning framework.
 
-## 🚀 New Feature: Mobile-First LLM Assistant
+> **V3 branch:** `v3/learning-framework`  
+> **Stable baseline:** `main`
 
-### Overview
-Integrated AI-powered learning assistant with voice input/output, context-aware responses, and mobile-optimized interface.
+## V3 direction
 
-### Key Components
-- **Floating LLM Assistant**: Context-aware AI assistant with voice capabilities
-- **Mobile-First Responsive Layout**: Three-column desktop to single-column mobile
-- **Enhanced Animation Library**: Interactive DevOps concept visualizations
-- **Podcast Audio Completion**: Synchronized audio learning experiences
-- **Machine Verification**: Automated exercise validation
-- **CI Infrastructure**: Robust validation and testing pipeline
+V3 reframes the product architecture from:
 
-### Security & Testing
-- **Test-Driven Development (TDD)**: 547/548 tests passing (99.8%)
-- **Red Team Security Testing**: Comprehensive security validation
-- **Accessibility Compliance**: WCAG 2.1 AA standards
-
-## Programme Architecture
-
-### Core Learning Components
-- `courses/beginner/`: DevOps through concrete problems with mobile optimization
-- `courses/intermediate/`: Deep production DevOps engineering
-- `courses/advanced/`: Large-scale distributed systems and operations
-- `foundations/`: Reusable competencies across Linux, networking, databases
-- `projects/`: Continuous project instances with mobile collaboration
-- `exams/`: Standardized assessment with AI-assisted evaluation
-
-### Platform Components
-- `platforms/`: macOS, Linux and Windows environment profiles
-- `app/`: Adaptive learning application with LLM integration
-- `podcasts/`: Spoken learning scripts with audio synchronization
-- `book/`: Long-form curriculum with interactive elements
-
-### New Technical Components
-- `app/src/components/FloatingLLMAssistant/`: AI assistant with security hardening
-- `app/src/animations/scenarios/dnsResolution.ts`: DNS visualization animation
-- `app/src/lib/verification/`: Machine verification contracts
-- `app/tests/unit/floating-llm-assistant/`: Comprehensive test suite
-
-## Learning Loop (Enhanced)
-
-**Understand** → **Predict** → **Operate** → **Break** → **Diagnose** → **Repair** → **Recall** → **Design** → **AI-Assist**
-
-Theory can be skipped when demonstrated knowledge is sufficient. Required exercises cannot be skipped. AI assistant provides context-aware guidance throughout.
-
-## Assessment System
-
-### Three Assessment Families:
-1. **Conceptual** — Mechanism and prediction with AI verification
-2. **Diagnostic** — Evidence-based troubleshooting with machine validation
-3. **Hands-on** — Demonstrated operation and recovery with automated verification
-
-### Mobile-Optimized Assessment:
-- Touch-friendly interface design
-- Voice input for responses
-- Offline assessment capability
-- Progressive enhancement for varying network conditions
-
-## Development Standards
-
-### Testing Requirements
-- **Test-Driven Development (TDD)**: Write tests before implementation
-- **Red Team Security Testing**: Attack simulation and vulnerability assessment
-- **Accessibility Testing**: WCAG 2.1 AA compliance verification
-- **Performance Testing**: Mobile-optimized load times and responsiveness
-
-### Security Standards
-- Input sanitization for all user-facing components
-- XSS prevention through HTML entity encoding
-- Resource exhaustion protection
-- Secure animation and content loading
-
-### Quality Metrics
-- 99%+ test coverage for new components
-- Zero critical security vulnerabilities
-- Mobile performance: <2s load on 4G
-- Accessibility: Full keyboard navigation support
-
-## Getting Started
-
-### For Developers
-```bash
-cd app
-npm install
-npm run test:unit  # Run comprehensive test suite
-npm run dev       # Start development server
+```text
+DevOps course application
 ```
 
-### Testing Commands
-```bash
-npm test                   # Run all tests
-npm run test:unit          # Unit tests only
-npm run check:content      # Content validation
-npm run check:assessment   # Assessment validation
+to:
+
+```text
+Learning Framework
+    ↓
+DevOps Programme
+    ↓
+Learner Experience / Runtime Adapters
 ```
 
-### Mobile Development
-- Test on viewports: <768px (mobile), 768-1199px (tablet), ≥1200px (desktop)
-- Ensure touch targets ≥44×44px
-- Support reduced motion preferences
-- Test offline functionality
+The framework owns learning mechanics and authority. The DevOps programme owns domain curriculum. Runtime adapters own infrastructure integrations such as PostgreSQL, AI providers, local execution and SSH.
 
-## Documentation
-- `/.kiro/specs/mobile-first-llm-assistant/` - Feature specifications
-- `/app/tests/` - Comprehensive test suites
-- `/.kiro/specs/mobile-first-llm-assistant/comprehensive-test-plan.md` - Complete test strategy
+### Core principle
 
-## Support
-- Report security issues immediately
-- Test failures block deployment
-- Accessibility issues are P0 priority
-- Mobile performance regressions require immediate attention
+**The browser is an interaction surface, not the authority for learner state.**
+
+Client state can request transitions and present evidence. Server-side framework policy decides whether a transition is valid.
+
+## V3 framework capabilities
+
+- Curriculum and learning-item contracts
+- Competency and prerequisite relationships
+- Server-authoritative learner-state transitions
+- Evidence and verification contracts
+- Pluggable verification providers
+- Assessment authority
+- Mastery and remediation
+- AI tutor policy boundaries
+- Podcast / voice contracts
+- Reusable animation and interactive-content contracts
+
+The first framework authority seam is now present at:
+
+```text
+app/src/framework/contracts.ts
+app/src/framework/authority.ts
+app/tests/unit/framework-authority.test.mjs
+```
+
+## Repository content
+
+### Programme
+
+- `courses/` — course-facing authored material
+- `foundations/` — reusable competency material
+- `projects/` — continuous project definitions
+- `exams/` — assessment material
+- `podcasts/` — spoken learning scripts
+- `platforms/` — learner environment profiles
+
+### Application
+
+- `app/` — learner experience and framework integration
+- `app/src/framework/` — reusable framework contracts and authority policy
+- `app/src/components/` — presentation components
+- `app/src/animations/` — reusable visual capabilities
+- `app/tests/` — TDD, integration and security coverage
+
+### V3 architecture documentation
+
+- `docs/v3/LEARNING_FRAMEWORK_V3.md`
+- `docs/v3/TRUST_MODEL.md`
+- `docs/v3/FRAMEWORK_BOUNDARIES.md`
+- `docs/v3/CONTINUATION.md`
+
+## Existing DevOps learning model
+
+The reference programme continues to use:
+
+**Understand → Predict → Operate → Break → Diagnose → Repair → Recall → Design → Coach**
+
+Diagnostics may reduce repeated explanation when evidence supports prior knowledge. Required competency demonstrations remain governed by the framework's completion policy.
+
+## Development standard
+
+V3 continues the repository's TDD and security-first discipline:
+
+1. Write the invariant or contract test.
+2. Implement the smallest abstraction that satisfies it.
+3. Integrate it behind a server authority boundary.
+4. Red-team the transition and evidence paths.
+5. Preserve existing programme gates and content contracts.
+6. Update the continuation handoff and architecture documentation.
+
+## Security direction
+
+V3 explicitly treats learning state as security-sensitive state.
+
+The framework must prevent browser payloads from independently creating:
+
+- completion
+- mastery
+- assessment results
+- verified machine evidence
+- eligibility transitions
+
+See `docs/v3/TRUST_MODEL.md` for the authoritative trust model.
