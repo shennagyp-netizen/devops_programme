@@ -26,7 +26,7 @@ type ScriptManifest = {
   schemaVersion: number;
   source: string;
   episodes: Record<string, string>;
-  cognitiveLevels?: Record<string, Record<string, string>>;
+  explanationLevels?: Record<string, Record<string, string>>;
 };
 
 const EXPLANATION_LEVELS: ReadonlyArray<{
@@ -92,12 +92,12 @@ export function PodcastCoach({ lesson }: { lesson: Lesson }) {
       .then((response) =>
         response.ok
           ? (response.json() as Promise<ScriptManifest>)
-          : { schemaVersion: 0, source: "", episodes: {}, cognitiveLevels: {} }
+          : { schemaVersion: 0, source: "", episodes: {}, explanationLevels: {} }
       )
       .then((manifest) => {
         if (cancelled) return;
 
-        const versions = manifest.cognitiveLevels?.[lesson.id] ?? {};
+        const versions = manifest.explanationLevels?.[lesson.id] ?? {};
         setScriptVersions(versions);
         setTtsBundle(buildPodcastTtsBundle(lesson.id, versions));
       })
