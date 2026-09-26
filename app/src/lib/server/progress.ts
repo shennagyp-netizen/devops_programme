@@ -2,11 +2,7 @@ import { and, asc, desc, eq } from "drizzle-orm";
 import { getDb } from "./db";
 import { learnerMasteryAttempts, learnerProgressHistory } from "./schema";
 import type { CompletionRecord } from "../progress-contract";
-import {
-  parseMasteryAttemptInput,
-  type MasteryAttemptInput,
-  type MasteryAttemptRecord
-} from "../mastery-contract";
+import type { MasteryAttemptRecord } from "../mastery-contract";
 
 
 function requireUserId(userId: string) {
@@ -87,46 +83,4 @@ export async function listMasteryHistoryForUser(
     );
 
   return rows.map(toMasteryAttemptRecord);
-}
-
-export async function recordMasteryAttemptForUser(
-  userId: string,
-  rawInput: unknown
-): Promise<MasteryAttemptRecord> {
-  const safeUserId = requireUserId(userId);
-  const input: MasteryAttemptInput = parseMasteryAttemptInput(rawInput);
-  const db = getDb();
-
-  const [latest] = await db
-    .select({ attemptNumber: learnerMasteryAttempts.attemptNumber })
-    .from(learnerMasteryAttempts)
-    .where(
-      and(
-        eq(learnerMasteryAttempts.userId, safeUserId),
-        eq(learnerMasteryAttempts.taskId, input.taskId)
-      )
-    )
-    .orderBy(desc(learnerMasteryAttempts.attemptNumber))
-    .limit(1);
-
-  const attemptNumber = (latest?.attemptNumber ?? 0) + 1;
-
-  const [row] = await db
-    .insert(learnerMasteryAttempts)
-    .values({
-      userId: safeUserId,
-      lessonId: input.lessonId,
-      taskId: input.taskId,
-      attemptNumber,
-      outcome: input.outcome,
-      stage: input.stage,
-      summary: input.summary
-    })
-    .returning();
-
-  if (!row) {
-    throw new Error("Mastery attempt could not be stored.");
-  }
-
-  return toMasteryAttemptRecord(row);
 }
