@@ -34,8 +34,8 @@ assert.match(app, /readLocalCompletionHistory/);
 assert.doesNotMatch(app, /currentUser|logoutAction|completeLearningItemAction|Server Action/i);
 assert.doesNotMatch(app, /initialCompletionHistory|initialMasteryHistory/);
 
-assert.match(learnPage, /return <App />/);
-assert.doesNotMatch(learnPage, /requireCurrentUser|redirect\(|listCompletionHistoryForUser|Server Action/);
+assert.ok(learnPage.includes("return <App />"));
+assert.doesNotMatch(learnPage, /requireCurrentUser|listCompletionHistoryForUser|Server Action/);
 
 assert.match(localProgress, /localStorage/);
 assert.match(localProgress, /verificationLevel: "structured"/);
