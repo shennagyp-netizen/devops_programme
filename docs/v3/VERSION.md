@@ -1,6 +1,6 @@
 # Learning Framework V3
 
-- **Framework version:** 3.3-authoritative-mastery
+- **Framework version:** 3.4-authoritative-assessment
 - **Branch:** `v3/learning-framework`
 - **Baseline:** `main`
 - **Reference programme:** DevOps
@@ -25,7 +25,7 @@ The 3.1 implementation establishes an authoritative completion/evidence boundary
 
 The V3.2 implementation now includes a real signed provider path for both the local terminal agent and SSH runner. Authoritative machine evidence is created only after server-side challenge validation, provider-key verification, signature verification, freshness checks, and one-time challenge consumption.
 
-This version marker does not claim that assessment authority or tutor trust migration is complete.
+This version marker does not claim that tutor trust/rate-limit migration is complete.
 
 ## Stability rule
 
@@ -60,8 +60,25 @@ The mastery boundary is now authoritative for outcome and attempt identity:
 - coaching stage is restricted to the published mastery stage set;
 - learner summaries remain learner-authored notes, not authoritative outcomes.
 
+## V3.4 status
+
+Assessment delivery is now server-authoritative for the current pilot banks:
+
+- assessment instances are issued only after server-side blueprint validation;
+- form selection uses a server-generated seed;
+- the persisted form snapshot includes the scoring key but is never sent to the browser;
+- the browser receives only a safe question projection;
+- submissions are bound to the authenticated learner and issued instance;
+- submitted question IDs must belong to that immutable instance snapshot;
+- selected-response items are scored from the server-owned key;
+- constructed-response and hands-on items remain `pending-review` rather than receiving an invented universal pass threshold;
+- submission is one-time and expiry is enforced in the database compare-and-set update;
+- the reviewed assessment banks are mirrored inside the deployable app tree and CI checks byte-for-byte drift.
+
+This is authoritative assessment delivery/scoring infrastructure for the learning programme, not a claim of certification-grade psychometric calibration or standard setting.
+
 ## Next milestone
 
-**V3.4 — Authoritative assessment**
+**V3.5 — Tutor trust and distributed controls**
 
-Move operational assessment instances, scoring, and pass state behind server-owned question/rubric authority.
+Move trusted assistant history, expensive-endpoint rate limiting, and remaining conversation authority behind server-owned state.
