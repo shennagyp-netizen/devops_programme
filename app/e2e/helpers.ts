@@ -22,7 +22,7 @@ export async function signUp(
   await expect(page).toHaveURL(/\/sign-up/);
 
   await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill(passwordValue);
+  await page.getByRole("textbox", { name: "Password", exact: true }).fill(passwordValue);
   await page.getByLabel("Confirm password").fill(passwordValue);
   await page.getByRole("button", { name: "Create account" }).click();
 
