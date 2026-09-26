@@ -155,6 +155,21 @@ export async function recordTrustedVerifiedEvidenceWithinTransaction(
       throw new Error("Verified evidence could not be stored.");
     }
 
+    const sameAttestation =
+      existing.attestationDigest === validated.attestationDigest &&
+      existing.verifierId === validated.verifierId &&
+      (existing.providerKeyId ?? null) ===
+        (validated.providerKeyId ?? null) &&
+      (existing.verificationAttemptId ?? null) ===
+        (validated.verificationAttemptId ?? null) &&
+      (existing.signature ?? null) === (validated.signature ?? null);
+
+    if (!sameAttestation) {
+      throw new Error(
+        "Verification reference conflict: an existing evidence record has different attestation provenance."
+      );
+    }
+
     return toVerifiedEvidenceRecord(existing);
   }
 
