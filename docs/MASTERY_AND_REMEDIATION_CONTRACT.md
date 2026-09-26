@@ -102,12 +102,15 @@ The programme should not be described as a premium $2,000 learning product merel
 The premium proposition must come from:
 - multiple representations of the same mechanism
 - failure-triggered alternative teaching paths
+- a spoken recovery co-teacher that changes explanation method after failure
 - controlled failure and recovery labs
 - progressive remediation
 - durable learner history
 - machine verification as coverage expands
 - project-level transfer
 - evidence of mastery rather than content consumption.
+
+The current tuition target for the complete three-course programme is **US$2,000 per learner**. The price is a product target, not a claim that the market has already validated that price.
 
 Seven hours of audio can be a component of the product. It is not the value model by itself.
 
@@ -122,9 +125,18 @@ Implemented in this slice:
 - authenticated mastery-attempt persistence
 - integration invariant covering all authored lessons.
 
+Implemented in this premium-depth slice:
+- failure summaries are carried into the mastery plan
+- every failed assignment exposes multiple recovery teaching methods
+- the continuous co-teacher renders a separate recovery podcast script rather than replaying the original lesson
+- recovery scripts are stable enough to receive aligned audio later
+- all nine continuous projects have explicit multi-phase workload and exit-evidence contracts
+- the public programme site now states the US$2,000 tuition target.
+
 Still required before claiming complete premium mastery:
+- production aligned recovery audio for the authored recovery scripts
 - server-loaded historical mastery state in the initial lesson session
-- lesson-specific authored remediation explanations for every concept
+- lesson-specific authored remediation explanations reviewed by a human for every concept
 - machine-verified failure/recovery coverage across the hands-on catalogue
 - deeper assessment failure explanations and alternate question forms
 - production analytics for mastery progression
