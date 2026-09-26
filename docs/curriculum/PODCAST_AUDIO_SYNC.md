@@ -128,3 +128,20 @@ If they differ:
 - the user is never shown a false claim that the voice is synchronized
 
 This is deliberately fail-closed.
+
+## Live tutor handoff
+
+Podcast and tutor are separate teaching contracts.
+
+The podcast is authored and predictable:
+problem -> mechanism -> prediction -> operation -> failure -> recovery
+
+The tutor is interactive:
+learner question -> tutor hypothesis/check -> evidence request -> explanation or challenge -> learner response
+
+After a failed assignment, PodcastCoach can expose a different authored recovery method. TutorCoach can then continue the same recovery as a live discussion using the bounded failure summary and current evidence context.
+
+The tutor must not claim that it verified an operation simply because the learner described it. Runtime verification and completion remain deterministic.
+
+A future realtime voice implementation may let the learner move from the authored recovery podcast into the live tutor without creating a second learner-state or assessment authority.
+
