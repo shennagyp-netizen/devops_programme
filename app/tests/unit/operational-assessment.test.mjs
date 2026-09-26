@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { scoreAssessment, validateAssessmentAnswers, attemptExpiresAt } from "../../src/assessment/operational.ts";
-import type { AssessmentItem } from "../../src/data/assessment.ts";
 
-const items: AssessmentItem[] = [
+const items = [
   {
     id: "mcq-1",
     sectionId: "B-F1",
