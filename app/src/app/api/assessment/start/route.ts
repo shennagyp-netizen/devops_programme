@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { startAssessment } from "../../../../lib/server/assessment";
-import type { AssessmentFamily, CourseLevel } from "../../../../data/assessment";
+import type { AssessmentFamily } from "../../../../data/assessment";
+import type { CourseLevel } from "../../../../data/programme";
 
 const families = new Set<AssessmentFamily>(["conceptual", "diagnostic", "hands-on"]);
 const courses = new Set<CourseLevel>(["beginner", "intermediate", "advanced"]);
