@@ -7,6 +7,7 @@ const challenge = {
   id: "challenge-1",
   learnerId: "user_1",
   itemId: "B1.2",
+  targetRef: "runtime-exercise-B1.2",
   evidenceKind: "exercise",
   providerId: "local-terminal",
   issuedAt: "2026-09-26T12:00:00.000Z",
@@ -18,6 +19,7 @@ const validAttestation = {
   challengeId: "challenge-1",
   learnerId: "user_1",
   itemId: "B1.2",
+  targetRef: "runtime-exercise-B1.2",
   evidenceKind: "exercise",
   providerId: "local-terminal",
   keyId: "key-1",
@@ -45,6 +47,7 @@ describe("framework verification attestation contract", () => {
     for (const patch of [
       { learnerId: "attacker" },
       { itemId: "B1.3" },
+      { targetRef: "runtime-probe-B1.2" },
       { evidenceKind: "failure" },
       { providerId: "other-provider" }
     ]) {
