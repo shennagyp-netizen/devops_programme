@@ -10,6 +10,7 @@ const base = {
   remediationAvailable: false,
   remediationActive: false,
   providerBusy: false,
+  providerAvailable: true,
   completionBusy: false
 };
 
@@ -17,28 +18,28 @@ describe("v3 experience control policy", () => {
   it("locks completion until required evidence is verified", () => {
     const view = deriveExperienceView(base);
     const control = view.controls.find((item) => item.id === "complete");
-    expect(control.availability).toBe("locked");
-    expect(control.reason).toContain("verification");
+    expect(control.state.status).toBe("locked");
+    expect(control.state.reasonCode).toBe("EVIDENCE_REQUIRED");
   });
 
   it("enables completion only after evidence is verified", () => {
     const view = deriveExperienceView({ ...base, requiredEvidenceVerified: true });
     const control = view.controls.find((item) => item.id === "complete");
-    expect(control.availability).toBe("enabled");
+    expect(control.state.status).toBe("enabled");
   });
 
   it("never hides the reason for a locked assessment", () => {
     const view = deriveExperienceView(base);
     const control = view.controls.find((item) => item.id === "mode:assessment");
-    expect(control.availability).toBe("locked");
-    expect(control.reason).toBeTruthy();
+    expect(control.state.status).toBe("locked");
+    expect(control.state.reasonCode).toBe("PREREQUISITE_REQUIRED");
   });
 
   it("represents provider execution as busy without claiming success", () => {
     const view = deriveExperienceView({ ...base, providerBusy: true });
     const verify = view.controls.find((item) => item.id === "verify");
-    expect(verify.availability).toBe("busy");
-    expect(verify.busyLabel).toBe("Verifying…");
+    expect(verify.state.status).toBe("busy");
+    expect(verify.state.busyLabel).toBe("Verifying…");
   });
 
   it("changes the recommended action from evidence collection to completion", () => {
