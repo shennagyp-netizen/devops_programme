@@ -422,6 +422,7 @@ describe("verification provider authority", () => {
       targetRef: "runtime-exercise-B1.1",
       evidenceKind: "exercise",
       providerId: "local-terminal",
+      providerKeyId: challenge.providerKeyId,
       nonce: "nonce-1",
       nonceHash: nonceHash(challenge.nonce),
       issuedAt: new Date(challenge.issuedAt),
