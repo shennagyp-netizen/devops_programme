@@ -2,13 +2,12 @@ import { describe, expect, it } from "vitest";
 import { parseTutorRequest, tutorLimits } from "../../src/lib/tutor-contract.ts";
 
 describe("tutor contract", () => {
-  it("accepts a bounded conversation ending in a user message", () => {
+  it("accepts a bounded sequence of user questions", () => {
     const result = parseTutorRequest({
       lessonId: "B1.4",
       learningMode: "learn",
       messages: [
         { role: "user", content: "Why does a container have a separate filesystem view?" },
-        { role: "assistant", content: "It gets an isolated view of the filesystem namespace." },
         { role: "user", content: "What part is still shared with the host?" }
       ]
     });
