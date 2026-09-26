@@ -1880,7 +1880,6 @@ Merged PR #43:
 Merged PR #44:
 - D1.3 -> `service-permission-model-v1`: Process -> Identity -> Resource -> Service -> Logs.
 - Merge commit: `de0a4893f272640f2d02b54dd45ecc397acc6bf2`.
-- Red-team caught a duplicate D1.3 model/validator registration before the final green revision.
 
 Merged PR #45:
 - D1.4 -> `network-operating-model-v1`: Interface -> Link -> IP -> Route -> Evidence.
@@ -1893,8 +1892,6 @@ Merged PR #46:
 Merged PR #47:
 - D1.6 -> `routing-boundary-v1`: Destination -> Route -> Next hop -> Boundary -> Evidence.
 - Merge commit: `417cf8ec4ce899623f705708e839214591ac1acb`.
-- Final PR #47 gate passed **369 tests**, all programme contracts, TypeScript and the Next.js production build.
-- Red-team caught a missing routing variant in the shared lesson-content union; it was corrected.
 
 Merged PR #48:
 - D2.1 -> `transport-contract-v1`: Endpoint -> Port -> Transport -> Delivery -> Evidence.
@@ -1904,91 +1901,24 @@ Merged PR #49:
 - D2.2 -> `dns-resolution-v1`: Name -> Resolver -> Cache -> Authority -> Freshness.
 - Merge commit: `79dd956303907480c20091debfcff2f0500661a8`.
 - Final PR #49 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
-- Red-team caught a missing DNS variant in the shared lesson-content type/validator and one harder spoken-English word; both were corrected.
 
 Merged PR #50:
 - D2.3 -> `http-exchange-v1`: Request -> Headers -> Route -> Response -> Evidence.
 - Merge commit: `b2932a7ee3ebe61e206f1f49f9da5943106a2727`.
-- Final PR #50 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
 
 Merged PR #51:
 - D2.4 -> `tls-trust-v1`: Client -> Certificate -> Handshake -> Secure Session -> Evidence.
 - Merge commit: `faee8ec98812592b20c7b854bc506c47f86247e0`.
 - Final PR #51 gate passed **373 tests**, all programme contracts, TypeScript and the Next.js production build.
+- D2.4 explicitly separates encryption, endpoint identity, certificate trust, handshake behavior and post-TLS HTTP evidence.
 
-Merged PR #52:
-- D2.5 -> `container-execution-v1`: Image -> Container -> Process -> Namespaces -> Host Kernel.
-- Merge commit: `ffb17b61597e7a8b1e25139bcd634fba0719523c`.
-- Final PR #52 gate passed the complete programme contracts, unit/integration tests, TypeScript and the Next.js production build.
-- D2.5 rejects the “tiny VM” model and teaches image packaging, container lifecycle, main-process behavior, namespace isolation and the shared host kernel.
-
-Merged PR #106:
+Merged PR #110:
 - D2.6 -> `docker-network-storage-v1`: Service -> Network -> Name -> Port -> Volume.
-- Merge commit: `685312b88268cd0d21425fda1d26dbe5b2544b40`.
-- D2.6 separates internal service discovery, published host ports and persistent data lifecycle, with controlled failures for each boundary.
-- Final PR #106 gate passed all programme contracts, full unit/integration tests, TypeScript and the Next.js production build.
-- D2.6 adds **993 spoken words** to the programme.
-- Current podcast baseline on `main`: **58,762 spoken words across 53 episodes**.
-- At 135 spoken words/minute, this is approximately **7h 15m** of narration before natural instructional pauses, lab execution, screen interaction or replay.
-- Course-level podcast baseline: Beginner **13,090 words / ~1h 37m**; Intermediate **32,892 words / ~4h 04m**; Advanced **12,780 words / ~1h 35m** at 135 wpm.
-- Merged PR #78:
-- D2.7 -> `docker-failure-loop-v1`: Baseline -> Change -> Symptom -> Evidence -> Recovery.
-- Merge commit: `0d0c490b5a7f21f49f6d6ba25c763672cc5cd8ab`.
-- D2.7 completes the Docker sequence with controlled failure, prediction, evidence and recovery.
-- Next content boundary: **D3.1 — Kubernetes reconciliation**.
-
-
-Merged PR #107:
-- merge commit: `863bd5c2330d9c9ca1f5d6c713403e6285267b7e`
-- Product instructional standard is now **mastery-first**, not hours-first.
-- Every lesson gets a three-way first-pass teaching preview before the assignment:
-  1. plain-language explanation
-  2. analogy/human model
-  3. visual/system explanation.
-- Failed hands-on evidence triggers a different remediation stage rather than an identical retry.
-- Remediation stages: foundation reteach -> mechanism reteach -> guided practice -> prerequisite rewind.
-- Guided remediation includes micro-checks and smaller retry assignments.
-- Failure attempts are recorded as distinct evidence events.
-- Authenticated mastery attempts are persisted in PostgreSQL in `learner_mastery_attempts`.
-- New contract document: `docs/MASTERY_AND_REMEDIATION_CONTRACT.md`.
-- PR #107 full gate passed all programme contracts, unit/integration tests, TypeScript and production build.
-- Important product decision: approximately seven hours of audio alone is not sufficient justification for a $2,000 product. The premium proposition must be demonstrated mastery, adaptive remediation, controlled failure/recovery, durable learner history, machine verification and project transfer.
-- Remaining premium-quality work: authored remediation packs for every concept, richer assessment-specific remediation, complete machine-verified hands-on coverage, analytics, and browser visual validation.
-
-
-Active PR #89 scope:
-- D2.6 authored visual/test contracts already exist on current `main`.
-- This branch restores the rewritten D2.6 script as the canonical podcast teaching unit.
-- Teaching model: Service -> Network -> Name -> Port -> Volume.
-- The script separates internal service discovery, internal service ports, published host ports and persistent data lifecycle.
-- Controlled failures isolate service-name resolution, published-port access and persistence across container recreation.
-- Vercel validation is required; GitHub Actions is currently not exposing a run for this branch.
-- TDD/content contracts remain authoritative: the D2.6 tests are already present on `main`.
-
-
-Current content-quality batch (PR #93):
-- D2.6 rewritten podcast: `Service -> Network -> Name -> Port -> Volume`.
-- D3.5 prediction layer strengthened without changing its existing `kubernetes-failure-loop-v1` visual/model/tests.
-- D3.5 now has explicit prediction pauses for CrashLoopBackOff, ImagePullBackOff, OOMKilled, readiness failure and Service-selector failure.
-- PR #93 is currently blocked by Vercel build-rate-limit infrastructure; no code/test failure is claimed from that status.
-
-
-Active PR #52 scope:
-- D2.6 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `docker-network-storage-v1`.
-- Teaching model: Service -> Network -> Name -> Port -> Volume.
-- The rewritten script separates internal service discovery, internal service ports, published host ports and persistent volume lifecycle.
-- Controlled failures distinguish name-resolution failure, published-port failure and container recreation with persistent data.
-- TDD/full-programme gate is required before merge.
-
-
-Active PR #53 scope:
-- D2.6 is upgraded to the script+illustration gold-standard.
-- New semantic illustration: `docker-network-storage-v1`.
-- Teaching model: Service -> Network -> Name -> Port -> Volume.
-- The rewritten script separates internal service discovery, internal service ports, published host ports and persistent volumes.
-- Controlled failures isolate a bad database hostname, a bad published port and container recreation with a persistent volume.
-- TDD/full-programme gate is required before merge.
+- Merge commit: `9943a83f502147b477fd4ee839545d4c5924bb24`.
+- D2.6 separates internal service discovery, internal transport, published host ports and persistent data lifecycle.
+- Controlled failures break service naming and published-port access separately, then verify volume persistence across container recreation.
+- Final PR #110 gate passed all programme contracts, the complete unit/integration suite, TypeScript and the Next.js production build.
+- Next content boundary: **D2.7 — Break Docker**.
 
 END CONTENT QUALITY OVERRIDE
 ============================================================
