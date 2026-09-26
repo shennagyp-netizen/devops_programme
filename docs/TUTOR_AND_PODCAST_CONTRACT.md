@@ -110,3 +110,27 @@ The next evolution should expose narrowly scoped read-only programme tools such 
 - get allowed operations.
 
 A later voice layer can attach the same tutor contract to a realtime audio interaction. It must reuse the same authority boundary rather than creating a second assessment path.
+
+## Read-only tutor tools
+
+The tutor now has a bounded function-tool layer. Published tools are read-only:
+
+- get_hands_on_contract
+- get_project_phase
+- get_runtime_contract
+- get_authoritative_progress
+
+Every tool is checked against the authenticated tutor context. A tool cannot read another lesson or project.
+
+Runtime access is descriptive only. A runtime tool can expose the published allowlisted operation contract and verification scope, but it cannot execute a command.
+
+There is intentionally no:
+- execute_shell
+- deploy
+- mutate_project
+- complete_assignment
+- unlock_retry
+- certify_mastery
+
+The Responses API tool loop is capped at a small number of server-side rounds and the final result still passes through the non-authoritative tutor response contract.
+
