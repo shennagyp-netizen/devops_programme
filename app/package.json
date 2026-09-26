@@ -26,7 +26,6 @@
     "test": "vitest run",
     "hands-on:remote": "node ../scripts/run-remote-runtime-task.mjs",
     "runtime:remote": "node ../scripts/run-remote-runtime-task.mjs",
-    "terminal-agent": "node ../scripts/devops-terminal-agent.mjs",
     "db:generate": "drizzle-kit generate --config drizzle.config.ts",
     "db:migrate": "drizzle-kit migrate --config drizzle.config.ts",
     "check:progress": "node ../scripts/check-learner-progress-contract.mjs",
@@ -56,5 +55,7 @@
     "vite": "^7.3.6",
     "vitest": "^5.0.1"
   },
-  "engines": { "node": ">=22.12.0" }
+  "engines": {
+    "node": ">=22.12.0"
+  }
 }
