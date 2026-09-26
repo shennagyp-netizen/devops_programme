@@ -126,5 +126,5 @@ export type PodcastScriptManifest = {
   schemaVersion: number;
   source: string;
   episodes: Record<string, string>;
-  cognitiveLevels: Record<string, Record<string, string>>;
+  explanationLevels: Record<string, Record<string, string>>;
 };
