@@ -1,33 +1,109 @@
 # Podcast Audio and React Synchronization
 
-## MVP contract
+## Product model
 
 The podcast is fixed authored curriculum content. The private LLM tutor is a separate learner-specific conversation and never rewrites, regenerates, or controls the podcast.
 
-An aligned episode may contain multiple fixed speech files. The MVP uses four fixed speech files for the demonstration episode. Each speech file owns one authored speech segment; the segments form one shared timeline.
+For the cognitive-podcast model, one lesson has four complete fixed podcast files. Each file is one authored speech for the same lesson at a different cognitive level:
 
-The browser uses the actual audio clock as the synchronization authority. The visible transcript follows that clock, and authored learning cues pause the same voice session.
+| Level | Authored purpose |
+| --- | --- |
+| 1 — Foundation | Simple mental model and purpose |
+| 2 — Mechanism | Internal mechanism and precise boundaries |
+| 3 — Diagnosis | Failure analysis and evidence |
+| 4 — Design & transfer | System design and transfer to new cases |
 
-Playback speed is a learner control from 1x through 2x. Changing speed changes playback rate only; it does not alter the authored transcript or curriculum.
+These are not four playback speeds of one recording.
 
-When a matched fixed recording is unavailable or stale, the written transcript remains usable. The application must not claim audio synchronization when no valid aligned recording exists.
+Changing level changes the explanation itself: information density, abstraction, causal depth, failure reasoning and transfer demands. The browser must not implement these levels by changing HTMLAudioElement.playbackRate.
+
+A separate ordinary playback-rate control is not part of this cognitive-level contract.
+
+## Fixed speech contract
+
+Every published cognitive speech has:
+
+1. a stable episode ID
+2. a cognitive level from 1 through 4
+3. a stable level identity (`foundation`, `mechanism`, `diagnosis`, `design`)
+4. a fixed audio URL
+5. the exact script revision used to author the speech
+6. the real audio duration
+7. transcript turn timings
+8. optional authored learner-action cues
+
+The episode bundle is valid only when all four cognitive levels are present exactly once.
 
 ## Synchronization contract
 
-Every fixed aligned episode provides:
-1. a script version hash
-2. one or more fixed speech segments
-3. a start/end range for every segment
-4. a timing range for every transcript turn
-5. timestamp cues for prediction, lab and recall boundaries
-6. the total episode duration
+The browser uses the actual selected recording as the authoritative clock.
 
-React uses the actual playback clock to locate the current segment, transcript turn and authored cue. Timing must never be estimated from word count, paragraph length or average speaking speed.
+1. audio playback time is authoritative
+2. React locates the current authored transcript section from that clock
+3. React pauses only at authored learning cues
+4. learner interaction may occur
+5. React resumes the same fixed speech
+
+React must never estimate spoken position from:
+
+- character count
+- word count
+- average speaking speed
+- paragraph length
+- cognitive level
+- the number of transcript sections
+
+The cognitive level changes the authored speech. It does not create timing.
+
+## Script/audio identity
+
+Each cognitive speech has its own `scriptVersion`.
+
+Changing one cognitive speech invalidates only that level's audio.
+
+A level-2 script change must not silently invalidate level 1, 3 or 4.
+
+This is why the build manifest records cognitive-level script hashes independently.
 
 ## Fallback
 
-If an audio manifest is missing, invalid or stale, the application keeps the authored transcript available. Guided transcript mode is explicitly presented as transcript playback, not as synchronized audio.
+If a selected recording is missing, invalid, stale, or cannot be played, the application keeps the selected authored speech available as transcript content.
 
-## Current MVP
+The UI must not claim that the transcript is synchronized to audio when the audio is unavailable.
 
-B1.4 is the first fixed-audio target. The player, manifest contract and tests are ready for four published speech files. Until the audio assets are published, all lessons intentionally use the safe transcript fallback.
+A media load/playback failure is therefore a normal fail-closed path, not a reason to synthesize timing.
+
+## Current B1.4 authoring target
+
+B1.4 now has four authored speech sources:
+
+- `B1.4.cognitive-1.txt`
+- `B1.4.cognitive-2.txt`
+- `B1.4.cognitive-3.txt`
+- `B1.4.cognitive-4.txt`
+
+The corresponding four MP3 recordings were generated as local MVP assets at the same nominal speech rate. Their pedagogical difference comes from the authored speech content, not TTS rate manipulation.
+
+The binary recordings are currently distributed as a local MVP asset package rather than committed to the production Git tree. The production audio manifest therefore remains fail-closed until those exact binaries are published.
+
+## Private tutor boundary
+
+The LLM tutor is separate.
+
+It may:
+
+- discuss the learner's current confusion
+- ask follow-up questions
+- rephrase a concept conversationally
+- inspect learner reasoning
+- help diagnose an answer
+
+It may not:
+
+- rewrite a podcast speech
+- regenerate a podcast
+- select a different authored cognitive speech based on hidden model preference
+- modify podcast timing
+- become the source of podcast synchronization
+
+The fixed podcast is curriculum. The private tutor is adaptive conversation.
