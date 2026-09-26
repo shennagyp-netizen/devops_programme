@@ -17,6 +17,17 @@ function clientKey(request: Request) {
   return (forwarded?.split(",")[0] ?? request.headers.get("x-real-ip") ?? "anonymous").trim();
 }
 
+function sameOrigin(request: Request) {
+  const origin = request.headers.get("origin");
+  if (!origin) return true;
+
+  try {
+    return new URL(origin).origin === new URL(request.url).origin;
+  } catch {
+    return false;
+  }
+}
+
 function consumeRateLimit(key: string) {
   const now = Date.now();
 
@@ -110,6 +121,13 @@ function extractText(payload: unknown) {
 }
 
 export async function POST(request: Request) {
+  if (!sameOrigin(request)) {
+    return NextResponse.json(
+      { error: "Cross-origin tutor requests are not accepted." },
+      { status: 403 }
+    );
+  }
+
   const key = clientKey(request);
 
   if (!consumeRateLimit(key)) {
