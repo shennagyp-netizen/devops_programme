@@ -16,6 +16,9 @@ const provider = await source("app/src/lib/server/verificationProviderAuthority.
 const localAgent = await source("scripts/devops-terminal-agent.mjs");
 const sshRunner = await source("scripts/run-remote-runtime-task.mjs");
 const verificationRequest = await source("app/src/framework/verificationRequest.ts");
+const masteryAction = await source("app/src/app/actions/progress.ts");
+const masteryRequest = await source("app/src/framework/masteryRequest.ts");
+const masteryAuthority = await source("app/src/lib/server/masteryAuthority.ts");
 const verificationAction = await source("app/src/app/actions/verification.ts");
 const app = await source("app/src/App.tsx");
 const verification = await source("app/src/framework/verification.ts");
@@ -27,6 +30,14 @@ assert.match(action, /parseCompleteLearningItemCommand/);
 assert.match(action, /completeLearningItemForUser/);
 assert.doesNotMatch(action, /verificationLevel/);
 assert.doesNotMatch(action, /itemType/);
+assert.match(masteryAction, /parseMasteryCommand/);
+assert.match(masteryAction, /recordAuthoritativeMasteryAttemptForUser/);
+assert.match(masteryRequest, /MASTERY_STAGES/);
+assert.doesNotMatch(masteryRequest, /outcome/);
+assert.match(masteryAuthority, /evaluateLearningTransition/);
+assert.match(masteryAuthority, /outcome = decision.accepted ? "mastered" : "failure"/);
+assert.match(masteryAuthority, /attemptNumber/);
+assert.match(masteryAuthority, /onConflictDoNothing/);
 
 assert.doesNotMatch(progress, /export async function completeLearningItemForUser/);
 assert.match(progress, /authoritative-evidence/);
