@@ -67,6 +67,7 @@ assert.match(provider, /isNull/);
 assert.match(provider, /verificationSigningPayload/);
 assert.match(provider, /ensureRuntimeVerificationTarget/);
 assert.match(provider, /providerKeyId/);
+assert.match(provider, /challengeProviderKeyId/);
 assert.match(localAgent, /signVerificationAttestation/);
 const providerCore = await source("scripts/verification-provider-core.mjs");
 assert.match(providerCore, /providerKeyId/);
