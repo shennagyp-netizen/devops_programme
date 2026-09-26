@@ -168,12 +168,31 @@ export async function completeLearningItemForUser(
       throw new Error("Authoritative completion could not be stored.");
     }
 
-    if (row.verificationLevel !== AUTHORITY_VERIFICATION_LEVEL) {
+    const authoritativeMetadata = {
+      itemType: item.itemType,
+      itemId: item.id,
+      course: item.course,
+      projectId: item.projectId,
+      verificationLevel: AUTHORITY_VERIFICATION_LEVEL
+    };
+
+    if (
+      row.itemType !== authoritativeMetadata.itemType ||
+      row.itemId !== authoritativeMetadata.itemId ||
+      row.course !== authoritativeMetadata.course ||
+      row.projectId !== authoritativeMetadata.projectId ||
+      row.verificationLevel !== authoritativeMetadata.verificationLevel
+    ) {
       await tx
         .update(learnerProgressHistory)
-        .set({ verificationLevel: AUTHORITY_VERIFICATION_LEVEL })
+        .set(authoritativeMetadata)
         .where(eq(learnerProgressHistory.id, row.id));
-      row.verificationLevel = AUTHORITY_VERIFICATION_LEVEL;
+
+      row.itemType = authoritativeMetadata.itemType;
+      row.itemId = authoritativeMetadata.itemId;
+      row.course = authoritativeMetadata.course;
+      row.projectId = authoritativeMetadata.projectId;
+      row.verificationLevel = authoritativeMetadata.verificationLevel;
     }
 
     await tx
