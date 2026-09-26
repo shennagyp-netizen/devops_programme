@@ -9,3 +9,6 @@ It does not own DevOps curriculum, authentication, PostgreSQL, terminal or SSH i
 The neutral demo programme exists only to prove that the framework app runs without a domain programme.
 
 Run: npm install, npm run dev, npm test, npm run typecheck, npm run build.
+
+
+The framework is intentionally not coupled to the existing DevOps application. DevOps integration is a later adapter task.
