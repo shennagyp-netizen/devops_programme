@@ -91,10 +91,8 @@ assert.match(content.authority, /learnerCompletionEvidence/);
 assert.match(content.authority, /authoritative-evidence/);
 assert.match(content.evidenceAuthority, /recordTrustedVerifiedEvidence/);
 assert.match(content.evidenceAuthority, /attestationDigest/);
-assert.doesNotMatch(
-  content.action,
-  /import \{[\s\S]*completeLearningItemForUser[\s\S]*\} from "\.\.\/\.\.\/lib\/server\/progress"/
-);
+assert.match(content.action, /completeLearningItemForUser/);
+assert.match(content.action, /lib\/server\/learningAuthority/);
 assert.match(content.progress, /orderBy\([\s\S]*completedAt/);
 assert.match(content.progress, /recordMasteryAttemptForUser/);
 assert.match(content.progress, /attemptNumber/);
