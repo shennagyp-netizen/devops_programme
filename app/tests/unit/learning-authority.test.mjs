@@ -134,7 +134,7 @@ describe("authoritative completion service", () => {
         evidenceRefs: []
       })
     ).rejects.toMatchObject({
-      reason: "REQUIRED_EVIDENCE_MISSING"
+      reason: "EVIDENCE_NOT_VERIFIED"
     });
 
     expect(insertMock).not.toHaveBeenCalled();
@@ -160,7 +160,7 @@ describe("authoritative completion service", () => {
       evidenceRows: [
         {
           id: "evidence-1",
-          learnerId: "user_1",
+          userId: "user_1",
           itemId: "B1.3",
           kind: "exercise",
           verifierId: "trusted-verifier",
@@ -193,7 +193,7 @@ describe("authoritative completion service", () => {
       evidenceRows: [
         {
           id: "evidence-1",
-          learnerId: "user_1",
+          userId: "user_1",
           itemId: "B1.2",
           kind: "exercise",
           verifierId: "trusted-verifier",
