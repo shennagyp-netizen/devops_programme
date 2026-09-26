@@ -106,22 +106,24 @@ describe("continuous voice architecture", () => {
     expect(podcastCoach).toContain("setAudioTimeMs");
   });
 
-  it("attaches and cleans up all audio event listeners", () => {
+  it("binds all four fixed speech files to real audio elements", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
 
-    for (const event of ["timeupdate", "play", "pause", "ended"]) {
-      expect(podcastCoach).toContain('addEventListener("' + event + '"');
-      expect(podcastCoach).toContain('removeEventListener("' + event + '"');
-    }
-    expect(podcastCoach).toContain("return () => {");
+    expect(podcastCoach).toContain("audioManifest.segments.map");
+    expect(podcastCoach).toContain("preload="auto"");
+    expect(podcastCoach).toContain("onTimeUpdate");
+    expect(podcastCoach).toContain("onPlay");
+    expect(podcastCoach).toContain("onPause");
+    expect(podcastCoach).toContain("onEnded");
   });
 
-  it("pauses before learner action and resumes the same audio element", () => {
+  it("pauses before learner action and resumes the current fixed segment", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
 
     expect(podcastCoach).toContain("audio.pause();");
     expect(podcastCoach).toContain("function resumeVoice()");
-    expect(podcastCoach).toContain("audioRef.current?.play()");
+    expect(podcastCoach).toContain("void audio.play()");
+    expect(podcastCoach).toContain("audioRefs.current");
     expect(podcastCoach).not.toContain("new Audio(");
     expect(podcastCoach).not.toContain("new AudioContext(");
   });
@@ -160,12 +162,12 @@ describe("continuous voice architecture", () => {
     expect(podcastCoach).not.toMatch(/averageSpeakingRate/i);
   });
 
-  it("keeps browser autoplay as an initial-gesture concern only", () => {
+  it("requires an explicit learner gesture to start playback", () => {
     const podcastCoach = source("src/components/PodcastCoach.tsx");
 
-    expect(podcastCoach).toContain("The browser may require one click before audio can start.");
-    expect(podcastCoach).toContain("After that first interaction");
-    expect(podcastCoach).toContain("until you change lessons or explicitly pause it");
+    expect(podcastCoach).toContain("Start the fixed voice lesson");
+    expect(podcastCoach).toContain("function startVoice()");
+    expect(podcastCoach).toContain("void audio.play()");
   });
 
   it("provides explicit controls without creating a second voice session", () => {
