@@ -52,7 +52,6 @@ export type LearningTransitionRequest = {
 
 export type LearningTransitionFailure =
   | "UNKNOWN_LEARNING_ITEM"
-  | "LEARNER_MISMATCH"
   | "UNSUPPORTED_COMPLETION_MODE"
   | "EVIDENCE_NOT_VERIFIED"
   | "EVIDENCE_LEARNER_MISMATCH"
