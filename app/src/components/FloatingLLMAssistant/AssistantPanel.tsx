@@ -391,7 +391,7 @@ export function AssistantPanel({
       >
         <Stack gap="sm" pr="xs">
           {messages.length === 0 ? (
-            <Paper p="sm" bg="gray.0" radius="md">
+            <Paper p="sm" bg="dark.6" radius="md">
               <Text size="sm">
                 Ask about the current lesson, a failure, a command, or why the
                 system behaves this way.
@@ -404,7 +404,7 @@ export function AssistantPanel({
               key={message.id}
               p="sm"
               radius="md"
-              bg={message.role === "user" ? "blue.0" : "gray.0"}
+              bg={message.role === "user" ? "blue.9" : "dark.6"}
               ml={message.role === "user" ? "2rem" : 0}
               mr={message.role === "assistant" ? "2rem" : 0}
             >
