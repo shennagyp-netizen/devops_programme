@@ -1,0 +1,13 @@
+EPISODE B1.4 — Cognitive Level 3: Diagnosis
+
+Now use the container model to diagnose failure instead of memorizing commands.
+
+Suppose a service is reported as running, but the client receives a connection error. Do not restart everything. First ask whether the application process is actually alive. Then ask whether it is listening on the expected port inside the container. Next check whether that container port is published to the host. Finally check the network path between the client and the published host port.
+
+Each step tests a different boundary. A process failure is different from a container-port problem. A container-port problem is different from a missing host publication. A correct host publication can still fail if the client cannot reach the host.
+
+The same reasoning applies to storage. If data disappears after a container is recreated, ask whether the data was written only to the disposable container layer or to a persistent volume. The important question is not whether the command succeeded. The question is which lifecycle the data was attached to.
+
+This is why the container model matters. It turns vague statements such as "Docker is broken" into a small evidence tree: process, container boundary, host boundary, network path, or data lifecycle.
+
+Good diagnosis changes one boundary at a time and asks what observation would prove the next step.
