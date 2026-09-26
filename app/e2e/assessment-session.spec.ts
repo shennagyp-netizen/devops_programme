@@ -10,7 +10,7 @@ test.describe("real-user assessment session", () => {
   test("learner can start, answer, review, navigate and submit a real assessment", async ({
     page
   }, testInfo) => {
-    const email = e2eEmail(testInfo.title, testInfo.workerIndex);
+    const email = e2eEmail(testInfo.title, testInfo.workerIndex, testInfo.retry);
     await signUp(page, email, "assessment-entry");
     await openAssessment(page, "Conceptual");
 
@@ -72,7 +72,7 @@ test.describe("real-user assessment session", () => {
     context,
     page
   }, testInfo) => {
-    const email = e2eEmail(testInfo.title, testInfo.workerIndex);
+    const email = e2eEmail(testInfo.title, testInfo.workerIndex, testInfo.retry);
     await signUp(page, email, "assessment-concurrency");
 
     await openAssessment(page, "Diagnostic");
