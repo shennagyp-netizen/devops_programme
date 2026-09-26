@@ -34,11 +34,11 @@ describe("PodcastCoach real component", () => {
     const synthesis = {
       speaking: false,
       paused: false,
-      cancel: vi.fn(function(this: { speaking: boolean; paused: boolean }) {
+      cancel: vi.fn(function() {
         this.speaking = false;
         this.paused = false;
       }),
-      speak: vi.fn(function(this: { speaking: boolean }, utterance: SpeechSynthesisUtterance) {
+      speak: vi.fn(function(utterance) {
         this.speaking = true;
         utterance.onstart?.({} as SpeechSynthesisEvent);
       }),
@@ -51,19 +51,19 @@ describe("PodcastCoach real component", () => {
       configurable: true,
       writable: true,
       value: class {
-        text: string;
+        text;
         rate = 1;
         pitch = 1;
-        onstart: ((event: SpeechSynthesisEvent) => void) | null = null;
-        onend: ((event: SpeechSynthesisEvent) => void) | null = null;
-        onerror: ((event: SpeechSynthesisErrorEvent) => void) | null = null;
+        onstart = null;
+        onend = null;
+        onerror = null;
         constructor(text: string) { this.text = text; }
       }
     });
 
     Object.defineProperty(HTMLElement.prototype, "scrollIntoView", { configurable: true, value: vi.fn() });
 
-    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) => {
+    vi.stubGlobal("fetch", vi.fn(async (input) => {
       const url = String(input);
       if (url.endsWith("/podcasts/manifest.json")) {
         return new Response(JSON.stringify(manifest), { status: 200, headers: { "Content-Type": "application/json" } });
@@ -94,7 +94,7 @@ describe("PodcastCoach real component", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Start TTS" }));
 
-    const synthesis = window.speechSynthesis as unknown as { speak: ReturnType<typeof vi.fn>; cancel: ReturnType<typeof vi.fn> };
+    const synthesis = window.speechSynthesis;
     const firstUtterance = synthesis.speak.mock.calls[0][0];
     expect(firstUtterance.rate).toBe(1);
 
