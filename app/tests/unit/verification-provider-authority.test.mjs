@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { generateKeyPairSync, sign as signPayload } from "node:crypto";
+import { createHash, generateKeyPairSync, sign as signPayload } from "node:crypto";
 import {
   verificationSigningPayload
 } from "../../src/framework/verification.ts";
@@ -68,6 +68,8 @@ const {
 } = await import("../../src/lib/server/verificationProviderAuthority.ts");
 
 const now = new Date("2026-09-26T12:02:00.000Z");
+const nonceHash = (nonce) =>
+  "sha256:" + createHash("sha256").update(nonce).digest("hex");
 
 function keyPair() {
   return generateKeyPairSync("ed25519");
@@ -239,7 +241,7 @@ describe("verification provider authority", () => {
       evidenceKind: challenge.evidenceKind,
       providerId: challenge.providerId,
       nonce: challenge.nonce,
-      nonceHash: "sha256:" + "c".repeat(64),
+      nonceHash: nonceHash(challenge.nonce),
       issuedAt: new Date(challenge.issuedAt),
       expiresAt: new Date(challenge.expiresAt),
       consumedAt: null
@@ -317,7 +319,7 @@ describe("verification provider authority", () => {
       evidenceKind: "exercise",
       providerId: "local-terminal",
       nonce: "nonce-1",
-      nonceHash: "sha256:" + "d".repeat(64),
+      nonceHash: nonceHash(challenge.nonce),
       issuedAt: new Date(challenge.issuedAt),
       expiresAt: new Date(challenge.expiresAt),
       consumedAt: null
@@ -354,7 +356,7 @@ describe("verification provider authority", () => {
       evidenceKind: "exercise",
       providerId: "local-terminal",
       nonce: "nonce-1",
-      nonceHash: "sha256:" + "e".repeat(64),
+      nonceHash: nonceHash(challenge.nonce),
       issuedAt: new Date("2026-09-26T12:00:00.000Z"),
       expiresAt: new Date("2026-09-26T12:05:00.000Z"),
       consumedAt: new Date("2026-09-26T12:01:00.000Z")
@@ -392,7 +394,7 @@ describe("verification provider authority", () => {
       evidenceKind: "exercise",
       providerId: "local-terminal",
       nonce: challenge.nonce,
-      nonceHash: "sha256:" + "f".repeat(64),
+      nonceHash: nonceHash(challenge.nonce),
       issuedAt: new Date(challenge.issuedAt),
       expiresAt: new Date(challenge.expiresAt),
       consumedAt: null
