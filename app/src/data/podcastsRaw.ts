@@ -7,18 +7,17 @@ export type Turn = {
 
 export function podcastUrl(path: string) {
   if (path.startsWith("/")) return path;
-  return `/${path}`;
+  return \`/\${path}\`;
 }
 
-
 export function getEpisodeText(source: string, lessonId: string) {
-  const marker = new RegExp(`(?:^|\\n)EPISODE ${lessonId} —[^\\n]*\\n`);
+  const marker = new RegExp(\`(?:^|\\\\n)EPISODE \${lessonId} —[^\\\\n]*\\\\n\`);
   const match = source.match(marker);
   if (!match || match.index === undefined) return "";
 
   const start = match.index + match[0].length;
   const rest = source.slice(start);
-  const next = rest.search(/\nEPISODE [A-Z0-9]+\.[0-9]+ —/);
+  const next = rest.search(/\\nEPISODE [A-Z0-9]+\\.[0-9]+ —/);
 
   return (next >= 0 ? rest.slice(0, next) : rest).trim();
 }
@@ -55,12 +54,12 @@ function classifyTurn(text: string): Turn["kind"] {
 
 export function parseTurns(text: string, lessonId = "episode"): Turn[] {
   const withoutKnowledgeMetadata = text
-    .replace(/^@knowledge\\s+[A-Z0-9._-]+\\s*$/gim, "")
+    .replace(/^@knowledge\s+[A-Z0-9._-]+\s*$/gim, "")
     .trim();
 
-  const sourceTurns = /(^|\\n)\\s*Speaker [AB]:/i.test(withoutKnowledgeMetadata)
-    ? withoutKnowledgeMetadata.split(/\\n\\s*(?=Speaker [AB]:)/)
-    : withoutKnowledgeMetadata.split(/\\n\\s*\\n/);
+  const sourceTurns = /(^|\n)\s*Speaker [AB]:/i.test(withoutKnowledgeMetadata)
+    ? withoutKnowledgeMetadata.split(/\n\s*(?=Speaker [AB]:)/)
+    : withoutKnowledgeMetadata.split(/\n\s*\n/);
 
   return sourceTurns
     .map((x) => x.trim())
@@ -70,7 +69,7 @@ export function parseTurns(text: string, lessonId = "episode"): Turn[] {
 
       if (!match) {
         return {
-          id: `${lessonId}.T${String(index + 1).padStart(3, "0")}`,
+          id: \`\${lessonId}.T\${String(index + 1).padStart(3, "0")}\`,
           speaker: "Narrator" as const,
           text: x,
           kind: classifyTurn(x)
@@ -78,7 +77,7 @@ export function parseTurns(text: string, lessonId = "episode"): Turn[] {
       }
 
       return {
-        id: `${lessonId}.T${String(index + 1).padStart(3, "0")}`,
+        id: \`\${lessonId}.T\${String(index + 1).padStart(3, "0")}\`,
         speaker: match[1] as "A" | "B",
         text: match[2].trim(),
         kind: classifyTurn(match[2])
