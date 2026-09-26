@@ -68,6 +68,17 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
+      - name: Start local terminal agent for browser E2E
+        run: |
+          DEVOPS_TERMINAL_TOKEN=e2e-terminal-token npm run terminal-agent > ../terminal-agent.log 2>&1 &
+          echo $! > ../terminal-agent.pid
+          for i in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4317/health > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat ../terminal-agent.log
+          exit 1
+
       - name: Run real-user browser E2E
         run: npm run e2e
 
@@ -77,6 +88,20 @@ jobs:
         with:
           name: playwright-report
           path: app/playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Stop local terminal agent
+        if: always()
+        run: |
+          if [ -f ../terminal-agent.pid ]; then kill $(cat ../terminal-agent.pid) || true; fi
+
+      - name: Upload terminal agent log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: terminal-agent-log
+          path: terminal-agent.log
           if-no-files-found: ignore
           retention-days: 14
 
