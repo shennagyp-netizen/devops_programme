@@ -1,10 +1,11 @@
-import type { LearningItemDefinition, LearningItemKind } from "../../framework/contracts";
+import type { LearningItemDefinition } from "../../framework/contracts";
+import type { LearningItemType } from "../progress-contract";
 import { courseLessons } from "../../data/courseLessons";
 import { courses } from "../../data/programme";
 import { projects } from "../../data/projects";
 
 export type ProgrammeLearningItem = LearningItemDefinition & {
-  itemType: LearningItemKind;
+  itemType: LearningItemType;
   course: (typeof courses)[number]["id"];
   projectId: string | null;
 };
