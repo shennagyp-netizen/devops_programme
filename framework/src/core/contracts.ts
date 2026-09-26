@@ -1,0 +1,16 @@
+export type LearningItemKind="lesson"|"practice"|"project"|"assessment"|"reflection";
+export type LearningMode="learn"|"do"|"recall"|"design"|"assessment";
+export type EvidenceRequirement={kind:string;count?:number};
+export type CompletionRule={kind:"evidence";requirements:EvidenceRequirement[]}|{kind:"assessment";assessmentId:string};
+export type LearningItem={id:string;programmeId:string;courseId:string;sectionId:string;kind:LearningItemKind;title:string;description:string;modes:LearningMode[];completion:CompletionRule};
+export type LearningSection={id:string;courseId:string;title:string;description?:string;itemIds:string[]};
+export type LearningCourse={id:string;programmeId:string;title:string;description:string;sectionIds:string[]};
+export type LearningProgramme={id:string;version:string;title:string;description:string;courses:LearningCourse[];sections:LearningSection[];items:LearningItem[]};
+export type EvidenceRecord={id:string;learnerId:string;itemId:string;kind:string;providerId:string;reference:string;verifiedAt:string};
+export type AssessmentPass={assessmentId:string;learnerId:string;attemptId:string;passedAt:string};
+export type LearnerState={completedItemIds:string[];evidence:EvidenceRecord[];assessmentPasses:AssessmentPass[]};
+export type LearningIntent={type:"SELECT_COURSE";courseId:string}|{type:"SELECT_SECTION";sectionId:string}|{type:"SELECT_ITEM";itemId:string}|{type:"SELECT_MODE";mode:LearningMode}|{type:"REQUEST_EVIDENCE";providerId?:string}|{type:"SUBMIT_ASSESSMENT";assessmentId:string}|{type:"COMPLETE_ITEM"}|{type:"OPEN_REMEDIATION"};
+export type LearningControlState={status:"enabled"}|{status:"locked";reason:"EVIDENCE_REQUIRED"|"ASSESSMENT_REQUIRED"}|{status:"disabled";reason:"ALREADY_COMPLETED"|"NOT_APPLICABLE"};
+export type LearningControl={id:string;label:string;intent:LearningIntent;state:LearningControlState};
+export type ExperienceSession={courseId:string;sectionId:string;itemId:string;mode:LearningMode;remediationOpen:boolean};
+export type ExperienceView={session:ExperienceSession;currentItem:LearningItem;controls:LearningControl[];progress:{completed:number;total:number;percentage:number}};
