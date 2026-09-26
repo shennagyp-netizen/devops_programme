@@ -1933,5 +1933,13 @@ Active PR #54 scope:
 - Every experiment requires one change, a prediction, evidence, restoration and recovery proof.
 - TDD/full-programme gate is required before merge.
 
+
+Active PR #53 scope:
+- D2.7 is upgraded to the script+illustration gold-standard using the existing authored `docker-failure-loop-v1` model.
+- Teaching model: Baseline -> Change -> Symptom -> Evidence -> Recovery.
+- The capstone script deliberately distinguishes one controlled boundary at a time: service name, published port, environment, permissions, dependency readiness and resource pressure.
+- The lesson requires prediction before failure, evidence during failure, restoration, and real user-path recovery proof.
+- TDD/full-programme gate is required before merge.
+
 END CONTENT QUALITY OVERRIDE
 ============================================================
