@@ -68,6 +68,44 @@ test.describe("real-user assessment session", () => {
     });
   });
 
+
+  test("browser-originated tampering cannot inject an assessment item", async ({
+    page
+  }, testInfo) => {
+    const email = e2eEmail(testInfo.title, testInfo.workerIndex, testInfo.retry);
+    await signUp(page, email, "assessment-redteam");
+
+    await openAssessment(page, "Conceptual");
+    const responsePromise = page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/assessment/start") &&
+        response.request().method() === "POST"
+    );
+
+    await page.getByRole("button", { name: "Start Conceptual assessment" }).click();
+    const startResponse = await responsePromise;
+    const payload = await startResponse.json();
+
+    const submitResponse = await page.evaluate(async (attemptId) => {
+      const response = await fetch("/api/assessment/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          attemptId,
+          answers: [{ itemId: "attacker-injected-item", value: 0 }]
+        })
+      });
+
+      return {
+        status: response.status,
+        body: await response.json()
+      };
+    }, payload.attemptId);
+
+    expect(submitResponse.status).toBe(400);
+    expect(submitResponse.body.error).toBe("Unknown assessment item.");
+  });
+
   test("a second browser tab cannot start the same assessment form while the first attempt is active", async ({
     context,
     page
