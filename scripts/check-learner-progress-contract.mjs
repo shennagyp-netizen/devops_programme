@@ -7,6 +7,8 @@ const files = {
   schema: "../app/src/lib/server/schema.ts",
   migration: "../app/drizzle/migrations/0000_learner_completions.sql",
   progress: "../app/src/lib/server/progress.ts",
+  authority: "../app/src/lib/server/learningAuthority.ts",
+  evidenceAuthority: "../app/src/lib/server/evidenceAuthority.ts",
   auth: "../app/src/lib/server/auth.ts",
   action: "../app/src/app/actions/progress.ts",
   contract: "../app/src/lib/progress-contract.ts",
@@ -24,6 +26,7 @@ const files = {
   authBoundaryTest: "../app/tests/integration/auth-boundary.integration.test.mjs",
   migrationAuth: "../app/drizzle/migrations/0001_self_hosted_auth.sql",
   migrationMastery: "../app/drizzle/migrations/0002_learner_mastery_attempts.sql",
+  migrationEvidence: "../app/drizzle/migrations/0003_learning_evidence_authority.sql",
   migrationRunner: "../scripts/run-production-migrations.mjs",
   gitignore: "../.gitignore"
 };
@@ -81,7 +84,14 @@ assert.match(content.migration, /"user_id" text NOT NULL/);
 assert.match(content.migration, /learner_progress_history_user_item_uq/);
 assert.match(content.migration, /learner_progress_history_item_type_ck/);
 
-assert.match(content.progress, /onConflictDoNothing/);
+assert.doesNotMatch(content.progress, /completeLearningItemForUser/);
+assert.match(content.authority, /evaluateLearningTransition/);
+assert.match(content.authority, /onConflictDoNothing/);
+assert.match(content.authority, /learnerCompletionEvidence/);
+assert.match(content.authority, /authoritative-evidence/);
+assert.match(content.evidenceAuthority, /recordTrustedVerifiedEvidence/);
+assert.match(content.evidenceAuthority, /attestationDigest/);
+assert.doesNotMatch(content.action, /from .*lib\/server\/progress/);
 assert.match(content.progress, /orderBy\([\s\S]*completedAt/);
 assert.match(content.progress, /recordMasteryAttemptForUser/);
 assert.match(content.progress, /attemptNumber/);
@@ -138,6 +148,9 @@ assert.match(content.migrationAuth, /auth_users/);
 assert.match(content.migrationMastery, /learner_mastery_attempts/);
 assert.match(content.migrationMastery, /attempt_number/);
 assert.match(content.migrationMastery, /outcome/);
+assert.match(content.migrationEvidence, /learner_verified_evidence/);
+assert.match(content.migrationEvidence, /learner_completion_evidence/);
+assert.match(content.migrationEvidence, /attestation_digest/);
 assert.match(content.migrationAuth, /auth_sessions/);
 assert.match(content.migrationRunner, /_devops_programme_migrations/);
 
