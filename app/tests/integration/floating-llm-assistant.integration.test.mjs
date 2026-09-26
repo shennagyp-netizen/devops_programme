@@ -31,7 +31,7 @@ describe("FloatingLLMAssistant", () => {
 
     Object.defineProperty(window, "matchMedia", {
       writable: true,
-      value: (query: string) => ({
+      value: (query) => ({
         matches: query.includes("47.99em") ? false : false,
         media: query,
         onchange: null,
@@ -54,7 +54,7 @@ describe("FloatingLLMAssistant", () => {
     Object.defineProperty(window, "SpeechSynthesisUtterance", {
       writable: true,
       value: class {
-        text: string;
+        text;
         rate = 1;
         pitch = 1;
 
