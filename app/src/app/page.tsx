@@ -42,8 +42,6 @@ export default function HomePage() {
           <a href="#courses">Courses</a>
           <a href="#method">How it works</a>
           <a href="#projects">Projects</a>
-          <Link href="/sign-in">Sign in</Link>
-          <Link href="/sign-up">Create account</Link>
           <Link href="/learn">Learning gateway</Link>
         </div>
       </nav>
@@ -59,11 +57,8 @@ export default function HomePage() {
             repair it, and prove recovery.
           </p>
           <div className="marketing-actions">
-            <Link className="primary marketing-cta" href="/sign-up">
-              Create your account
-            </Link>
-            <Link className="secondary marketing-cta" href="/sign-in">
-              Sign in
+            <Link className="primary marketing-cta" href="/learn">
+              Start learning
             </Link>
             <a className="secondary marketing-cta" href="#courses">
               Explore the programme
@@ -196,21 +191,20 @@ export default function HomePage() {
       <section className="marketing-final-cta">
         <div>
           <span className="eyebrow">READY TO WORK?</span>
-          <h2>Create an account once. Your progress stays with it.</h2>
+          <h2>Start the programme immediately.</h2>
           <p>
-            The public site explains the programme. Create a first-party account to
-            enter the learning gateway and keep your completed lessons with your
-            own account.
+            This MVP has no account or sign-in flow. Your learning progress is
+            stored only in this browser so you can start without setup.
           </p>
         </div>
-        <Link className="primary marketing-cta" href="/sign-up">
-          Create your account
+        <Link className="primary marketing-cta" href="/learn">
+          Start learning
         </Link>
       </section>
 
       <footer className="marketing-footer">
         <span>DevOps Programme</span>
-        <span>Structured learning · Real failure work · Server-authoritative progress</span>
+        <span>Structured learning · Real failure work · Browser-local MVP progress</span>
       </footer>
     </main>
   );
