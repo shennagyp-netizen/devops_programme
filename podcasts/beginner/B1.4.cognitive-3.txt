@@ -24,7 +24,7 @@ docker run --rm nginx:alpine nginx -t
 The image supplies the starting state. The runtime creates the container. The nginx configuration test is the process. Because the command is short-lived, the process exits and --rm removes the container. The example separates environment creation from the application work performed inside it.
 
 @knowledge K08
-Container writable state has container lifecycle semantics. If an important database file is stored only there, removing the container can remove that state. A persistent volume gives important data a separate lifecycle so the data can survive container replacement. Therefore process lifecycle, container lifecycle, and data lifecycle should not be treated as the same thing.
+Container writable state has container lifecycle semantics. If an important database file is stored only there, removing the container can remove that state. A persistent volume gives important data a separate lifecycle so the data can survive container replacement. so process lifecycle, container lifecycle, and data lifecycle should not be treated as the same thing.
 
 @knowledge K09
 Networking has at least two relevant port boundaries. The service can listen on a container-side port, while the host publishes that service through a host-side port. Those values need not be identical. A running container proves that a runtime environment exists; it does not prove that an external client has a valid path to the service.
