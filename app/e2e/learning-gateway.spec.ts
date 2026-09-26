@@ -51,6 +51,9 @@ test.describe("real-user learning gateway journey", () => {
     await signUp(page, email, "gateway-terminal-verified");
 
     await page.getByText("DevOps Through Problems", { exact: true }).click();
+    await expect(
+      page.getByRole("heading", { name: "The App Is Slow — Where Do We Look?", exact: true })
+    ).toBeVisible();
     await page.getByText("Linux", { exact: true }).click();
     await expect(page.getByText("Environment: Linux · bash", { exact: true })).toBeVisible();
 
